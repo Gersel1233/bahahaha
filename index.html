@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ASCEND — Self-Improvement Intelligence</title>
+<style>
+  /* ============================================================
+     ASCEND — Orbit Carousel hero
+     Single-file. Edit the BRAND + cards below to make it yours.
+     ============================================================ */
+  :root {
+    --bg-0: #05060a;
+    --bg-1: #0a0d18;
+    --accent: #7c5cff;     /* electric violet */
+    --accent-2: #29e7d7;   /* aqua */
+    --accent-3: #ff6ad5;   /* magenta */
+    --text: #eef1ff;
+    --muted: #97a0c2;
+    --card-bg: rgba(20, 24, 42, 0.55);
+    --card-brd: rgba(140, 92, 255, 0.35);
+    --ring: 320px;         /* orbit radius (desktop) */
+    --spin: 38s;           /* orbit speed */
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body { height: 100%; }
+
+  body {
+    font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+    background:
+      radial-gradient(1200px 700px at 70% -10%, rgba(124,92,255,0.18), transparent 60%),
+      radial-gradient(900px 600px at 10% 110%, rgba(41,231,215,0.14), transparent 55%),
+      linear-gradient(160deg, var(--bg-1), var(--bg-0));
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* drifting starfield grain */
+  body::before {
+    content: "";
+    position: fixed; inset: 0;
+    background-image: radial-gradient(rgba(255,255,255,0.06) 1px, transparent 1px);
+    background-size: 38px 38px;
+    mask-image: radial-gradient(ellipse 80% 70% at 50% 45%, #000 30%, transparent 75%);
+    animation: drift 60s linear infinite;
+    pointer-events: none;
+  }
+  @keyframes drift { to { background-position: 380px 380px; } }
+
+  /* ---------- top bar ---------- */
+  header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 22px clamp(20px, 5vw, 64px);
+    position: relative; z-index: 5;
+  }
+  .logo { display: flex; align-items: center; gap: 12px; font-weight: 800; letter-spacing: 2px; }
+  .logo .mark {
+    width: 30px; height: 30px; border-radius: 9px;
+    background: conic-gradient(from 180deg, var(--accent), var(--accent-2), var(--accent-3), var(--accent));
+    box-shadow: 0 0 24px rgba(124,92,255,0.6);
+    animation: spinmark 8s linear infinite;
+  }
+  @keyframes spinmark { to { transform: rotate(360deg); } }
+  nav { display: flex; gap: 26px; font-size: 14px; color: var(--muted); }
+  nav a { color: inherit; text-decoration: none; transition: color .2s; }
+  nav a:hover { color: var(--text); }
+  .cta {
+    border: 1px solid var(--card-brd); padding: 9px 18px; border-radius: 999px;
+    color: var(--text); font-size: 13px; font-weight: 600; cursor: pointer;
+    background: rgba(124,92,255,0.12); transition: all .25s;
+  }
+  .cta:hover { background: rgba(124,92,255,0.28); transform: translateY(-1px); }
+
+  /* ---------- hero copy ---------- */
+  .hero-copy { text-align: center; padding: 8px 20px 0; position: relative; z-index: 4; }
+  .eyebrow {
+    font-size: 12px; letter-spacing: 4px; text-transform: uppercase;
+    color: var(--accent-2); margin-bottom: 14px;
+  }
+  .hero-copy h1 {
+    font-size: clamp(30px, 5.2vw, 58px); line-height: 1.03; font-weight: 800;
+    letter-spacing: -1px;
+    background: linear-gradient(120deg, #fff 30%, var(--accent) 70%, var(--accent-2));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .hero-copy p {
+    max-width: 620px; margin: 16px auto 0; color: var(--muted);
+    font-size: clamp(14px, 1.6vw, 17px); line-height: 1.6;
+  }
+
+  /* ---------- orbit stage ---------- */
+  .stage {
+    flex: 1;
+    position: relative;
+    display: flex; align-items: center; justify-content: center;
+    perspective: 1600px;
+    min-height: 560px;
+    margin-top: -10px;
+  }
+
+  .orbit {
+    position: relative;
+    width: 1px; height: 1px;
+    transform-style: preserve-3d;
+    transform: rotateX(-12deg);
+    animation: orbit-spin var(--spin) linear infinite;
+  }
+  .stage:hover .orbit,
+  .orbit.paused { animation-play-state: paused; }
+
+  @keyframes orbit-spin {
+    from { transform: rotateX(-12deg) rotateY(0deg); }
+    to   { transform: rotateX(-12deg) rotateY(360deg); }
+  }
+
+  /* each card sits on the ring; --i / --n drive its angle */
+  .card {
+    --angle: calc(360deg / var(--n) * var(--i));
+    position: absolute;
+    width: 220px; height: 280px;
+    left: -110px; top: -140px;
+    transform: rotateY(var(--angle)) translateZ(var(--ring));
+    transform-style: preserve-3d;
+  }
+  /* counter-rotate inner so text always faces the viewer-ish & stays readable */
+  .card-inner {
+    position: absolute; inset: 0;
+    border-radius: 20px;
+    padding: 22px 20px;
+    background: var(--card-bg);
+    border: 1px solid var(--card-brd);
+    backdrop-filter: blur(14px);
+    box-shadow: 0 18px 50px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.06);
+    display: flex; flex-direction: column; gap: 12px;
+    transform: rotateY(calc(var(--angle) * -1));
+    transition: transform .35s, box-shadow .35s, border-color .35s;
+    cursor: pointer;
+  }
+  .card:hover .card-inner {
+    box-shadow: 0 0 0 1px var(--accent), 0 26px 70px rgba(124,92,255,0.45);
+    border-color: var(--accent);
+  }
+  .card .icon {
+    width: 46px; height: 46px; border-radius: 13px;
+    display: grid; place-items: center; font-size: 22px;
+    background: linear-gradient(140deg, rgba(124,92,255,0.35), rgba(41,231,215,0.25));
+    border: 1px solid rgba(255,255,255,0.12);
+  }
+  .card h3 { font-size: 17px; font-weight: 700; letter-spacing: -0.2px; }
+  .card .stat { font-size: 26px; font-weight: 800; color: var(--accent-2); }
+  .card p { font-size: 12.5px; color: var(--muted); line-height: 1.5; }
+
+  /* glowing core in the center of the orbit */
+  .core {
+    position: absolute;
+    width: 190px; height: 190px; border-radius: 50%;
+    display: grid; place-items: center; text-align: center;
+    background: radial-gradient(circle at 50% 40%, rgba(124,92,255,0.9), rgba(41,231,215,0.25) 60%, transparent 72%);
+    box-shadow: 0 0 90px 20px rgba(124,92,255,0.45), 0 0 140px 40px rgba(41,231,215,0.18);
+    z-index: 3;
+    animation: pulse 4.5s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%,100% { transform: scale(1); box-shadow: 0 0 90px 20px rgba(124,92,255,0.45), 0 0 140px 40px rgba(41,231,215,0.18); }
+    50%     { transform: scale(1.06); box-shadow: 0 0 120px 30px rgba(124,92,255,0.6), 0 0 180px 60px rgba(41,231,215,0.28); }
+  }
+  .core b { font-size: 30px; font-weight: 900; letter-spacing: 3px; }
+  .core span { font-size: 11px; color: rgba(255,255,255,0.85); letter-spacing: 2px; }
+
+  /* faint orbit ring guide */
+  .ring-guide {
+    position: absolute; left: 50%; top: 50%;
+    width: calc(var(--ring) * 2); height: calc(var(--ring) * 2);
+    transform: translate(-50%, -50%) rotateX(76deg);
+    border: 1px dashed rgba(124,92,255,0.25);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+
+  /* controls */
+  .controls {
+    position: relative; z-index: 6; text-align: center; padding: 0 0 34px;
+    display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+  }
+  .controls button {
+    background: rgba(255,255,255,0.05); color: var(--text);
+    border: 1px solid rgba(255,255,255,0.14); padding: 10px 18px;
+    border-radius: 999px; font-size: 13px; cursor: pointer; transition: all .2s;
+  }
+  .controls button:hover { background: rgba(124,92,255,0.22); border-color: var(--accent); }
+  .controls .primary {
+    background: linear-gradient(120deg, var(--accent), var(--accent-3));
+    border: none; font-weight: 700;
+    box-shadow: 0 10px 30px rgba(124,92,255,0.5);
+  }
+
+  .hint { text-align:center; color: var(--muted); font-size: 12px; padding-bottom: 18px; }
+
+  @media (max-width: 760px) {
+    :root { --ring: 200px; }
+    .card { width: 168px; height: 224px; left: -84px; top: -112px; }
+    nav { display: none; }
+    .stage { min-height: 460px; }
+  }
+</style>
+</head>
+<body>
+
+  <header>
+    <div class="logo"><span class="mark"></span><span>ASCEND</span></div>
+    <nav>
+      <a href="#">Intelligence</a>
+      <a href="#">Blueprint</a>
+      <a href="#">The Lab</a>
+      <a href="#">Pricing</a>
+    </nav>
+    <button class="cta">Start free</button>
+  </header>
+
+  <section class="hero-copy">
+    <div class="eyebrow">Self-Improvement Intelligence</div>
+    <h1>Your motives, mapped.<br/>Your future self, engineered.</h1>
+    <p>ASCEND reads your individual drivers, goals and psychology — then renders the
+       version of you worth becoming, with the exact numbers and the blueprint to get there.</p>
+  </section>
+
+  <section class="stage">
+    <div class="ring-guide"></div>
+    <div class="orbit" id="orbit">
+      <div class="core"><div><b>AI</b><br/><span>CORE</span></div></div>
+      <!-- cards injected by JS so --i / --n stay in sync -->
+    </div>
+  </section>
+
+  <div class="controls">
+    <button id="toggle">⏸ Pause orbit</button>
+    <button id="slower">– Slower</button>
+    <button id="faster">+ Faster</button>
+    <button class="primary">Get my blueprint →</button>
+  </div>
+  <p class="hint">Hover the orbit to pause · click any module to bring it forward</p>
+
+<script>
+  // ---- Edit these 6 modules to match your product ----
+  const MODULES = [
+    { icon: "🧭", title: "Motive Mapping",      stat: "100%", desc: "Decodes your individual motives, goals & psychological drivers into a living profile." },
+    { icon: "✨", title: "Transformation Visuals", stat: "12 wk", desc: "Renders your future self so you can literally see the person you're building toward." },
+    { icon: "📊", title: "Presence Numbers",     stat: "+34", desc: "Real metrics for physical presence — posture, body comp, energy, presence score." },
+    { icon: "🗺️", title: "The Blueprint",        stat: "Step-by-step", desc: "An adaptive day-by-day plan that recalculates as you move toward the target." },
+    { icon: "💬", title: "Intelligence Chat",    stat: "24/7", desc: "A companion intelligence that knows your context and coaches you in the moment." },
+    { icon: "🧪", title: "The Lab",              stat: "∞", desc: "Run experiments on yourself — test protocols, track outcomes, keep what works." },
+  ];
+
+  const orbit = document.getElementById("orbit");
+  MODULES.forEach((m, i) => {
+    const card = document.createElement("div");
+    card.className = "card";
+    card.style.setProperty("--i", i);
+    card.style.setProperty("--n", MODULES.length);
+    card.innerHTML = `
+      <div class="card-inner">
+        <div class="icon">${m.icon}</div>
+        <h3>${m.title}</h3>
+        <div class="stat">${m.stat}</div>
+        <p>${m.desc}</p>
+      </div>`;
+    card.querySelector(".card-inner").addEventListener("click", () => {
+      orbit.classList.add("paused");
+      // rotate orbit so the clicked card faces front
+      const angle = (360 / MODULES.length) * i;
+      orbit.style.transform = `rotateX(-12deg) rotateY(${-angle}deg)`;
+    });
+    orbit.appendChild(card);
+  });
+
+  // ---- controls ----
+  const toggle = document.getElementById("toggle");
+  toggle.addEventListener("click", () => {
+    const paused = orbit.classList.toggle("paused");
+    if (!paused) orbit.style.transform = "";          // hand back to the animation
+    toggle.textContent = paused ? "▶ Resume orbit" : "⏸ Pause orbit";
+  });
+
+  let speed = 38;
+  const setSpeed = v => {
+    speed = Math.min(120, Math.max(8, v));
+    orbit.style.setProperty("--spin", speed + "s");
+  };
+  document.getElementById("slower").onclick = () => setSpeed(speed + 8);
+  document.getElementById("faster").onclick = () => setSpeed(speed - 8);
+</script>
+</body>
+</html>
