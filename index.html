@@ -178,6 +178,20 @@ footer .legal{margin-top:32px;font-size:12.5px;color:var(--mut2);max-width:560px
 
 .rv{opacity:0;transform:translateY(22px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
 .rv.in{opacity:1;transform:none}.rv.d1{transition-delay:.07s}.rv.d2{transition-delay:.14s}.rv.d3{transition-delay:.21s}
+
+/* ===== kinetic typography (from the Typography pack, retinted) ===== */
+.kin .w{display:inline-block;opacity:0;transform:translateY(24px);animation:kinRise .8s var(--ease) forwards}
+@keyframes kinRise{to{opacity:1;transform:none}}
+.kin .shine{
+  background:linear-gradient(100deg,var(--clay) 0%,#dd8a4c 28%,#c44d6b 52%,var(--clay) 78%);
+  background-size:220% 100%;-webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;color:transparent;
+  animation:kinRise .8s var(--ease) forwards, shineMove 6s ease-in-out 1.2s infinite}
+@keyframes shineMove{0%,100%{background-position:120% 0}50%{background-position:-20% 0}}
+/* scroll-revealed word-by-word (statement) */
+.kinwords .w{display:inline-block;opacity:0;transform:translateY(18px);transition:opacity .55s var(--ease),transform .55s var(--ease)}
+.kinwords.in .w{opacity:1;transform:none}
+.statement .kinwords .w.mut{color:var(--mut2)}
 </style>
 </head>
 <body>
@@ -196,7 +210,7 @@ footer .legal{margin-top:32px;font-size:12.5px;color:var(--mut2);max-width:560px
 <!-- HERO -->
 <header class="hero wrap">
   <div class="eyebrow">Fyon Intelligence</div>
-  <h1>A self-improvement intelligence that <em>knows you.</em></h1>
+  <h1 class="kin"><span class="w" style="animation-delay:.05s">A</span> <span class="w" style="animation-delay:.12s">self-improvement</span> <span class="w" style="animation-delay:.19s">intelligence</span> <span class="w" style="animation-delay:.26s">that</span> <span class="w shine" style="animation-delay:.36s">knows you.</span></h1>
   <p class="sub">Most tools rate you, report on you, or forget you. Fyon points frontier intelligence entirely at
      one person — and walks the path with you, learning more about you with every step.</p>
   <div class="cta-row">
@@ -335,7 +349,7 @@ footer .legal{margin-top:32px;font-size:12.5px;color:var(--mut2);max-width:560px
 
 <!-- STATEMENT -->
 <section class="statement wrap">
-  <h2 class="rv">Fyon is the place you open <span class="mut">when you want your outside to match who you're becoming.</span></h2>
+  <h2 class="rv kinwords">Fyon is the place you open <span class="mut">when you want your outside to match who you're becoming.</span></h2>
 </section>
 
 <!-- CLOSE -->
@@ -363,6 +377,24 @@ footer .legal{margin-top:32px;font-size:12.5px;color:var(--mut2);max-width:560px
 const nav=document.getElementById('nav');
 const onScroll=()=>nav.classList.toggle('scrolled',scrollY>20);
 addEventListener('scroll',onScroll,{passive:true});onScroll();
+
+/* split .kinwords into word spans (with staggered transition delays) before observing */
+document.querySelectorAll('.kinwords').forEach(h=>{
+  let i=0;
+  const wrap=(node,mut)=>{
+    const frag=document.createDocumentFragment();
+    (node.textContent||'').split(/(\s+)/).forEach(tok=>{
+      if(tok.trim()===''){frag.appendChild(document.createTextNode(tok));return;}
+      const s=document.createElement('span');s.className='w'+(mut?' mut':'');
+      s.style.transitionDelay=(i*0.045).toFixed(3)+'s';i++;s.textContent=tok;frag.appendChild(s);
+    });
+    return frag;
+  };
+  [...h.childNodes].forEach(n=>{
+    if(n.nodeType===3){h.replaceChild(wrap(n,false),n);}
+    else if(n.classList&&n.classList.contains('mut')){const f=wrap(n,true);n.textContent='';n.appendChild(f);}
+  });
+});
 
 const io=new IntersectionObserver((es)=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}}),{threshold:.16});
 document.querySelectorAll('.rv').forEach(el=>io.observe(el));
