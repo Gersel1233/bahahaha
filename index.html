@@ -3,297 +3,238 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>ASCEND — Self-Improvement Intelligence</title>
+<title>Fyon — AI for the version of you worth becoming</title>
 <style>
-  /* ============================================================
-     ASCEND — Orbit Carousel hero
-     Single-file. Edit the BRAND + cards below to make it yours.
-     ============================================================ */
-  :root {
-    --bg-0: #05060a;
-    --bg-1: #0a0d18;
-    --accent: #7c5cff;     /* electric violet */
-    --accent-2: #29e7d7;   /* aqua */
-    --accent-3: #ff6ad5;   /* magenta */
-    --text: #eef1ff;
-    --muted: #97a0c2;
-    --card-bg: rgba(20, 24, 42, 0.55);
-    --card-brd: rgba(140, 92, 255, 0.35);
-    --ring: 320px;         /* orbit radius (desktop) */
-    --spin: 38s;           /* orbit speed */
+  /* ===========================================================
+     FYON · Liquid Glass transformation card
+     Recreates the "Liquid Glass" travel-card look, retargeted to
+     a self-improvement AI: a route from who you are -> who you'll
+     become. Pure HTML/CSS/JS, no assets, no build step.
+     =========================================================== */
+  :root{
+    --ink:#0b1220;
+    --blue:#2f7bff;          /* the accent blue (the plane/icon) */
+    --glass-bg:rgba(255,255,255,0.14);
+    --glass-brd:rgba(255,255,255,0.55);
+    --font:"SF Pro Display","Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:var(--font);
+    color:#fff;
+    overflow:hidden;
+    background:#1a2740;
   }
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  html, body { height: 100%; }
-
-  body {
-    font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+  /* ---------- sky ---------- */
+  .sky{
+    position:fixed; inset:0;
     background:
-      radial-gradient(1200px 700px at 70% -10%, rgba(124,92,255,0.18), transparent 60%),
-      radial-gradient(900px 600px at 10% 110%, rgba(41,231,215,0.14), transparent 55%),
-      linear-gradient(160deg, var(--bg-1), var(--bg-0));
-    color: var(--text);
-    min-height: 100vh;
-    overflow-x: hidden;
-    display: flex;
-    flex-direction: column;
-    -webkit-font-smoothing: antialiased;
+      radial-gradient(120% 90% at 78% 8%, #5b7fb4 0%, transparent 55%),
+      radial-gradient(140% 120% at 85% 0%, #8fb0d8 0%, transparent 45%),
+      linear-gradient(180deg, #38567f 0%, #29405f 38%, #1d2c44 70%, #141d2e 100%);
+  }
+  /* warm sun glow lower-right, like the golden cloud light */
+  .sky::after{
+    content:""; position:absolute; inset:0;
+    background:radial-gradient(60% 50% at 72% 62%, rgba(255,214,160,0.35), transparent 60%);
+    mix-blend-mode:screen;
+  }
+  /* drifting cloud blobs (blurred soft shapes) */
+  .cloud{
+    position:absolute; border-radius:50%;
+    filter:blur(40px); opacity:.55; mix-blend-mode:screen;
+    animation:float-cloud linear infinite;
+  }
+  .c1{width:60vw;height:34vw;left:-10vw;top:48%; background:radial-gradient(circle,#cdd9ec,transparent 70%); animation-duration:70s}
+  .c2{width:48vw;height:30vw;right:-8vw;top:8%;  background:radial-gradient(circle,#aebfd8,transparent 70%); opacity:.4; animation-duration:90s; animation-direction:reverse}
+  .c3{width:40vw;height:24vw;left:30%;bottom:-6vw;background:radial-gradient(circle,#f2dcb8,transparent 70%); opacity:.35; animation-duration:110s}
+  .c4{width:30vw;height:18vw;left:8%;top:6%;     background:radial-gradient(circle,#dce7f6,transparent 70%); opacity:.3; animation-duration:80s; animation-direction:reverse}
+  @keyframes float-cloud{
+    0%{transform:translateX(-4vw)}
+    50%{transform:translateX(6vw)}
+    100%{transform:translateX(-4vw)}
+  }
+  /* faint grain so the gradient reads as photographic */
+  .sky-grain{position:fixed;inset:0;opacity:.05;pointer-events:none;
+    background-image:radial-gradient(#fff 1px,transparent 1px);background-size:3px 3px}
+
+  /* ---------- brand mark ---------- */
+  .brand{
+    position:fixed; top:30px; left:38px; z-index:5;
+    display:flex; align-items:center; gap:10px;
+    font-weight:700; letter-spacing:.5px; font-size:20px;
+    text-shadow:0 2px 18px rgba(0,0,0,.35);
+  }
+  .brand .dot{
+    width:20px;height:20px;border-radius:6px;
+    background:linear-gradient(135deg,#7db4ff,var(--blue));
+    box-shadow:0 0 18px rgba(47,123,255,.8);
   }
 
-  /* drifting starfield grain */
-  body::before {
-    content: "";
-    position: fixed; inset: 0;
-    background-image: radial-gradient(rgba(255,255,255,0.06) 1px, transparent 1px);
-    background-size: 38px 38px;
-    mask-image: radial-gradient(ellipse 80% 70% at 50% 45%, #000 30%, transparent 75%);
-    animation: drift 60s linear infinite;
-    pointer-events: none;
+  /* ---------- the liquid glass card ---------- */
+  .stage{position:relative;height:100%;display:grid;place-items:center;z-index:3}
+  .glass{
+    position:relative;
+    width:min(58vw,720px);
+    aspect-ratio:16/10;
+    border-radius:34px;
+    padding:34px 40px;
+    background:var(--glass-bg);
+    -webkit-backdrop-filter:blur(26px) saturate(165%);
+    backdrop-filter:blur(26px) saturate(165%);
+    border:1px solid var(--glass-brd);
+    box-shadow:
+      0 30px 80px rgba(8,16,34,.45),
+      inset 0 1px 1px rgba(255,255,255,.55),
+      inset 0 -20px 40px rgba(120,150,200,.10);
+    overflow:hidden;
+    animation:bob 7s ease-in-out infinite;
   }
-  @keyframes drift { to { background-position: 380px 380px; } }
+  /* glossy top-left specular sheen — the "liquid" highlight */
+  .glass::before{
+    content:""; position:absolute; left:0; top:0; right:0; height:55%;
+    background:linear-gradient(160deg, rgba(255,255,255,.35), rgba(255,255,255,0) 60%);
+    pointer-events:none;
+  }
+  /* moving glint that sweeps across the glass */
+  .glass::after{
+    content:""; position:absolute; top:-60%; left:-30%;
+    width:50%; height:220%;
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,.18),transparent);
+    transform:rotate(18deg);
+    animation:sweep 6s ease-in-out infinite;
+    pointer-events:none;
+  }
+  @keyframes sweep{0%,100%{left:-40%}50%{left:120%}}
+  @keyframes bob{0%,100%{transform:translateY(-6px)}50%{transform:translateY(6px)}}
 
-  /* ---------- top bar ---------- */
-  header {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 22px clamp(20px, 5vw, 64px);
-    position: relative; z-index: 5;
-  }
-  .logo { display: flex; align-items: center; gap: 12px; font-weight: 800; letter-spacing: 2px; }
-  .logo .mark {
-    width: 30px; height: 30px; border-radius: 9px;
-    background: conic-gradient(from 180deg, var(--accent), var(--accent-2), var(--accent-3), var(--accent));
-    box-shadow: 0 0 24px rgba(124,92,255,0.6);
-    animation: spinmark 8s linear infinite;
-  }
-  @keyframes spinmark { to { transform: rotate(360deg); } }
-  nav { display: flex; gap: 26px; font-size: 14px; color: var(--muted); }
-  nav a { color: inherit; text-decoration: none; transition: color .2s; }
-  nav a:hover { color: var(--text); }
-  .cta {
-    border: 1px solid var(--card-brd); padding: 9px 18px; border-radius: 999px;
-    color: var(--text); font-size: 13px; font-weight: 600; cursor: pointer;
-    background: rgba(124,92,255,0.12); transition: all .25s;
-  }
-  .cta:hover { background: rgba(124,92,255,0.28); transform: translateY(-1px); }
+  /* date, top-left */
+  .date{position:absolute; top:30px; left:38px; line-height:.9}
+  .date .d{font-size:clamp(28px,3vw,40px); font-weight:700}
+  .date .m{font-size:14px; opacity:.6; letter-spacing:2px; text-transform:uppercase; margin-top:4px}
 
-  /* ---------- hero copy ---------- */
-  .hero-copy { text-align: center; padding: 8px 20px 0; position: relative; z-index: 4; }
-  .eyebrow {
-    font-size: 12px; letter-spacing: 4px; text-transform: uppercase;
-    color: var(--accent-2); margin-bottom: 14px;
+  /* center icon + route */
+  .route{
+    position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+    display:flex; flex-direction:column; align-items:center;
   }
-  .hero-copy h1 {
-    font-size: clamp(30px, 5.2vw, 58px); line-height: 1.03; font-weight: 800;
-    letter-spacing: -1px;
-    background: linear-gradient(120deg, #fff 30%, var(--accent) 70%, var(--accent-2));
-    -webkit-background-clip: text; background-clip: text; color: transparent;
+  .puck{
+    width:62px;height:62px;border-radius:50%;
+    background:#fff; display:grid; place-items:center;
+    box-shadow:0 10px 30px rgba(0,0,0,.25), 0 0 0 8px rgba(255,255,255,.12);
+    animation:pulse 3.6s ease-in-out infinite;
   }
-  .hero-copy p {
-    max-width: 620px; margin: 16px auto 0; color: var(--muted);
-    font-size: clamp(14px, 1.6vw, 17px); line-height: 1.6;
-  }
+  .puck svg{width:30px;height:30px;fill:var(--blue)}
+  @keyframes pulse{0%,100%{box-shadow:0 10px 30px rgba(0,0,0,.25),0 0 0 8px rgba(255,255,255,.10)}
+                   50%{box-shadow:0 10px 36px rgba(0,0,0,.3),0 0 0 14px rgba(255,255,255,.05)}}
+  .dots{ margin-top:14px; display:flex; flex-direction:column; gap:7px; align-items:center}
+  .dots i{width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.7);
+          animation:twinkle 1.6s ease-in-out infinite}
+  .dots i:nth-child(2){animation-delay:.2s}.dots i:nth-child(3){animation-delay:.4s}
+  .dots i:nth-child(4){animation-delay:.6s}.dots i:nth-child(5){animation-delay:.8s}
+  @keyframes twinkle{0%,100%{opacity:.25}50%{opacity:1}}
 
-  /* ---------- orbit stage ---------- */
-  .stage {
-    flex: 1;
-    position: relative;
-    display: flex; align-items: center; justify-content: center;
-    perspective: 1600px;
-    min-height: 560px;
-    margin-top: -10px;
-  }
-
-  .orbit {
-    position: relative;
-    width: 1px; height: 1px;
-    transform-style: preserve-3d;
-    transform: rotateX(-12deg);
-    animation: orbit-spin var(--spin) linear infinite;
-  }
-  .stage:hover .orbit,
-  .orbit.paused { animation-play-state: paused; }
-
-  @keyframes orbit-spin {
-    from { transform: rotateX(-12deg) rotateY(0deg); }
-    to   { transform: rotateX(-12deg) rotateY(360deg); }
-  }
-
-  /* each card sits on the ring; --i / --n drive its angle */
-  .card {
-    --angle: calc(360deg / var(--n) * var(--i));
-    position: absolute;
-    width: 220px; height: 280px;
-    left: -110px; top: -140px;
-    transform: rotateY(var(--angle)) translateZ(var(--ring));
-    transform-style: preserve-3d;
-  }
-  /* counter-rotate inner so text always faces the viewer-ish & stays readable */
-  .card-inner {
-    position: absolute; inset: 0;
-    border-radius: 20px;
-    padding: 22px 20px;
-    background: var(--card-bg);
-    border: 1px solid var(--card-brd);
-    backdrop-filter: blur(14px);
-    box-shadow: 0 18px 50px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.06);
-    display: flex; flex-direction: column; gap: 12px;
-    transform: rotateY(calc(var(--angle) * -1));
-    transition: transform .35s, box-shadow .35s, border-color .35s;
-    cursor: pointer;
-  }
-  .card:hover .card-inner {
-    box-shadow: 0 0 0 1px var(--accent), 0 26px 70px rgba(124,92,255,0.45);
-    border-color: var(--accent);
-  }
-  .card .icon {
-    width: 46px; height: 46px; border-radius: 13px;
-    display: grid; place-items: center; font-size: 22px;
-    background: linear-gradient(140deg, rgba(124,92,255,0.35), rgba(41,231,215,0.25));
-    border: 1px solid rgba(255,255,255,0.12);
-  }
-  .card h3 { font-size: 17px; font-weight: 700; letter-spacing: -0.2px; }
-  .card .stat { font-size: 26px; font-weight: 800; color: var(--accent-2); }
-  .card p { font-size: 12.5px; color: var(--muted); line-height: 1.5; }
-
-  /* glowing core in the center of the orbit */
-  .core {
-    position: absolute;
-    width: 190px; height: 190px; border-radius: 50%;
-    display: grid; place-items: center; text-align: center;
-    background: radial-gradient(circle at 50% 40%, rgba(124,92,255,0.9), rgba(41,231,215,0.25) 60%, transparent 72%);
-    box-shadow: 0 0 90px 20px rgba(124,92,255,0.45), 0 0 140px 40px rgba(41,231,215,0.18);
-    z-index: 3;
-    animation: pulse 4.5s ease-in-out infinite;
-  }
-  @keyframes pulse {
-    0%,100% { transform: scale(1); box-shadow: 0 0 90px 20px rgba(124,92,255,0.45), 0 0 140px 40px rgba(41,231,215,0.18); }
-    50%     { transform: scale(1.06); box-shadow: 0 0 120px 30px rgba(124,92,255,0.6), 0 0 180px 60px rgba(41,231,215,0.28); }
-  }
-  .core b { font-size: 30px; font-weight: 900; letter-spacing: 3px; }
-  .core span { font-size: 11px; color: rgba(255,255,255,0.85); letter-spacing: 2px; }
-
-  /* faint orbit ring guide */
-  .ring-guide {
-    position: absolute; left: 50%; top: 50%;
-    width: calc(var(--ring) * 2); height: calc(var(--ring) * 2);
-    transform: translate(-50%, -50%) rotateX(76deg);
-    border: 1px dashed rgba(124,92,255,0.25);
-    border-radius: 50%;
-    pointer-events: none;
+  /* From / To blocks bottom corners */
+  .ends{position:absolute; left:40px; right:40px; bottom:34px;
+        display:flex; justify-content:space-between; align-items:flex-end}
+  .end .lbl{font-size:15px; opacity:.7; margin-bottom:6px}
+  .end .val{font-size:clamp(26px,3.4vw,44px); font-weight:700; letter-spacing:-.5px;
+            height:1.1em; overflow:hidden; position:relative}
+  .end.to{text-align:right}
+  /* kinetic text: the rolling word */
+  .word{display:inline-block; animation:roll .7s cubic-bezier(.2,.7,.2,1)}
+  @keyframes roll{
+    0%{transform:translateY(60%); filter:blur(6px); opacity:0}
+    100%{transform:translateY(0); filter:blur(0); opacity:1}
   }
 
-  /* controls */
-  .controls {
-    position: relative; z-index: 6; text-align: center; padding: 0 0 34px;
-    display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
-  }
-  .controls button {
-    background: rgba(255,255,255,0.05); color: var(--text);
-    border: 1px solid rgba(255,255,255,0.14); padding: 10px 18px;
-    border-radius: 999px; font-size: 13px; cursor: pointer; transition: all .2s;
-  }
-  .controls button:hover { background: rgba(124,92,255,0.22); border-color: var(--accent); }
-  .controls .primary {
-    background: linear-gradient(120deg, var(--accent), var(--accent-3));
-    border: none; font-weight: 700;
-    box-shadow: 0 10px 30px rgba(124,92,255,0.5);
-  }
+  /* tagline + footer */
+  .tag{position:fixed; bottom:84px; left:0; right:0; text-align:center; z-index:4;
+       font-size:clamp(15px,2vw,20px); font-weight:500; opacity:.92;
+       text-shadow:0 2px 18px rgba(0,0,0,.4)}
+  .foot{position:fixed; bottom:30px; left:0; right:0; text-align:center; z-index:4;
+        font-size:13px; opacity:.6; letter-spacing:.3px}
 
-  .hint { text-align:center; color: var(--muted); font-size: 12px; padding-bottom: 18px; }
-
-  @media (max-width: 760px) {
-    :root { --ring: 200px; }
-    .card { width: 168px; height: 224px; left: -84px; top: -112px; }
-    nav { display: none; }
-    .stage { min-height: 460px; }
+  @media(max-width:760px){
+    .glass{width:86vw; aspect-ratio:4/5; padding:26px}
+    .ends{left:26px;right:26px}
+    .date{left:26px}
+    .brand{left:22px;top:22px}
   }
 </style>
 </head>
 <body>
-
-  <header>
-    <div class="logo"><span class="mark"></span><span>ASCEND</span></div>
-    <nav>
-      <a href="#">Intelligence</a>
-      <a href="#">Blueprint</a>
-      <a href="#">The Lab</a>
-      <a href="#">Pricing</a>
-    </nav>
-    <button class="cta">Start free</button>
-  </header>
-
-  <section class="hero-copy">
-    <div class="eyebrow">Self-Improvement Intelligence</div>
-    <h1>Your motives, mapped.<br/>Your future self, engineered.</h1>
-    <p>ASCEND reads your individual drivers, goals and psychology — then renders the
-       version of you worth becoming, with the exact numbers and the blueprint to get there.</p>
-  </section>
-
-  <section class="stage">
-    <div class="ring-guide"></div>
-    <div class="orbit" id="orbit">
-      <div class="core"><div><b>AI</b><br/><span>CORE</span></div></div>
-      <!-- cards injected by JS so --i / --n stay in sync -->
-    </div>
-  </section>
-
-  <div class="controls">
-    <button id="toggle">⏸ Pause orbit</button>
-    <button id="slower">– Slower</button>
-    <button id="faster">+ Faster</button>
-    <button class="primary">Get my blueprint →</button>
+  <div class="sky">
+    <div class="cloud c1"></div><div class="cloud c2"></div>
+    <div class="cloud c3"></div><div class="cloud c4"></div>
   </div>
-  <p class="hint">Hover the orbit to pause · click any module to bring it forward</p>
+  <div class="sky-grain"></div>
+
+  <div class="brand"><span class="dot"></span>Fyon</div>
+
+  <div class="stage">
+    <div class="glass">
+      <div class="date"><div class="d" id="day">27</div><div class="m" id="mon">Dec</div></div>
+
+      <div class="route">
+        <div class="puck">
+          <!-- AI spark icon (blue), echoing the blue plane -->
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 2l1.8 5.6a4 4 0 0 0 2.6 2.6L22 12l-5.6 1.8a4 4 0 0 0-2.6 2.6L12 22l-1.8-5.6a4 4 0 0 0-2.6-2.6L2 12l5.6-1.8a4 4 0 0 0 2.6-2.6L12 2z"/>
+          </svg>
+        </div>
+        <div class="dots"><i></i><i></i><i></i><i></i><i></i></div>
+      </div>
+
+      <div class="ends">
+        <div class="end from">
+          <div class="lbl">From</div>
+          <div class="val" id="from"></div>
+        </div>
+        <div class="end to">
+          <div class="lbl">To</div>
+          <div class="val" id="to"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tag">Tell Fyon your goals. It maps the route to your future self.</div>
+  <div class="foot">© All Rights Reserved · Fyon</div>
 
 <script>
-  // ---- Edit these 6 modules to match your product ----
-  const MODULES = [
-    { icon: "🧭", title: "Motive Mapping",      stat: "100%", desc: "Decodes your individual motives, goals & psychological drivers into a living profile." },
-    { icon: "✨", title: "Transformation Visuals", stat: "12 wk", desc: "Renders your future self so you can literally see the person you're building toward." },
-    { icon: "📊", title: "Presence Numbers",     stat: "+34", desc: "Real metrics for physical presence — posture, body comp, energy, presence score." },
-    { icon: "🗺️", title: "The Blueprint",        stat: "Step-by-step", desc: "An adaptive day-by-day plan that recalculates as you move toward the target." },
-    { icon: "💬", title: "Intelligence Chat",    stat: "24/7", desc: "A companion intelligence that knows your context and coaches you in the moment." },
-    { icon: "🧪", title: "The Lab",              stat: "∞", desc: "Run experiments on yourself — test protocols, track outcomes, keep what works." },
+  // today's date in the corner
+  const now = new Date();
+  document.getElementById('day').textContent = now.getDate();
+  document.getElementById('mon').textContent =
+    now.toLocaleString('en',{month:'short'});
+
+  // ---- the transformation routes Fyon plots (edit freely) ----
+  const ROUTES = [
+    { from:"Scattered",  to:"Focused"   },
+    { from:"Unfit",      to:"Strong"    },
+    { from:"Anxious",    to:"Grounded"  },
+    { from:"Stuck",      to:"Limitless" },
+    { from:"Average",    to:"Elite"     },
+    { from:"Who you are",to:"Who you'll be" },
   ];
 
-  const orbit = document.getElementById("orbit");
-  MODULES.forEach((m, i) => {
-    const card = document.createElement("div");
-    card.className = "card";
-    card.style.setProperty("--i", i);
-    card.style.setProperty("--n", MODULES.length);
-    card.innerHTML = `
-      <div class="card-inner">
-        <div class="icon">${m.icon}</div>
-        <h3>${m.title}</h3>
-        <div class="stat">${m.stat}</div>
-        <p>${m.desc}</p>
-      </div>`;
-    card.querySelector(".card-inner").addEventListener("click", () => {
-      orbit.classList.add("paused");
-      // rotate orbit so the clicked card faces front
-      const angle = (360 / MODULES.length) * i;
-      orbit.style.transform = `rotateX(-12deg) rotateY(${-angle}deg)`;
-    });
-    orbit.appendChild(card);
-  });
+  const fromEl = document.getElementById('from');
+  const toEl   = document.getElementById('to');
+  let i = -1;
 
-  // ---- controls ----
-  const toggle = document.getElementById("toggle");
-  toggle.addEventListener("click", () => {
-    const paused = orbit.classList.toggle("paused");
-    if (!paused) orbit.style.transform = "";          // hand back to the animation
-    toggle.textContent = paused ? "▶ Resume orbit" : "⏸ Pause orbit";
-  });
-
-  let speed = 38;
-  const setSpeed = v => {
-    speed = Math.min(120, Math.max(8, v));
-    orbit.style.setProperty("--spin", speed + "s");
-  };
-  document.getElementById("slower").onclick = () => setSpeed(speed + 8);
-  document.getElementById("faster").onclick = () => setSpeed(speed - 8);
+  function show(text, el){
+    el.innerHTML = `<span class="word">${text}</span>`;
+  }
+  function next(){
+    i = (i + 1) % ROUTES.length;
+    show(ROUTES[i].from, fromEl);
+    setTimeout(() => show(ROUTES[i].to, toEl), 220); // staggered roll
+  }
+  next();
+  setInterval(next, 3200);
 </script>
 </body>
 </html>
