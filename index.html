@@ -46,22 +46,45 @@ h1,h2,h3{font-family:var(--serif);font-weight:500;letter-spacing:-.015em;line-he
 .glass::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
   background:linear-gradient(150deg,rgba(255,255,255,.55),transparent 46%);opacity:.7}
 
-/* ---- buttons ---- */
-.btn{position:relative;display:inline-flex;align-items:center;gap:8px;cursor:pointer;font-family:inherit;font-weight:600;
-  font-size:14.5px;padding:13px 24px;border-radius:999px;border:1px solid transparent;overflow:hidden;
-  transition:transform .15s var(--ease),box-shadow .25s,background .2s;will-change:transform}
-.btn:active{transform:scale(.97)}
-.btn-ink{background:var(--ink);color:#fff;box-shadow:0 8px 24px rgba(26,23,20,.25)}
-.btn-ink:hover{transform:translateY(-2px);background:#000}
-.btn-glass{background:rgba(255,255,255,.4);color:var(--ink);border-color:rgba(255,255,255,.7);
-  -webkit-backdrop-filter:blur(14px) saturate(160%);backdrop-filter:blur(14px) saturate(160%);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 8px 22px rgba(70,52,34,.08)}
-.btn-glass:hover{transform:translateY(-2px);background:rgba(255,255,255,.6)}
-.btn-clay{background:var(--clay);color:#fff;box-shadow:0 10px 30px rgba(193,95,60,.35)}
-.btn-clay:hover{background:var(--clay-d);transform:translateY(-2px)}
-.btn::after{content:"";position:absolute;top:-60%;left:-70%;width:42%;height:220%;pointer-events:none;
-  background:linear-gradient(90deg,transparent,rgba(255,255,255,.45),transparent);transform:rotate(20deg);transition:left .6s var(--ease)}
-.btn:hover::after{left:140%}
+/* ---- liquid glass buttons (Apple-style — on ALL buttons) ---- */
+.btn{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;
+  font-family:inherit;font-weight:600;font-size:14.5px;padding:14px 28px;border-radius:999px;border:none;
+  color:var(--ink);overflow:hidden;isolation:isolate;
+  background:rgba(255,255,255,.22);
+  -webkit-backdrop-filter:blur(16px) saturate(190%) brightness(1.12);backdrop-filter:blur(16px) saturate(190%) brightness(1.12);
+  box-shadow:
+    inset 0 1.5px 1px rgba(255,255,255,.95),
+    inset 0 -2px 3px rgba(255,255,255,.30),
+    inset 0 0 0 1px rgba(255,255,255,.32),
+    0 4px 10px rgba(70,52,34,.10),
+    0 12px 30px rgba(70,52,34,.17);
+  transition:transform .18s var(--ease),box-shadow .28s var(--ease),background .25s;will-change:transform}
+.btn>*{position:relative;z-index:2}
+/* glass sheen (sits above the frosted fill, below the text) */
+.btn::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:-1;
+  background:linear-gradient(180deg,rgba(255,255,255,.62),rgba(255,255,255,0) 42%,rgba(255,255,255,.12) 100%)}
+/* moving specular glint */
+.btn::after{content:"";position:absolute;top:-50%;left:-65%;width:40%;height:200%;pointer-events:none;z-index:-1;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.72),transparent);transform:rotate(22deg);
+  transition:left .6s var(--ease);opacity:.85}
+.btn:hover::after{left:155%}
+.btn:hover{transform:translateY(-2px);
+  box-shadow:inset 0 1.5px 1px rgba(255,255,255,1),inset 0 -2px 3px rgba(255,255,255,.36),inset 0 0 0 1px rgba(255,255,255,.42),0 6px 14px rgba(70,52,34,.12),0 18px 40px rgba(70,52,34,.22)}
+.btn:active{transform:translateY(0) scale(.96)}
+/* neutral glass alias */
+.btn-glass{}
+/* dark "smoked" glass (primary) */
+.btn-ink{color:#fff;background:rgba(34,29,24,.55);
+  -webkit-backdrop-filter:blur(16px) saturate(170%);backdrop-filter:blur(16px) saturate(170%);
+  box-shadow:inset 0 1.5px 1px rgba(255,255,255,.45),inset 0 -2px 4px rgba(0,0,0,.25),inset 0 0 0 1px rgba(255,255,255,.16),0 4px 10px rgba(26,23,20,.22),0 14px 34px rgba(26,23,20,.32)}
+.btn-ink::before{background:linear-gradient(180deg,rgba(255,255,255,.38),rgba(255,255,255,0) 46%,rgba(255,255,255,.05))}
+.btn-ink:hover{background:rgba(26,23,20,.62);box-shadow:inset 0 1.5px 1px rgba(255,255,255,.55),inset 0 -2px 4px rgba(0,0,0,.28),inset 0 0 0 1px rgba(255,255,255,.22),0 6px 14px rgba(26,23,20,.26),0 20px 44px rgba(26,23,20,.4)}
+/* clay-tinted glass (accent / CTA) */
+.btn-clay{color:#fff;background:rgba(193,95,60,.52);
+  -webkit-backdrop-filter:blur(16px) saturate(200%) brightness(1.04);backdrop-filter:blur(16px) saturate(200%) brightness(1.04);
+  box-shadow:inset 0 1.5px 1px rgba(255,255,255,.7),inset 0 -3px 6px rgba(120,40,20,.32),inset 0 0 0 1px rgba(255,255,255,.26),0 6px 14px rgba(193,95,60,.25),0 16px 38px rgba(193,95,60,.4)}
+.btn-clay::before{background:linear-gradient(180deg,rgba(255,255,255,.5),rgba(255,255,255,0) 44%,rgba(120,40,20,.16))}
+.btn-clay:hover{background:rgba(193,95,60,.62);box-shadow:inset 0 1.5px 1px rgba(255,255,255,.8),inset 0 -3px 6px rgba(120,40,20,.35),inset 0 0 0 1px rgba(255,255,255,.34),0 8px 16px rgba(193,95,60,.3),0 22px 48px rgba(193,95,60,.5)}
 .link{font-size:14.5px;color:var(--ink);display:inline-flex;align-items:center;gap:6px;border-bottom:1px solid var(--clay);padding-bottom:2px;transition:.16s}
 .link:hover{gap:9px;color:var(--clay-d)}
 
