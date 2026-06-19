@@ -207,6 +207,45 @@ footer a{display:block;font-size:13.5px;color:var(--zinc6);padding:4px 0;transit
 footer a:hover{color:#fff}
 footer .legal{margin-top:36px;font-size:12.5px;color:var(--zinc7)}
 
+/* ---------- liquid glass CTA buttons (recreated from the CTA pack) ---------- */
+.cta-btn{position:relative;display:inline-flex;align-items:center;gap:10px;cursor:pointer;font-family:inherit;
+  font-weight:600;font-size:15px;color:#fff;line-height:1;padding:15px 26px;border-radius:999px;
+  border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.07);
+  -webkit-backdrop-filter:blur(16px) saturate(170%);backdrop-filter:blur(16px) saturate(170%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.35),inset 0 -8px 18px rgba(0,0,0,.22),0 10px 30px rgba(0,0,0,.4);
+  overflow:hidden;transition:transform .14s var(--ease),box-shadow .25s,border-color .25s;will-change:transform}
+.cta-btn::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:linear-gradient(160deg,rgba(255,255,255,.4),transparent 46%);opacity:.7}
+.cta-btn::after{content:"";position:absolute;top:-60%;left:-70%;width:42%;height:220%;pointer-events:none;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.5),transparent);transform:rotate(20deg);
+  transition:left .55s var(--ease)}
+.cta-btn:hover::after{left:140%}
+.cta-btn:hover{transform:translateY(-2px);border-color:rgba(255,255,255,.32)}
+.cta-btn:active{transform:scale(.96)}
+.cta-btn .ic{display:inline-flex;width:18px;height:18px;flex:none}
+.cta-btn .ic svg{width:100%;height:100%}
+.cta-btn span.label{position:relative;z-index:1}
+/* coloured accents like the pack */
+.cta-btn.c-blue{color:#7db4ff}.cta-btn.c-pink{color:#ff7ad9}.cta-btn.c-red{color:#ff6b6b}
+.cta-btn.c-yellow{color:#ffd36b}.cta-btn.c-emerald{color:var(--emerald)}
+/* solid white primary (keeps the glassy top highlight) */
+.cta-btn.primary{background:#fff;color:#000;border-color:#fff;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.85),0 0 50px rgba(255,255,255,.2)}
+.cta-btn.primary::before{background:linear-gradient(160deg,rgba(255,255,255,.95),transparent 52%)}
+.cta-btn.big{font-size:16px;padding:17px 32px}
+/* glow states (the pack's red ones — retinted to FYON emerald + a red option) */
+.cta-btn.glow-em{border-color:rgba(52,211,153,.45);animation:glowEm 2.8s ease-in-out infinite}
+@keyframes glowEm{0%,100%{box-shadow:inset 0 1px 0 rgba(255,255,255,.6),0 0 34px rgba(52,211,153,.4),0 0 70px rgba(52,211,153,.22)}
+  50%{box-shadow:inset 0 1px 0 rgba(255,255,255,.6),0 0 50px rgba(52,211,153,.62),0 0 100px rgba(52,211,153,.34)}}
+.cta-btn.glow-red{border-color:rgba(255,80,80,.5);animation:glowRed 2.6s ease-in-out infinite}
+@keyframes glowRed{0%,100%{box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 0 32px rgba(255,45,45,.45),0 0 70px rgba(255,45,45,.25)}
+  50%{box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 0 48px rgba(255,45,45,.7),0 0 95px rgba(255,45,45,.4)}}
+/* press ripple */
+.cta-btn .ripple{position:absolute;border-radius:50%;background:rgba(255,255,255,.5);transform:translate(-50%,-50%) scale(0);
+  pointer-events:none;animation:ripple .6s var(--ease) forwards}
+@keyframes ripple{to{transform:translate(-50%,-50%) scale(8);opacity:0}}
+.cta-row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+
 /* reveal */
 .rv{opacity:0;transform:translateY(26px);transition:opacity .7s var(--ease),transform .7s var(--ease);will-change:transform,opacity}
 .rv.in{opacity:1;transform:none}
@@ -225,7 +264,10 @@ footer .legal{margin-top:36px;font-size:12.5px;color:var(--zinc7)}
     <a href="#science">The science</a>
     <a href="#safety">Safety</a>
   </div>
-  <button class="btn btn-w" onclick="document.querySelector('#final').scrollIntoView()">Reveal my future self</button>
+  <button class="cta-btn" style="padding:10px 20px;font-size:13.5px" onclick="document.querySelector('#final').scrollIntoView()">
+    <span class="label">Get started</span>
+    <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M12 5l7 7-7 7"/></svg></span>
+  </button>
 </div></nav>
 
 <!-- HERO -->
@@ -234,9 +276,15 @@ footer .legal{margin-top:36px;font-size:12.5px;color:var(--zinc7)}
   <h1>See who you're becoming.<br/><span class="mut">Then become them.</span></h1>
   <p class="sub">Fyon is the intelligence that reads how you're truly perceived, understands who you want to be,
      and renders a realistic future self — with the exact blueprint to get there.</p>
-  <div class="cta">
-    <button class="btn btn-w" onclick="document.querySelector('#final').scrollIntoView()">Reveal my future self →</button>
-    <button class="btn btn-g" onclick="document.querySelector('#how').scrollIntoView()">See how it works</button>
+  <div class="cta cta-row">
+    <button class="cta-btn primary glow-em" onclick="document.querySelector('#final').scrollIntoView()">
+      <span class="ic"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.6 5A4 4 0 0 0 16 9.4L21 11l-5 1.6A4 4 0 0 0 13.6 15L12 20l-1.6-5A4 4 0 0 0 8 12.6L3 11l5-1.6A4 4 0 0 0 10.4 7L12 2z"/></svg></span>
+      <span class="label">Reveal my future self</span>
+    </button>
+    <button class="cta-btn" onclick="document.querySelector('#how').scrollIntoView()">
+      <span class="label">See how it works</span>
+      <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M12 5l7 7-7 7"/></svg></span>
+    </button>
   </div>
   <p class="fine">No account required · Your result in ~3 minutes · 18+</p>
 
@@ -389,7 +437,16 @@ footer .legal{margin-top:36px;font-size:12.5px;color:var(--zinc7)}
     <div class="glow"></div>
     <h2>Your outside, matched to who you're becoming.</h2>
     <p>Upload two photos. Meet the version of yourself you envisioned.</p>
-    <button class="btn btn-w" style="font-size:15px;padding:14px 30px">Reveal my future self →</button>
+    <div class="cta-row">
+      <button class="cta-btn primary glow-em big">
+        <span class="ic"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.6 5A4 4 0 0 0 16 9.4L21 11l-5 1.6A4 4 0 0 0 13.6 15L12 20l-1.6-5A4 4 0 0 0 8 12.6L3 11l5-1.6A4 4 0 0 0 10.4 7L12 2z"/></svg></span>
+        <span class="label">Reveal my future self</span>
+      </button>
+      <button class="cta-btn c-emerald big">
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3.2"/><path d="M2.5 12s3.5-6.5 9.5-6.5S21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/></svg></span>
+        <span class="label">Generate yours</span>
+      </button>
+    </div>
   </div>
 </section>
 
@@ -438,6 +495,15 @@ const map={product:0,how:1,science:2,safety:3};
 const so=new IntersectionObserver((es)=>es.forEach(e=>{if(e.isIntersecting){
   const i=map[e.target.id]; if(i!=null){links.forEach(l=>l.classList.remove('on'));links[i]?.classList.add('on');}}}),{threshold:.4});
 document.querySelectorAll('#product,#how,#science,#safety').forEach(s=>so.observe(s));
+
+/* liquid-glass button press ripple (120Hz-snappy, transform-only) */
+document.querySelectorAll('.cta-btn').forEach(b=>{
+  b.addEventListener('pointerdown',e=>{
+    const r=b.getBoundingClientRect();const s=document.createElement('span');
+    s.className='ripple';s.style.left=(e.clientX-r.left)+'px';s.style.top=(e.clientY-r.top)+'px';
+    s.style.width=s.style.height='24px';b.appendChild(s);setTimeout(()=>s.remove(),600);
+  });
+});
 </script>
 </body>
 </html>
