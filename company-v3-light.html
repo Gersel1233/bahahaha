@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Fyon — a self-improvement intelligence that knows you</title>
+<style>
+/* ===========================================================================
+   FYON · homepage — warm editorial (Anthropic register)
+   Centerpiece: The Depth Map. Honest, verifiable comparison. No fake stats.
+   Pure HTML/CSS/JS prototype.
+   =========================================================================== */
+:root{
+  --bg:#F4F1EA;          /* warm bone */
+  --bg2:#FBFAF6;
+  --ink:#1A1714;         /* warm near-black */
+  --ink2:#3a352e;
+  --mut:#6f685c;         /* warm grey */
+  --mut2:#9a9286;
+  --line:#E4DECF;
+  --clay:#C15F3C;        /* terracotta accent */
+  --clay-d:#A84E2E;
+  --serif:"Tiempos Headline","Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  --sans:-apple-system,BlinkMacSystemFont,"Inter","Segoe UI",sans-serif;
+  --ease:cubic-bezier(.2,.8,.2,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.5;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+::selection{background:rgba(193,95,60,.18)}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1100px;margin:0 auto;padding:0 24px}
+h1,h2,h3{font-family:var(--serif);font-weight:500;letter-spacing:-.015em;line-height:1.08}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;gap:8px;cursor:pointer;font-family:inherit;font-weight:600;
+  font-size:14.5px;padding:12px 22px;border-radius:999px;border:1px solid transparent;transition:.16s var(--ease);will-change:transform}
+.btn:active{transform:scale(.97)}
+.btn-ink{background:var(--ink);color:#fff}
+.btn-ink:hover{transform:translateY(-1px);background:#000}
+.btn-clay{background:var(--clay);color:#fff}.btn-clay:hover{background:var(--clay-d);transform:translateY(-1px)}
+.btn-ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+.btn-ghost:hover{border-color:var(--ink);background:rgba(0,0,0,.02)}
+.link{font-size:14.5px;color:var(--ink);display:inline-flex;align-items:center;gap:6px;border-bottom:1px solid var(--clay);padding-bottom:2px;transition:.16s}
+.link:hover{gap:9px;color:var(--clay-d)}
+
+/* nav */
+nav{position:fixed;top:0;left:0;right:0;z-index:50;transition:background .25s,border-color .25s}
+nav .bar{display:flex;align-items:center;justify-content:space-between;padding:16px 24px;max-width:1100px;margin:0 auto}
+nav.scrolled{background:rgba(244,241,234,.8);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.logo{display:flex;align-items:center;gap:9px;font-weight:700;font-size:19px;letter-spacing:-.01em}
+.logo .star{color:var(--clay);font-size:18px}
+.nav-links{display:flex;gap:28px;font-size:14.5px;color:var(--mut)}
+.nav-links a:hover{color:var(--ink)}
+@media(max-width:820px){.nav-links{display:none}}
+
+/* hero */
+.hero{position:relative;z-index:2;padding:160px 0 30px;text-align:center}
+.eyebrow{font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:var(--clay);font-weight:700;margin-bottom:20px}
+.hero h1{font-size:clamp(40px,6.6vw,78px);font-weight:500;letter-spacing:-.02em;max-width:900px;margin:0 auto}
+.hero h1 em{font-style:italic;color:var(--clay)}
+.hero .sub{max-width:600px;margin:26px auto 0;font-size:clamp(16px,2vw,20px);color:var(--mut);line-height:1.6}
+.hero .cta-row{margin-top:34px;display:flex;gap:14px;justify-content:center;align-items:center;flex-wrap:wrap}
+.hero .fine{margin-top:16px;font-size:13px;color:var(--mut2)}
+
+/* ===== The Depth Map ===== */
+.mapwrap{position:relative;z-index:2;margin-top:64px}
+.map-card{background:var(--bg2);border:1px solid var(--line);border-radius:24px;
+  box-shadow:0 30px 70px rgba(60,45,30,.07);padding:30px 30px 22px;position:relative;overflow:hidden}
+.map-head{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px;margin-bottom:18px}
+.map-head .t{font-family:var(--serif);font-size:20px}
+.map-head .meth{font-size:12px;color:var(--mut2)}
+.plot{position:relative;width:100%;aspect-ratio:16/9;border:1px solid var(--line);border-radius:16px;
+  background:
+    linear-gradient(rgba(193,95,60,.05),rgba(193,95,60,.05)) ,
+    repeating-linear-gradient(0deg,transparent,transparent 11.11%,rgba(180,170,150,.13) 11.11%,rgba(180,170,150,.13) calc(11.11% + 1px)),
+    repeating-linear-gradient(90deg,transparent,transparent 10%,rgba(180,170,150,.13) 10%,rgba(180,170,150,.13) calc(10% + 1px));
+  overflow:hidden}
+.plot .zone{position:absolute;right:6%;top:6%;width:34%;height:34%;border:1px dashed rgba(193,95,60,.4);
+  border-radius:14px;background:rgba(193,95,60,.05)}
+.plot .zone span{position:absolute;top:8px;left:12px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--clay)}
+/* axis labels */
+.ax{position:absolute;font-size:12px;color:var(--mut);font-weight:600}
+.ax.x{bottom:-30px;left:50%;transform:translateX(-50%);letter-spacing:.04em}
+.ax.y{top:50%;left:-12px;transform:rotate(-90deg) translateX(50%);transform-origin:left;white-space:nowrap}
+.ax.x .lo,.ax.x .hi{color:var(--mut2);font-weight:500}
+/* points */
+.pt{position:absolute;transform:translate(-50%,-50%) scale(.4);opacity:0;transition:opacity .6s var(--ease),transform .6s var(--ease)}
+.pt.in{opacity:1;transform:translate(-50%,-50%) scale(1)}
+.pt .dot{width:13px;height:13px;border-radius:50%;background:var(--mut2);margin:0 auto;border:2px solid var(--bg2);box-shadow:0 1px 4px rgba(0,0,0,.15)}
+.pt .lbl{position:absolute;left:50%;top:18px;transform:translateX(-50%);white-space:nowrap;font-size:11.5px;color:var(--mut);text-align:center;font-weight:500}
+.pt.fyon .dot{width:22px;height:22px;background:var(--clay);box-shadow:0 0 0 6px rgba(193,95,60,.15),0 4px 14px rgba(193,95,60,.4);animation:fyonpulse 3s ease-in-out infinite}
+.pt.fyon .lbl{font-family:var(--serif);font-size:15px;color:var(--ink);font-weight:500;top:24px}
+.pt.fyon .lbl small{display:block;font-family:var(--sans);font-size:11px;color:var(--mut);font-weight:500;margin-top:2px}
+@keyframes fyonpulse{0%,100%{box-shadow:0 0 0 6px rgba(193,95,60,.15),0 4px 14px rgba(193,95,60,.4)}
+  50%{box-shadow:0 0 0 11px rgba(193,95,60,.06),0 4px 20px rgba(193,95,60,.55)}}
+/* the gap connector */
+.gap-line{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none}
+.gap-line path{stroke:var(--clay);stroke-width:1.5;stroke-dasharray:5 5;fill:none;opacity:0;
+  stroke-dashoffset:300;transition:opacity .8s .8s,stroke-dashoffset 1.6s .8s var(--ease)}
+.plot.in .gap-line path{opacity:.5;stroke-dashoffset:0}
+.map-foot{margin-top:42px;font-size:13px;color:var(--mut);line-height:1.6;max-width:680px}
+.map-foot b{color:var(--ink)}
+
+/* proof strip */
+.proof{text-align:center;padding:50px 0 0}
+.proof .row{display:flex;justify-content:center;gap:40px;flex-wrap:wrap;margin-top:8px}
+.proof .row div{font-size:14px;color:var(--mut)}
+.proof .row b{font-family:var(--serif);font-size:26px;color:var(--ink);display:block;font-weight:500}
+
+/* sections */
+section.s{position:relative;z-index:2;padding:clamp(72px,10vw,124px) 0}
+.s .eyebrow{text-align:left}
+.s h2{font-size:clamp(28px,4.2vw,46px);font-weight:500;max-width:720px}
+.s .lead{color:var(--mut);font-size:clamp(16px,1.9vw,19px);line-height:1.65;max-width:640px;margin-top:18px}
+
+/* contrast */
+.contrast{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:46px}
+@media(max-width:760px){.contrast{grid-template-columns:1fr}}
+.cc{padding:30px;border-radius:20px;border:1px solid var(--line)}
+.cc.a{background:transparent}.cc.b{background:#fff;box-shadow:0 20px 50px rgba(60,45,30,.06)}
+.cc .t{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--mut2);margin-bottom:12px}
+.cc h3{font-size:22px;margin-bottom:10px;font-weight:500}
+.cc p{color:var(--mut);font-size:15.5px;line-height:1.6}
+
+/* feature rows */
+.feat{display:grid;grid-template-columns:1fr 1fr;gap:54px;align-items:center}
+.feat+.feat{margin-top:clamp(56px,7vw,96px)}
+.feat.rev .vis{order:2}
+@media(max-width:860px){.feat,.feat.rev{grid-template-columns:1fr;gap:26px}.feat.rev .vis{order:0}}
+.feat .k{font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--clay);font-weight:700;margin-bottom:14px}
+.feat h3{font-size:clamp(23px,2.9vw,32px);font-weight:500}
+.feat p{color:var(--mut);font-size:16.5px;line-height:1.65;margin-top:15px;max-width:460px}
+.feat .tick{display:flex;gap:9px;margin-top:12px;color:var(--ink2);font-size:15px}
+.feat .tick .c{color:var(--clay)}
+.card{background:#fff;border:1px solid var(--line);border-radius:20px;box-shadow:0 20px 50px rgba(60,45,30,.06);padding:24px}
+.portraits{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.portrait{position:relative;aspect-ratio:3/4;border-radius:14px;overflow:hidden;background:linear-gradient(160deg,#d9d2c4,#b9b0a0)}
+.portrait .tag{position:absolute;top:9px;left:9px;font-size:10px;letter-spacing:.12em;color:#fff;background:rgba(40,34,28,.5);padding:4px 8px;border-radius:7px}
+.portrait .face{position:absolute;left:50%;bottom:0;transform:translateX(-50%);width:62%;height:80%;border-radius:50% 50% 44% 44%/58% 58% 42% 42%;background:linear-gradient(180deg,#cfc7b7,#a89f8d)}
+.chat{display:flex;flex-direction:column;gap:10px}
+.chat .b{max-width:88%;padding:12px 15px;border-radius:16px;font-size:14.5px;line-height:1.5}
+.chat .b.f{align-self:flex-start;border-top-left-radius:5px;background:var(--bg);border:1px solid var(--line);color:var(--ink2)}
+.chat .b.u{align-self:flex-end;border-top-right-radius:5px;background:var(--ink);color:#fff}
+.chat .meta{font-size:11px;color:var(--mut2);padding-left:3px}
+
+/* approach specs */
+.specs{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;margin-top:46px;background:var(--line);border:1px solid var(--line);border-radius:18px;overflow:hidden}
+@media(max-width:680px){.specs{grid-template-columns:1fr}}
+.spec{background:var(--bg);padding:28px 26px}
+.spec .n{font-family:ui-monospace,monospace;font-size:12px;color:var(--clay);display:block;margin-bottom:12px}
+.spec h4{font-size:17px;font-weight:600;margin-bottom:8px;font-family:var(--sans)}
+.spec p{color:var(--mut);font-size:14.5px;line-height:1.6}
+
+/* principles */
+.princ{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:44px}
+@media(max-width:860px){.princ{grid-template-columns:1fr 1fr}}@media(max-width:520px){.princ{grid-template-columns:1fr}}
+.pr{padding:24px;border-top:2px solid var(--clay)}
+.pr h4{font-size:16px;font-weight:600;margin-bottom:8px;font-family:var(--sans)}
+.pr p{color:var(--mut);font-size:14px;line-height:1.55}
+
+/* statement + close */
+.statement{text-align:center;padding:clamp(90px,12vw,150px) 0;position:relative;z-index:2}
+.statement h2{font-size:clamp(28px,4.6vw,54px);font-weight:500;max-width:860px;margin:0 auto;line-height:1.14}
+.statement h2 .mut{color:var(--mut2)}
+.close{text-align:center;padding:0 0 30px;position:relative;z-index:2}
+.close-card{background:var(--ink);color:#fff;border-radius:26px;padding:clamp(50px,8vw,90px) 24px}
+.close-card h2{font-size:clamp(28px,4vw,46px);font-weight:500;max-width:600px;margin:0 auto;color:#fff}
+.close-card p{color:rgba(255,255,255,.7);font-size:17px;margin:16px auto 28px;max-width:440px}
+.close-card .btn-clay{box-shadow:0 0 40px rgba(193,95,60,.4)}
+
+footer{position:relative;z-index:2;border-top:1px solid var(--line);margin-top:80px;padding:44px 0 56px;color:var(--mut)}
+footer .top{display:flex;justify-content:space-between;flex-wrap:wrap;gap:24px}
+footer .cols{display:flex;gap:48px;flex-wrap:wrap}
+footer h5{color:var(--ink);font-size:13px;margin-bottom:11px;font-weight:600}
+footer a{display:block;font-size:13.5px;color:var(--mut);padding:4px 0}footer a:hover{color:var(--ink)}
+footer .legal{margin-top:32px;font-size:12.5px;color:var(--mut2);max-width:560px;line-height:1.6}
+
+.rv{opacity:0;transform:translateY(22px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
+.rv.in{opacity:1;transform:none}.rv.d1{transition-delay:.07s}.rv.d2{transition-delay:.14s}.rv.d3{transition-delay:.21s}
+
+/* ===== kinetic typography (from the Typography pack, retinted) ===== */
+.kin .w{display:inline-block;opacity:0;transform:translateY(24px);animation:kinRise .8s var(--ease) forwards}
+@keyframes kinRise{to{opacity:1;transform:none}}
+.kin .shine{
+  background:linear-gradient(100deg,var(--clay) 0%,#dd8a4c 28%,#c44d6b 52%,var(--clay) 78%);
+  background-size:220% 100%;-webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;color:transparent;
+  animation:kinRise .8s var(--ease) forwards, shineMove 6s ease-in-out 1.2s infinite}
+@keyframes shineMove{0%,100%{background-position:120% 0}50%{background-position:-20% 0}}
+/* scroll-revealed word-by-word (statement) */
+.kinwords .w{display:inline-block;opacity:0;transform:translateY(18px);transition:opacity .55s var(--ease),transform .55s var(--ease)}
+.kinwords.in .w{opacity:1;transform:none}
+.statement .kinwords .w.mut{color:var(--mut2)}
+</style>
+</head>
+<body>
+
+<nav id="nav"><div class="bar">
+  <div class="logo"><span class="star">✦</span>Fyon</div>
+  <div class="nav-links">
+    <a href="#what">What it is</a>
+    <a href="#does">What it does</a>
+    <a href="#approach">How it works</a>
+    <a href="#principles">Principles</a>
+  </div>
+  <button class="btn btn-ink" onclick="document.querySelector('#close').scrollIntoView()">Try Fyon</button>
+</div></nav>
+
+<!-- HERO -->
+<header class="hero wrap">
+  <div class="eyebrow">Fyon Intelligence</div>
+  <h1 class="kin"><span class="w" style="animation-delay:.05s">A</span> <span class="w" style="animation-delay:.12s">self-improvement</span> <span class="w" style="animation-delay:.19s">intelligence</span> <span class="w" style="animation-delay:.26s">that</span> <span class="w shine" style="animation-delay:.36s">knows you.</span></h1>
+  <p class="sub">Most tools rate you, report on you, or forget you. Fyon points frontier intelligence entirely at
+     one person — and walks the path with you, learning more about you with every step.</p>
+  <div class="cta-row">
+    <button class="btn btn-ink" onclick="document.querySelector('#close').scrollIntoView()">Try Fyon</button>
+    <a class="link" href="#what">See how it's different →</a>
+  </div>
+  <p class="fine">Built for individuals · 18+</p>
+
+  <!-- THE DEPTH MAP -->
+  <div class="mapwrap">
+    <div class="map-card">
+      <div class="map-head">
+        <div class="t">The self-improvement AI landscape</div>
+        <div class="meth">Positioned by each category's own public approach</div>
+      </div>
+      <div class="plot" id="plot">
+        <div class="zone"><span>Where Fyon is</span></div>
+        <svg class="gap-line" viewBox="0 0 100 100" preserveAspectRatio="none">
+          <path d="M22,80 C45,60 60,40 80,20"/>
+        </svg>
+        <!-- competitors (categories, not named brands) -->
+        <span class="pt" style="left:18%;top:86%"><span class="dot"></span><span class="lbl">Looksmax apps</span></span>
+        <span class="pt" style="left:30%;top:70%"><span class="dot"></span><span class="lbl">Measure → report tools</span></span>
+        <span class="pt" style="left:23%;top:55%"><span class="dot"></span><span class="lbl">Rating / scoring</span></span>
+        <span class="pt" style="left:48%;top:46%"><span class="dot"></span><span class="lbl">Generic AI assistant</span></span>
+        <!-- fyon -->
+        <span class="pt fyon" style="left:82%;top:18%"><span class="dot"></span><span class="lbl">Fyon<small>knows you · in depth · honest</small></span></span>
+        <!-- axes -->
+        <div class="ax x"><span class="lo">Rates you</span> &nbsp;—————▶&nbsp; <span class="hi">Knows you</span></div>
+        <div class="ax y">Surface (looks) &nbsp;—————▶&nbsp; Depth (identity · psychology · life)</div>
+      </div>
+      <p class="map-foot">Every other self-improvement AI we looked at does one of three things: it <b>rates</b> you,
+        it <b>reports</b> on you, or it <b>forgets</b> you. None of them get to know you — and keep knowing you.
+        That corner is empty. That's where Fyon is.</p>
+    </div>
+
+    <!-- honest proof, no invented numbers -->
+    <div class="proof">
+      <div class="row">
+        <div><b>~150k</b> views on the raw prototype</div>
+        <div><b>First buyer</b> before launch</div>
+        <div><b>One</b> locked understanding driving everything</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- WHAT IT IS -->
+<section class="s wrap" id="what">
+  <div class="rv"><div class="eyebrow">What it is</div>
+  <h2>Most tools measure you. Fyon understands you.</h2>
+  <p class="lead">A rating app reduces you to a number and leaves. A general assistant is brilliant, but meets you as
+    a stranger every time — the same answer for everyone, forgotten by morning. Fyon is that same class of
+    intelligence, pointed at one person, that gets to know you more over time.</p></div>
+  <div class="contrast">
+    <div class="cc a rv d1"><div class="t">A general assistant</div><h3>Brilliant, but a stranger.</h3>
+      <p>Starts from zero every session. Gives everyone roughly the same advice. Forgets you the moment you close the tab.</p></div>
+    <div class="cc b rv d2"><div class="t">Fyon Intelligence</div><h3>The same intelligence — but it knows you.</h3>
+      <p>Reads how you're perceived, learns what you actually want, and remembers. Every interaction makes its picture of you richer.</p></div>
+  </div>
+</section>
+
+<!-- WHAT IT DOES -->
+<section class="s wrap" id="does">
+  <div class="rv"><div class="eyebrow">What it does</div>
+  <h2>One intelligence, working on your whole self.</h2>
+  <p class="lead">Your face is where it starts — not where it stops.</p></div>
+
+  <div style="margin-top:58px">
+    <div class="feat">
+      <div class="rv"><div class="k">An achievable you</div>
+        <h3>A version of yourself you could actually reach.</h3>
+        <p>Upload two photos. Fyon renders a realistic future self — identity-locked, visibly improved toward what you
+           want, grounded in a real path. Not fantasy. The quiet feeling: <em>I could become this.</em></p>
+        <div class="tick"><span class="c">✓</span><span>Your features, bone structure and natural asymmetries are preserved.</span></div>
+        <div class="tick"><span class="c">✓</span><span>Every change has an honest real-life path.</span></div></div>
+      <div class="vis rv d1"><div class="card"><div class="portraits">
+        <div class="portrait"><span class="tag">FRONT · OUTCOME ALIGNED</span><div class="face"></div></div>
+        <div class="portrait"><span class="tag">SIDE · OUTCOME ALIGNED</span><div class="face"></div></div>
+      </div></div></div>
+    </div>
+
+    <div class="feat rev">
+      <div class="vis rv"><div class="card"><div class="chat">
+        <div class="b f">Last time you said evenings are when your routine slips. Want to start there?</div>
+        <div class="b u">yeah, that's the hard part</div>
+        <div class="b f">Then we build around it — one step, tonight, that survives a long day.</div>
+        <div class="meta">Fyon remembers across sessions</div>
+      </div></div></div>
+      <div class="rv d1"><div class="k">It knows you</div>
+        <h3>And it keeps knowing.</h3>
+        <p>It reads how you're perceived, has a short, intelligent conversation to understand what you really want, and
+           remembers it. Next time, it already knows who you are — and builds on everything it has learned.</p></div>
+    </div>
+
+    <div class="feat">
+      <div class="rv"><div class="k">An honest plan</div>
+        <h3>Grounded in you — not generic advice.</h3>
+        <p>Every step is causal and specific: <em>"redness neutralised → azelaic acid 10%"</em>, localised to your country.
+           No score that calls you a number. No false progress. What the image can't honestly show lives in your plan instead.</p></div>
+      <div class="vis rv d1"><div class="card">
+        <p style="font-family:var(--serif);font-size:19px;line-height:1.4">"Looks are the entry point, not the limit."</p>
+        <p style="color:var(--mut);font-size:15px;line-height:1.6;margin-top:12px">Tell Fyon you're struggling socially, and it
+           meets you there — with full context, not a blank page. The direction: your whole self-improvement, in one place that knows you.</p>
+      </div></div>
+    </div>
+  </div>
+</section>
+
+<!-- APPROACH -->
+<section class="s wrap" id="approach">
+  <div class="rv"><div class="eyebrow">How it works</div>
+  <h2>One understanding of you, driving everything.</h2>
+  <p class="lead">It reads your face, talks with you, renders your future self, and builds the path to it — all from a
+     single locked understanding of you, so the image, the plan and the journey never disagree.</p></div>
+  <div class="specs">
+    <div class="spec rv"><span class="n">01</span><h4>One source of truth</h4><p>A single understanding of you drives the image, the plan and the journey. They move together, never apart.</p></div>
+    <div class="spec rv d1"><span class="n">02</span><h4>The image is an anchor</h4><p>Your future self is the destination — a fixed target, never quietly redrawn. The plan is the living path to it.</p></div>
+    <div class="spec rv d2"><span class="n">03</span><h4>Honest by construction</h4><p>A change appears in your image only if it has a real-life path. Your eyes stay untouched.</p></div>
+    <div class="spec rv d3"><span class="n">04</span><h4>It compounds</h4><p>A lasting model of you, enriched every session. The longer you use it, the better it knows you.</p></div>
+  </div>
+  <p class="lead" style="margin-top:28px;color:var(--mut2);font-size:14px">Built on frontier reasoning and vision models, with facial geometry and identity-preserving image generation.</p>
+</section>
+
+<!-- PRINCIPLES -->
+<section class="s wrap" id="principles">
+  <div class="rv"><div class="eyebrow">Our approach</div>
+  <h2>Built on honesty, not judgment.</h2></div>
+  <div class="princ">
+    <div class="pr rv d1"><h4>Honest</h4><p>No score that reduces you to a number. Honest about progress, and about what it can and can't change.</p></div>
+    <div class="pr rv d1"><h4>Achievable</h4><p>Every result has a real-life path. The feeling is "I could become this" — never fantasy.</p></div>
+    <div class="pr rv d2"><h4>Always you</h4><p>Identity preserved — your features, bone structure, asymmetries. Improved, never replaced.</p></div>
+    <div class="pr rv d2"><h4>For adults</h4><p>Strictly 18+. Care for the vulnerable, never pressure. No numeric diet targets.</p></div>
+  </div>
+</section>
+
+<!-- STATEMENT -->
+<section class="statement wrap">
+  <h2 class="rv kinwords">Fyon is the place you open <span class="mut">when you want your outside to match who you're becoming.</span></h2>
+</section>
+
+<!-- CLOSE -->
+<section class="close wrap" id="close">
+  <div class="close-card rv">
+    <h2>Meet the version of yourself you envisioned.</h2>
+    <p>Two photos. A short conversation. An intelligence that gets to know you.</p>
+    <button class="btn btn-clay" style="font-size:15px;padding:14px 30px">Try Fyon</button>
+  </div>
+</section>
+
+<footer class="wrap">
+  <div class="top">
+    <div class="logo"><span class="star">✦</span>Fyon</div>
+    <div class="cols">
+      <div><h5>Fyon Intelligence</h5><a href="#what">What it is</a><a href="#does">What it does</a><a href="#approach">How it works</a></div>
+      <div><h5>Company</h5><a href="#">About</a><a href="#">Our approach</a></div>
+      <div><h5>Trust</h5><a href="#principles">Principles</a><a href="#">Privacy</a><a href="#">18+ policy</a></div>
+    </div>
+  </div>
+  <div class="legal">Fyon shows illustrative, non-medical visualisations and is not a substitute for professional advice. 18+. © 2026 Fyon.</div>
+</footer>
+
+<script>
+const nav=document.getElementById('nav');
+const onScroll=()=>nav.classList.toggle('scrolled',scrollY>20);
+addEventListener('scroll',onScroll,{passive:true});onScroll();
+
+/* split .kinwords into word spans (with staggered transition delays) before observing */
+document.querySelectorAll('.kinwords').forEach(h=>{
+  let i=0;
+  const wrap=(node,mut)=>{
+    const frag=document.createDocumentFragment();
+    (node.textContent||'').split(/(\s+)/).forEach(tok=>{
+      if(tok.trim()===''){frag.appendChild(document.createTextNode(tok));return;}
+      const s=document.createElement('span');s.className='w'+(mut?' mut':'');
+      s.style.transitionDelay=(i*0.045).toFixed(3)+'s';i++;s.textContent=tok;frag.appendChild(s);
+    });
+    return frag;
+  };
+  [...h.childNodes].forEach(n=>{
+    if(n.nodeType===3){h.replaceChild(wrap(n,false),n);}
+    else if(n.classList&&n.classList.contains('mut')){const f=wrap(n,true);n.textContent='';n.appendChild(f);}
+  });
+});
+
+const io=new IntersectionObserver((es)=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}}),{threshold:.16});
+document.querySelectorAll('.rv').forEach(el=>io.observe(el));
+
+/* Depth Map: stagger the points in when the plot scrolls into view */
+const plot=document.getElementById('plot');
+const pts=[...plot.querySelectorAll('.pt')];
+const mo=new IntersectionObserver((es)=>es.forEach(e=>{if(e.isIntersecting){
+  plot.classList.add('in');
+  pts.forEach((p,i)=>setTimeout(()=>p.classList.add('in'), i*180 + 150));
+  mo.unobserve(e.target);}}),{threshold:.35});
+mo.observe(plot);
+</script>
+</body>
+</html>
