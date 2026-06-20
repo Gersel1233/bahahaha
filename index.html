@@ -284,7 +284,7 @@ footer .legal{margin-top:32px;font-size:12.5px;color:var(--mut2);max-width:560px
 <nav id="nav"><div class="bar glass">
   <div class="logo"><span class="star">✦</span>Fyon</div>
   <div class="nav-links">
-    <a href="#what">Why Fyon</a><a href="#does">What it does</a><a href="#approach">How it works</a><a href="#principles">Principles</a>
+    <a href="#what">Why Fyon</a><a href="#does">What it does</a><a href="#approach">How it works</a><a href="#principles">Principles</a><a href="partner.html">Partners</a>
   </div>
   <button class="btn btn-ink" onclick="document.querySelector('#close').scrollIntoView()">Try Fyon</button>
 </div></nav>
@@ -467,6 +467,12 @@ footer .legal{margin-top:32px;font-size:12.5px;color:var(--mut2);max-width:560px
 </footer>
 
 <script>
+/* referral capture (?ref=CODE -> 60-day cookie, used at checkout & partner attribution) */
+(function(){var r=new URLSearchParams(location.search).get('ref');
+  if(r){var c=r.toUpperCase().slice(0,24);
+    document.cookie='fyon_ref='+c+';max-age='+(60*60*24*60)+';path=/;samesite=lax';
+    try{localStorage.setItem('fyon_ref',c);}catch(e){}}})();
+
 /* typewriter hero ("Type It") */
 (function(){
   const tw=document.getElementById('tw'); if(!tw) return;

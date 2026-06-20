@@ -143,4 +143,28 @@ alter table referrals       enable row level security;
 alter table commissions     enable row level security;
 alter table payouts         enable row level security;
 alter table referral_clicks enable row level security;
--- (no anon policies => only service role can read/write. Adjust to your auth.)
+
+-- Policies for the IN-SITE dashboard (browser uses the anon key + Supabase Auth).
+-- A partner can see/manage only their own rows; money rows are read-only to them
+-- (only the service-role edge functions write commissions/payouts).
+create policy partners_self on partners
+  for select using (auth.uid()::text = user_id);
+create policy partners_insert on partners
+  for insert with check (auth.uid()::text = user_id);
+create policy partners_update on partners
+  for update using (auth.uid()::text = user_id);
+
+create policy referrals_self on referrals
+  for select using (exists (select 1 from partners p where p.id = referrals.partner_id and p.user_id = auth.uid()::text));
+create policy commissions_self on commissions
+  for select using (exists (select 1 from partners p where p.id = commissions.partner_id and p.user_id = auth.uid()::text));
+create policy payouts_self on payouts
+  for select using (exists (select 1 from partners p where p.id = payouts.partner_id and p.user_id = auth.uid()::text));
+
+-- anyone may log a referral click (no read)
+create policy clicks_insert on referral_clicks for insert with check (true);
+
+-- leaderboard view is exposed read-only (it already hides opted-out / hidden names)
+grant select on leaderboard_monthly to anon, authenticated;
+grant select on affiliate_tiers to anon, authenticated;
+

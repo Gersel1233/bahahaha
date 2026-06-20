@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Fyon — Partner Program</title>
+<style>
+  :root{
+    --bg:#F1EDE4; --ink:#1A1714; --mut:#6f685c; --mut2:#9a9286; --line:#E4DECF;
+    --clay:#C15F3C; --clay-d:#A84E2E; --emerald:#2bb98a;
+    --serif:"Tiempos Headline","Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --sans:-apple-system,BlinkMacSystemFont,"Inter","Segoe UI",sans-serif; --ease:cubic-bezier(.2,.8,.2,1);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;line-height:1.5}
+  a{color:inherit}
+  .wrap{max-width:920px;margin:0 auto;padding:0 22px}
+  h1,h2,h3{font-family:var(--serif);font-weight:500;letter-spacing:-.015em;line-height:1.08}
+  nav{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;max-width:920px;margin:0 auto}
+  .logo{display:flex;align-items:center;gap:9px;font-weight:700;font-size:18px}.logo .s{color:var(--clay)}
+  .btn{display:inline-flex;align-items:center;gap:8px;cursor:pointer;font-family:inherit;font-weight:600;font-size:14.5px;
+    padding:12px 22px;border-radius:999px;border:none;transition:.16s var(--ease)}
+  .btn:active{transform:scale(.97)} .btn:disabled{opacity:.5;cursor:default}
+  .btn-ink{background:var(--ink);color:#fff}.btn-ink:hover{background:#000;transform:translateY(-1px)}
+  .btn-clay{background:var(--clay);color:#fff}.btn-clay:hover{background:var(--clay-d)}
+  .btn-ghost{background:transparent;border:1px solid var(--line)}.btn-ghost:hover{border-color:var(--ink)}
+  .card{background:#fff;border:1px solid var(--line);border-radius:20px;box-shadow:0 20px 50px rgba(70,52,34,.06);padding:24px}
+  .muted{color:var(--mut)} .small{font-size:13px}
+  .notice{margin:20px auto;max-width:760px;border:1px solid var(--line);background:#fff;border-radius:18px;padding:22px}
+  .mono{font-family:ui-monospace,Menlo,monospace}
+  input{font-family:inherit;font-size:15px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;width:100%;background:#fff}
+  .row{display:flex;gap:12px;flex-wrap:wrap}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}@media(max-width:680px){.grid2{grid-template-columns:1fr}}
+  .stat{font-size:34px;font-weight:800}
+  .header-card{border-radius:26px;padding:28px;color:#fff;background:radial-gradient(120% 120% at 0% 0%,#2a2d36,#0d0e12)}
+  .pill{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.06em;padding:5px 11px;border-radius:999px}
+  .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;
+    padding:10px 18px;border-radius:999px;font-size:14px;opacity:0;transition:.25s;pointer-events:none}
+  .toast.on{opacity:1}
+  .hidden{display:none!important}
+  .tierrow{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-radius:12px}
+  .tierrow.cur{background:#ecfdf5;border:1px solid #a7f3d0}.tierrow.next{background:#fffbeb}
+  .barwrap{height:8px;border-radius:999px;background:#eee;overflow:hidden;margin-top:8px}
+  .bar{height:100%;background:var(--clay);border-radius:999px;transition:width .6s var(--ease)}
+</style>
+</head>
+<body>
+<nav>
+  <a class="logo" href="index.html"><span class="s">✦</span>Fyon · Partners</a>
+  <span id="who" class="small muted"></span>
+</nav>
+
+<div class="wrap" style="padding-bottom:80px">
+
+  <!-- SETUP NOTICE (shown until Supabase keys are filled) -->
+  <div id="setup" class="notice hidden">
+    <h3 style="font-size:20px">One-time setup needed</h3>
+    <p class="muted small" style="margin-top:8px">Paste your Supabase project URL and anon key at the top of
+      <span class="mono">partner.html</span> (the <span class="mono">CONFIG</span> block), run the affiliate SQL,
+      and deploy the Stripe edge functions. See <span class="mono">affiliate/README.md</span>. These keys are safe to ship in the browser.</p>
+  </div>
+
+  <!-- SIGN IN -->
+  <div id="auth" class="notice hidden" style="text-align:center">
+    <h1 style="font-size:30px">Become a Fyon partner</h1>
+    <p class="muted" style="margin:12px auto 20px;max-width:460px">Earn recurring commission for every customer you refer.
+      Sign in with your email to get your link &amp; dashboard.</p>
+    <div class="row" style="max-width:420px;margin:0 auto;justify-content:center">
+      <input id="email" type="email" placeholder="you@email.com" />
+      <button class="btn btn-ink" id="signin">Send magic link</button>
+    </div>
+    <p id="authmsg" class="small muted" style="margin-top:12px"></p>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div id="dash" class="hidden" style="padding-top:14px">
+    <div class="header-card">
+      <div class="row" style="justify-content:space-between;align-items:flex-start">
+        <div><h1 style="color:#fff;font-size:26px">Partner Dashboard</h1>
+          <p style="color:rgba(255,255,255,.6)" class="small"><span id="tierName">Starter</span> ·
+          <b style="color:#34d399"><span id="tierRate">15</span>% commission</b></p></div>
+        <button class="btn btn-ghost" id="signout" style="color:#fff;border-color:rgba(255,255,255,.25)">Sign out</button>
+      </div>
+      <div class="row" style="justify-content:space-between;color:rgba(255,255,255,.7);margin-top:18px" class="small">
+        <span id="revLabel">$0 revenue</span><span id="nextLabel"></span>
+      </div>
+      <div class="barwrap" style="background:rgba(255,255,255,.12)"><div class="bar" id="tierBar" style="width:0"></div></div>
+      <div class="row" style="margin-top:18px">
+        <div class="mono small" id="link" style="flex:1;min-width:200px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);padding:12px 14px;border-radius:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">…</div>
+        <button class="btn" id="copyLink" style="background:#fff;color:#000">Copy link</button>
+        <button class="btn" id="copyCode" style="background:rgba(193,95,60,.18);color:#ffd9a8;border:1px solid rgba(193,95,60,.5)"><span id="codeTxt">CODE</span> · 20% OFF</button>
+      </div>
+    </div>
+
+    <div id="connectBanner" class="card hidden" style="margin-top:16px;display:flex;justify-content:space-between;align-items:center">
+      <div><b>Connect Stripe to receive payouts</b><div class="muted small">Required to withdraw earnings</div></div>
+      <button class="btn btn-ink" id="connect">Connect Stripe</button>
+    </div>
+
+    <div class="grid2" style="margin-top:16px">
+      <div class="card"><div class="muted small">💚 Available</div><div class="stat" style="color:var(--emerald)" id="sAvail">$0.00</div>
+        <div class="row" style="justify-content:space-between"><span class="muted small">Ready to withdraw</span><button class="btn btn-ghost small hidden" id="withdraw" style="padding:6px 12px">Withdraw →</button></div></div>
+      <div class="card"><div class="muted small">📈 Monthly</div><div class="stat" style="color:#2563eb" id="sMonth">$0.00</div><div class="muted small">Recurring commission</div></div>
+      <div class="card"><div class="muted small">❖ Lifetime</div><div class="stat" style="color:#7c3aed" id="sLife">$0.00</div><div class="muted small">Total earned</div></div>
+      <div class="card"><div class="muted small">👥 Referrals</div><div class="stat" style="color:var(--clay)" id="sRef">0</div><div class="muted small"><span id="sRefA">0</span> active subscribers</div></div>
+    </div>
+
+    <div class="card" style="margin-top:16px">
+      <h3 style="font-size:20px;margin-bottom:6px">Commission tiers</h3>
+      <p class="muted small" style="margin-bottom:14px">Level up for higher rates — based on total referred revenue.</p>
+      <div id="tiers"></div>
+    </div>
+
+    <div class="card" style="margin-top:16px">
+      <h3 style="font-size:20px;margin-bottom:10px">🏆 Leaderboard</h3>
+      <div id="board" class="muted small">Loading…</div>
+      <label class="row small" style="justify-content:space-between;margin-top:14px;align-items:center">Show me on the leaderboard
+        <input type="checkbox" id="showLb" /></label>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script type="module">
+// ============== CONFIG — paste your Supabase values (safe in browser) ==============
+const SUPABASE_URL = "https://YOUR-PROJECT.supabase.co";
+const SUPABASE_ANON_KEY = "YOUR-ANON-KEY";
+// edge functions base (deployed to Supabase): connect-stripe, payout, create-promo, stripe-webhook
+const FN = SUPABASE_URL + "/functions/v1";
+// ===================================================================================
+
+const TIERS = [
+  ["Starter",15,0],["Bronze",17,10000],["Silver",18,25000],["Gold",20,50000],
+  ["Platinum",22,100000],["Diamond",24,250000],["Elite",26,500000],["Champion",28,1000000],["Legend",30,2500000]
+];
+const usd = c => "$" + (c/100).toFixed(2);
+const toast = (m) => { const t=document.getElementById('toast'); t.textContent=m; t.classList.add('on'); setTimeout(()=>t.classList.remove('on'),1600); };
+const show = (id,on=true)=>document.getElementById(id).classList.toggle('hidden',!on);
+
+if (SUPABASE_URL.includes("YOUR-PROJECT")) { show('setup',true); }
+else {
+  const { createClient } = await import("https://esm.sh/@supabase/supabase-js@2");
+  const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  let partner = null;
+
+  async function boot(){
+    const { data:{ session } } = await sb.auth.getSession();
+    if (!session){ show('auth',true); return; }
+    document.getElementById('who').textContent = session.user.email;
+    await ensurePartner(session.user);
+    await render();
+    show('dash',true);
+  }
+
+  async function ensurePartner(user){
+    let { data } = await sb.from('partners').select('*').eq('user_id', user.id).maybeSingle();
+    if (!data){
+      const code = Array.from({length:10},()=>"ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"[Math.floor(Math.random()*36)]).join('');
+      const ins = await sb.from('partners').insert({ user_id:user.id, code, coupon_code:code }).select().single();
+      data = ins.data;
+      fetch(`${FN}/create-promo`, {method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+SUPABASE_ANON_KEY},body:JSON.stringify({code})}).catch(()=>{});
+    }
+    partner = data;
+  }
+
+  async function render(){
+    const link = `${location.origin}/?ref=${partner.code}`;
+    document.getElementById('link').textContent = link;
+    document.getElementById('codeTxt').textContent = partner.code;
+    document.getElementById('showLb').checked = partner.show_on_leaderboard;
+    show('connectBanner', !partner.payout_enabled);
+
+    const { data:comms=[] } = await sb.from('commissions').select('commission_cents,gross_cents,status,created_at').eq('partner_id', partner.id);
+    const { data:refs=[] } = await sb.from('referrals').select('status').eq('partner_id', partner.id);
+    const live = comms.filter(c=>c.status!=='reversed');
+    const rev = live.reduce((s,c)=>s+c.gross_cents,0);
+    const life = live.reduce((s,c)=>s+c.commission_cents,0);
+    const ym = new Date().toISOString().slice(0,7);
+    const month = live.filter(c=>(c.created_at||'').slice(0,7)===ym).reduce((s,c)=>s+c.commission_cents,0);
+    const avail = comms.filter(c=>c.status==='available').reduce((s,c)=>s+c.commission_cents,0);
+
+    let ti=0; TIERS.forEach((t,i)=>{ if(rev>=t[2]) ti=i; });
+    const [tn,tr]=TIERS[ti]; const nxt=TIERS[ti+1];
+    document.getElementById('tierName').textContent=tn;
+    document.getElementById('tierRate').textContent=tr;
+    document.getElementById('revLabel').textContent=usd(rev)+' revenue';
+    document.getElementById('nextLabel').textContent = nxt ? `${usd(nxt[2]-rev)} to ${nxt[0]}` : 'Top tier 🎉';
+    document.getElementById('tierBar').style.width = nxt ? Math.min(100,rev/nxt[2]*100)+'%' : '100%';
+    document.getElementById('sAvail').textContent=usd(avail);
+    document.getElementById('sMonth').textContent=usd(month);
+    document.getElementById('sLife').textContent=usd(life);
+    document.getElementById('sRef').textContent=refs.length;
+    document.getElementById('sRefA').textContent=refs.filter(r=>r.status==='active').length;
+    show('withdraw', avail>=1000 && partner.payout_enabled);
+
+    document.getElementById('tiers').innerHTML = TIERS.map((t,i)=>`
+      <div class="tierrow ${i===ti?'cur':i===ti+1?'next':''}" style="${i>ti+1?'opacity:.5':''}">
+        <div><b>${t[0]}</b> ${i===ti?'<span class="pill" style="background:#d1fae5;color:#047857">CURRENT</span>':i===ti+1?'<span class="pill" style="background:#fef3c7;color:#b45309">NEXT</span>':''}
+        <div class="muted small">${t[2]===0?'Starting tier':'$'+(t[2]/100).toLocaleString()+' in referral revenue'}</div></div>
+        <b style="color:var(--emerald)">${t[1]}%</b></div>`).join('');
+
+    const { data:lb=[] } = await sb.from('leaderboard_monthly').select('*').eq('show_on_leaderboard',true).order('month_cents',{ascending:false}).limit(8);
+    document.getElementById('board').innerHTML = lb.length ? lb.map((r,i)=>`<div class="row" style="justify-content:space-between;padding:5px 0"><span><b class="muted">${i+1}.</b> ${r.name}</span><b style="color:var(--emerald)">${usd(r.month_cents)}</b></div>`).join('') : 'No rankings yet — be the first.';
+  }
+
+  // events
+  document.getElementById('signin').onclick = async ()=>{
+    const email=document.getElementById('email').value.trim(); if(!email) return;
+    const { error } = await sb.auth.signInWithOtp({ email, options:{ emailRedirectTo: location.href } });
+    document.getElementById('authmsg').textContent = error ? error.message : "Check your email for the sign-in link.";
+  };
+  document.getElementById('signout').onclick = async ()=>{ await sb.auth.signOut(); location.reload(); };
+  document.getElementById('copyLink').onclick = ()=>{ navigator.clipboard.writeText(document.getElementById('link').textContent); toast('Link copied'); };
+  document.getElementById('copyCode').onclick = ()=>{ navigator.clipboard.writeText(partner.code); toast('Coupon copied'); };
+  document.getElementById('showLb').onchange = async (e)=>{ await sb.from('partners').update({show_on_leaderboard:e.target.checked}).eq('id',partner.id); };
+  document.getElementById('connect').onclick = async ()=>{
+    const { data:{session} } = await sb.auth.getSession();
+    const r = await fetch(`${FN}/connect-stripe`,{method:'POST',headers:{'Authorization':'Bearer '+session.access_token}});
+    const d = await r.json(); if(d.url) location.href=d.url; else toast('Could not start Stripe');
+  };
+  document.getElementById('withdraw').onclick = async ()=>{
+    const { data:{session} } = await sb.auth.getSession();
+    const r = await fetch(`${FN}/payout`,{method:'POST',headers:{'Authorization':'Bearer '+session.access_token}});
+    toast(r.ok?'Payout sent':'Payout failed'); await render();
+  };
+  sb.auth.onAuthStateChange(()=>boot());
+  boot();
+}
+</script>
+</body>
+</html>
