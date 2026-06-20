@@ -41,6 +41,7 @@ Deno.serve(async (req) => {
       client_reference_id: referral_code || undefined,
       metadata: { referral_code: referral_code || "" },              // read by stripe-webhook
       subscription_data: m === "subscription" && referral_code ? { metadata: { referral_code } } : undefined,
+      payment_intent_data: m === "payment" && referral_code ? { metadata: { referral_code } } : undefined,
     });
     return json({ url: session.url });
   } catch (e) {

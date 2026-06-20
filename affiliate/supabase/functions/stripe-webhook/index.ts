@@ -1,11 +1,8 @@
-// Supabase Edge Function: stripe-webhook  (THE source of truth for commissions)
+// Supabase Edge Function: stripe-webhook  (source of truth for commissions)
 // Deploy:  supabase functions deploy stripe-webhook --no-verify-jwt
-// Stripe webhook events: checkout.session.completed, invoice.paid,
-//                        invoice.payment_succeeded, charge.refunded, account.updated
-//
-// Secrets (supabase secrets set ...):
-//   STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET, PAYOUT_HOLD_DAYS
-//   (SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY are injected automatically)
+// Events:  checkout.session.completed, invoice.paid, invoice.payment_succeeded,
+//          charge.refunded, account.updated
+// Secrets: STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET, PAYOUT_HOLD_DAYS
 
 import Stripe from "https://esm.sh/stripe@14?target=deno";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
@@ -18,34 +15,51 @@ const sb = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SE
 const WH = Deno.env.get("STRIPE_WEBHOOK_SECRET")!;
 const HOLD = Number(Deno.env.get("PAYOUT_HOLD_DAYS") ?? "30");
 
+const json = (b: unknown, s = 200) => new Response(JSON.stringify(b), { status: s, headers: { "content-type": "application/json" } });
+
 const TIERS: [string, number, number][] = [
   ["Starter",15,0],["Bronze",17,10000],["Silver",18,25000],["Gold",20,50000],
   ["Platinum",22,100000],["Diamond",24,250000],["Elite",26,500000],["Champion",28,1000000],["Legend",30,2500000],
 ];
 
-async function rateFor(partnerId: string): Promise<number> {
+async function rateFor(partnerId: string) {
   const { data } = await sb.from("commissions").select("gross_cents,status").eq("partner_id", partnerId);
   const rev = (data ?? []).filter((c) => c.status !== "reversed").reduce((s, c) => s + c.gross_cents, 0);
   let rate = 15; for (const [, r, th] of TIERS) if (rev >= th) rate = r;
   return rate;
 }
 async function partnerByCode(code: string) {
-  const { data } = await sb.from("partners").select("id").eq("code", code.toUpperCase()).maybeSingle();
+  const { data } = await sb.from("partners").select("id").eq("code", String(code).toUpperCase()).maybeSingle();
   return data;
 }
 async function referralByCustomer(cust: string) {
   const { data } = await sb.from("referrals").select("*").eq("stripe_customer_id", cust).maybeSingle();
   return data;
 }
-async function credit(partner_id: string, referral_id: string | null, opts: {
-  invoice_id: string; charge_id?: string | null; amount: number; kind: "first" | "recurring";
-}) {
+async function ensureReferral(partner_id: string, cust: string, referred_user_id: string | null) {
+  const ex = await sb.from("referrals").select("id").eq("stripe_customer_id", cust).maybeSingle();
+  if (ex.data) return ex.data;
+  const ins = await sb.from("referrals").insert({
+    partner_id, stripe_customer_id: cust, referred_user_id, attributed_via: "link", status: "active",
+  }).select().maybeSingle();
+  return ins.data;
+}
+async function credit(partner_id: string, referral_id: string | null, o: { invoice_id: string; charge_id?: string | null; amount: number; kind: "first" | "recurring" }) {
   const rate = await rateFor(partner_id);
-  await sb.from("commissions").insert({
-    partner_id, referral_id, stripe_invoice_id: opts.invoice_id, stripe_charge_id: opts.charge_id ?? null,
-    gross_cents: opts.amount, rate, commission_cents: Math.round(opts.amount * rate / 100),
-    kind: opts.kind, status: "pending", available_at: new Date(Date.now() + HOLD * 864e5).toISOString(),
-  }); // unique(stripe_invoice_id) makes this idempotent
+  const { error } = await sb.from("commissions").insert({
+    partner_id, referral_id, stripe_invoice_id: o.invoice_id, stripe_charge_id: o.charge_id ?? null,
+    gross_cents: o.amount, rate, commission_cents: Math.round(o.amount * rate / 100),
+    kind: o.kind, status: "pending", available_at: new Date(Date.now() + HOLD * 864e5).toISOString(),
+  });
+  return !error; // unique(stripe_invoice_id) -> false on duplicate (idempotent)
+}
+// referral_code can live in many places on an invoice depending on API version
+function codeFromInvoice(o: any): string | null {
+  return o?.metadata?.referral_code
+    || o?.subscription_details?.metadata?.referral_code
+    || o?.parent?.subscription_details?.metadata?.referral_code
+    || o?.lines?.data?.[0]?.metadata?.referral_code
+    || null;
 }
 
 Deno.serve(async (req) => {
@@ -53,48 +67,65 @@ Deno.serve(async (req) => {
   const sig = req.headers.get("stripe-signature") ?? "";
   let event: Stripe.Event;
   try { event = await stripe.webhooks.constructEventAsync(body, sig, WH, undefined, cryptoProvider); }
-  catch (e) { return new Response("bad signature: " + (e as Error).message, { status: 400 }); }
+  catch (e) { return json({ ok: false, error: "bad signature: " + (e as Error).message }, 400); }
 
-  // idempotency — never process an event twice
+  // idempotency
   const dup = await sb.from("stripe_events").insert({ id: event.id, type: event.type });
-  if (dup.error) return new Response(JSON.stringify({ duplicate: true }), { status: 200 });
+  if (dup.error) return json({ ok: true, duplicate: true, handled: event.type });
 
-  const o = event.data.object as Record<string, unknown> as any;
+  const o = event.data.object as any;
+  let referral_code: string | null = null;
+  let partner_found = false;
+  let note = "";
+
   try {
     if (event.type === "checkout.session.completed") {
-      const code = o.metadata?.referral_code || o.client_reference_id;
+      referral_code = o.metadata?.referral_code || o.client_reference_id || null;
       const cust = o.customer;
-      if (code && cust) {
-        const p = await partnerByCode(String(code));
-        if (p) {
-          if (!(await referralByCustomer(cust))) {
-            await sb.from("referrals").insert({
-              partner_id: p.id, stripe_customer_id: cust,
-              referred_user_id: o.client_reference_id || null, attributed_via: "link", status: "active",
-            });
-          }
-          // one-time payment (no invoice) -> credit here using the session id
-          if (o.mode === "payment" && (o.amount_total ?? 0) > 0) {
-            const ref = await referralByCustomer(cust);
-            await credit(p.id, ref?.id ?? null, { invoice_id: "cs_" + o.id, charge_id: o.payment_intent, amount: o.amount_total, kind: "first" });
-          }
+      if (!referral_code) { note = "no referral_code on checkout.session"; }
+      else {
+        const p = await partnerByCode(referral_code);
+        partner_found = !!p;
+        if (!p) note = "no partner for code " + referral_code;
+        else if (!cust) note = "no customer on session";
+        else {
+          const ref = await ensureReferral(p.id, cust, o.client_reference_id || null);
+          const amount = Number(o.amount_total ?? 0);
+          if (amount > 0) {
+            const ok = await credit(p.id, ref?.id ?? null, { invoice_id: o.invoice || ("cs_" + o.id), charge_id: o.payment_intent, amount, kind: "first" });
+            note = ok ? "referral + commission created" : "referral ok; commission already existed";
+          } else note = "referral created; amount_total is 0 (trial/free) — commission waits for first paid invoice";
         }
       }
     } else if (event.type === "invoice.paid" || event.type === "invoice.payment_succeeded") {
-      const cust = o.customer; const amount = o.amount_paid ?? 0;
-      if (cust && amount > 0) {
-        const ref = await referralByCustomer(cust);
-        if (ref) await credit(ref.partner_id, ref.id, {
-          invoice_id: o.id, charge_id: o.charge, amount,
-          kind: o.billing_reason === "subscription_create" ? "first" : "recurring",
-        });
+      const cust = o.customer; const amount = Number(o.amount_paid ?? 0);
+      referral_code = codeFromInvoice(o);
+      let ref = cust ? await referralByCustomer(cust) : null;
+      if (!ref && referral_code && cust) {
+        const p = await partnerByCode(referral_code);
+        if (p) ref = await ensureReferral(p.id, cust, null);
+      }
+      partner_found = !!ref;
+      if (!ref) note = "no referral for customer (no code found on invoice)";
+      else if (amount <= 0) note = "amount_paid is 0 (trial) — no commission yet";
+      else {
+        const ok = await credit(ref.partner_id, ref.id, { invoice_id: o.id, charge_id: o.charge, amount, kind: o.billing_reason === "subscription_create" ? "first" : "recurring" });
+        note = ok ? "commission created" : "commission already existed (idempotent)";
       }
     } else if (event.type === "charge.refunded") {
       await sb.from("commissions").update({ status: "reversed" }).eq("stripe_charge_id", o.id);
+      note = "refund -> commission reversed";
     } else if (event.type === "account.updated") {
       await sb.from("partners").update({ payout_enabled: !!(o.charges_enabled && o.payouts_enabled) }).eq("stripe_account_id", o.id);
+      note = "account synced";
+    } else {
+      note = "unhandled event";
     }
-  } catch (e) { console.error("[stripe-webhook]", e); }
+  } catch (e) {
+    console.error("[stripe-webhook]", e);
+    note = "error: " + (e as Error).message;
+  }
 
-  return new Response(JSON.stringify({ ok: true }), { status: 200 });
+  if (!referral_code) console.log("[stripe-webhook] no referral code for", event.type, "—", note);
+  return json({ ok: true, handled: event.type, referral_code, partner_found, note });
 });
