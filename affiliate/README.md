@@ -69,7 +69,7 @@ run your own server instead of Edge Functions — ignore it for the static-site 
 - Deploy the functions:
   ```
   supabase functions deploy stripe-webhook --no-verify-jwt
-  supabase functions deploy create-checkout
+  supabase functions deploy create-checkout --no-verify-jwt
   supabase functions deploy create-promo
   supabase functions deploy connect-stripe
   supabase functions deploy request-payout
@@ -96,7 +96,7 @@ run your own server instead of Edge Functions — ignore it for the static-site 
 2. Set it as a secret + deploy the checkout function:
    ```
    supabase secrets set STRIPE_PRICE_ID=price_...
-   supabase functions deploy create-checkout
+   supabase functions deploy create-checkout --no-verify-jwt
    supabase functions deploy stripe-webhook --no-verify-jwt
    ```
 3. Add the **webhook** (Stripe → Webhooks → `https://vvwevqhdwumnethujxhy.supabase.co/functions/v1/stripe-webhook`,

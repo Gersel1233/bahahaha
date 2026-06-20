@@ -54,7 +54,7 @@ supabase secrets set \
 
 ## 6) Supabase CLI: deploy de to functions
 ```bash
-supabase functions deploy create-checkout
+supabase functions deploy create-checkout --no-verify-jwt
 supabase functions deploy stripe-webhook --no-verify-jwt
 ```
 

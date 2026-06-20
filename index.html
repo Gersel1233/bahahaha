@@ -492,15 +492,20 @@ footer .legal{margin-top:32px;font-size:12.5px;color:var(--mut2);max-width:560px
 
 /* start checkout via Supabase Edge Function (carries the referral code; works without one) */
 const SUPA_FN = "https://vvwevqhdwumnethujxhy.supabase.co/functions/v1";
+const SUPA_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ2d2V2cWhkd3VtbmV0aHVqeGh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyMDg0ODYsImV4cCI6MjA5Njc4NDQ4Nn0.G60xcGM0DwDBYX2j48iYgb_y8SuXYxdNNiExQlDzarU";
 function getRef(){ return (document.cookie.match(/fyon_ref=([^;]+)/)||[])[1] || (function(){try{return localStorage.getItem('fyon_ref')||''}catch(e){return ''}})(); }
 async function startCheckout(btn){
   if(btn){ btn.dataset.t=btn.textContent; btn.textContent='Loading…'; btn.disabled=true; }
   try{
-    const r = await fetch(SUPA_FN+"/create-checkout",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({referral_code:getRef()})});
-    const d = await r.json();
+    const r = await fetch(SUPA_FN+"/create-checkout",{
+      method:"POST",
+      headers:{"content-type":"application/json","Authorization":"Bearer "+SUPA_ANON},
+      body:JSON.stringify({referral_code:getRef()})
+    });
+    const d = await r.json().catch(()=>({}));
     if(d && d.url){ location.href = d.url; return; }
-    alert("Checkout isn't live yet — finish the Stripe setup (STRIPE_PRICE_ID + deploy create-checkout).");
-  }catch(e){ alert("Checkout is temporarily unavailable."); }
+    alert("Checkout couldn't start: "+(d.error||("HTTP "+r.status))+"\nCheck STRIPE_SECRET_KEY + STRIPE_PRICE_ID are set and that create-checkout was deployed with --no-verify-jwt.");
+  }catch(e){ alert("Checkout is temporarily unavailable: "+e.message); }
   if(btn){ btn.textContent=btn.dataset.t; btn.disabled=false; }
 }
 document.addEventListener('DOMContentLoaded',()=>{ var b=document.getElementById('buyBtn'); if(b) b.addEventListener('click',()=>startCheckout(b)); });
