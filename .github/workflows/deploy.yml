@@ -3,7 +3,6 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches:
-      - claude/quirky-einstein-2t6mmm
       - main
   workflow_dispatch:
 
