@@ -98,6 +98,11 @@
       <button class="btn btn-ink" id="connect">Connect Stripe</button>
     </div>
 
+    <div id="connectedBadge" class="card hidden" style="margin-top:16px;display:flex;align-items:center;gap:11px;border-color:#a7f3d0;background:#ecfdf5">
+      <span style="color:#047857;font-size:18px">✓</span>
+      <div><b style="color:#065f46">Stripe connected</b><div class="muted small">Payouts enabled · ready to withdraw</div></div>
+    </div>
+
     <div class="grid2" style="margin-top:16px">
       <div class="card"><div class="muted small">💚 Available</div><div class="stat" style="color:var(--emerald)" id="sAvail">$0.00</div>
         <div class="row" style="justify-content:space-between"><span class="muted small">Ready to withdraw</span><button class="btn btn-ghost small hidden" id="withdraw" style="padding:6px 12px">Withdraw →</button></div></div>
@@ -197,6 +202,7 @@ else {
     $('codeTxt').textContent = partner.code;
     $('showLb').checked = !!partner.show_on_leaderboard;
     show('connectBanner', !partner.payout_enabled);
+    show('connectedBadge', !!partner.payout_enabled);
 
     const comms = await rows(sb.from('commissions').select('commission_cents,gross_cents,status,created_at').eq('partner_id', partner.id), "commissions");
     const refs  = await rows(sb.from('referrals').select('status').eq('partner_id', partner.id), "referrals");
