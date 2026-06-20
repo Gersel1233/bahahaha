@@ -1,8 +1,8 @@
-// Supabase Edge Function: connect-stripe  (Stripe Connect Express onboarding)
+// Supabase Edge Function: connect-stripe  (Stripe Connect Express, recipient/payout-only)
+// Calls the Stripe REST API directly with fetch (no Stripe SDK -> no bundling timeout).
 // Deploy:  supabase functions deploy connect-stripe --no-verify-jwt
 // Secrets: STRIPE_SECRET_KEY, SITE_URL, CONNECT_COUNTRY (optional, default US)
 
-import Stripe from "https://esm.sh/stripe@14?target=deno";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const cors = {
@@ -16,12 +16,25 @@ const sb = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SE
 const SITE = Deno.env.get("SITE_URL") ?? "https://gersel1233.github.io/bahahaha";
 const COUNTRY = Deno.env.get("CONNECT_COUNTRY") ?? "US";
 
+// Stripe REST helper — form-urlencoded, bracket-style nested params
+async function stripe(path: string, key: string, params: Record<string, string | undefined>) {
+  const body = new URLSearchParams();
+  for (const [k, v] of Object.entries(params)) if (v !== undefined && v !== null) body.append(k, String(v));
+  const r = await fetch("https://api.stripe.com/v1/" + path, {
+    method: "POST",
+    headers: { "Authorization": "Bearer " + key, "Content-Type": "application/x-www-form-urlencoded" },
+    body: body.toString(),
+  });
+  const d = await r.json();
+  if (!r.ok) throw new Error(d?.error?.message || `Stripe ${path} failed (${r.status})`);
+  return d;
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: cors });
   try {
     const key = Deno.env.get("STRIPE_SECRET_KEY");
     if (!key) return json({ error: "STRIPE_SECRET_KEY not set" }, 500);
-    const stripe = new Stripe(key, { httpClient: Stripe.createFetchHttpClient(), apiVersion: "2024-06-20" });
 
     const jwt = req.headers.get("Authorization")?.replace("Bearer ", "") ?? "";
     const { data: { user }, error: uerr } = await sb.auth.getUser(jwt);
@@ -32,26 +45,26 @@ Deno.serve(async (req) => {
 
     let acct = p.stripe_account_id as string | null;
     if (!acct) {
-      const account = await stripe.accounts.create({
-        type: "express",
-        country: COUNTRY,
-        business_type: "individual",
-        email: user.email ?? undefined,
-        // Recipient agreement = payout-only: transfers without card_payments,
-        // lighter KYC, and the affiliate is a payout recipient (not a seller).
-        capabilities: { transfers: { requested: true } },
-        tos_acceptance: { service_agreement: "recipient" },
-        metadata: { partner_id: p.id, user_id: user.id },
+      const account = await stripe("accounts", key, {
+        "type": "express",
+        "country": COUNTRY,
+        "business_type": "individual",
+        "email": user.email ?? undefined,
+        // recipient agreement = payout-only: transfers, no card_payments, lighter KYC
+        "capabilities[transfers][requested]": "true",
+        "tos_acceptance[service_agreement]": "recipient",
+        "metadata[partner_id]": p.id,
+        "metadata[user_id]": user.id,
       });
       acct = account.id;
       await sb.from("partners").update({ stripe_account_id: acct }).eq("id", p.id);
     }
 
-    const link = await stripe.accountLinks.create({
-      account: acct,
-      type: "account_onboarding",
-      refresh_url: SITE + "/partner.html?stripe=refresh",
-      return_url: SITE + "/partner.html?stripe=connected",
+    const link = await stripe("account_links", key, {
+      "account": acct!,
+      "type": "account_onboarding",
+      "refresh_url": SITE + "/partner.html?stripe=refresh",
+      "return_url": SITE + "/partner.html?stripe=connected",
     });
     return json({ url: link.url });
   } catch (e) {
