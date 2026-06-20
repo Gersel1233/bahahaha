@@ -227,6 +227,39 @@ footer h5{color:var(--ink);font-size:13px;margin-bottom:11px;font-weight:600}
 footer a{display:block;font-size:13.5px;color:var(--mut);padding:4px 0}footer a:hover{color:var(--ink)}
 footer .legal{margin-top:32px;font-size:12.5px;color:var(--mut2);max-width:560px;line-height:1.6}
 
+/* ===== the problem we solve (animated) ===== */
+.pb-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:46px;align-items:stretch}
+@media(max-width:860px){.pb-grid{grid-template-columns:1fr}}
+.pb-panel{padding:26px;border-radius:22px;position:relative;overflow:hidden;display:flex;flex-direction:column}
+.pb-panel.fyon{box-shadow:0 1px 0 rgba(255,255,255,.85) inset,0 -14px 30px rgba(255,255,255,.25) inset,0 0 0 1px rgba(193,95,60,.22),0 24px 60px rgba(70,52,34,.12)}
+.pb-cap{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--mut2);margin-bottom:16px;position:relative}
+.pb-cap b{color:var(--ink)}
+.pb-chat{display:flex;flex-direction:column;gap:10px;position:relative;transition:filter .8s var(--ease),opacity .8s var(--ease)}
+.pb-chat .b{opacity:0;transform:translateY(10px);transition:opacity .5s var(--ease),transform .5s var(--ease)}
+.pb-panel.play .pb-chat .b{opacity:1;transform:none}
+.pb-panel.forget .pb-chat{filter:grayscale(1) blur(1.4px);opacity:.4}
+.pb-stamp{position:absolute;left:0;right:0;top:46%;display:grid;place-items:center;opacity:0;transition:opacity .6s var(--ease);pointer-events:none;z-index:3}
+.pb-stamp span{font-family:var(--serif);font-size:18px;color:var(--ink);background:rgba(255,255,255,.7);
+  -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.8);
+  padding:11px 17px;border-radius:13px;transform:rotate(-3deg);box-shadow:0 12px 30px rgba(70,52,34,.18)}
+.pb-panel.forget .pb-stamp{opacity:1}
+.pb-fails{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.pb-fails span{font-size:12.5px;color:var(--mut);padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.35);
+  opacity:0;transform:translateY(6px);transition:opacity .45s var(--ease),transform .45s var(--ease)}
+.pb-panel.play .pb-fails span{opacity:1;transform:none}
+.pb-note{font-size:13px;color:var(--mut);line-height:1.6;margin-top:16px;position:relative}
+.pb-fileLabel{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--clay);font-weight:700;margin-bottom:8px;position:relative}
+.filebar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
+.filechip{font-size:12.5px;color:var(--ink);padding:6px 12px;border-radius:999px;background:rgba(193,95,60,.12);border:1px solid rgba(193,95,60,.28);
+  opacity:0;transform:scale(.9);transition:opacity .4s var(--ease),transform .4s var(--ease)}
+.pb-panel.play .filechip{opacity:1;transform:none}
+.pb-li{display:flex;gap:10px;font-size:14.5px;color:var(--ink2);line-height:1.5;margin-top:11px;opacity:0;transform:translateX(-6px);transition:opacity .45s var(--ease),transform .45s var(--ease)}
+.pb-panel.play .pb-li{opacity:1;transform:none}
+.pb-li .c{color:var(--clay);flex:none}.pb-li b{color:var(--ink)}
+.pb-line{margin-top:38px;text-align:center;font-family:var(--serif);font-size:clamp(20px,2.7vw,31px);line-height:1.32;max-width:780px;margin-inline:auto}
+.pb-line .dim{color:var(--mut2)}.pb-line .em{color:var(--ink)}
+.pb-sub{text-align:center;color:var(--mut);font-size:15px;line-height:1.65;max-width:640px;margin:16px auto 0}
+
 /* refined reveal */
 .rv{opacity:0;transform:translateY(28px) scale(.985);filter:blur(6px);transition:opacity .8s var(--ease),transform .8s var(--ease),filter .8s var(--ease)}
 .rv.in{opacity:1;transform:none;filter:none}
@@ -241,7 +274,7 @@ footer .legal{margin-top:32px;font-size:12.5px;color:var(--mut2);max-width:560px
 <nav id="nav"><div class="bar glass">
   <div class="logo"><span class="star">✦</span>Fyon</div>
   <div class="nav-links">
-    <a href="#what">What it is</a><a href="#does">What it does</a><a href="#approach">How it works</a><a href="#principles">Principles</a>
+    <a href="#what">Why Fyon</a><a href="#does">What it does</a><a href="#approach">How it works</a><a href="#principles">Principles</a>
   </div>
   <button class="btn btn-ink" onclick="document.querySelector('#close').scrollIntoView()">Try Fyon</button>
 </div></nav>
@@ -291,19 +324,53 @@ footer .legal{margin-top:32px;font-size:12.5px;color:var(--mut2);max-width:560px
   </div>
 </header>
 
-<!-- WHAT IT IS -->
+<!-- THE PROBLEM WE SOLVE -->
 <section class="s wrap" id="what">
-  <div class="rv"><div class="eyebrow">What it is</div>
-  <h2>Most tools measure you. Fyon understands you.</h2>
-  <p class="lead">A rating app reduces you to a number and leaves. A general assistant is brilliant, but meets you as
-    a stranger every time — the same answer for everyone, forgotten by morning. Fyon is that same class of
-    intelligence, pointed at one person, that gets to know you more over time.</p></div>
-  <div class="contrast">
-    <div class="cc plain rv d1"><div class="t">A general assistant</div><h3>Brilliant, but a stranger.</h3>
-      <p>Starts from zero every session. Gives everyone roughly the same advice. Forgets you the moment you close the tab.</p></div>
-    <div class="cc glass tilt rv d2"><div class="t">Fyon Intelligence</div><h3>The same intelligence — but it knows you.</h3>
-      <p>Reads how you're perceived, learns what you actually want, and remembers. Every interaction makes its picture of you richer.</p></div>
+  <div class="rv"><div class="eyebrow">The problem we solve</div>
+  <h2>Why isn't a general assistant enough?</h2>
+  <p class="lead">You can ask ChatGPT how to become more attractive or more confident — and get a good answer.
+     So why isn't that enough?</p></div>
+
+  <div class="pb-grid" id="pbSection">
+    <div class="pb-panel glass" id="pbLeft">
+      <div class="pb-cap">Asking <b>a general assistant</b></div>
+      <div class="chat pb-chat">
+        <div class="b u" style="transition-delay:.15s">how do i become more attractive and confident?</div>
+        <div class="b f" style="transition-delay:.6s">Work on grooming and posture, keep a consistent skincare routine, and build confidence with small daily wins…</div>
+        <div class="b f" style="transition-delay:1.0s">…stand tall, make eye contact, practice in low-stakes situations.</div>
+      </div>
+      <div class="pb-stamp"><span>Tomorrow, you're a stranger again.</span></div>
+      <div class="pb-fails">
+        <span style="transition-delay:1.3s">Can't see your face</span>
+        <span style="transition-delay:1.5s">Forgets you</span>
+        <span style="transition-delay:1.7s">A wall of words</span>
+        <span style="transition-delay:1.9s">Can only talk</span>
+      </div>
+      <p class="pb-note">Generic — true for everyone, made for no one. The thread scrolls away. Next week you start over.</p>
+    </div>
+
+    <div class="pb-panel glass fyon" id="pbRight">
+      <div class="pb-cap">Opening <b>Fyon</b></div>
+      <div class="pb-fileLabel">Your file — open every time</div>
+      <div class="filebar">
+        <span class="filechip" style="transition-delay:1.0s">Face</span>
+        <span class="filechip" style="transition-delay:1.1s">Body</span>
+        <span class="filechip" style="transition-delay:1.2s">Goals</span>
+        <span class="filechip" style="transition-delay:1.3s">History</span>
+        <span class="filechip" style="transition-delay:1.4s">Insecurities</span>
+        <span class="filechip" style="transition-delay:1.5s">Limits</span>
+      </div>
+      <div class="pb-li" style="transition-delay:1.8s"><span class="c">✓</span><span><b>Shows</b> you the version you could become — a future self, not a description.</span></div>
+      <div class="pb-li" style="transition-delay:2.0s"><span class="c">✓</span><span><b>Compounds</b> — knows you more every session, where ChatGPT resets.</span></div>
+      <div class="pb-li" style="transition-delay:2.2s"><span class="c">✓</span><span><b>Maintains</b> your becoming as a living plan — you see where you are and what's next.</span></div>
+      <div class="pb-li" style="transition-delay:2.4s"><span class="c">✓</span><span><b>Acts</b> — "move this in my plan," and it actually rebuilds it, honestly.</span></div>
+      <div class="pb-li" style="transition-delay:2.6s"><span class="c">✓</span><span><b>Honest</b> about where you are — no false progress; it follows you over weeks.</span></div>
+    </div>
   </div>
+
+  <p class="pb-line rv"><span class="dim">ChatGPT answers your question and forgets you.</span> <span class="em">Fyon holds your becoming.</span></p>
+  <p class="pb-sub rv">Same intelligence inside — the difference is that Fyon is a place that knows you. You don't visit it to ask
+     about self-improvement; you live in it, because it holds the whole project of becoming who you want to be.</p>
 </section>
 
 <!-- WHAT IT DOES -->
@@ -434,6 +501,17 @@ const plot=document.getElementById('plot');const pts=[...plot.querySelectorAll('
 const mo=new IntersectionObserver((es)=>es.forEach(e=>{if(e.isIntersecting){plot.classList.add('in');
   pts.forEach((p,i)=>setTimeout(()=>p.classList.add('in'),i*180+150));mo.unobserve(e.target);}}),{threshold:.35});
 mo.observe(plot);
+
+/* "the problem we solve" staged animation */
+const pb=document.getElementById('pbSection');
+if(pb){
+  const left=document.getElementById('pbLeft'),right=document.getElementById('pbRight');
+  const pbo=new IntersectionObserver((es)=>es.forEach(e=>{if(e.isIntersecting){
+    left.classList.add('play');right.classList.add('play');
+    setTimeout(()=>left.classList.add('forget'),2500);
+    pbo.unobserve(e.target);}}),{threshold:.32});
+  pbo.observe(pb);
+}
 
 /* subtle background parallax (rAF, transform-only) */
 const blobs=[...document.querySelectorAll('.blob')];let ticking=false;
