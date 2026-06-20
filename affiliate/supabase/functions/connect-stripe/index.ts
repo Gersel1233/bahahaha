@@ -14,7 +14,6 @@ const json = (b: unknown, s = 200) => new Response(JSON.stringify(b), { status: 
 
 const sb = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
 const SITE = Deno.env.get("SITE_URL") ?? "https://gersel1233.github.io/bahahaha";
-const COUNTRY = Deno.env.get("CONNECT_COUNTRY") ?? "US";
 
 // Stripe REST helper — form-urlencoded, bracket-style nested params
 async function stripe(path: string, key: string, params: Record<string, string | undefined>) {
@@ -45,17 +44,22 @@ Deno.serve(async (req) => {
 
     let acct = p.stripe_account_id as string | null;
     if (!acct) {
-      const account = await stripe("accounts", key, {
+      const params: Record<string, string | undefined> = {
         "type": "express",
-        "country": COUNTRY,
         "business_type": "individual",
         "email": user.email ?? undefined,
-        // recipient agreement = payout-only: transfers, no card_payments, lighter KYC
+        // transfers-only: payout-focused, light KYC (no card_payments / business profile).
+        // Full service agreement (recipient agreement isn't available for EEA Connect platforms).
         "capabilities[transfers][requested]": "true",
-        "tos_acceptance[service_agreement]": "recipient",
         "metadata[partner_id]": p.id,
         "metadata[user_id]": user.id,
-      });
+      };
+      // Default to the platform's own country (DK) when CONNECT_COUNTRY is unset.
+      // Stripe supports DK/EEA platforms paying accounts in EEA, UK, US, CA, CH.
+      const c = Deno.env.get("CONNECT_COUNTRY");
+      if (c) params["country"] = c;
+
+      const account = await stripe("accounts", key, params);
       acct = account.id;
       await sb.from("partners").update({ stripe_account_id: acct }).eq("id", p.id);
     }
