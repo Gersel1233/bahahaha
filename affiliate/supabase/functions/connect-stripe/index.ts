@@ -37,7 +37,10 @@ Deno.serve(async (req) => {
         country: COUNTRY,
         business_type: "individual",
         email: user.email ?? undefined,
-        capabilities: { transfers: { requested: true }, card_payments: { requested: true } },
+        // Recipient agreement = payout-only: transfers without card_payments,
+        // lighter KYC, and the affiliate is a payout recipient (not a seller).
+        capabilities: { transfers: { requested: true } },
+        tos_acceptance: { service_agreement: "recipient" },
         metadata: { partner_id: p.id, user_id: user.id },
       });
       acct = account.id;
