@@ -37,7 +37,7 @@ Deno.serve(async (req) => {
         country: COUNTRY,
         business_type: "individual",
         email: user.email ?? undefined,
-        capabilities: { transfers: { requested: true } },
+        capabilities: { transfers: { requested: true }, card_payments: { requested: true } },
         metadata: { partner_id: p.id, user_id: user.id },
       });
       acct = account.id;
