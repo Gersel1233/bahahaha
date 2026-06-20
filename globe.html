@@ -80,6 +80,7 @@
   .sc-body{font-size:clamp(14px,1.15vw,16px);line-height:1.55;color:var(--ink-soft);max-width:52ch;margin:0 auto;text-wrap:pretty;}
 
   .hint{
+    display:none;
     position:absolute;left:50%;bottom:14px;transform:translateX(-50%);
     font-family:var(--mono);font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;
     color:var(--muted);z-index:3;transition:opacity .4s ease;pointer-events:none;
@@ -126,7 +127,7 @@
     <div class="copy" id="copy">
       <div class="eyebrow">The self-improvement loop</div>
       <h1>Where self-improvement breaks.</h1>
-      <p class="sub">Ten places a tool that only talks drops you — one per place Fyon is built to close the loop. The globe tours each on its own. <a href="#next">Scroll to pull back</a>.</p>
+      <p class="sub">Ten places a tool that only talks drops you — one per place Fyon is built to close the loop. The globe tours each on its own.</p>
     </div>
 
     <div class="readout">
@@ -204,13 +205,13 @@
 
   // pagination dots + recap list
   const dotEls=COUNTRIES.map((c,i)=>{
-    const b=document.createElement('button'); b.className='dot'; b.title=c.tag;
+    const b=document.createElement('button'); b.className='dot'; b.title=c.name;
     b.addEventListener('click',()=>jumpTo(i)); dotsEl.appendChild(b); return b;
   });
   const cracks=document.getElementById('cracks');
   COUNTRIES.forEach((c,i)=>{
     const li=document.createElement('li'); li.className='crack';
-    li.innerHTML='<span class="n">'+String(i+1).padStart(2,'0')+' &middot; '+c.tag+'</span>'+
+    li.innerHTML='<span class="n">'+String(i+1).padStart(2,'0')+' &middot; '+c.name+'</span>'+
                  '<span class="t">'+c.title+'</span><span class="d">'+c.body+'</span>';
     cracks.appendChild(li);
   });
@@ -302,7 +303,7 @@
   let lblShown=-2, scShown=-2;
   function setLabel(i){            // country pill + pagination — stays visible through spins
     if(i<0||i===lblShown) return; const first=lblShown===-2; lblShown=i;
-    pill.textContent=COUNTRIES[i].tag;
+    pill.textContent=COUNTRIES[i].name;
     if(!first){ pill.classList.add('pswap'); void pill.offsetWidth; pill.classList.remove('pswap'); }
     dotEls.forEach((el,k)=>el.classList.toggle('on',k===i));
   }

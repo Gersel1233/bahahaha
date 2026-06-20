@@ -120,10 +120,8 @@ nav.scrolled .bar{box-shadow:0 10px 40px rgba(70,52,34,.14)}
 
 /* ---- The Depth Map ---- */
 .mapwrap{position:relative;z-index:2;margin-top:60px;perspective:1400px}
-.globewrap{position:relative;z-index:2;margin-top:48px;border-radius:24px;overflow:hidden;
-  border:1px solid var(--line);box-shadow:0 30px 70px rgba(70,52,34,.12)}
-.globe-frame{display:block;width:100%;height:min(88vh,760px);min-height:540px;border:0;background:var(--bg)}
-@media(max-width:680px){.globe-frame{height:74vh;min-height:460px}}
+.globe-full{position:relative;z-index:2;width:100%;margin-top:20px;background:var(--bg)}
+.globe-frame{display:block;width:100%;height:100svh;min-height:560px;border:0;background:var(--bg)}
 .map-card{padding:30px 30px 22px;position:relative;overflow:hidden;transition:transform .2s var(--ease);will-change:transform}
 .map-head{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px;margin-bottom:18px;position:relative}
 .map-head .t{font-family:var(--serif);font-size:20px}
@@ -294,12 +292,14 @@ footer .legal{margin-top:32px;font-size:12.5px;color:var(--mut2);max-width:560px
     <a class="link" href="#what">See how it's different →</a>
   </div>
   <p class="fine">Built for individuals · 18+</p>
+</header>
 
-  <!-- THE GLOBE: where the loop breaks -->
-  <div class="globewrap rv">
-    <iframe class="globe-frame" src="globe.html?v=4" title="Where self-improvement breaks" loading="lazy" scrolling="no"></iframe>
-  </div>
+<!-- THE GLOBE: full-screen, scroll-driven (where the loop breaks) -->
+<section class="globe-full">
+  <iframe class="globe-frame" src="globe.html?v=5" title="Where self-improvement breaks" loading="lazy"></iframe>
+</section>
 
+<div class="wrap">
   <div class="proof">
     <div class="row">
       <div class="chip glass rv"><b>~150k</b><span>views on the raw prototype</span></div>
@@ -307,7 +307,7 @@ footer .legal{margin-top:32px;font-size:12.5px;color:var(--mut2);max-width:560px
       <div class="chip glass rv d2"><b>One</b><span>understanding driving it all</span></div>
     </div>
   </div>
-</header>
+</div>
 
 <!-- THE PROBLEM WE SOLVE -->
 <section class="s wrap" id="what">
