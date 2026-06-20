@@ -51,6 +51,12 @@ Deno.serve(async (req) => {
         // transfers-only: payout-focused, light KYC (no card_payments / business profile).
         // Full service agreement (recipient agreement isn't available for EEA Connect platforms).
         "capabilities[transfers][requested]": "true",
+        // Pre-fill the business profile so the affiliate is NOT asked for a website,
+        // product description or industry — it should feel like joining an affiliate
+        // program, not starting a business.
+        "business_profile[url]": Deno.env.get("BUSINESS_URL") || SITE,
+        "business_profile[product_description]": "Affiliate partner promoting Fyon subscriptions",
+        "business_profile[mcc]": "7311", // Advertising services
         "metadata[partner_id]": p.id,
         "metadata[user_id]": user.id,
       };

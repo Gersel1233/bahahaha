@@ -93,9 +93,17 @@
       </div>
     </div>
 
-    <div id="connectBanner" class="card hidden" style="margin-top:16px;display:flex;justify-content:space-between;align-items:center">
-      <div><b>Connect Stripe to receive payouts</b><div class="muted small">Required to withdraw earnings</div></div>
-      <button class="btn btn-ink" id="connect">Connect Stripe</button>
+    <div id="connectBanner" class="card hidden" style="margin-top:16px">
+      <b>Connect Stripe to receive payouts</b>
+      <div class="muted small" style="margin-bottom:12px">Just your name, address, date of birth and bank — no website or business needed.</div>
+      <label class="muted small" style="display:block;margin-bottom:6px">Where will you promote Fyon?</label>
+      <select id="promoChannel" style="font-family:inherit;font-size:15px;padding:11px 12px;border:1px solid var(--line);border-radius:12px;background:#fff;width:100%;max-width:320px">
+        <option value="">Select…</option>
+        <option>TikTok</option><option>Instagram</option><option>YouTube</option>
+        <option>X / Twitter</option><option>Facebook</option><option>Blog / website</option>
+        <option>Friends / word of mouth</option><option>Other</option>
+      </select>
+      <div style="margin-top:14px"><button class="btn btn-ink" id="connect">Connect Stripe</button></div>
     </div>
 
     <div id="connectedBadge" class="card hidden" style="margin-top:16px;display:flex;align-items:center;gap:11px;border-color:#a7f3d0;background:#ecfdf5">
@@ -203,6 +211,7 @@ else {
     $('showLb').checked = !!partner.show_on_leaderboard;
     show('connectBanner', !partner.payout_enabled);
     show('connectedBadge', !!partner.payout_enabled);
+    { const pc=$('promoChannel'); if(pc) pc.value = partner.promo_channel || ''; }
 
     const comms = await rows(sb.from('commissions').select('commission_cents,gross_cents,status,created_at').eq('partner_id', partner.id), "commissions");
     const refs  = await rows(sb.from('referrals').select('status').eq('partner_id', partner.id), "referrals");
@@ -261,6 +270,7 @@ else {
   $('copyLink').onclick = ()=>{ navigator.clipboard.writeText($('link').textContent); toast('Link copied'); };
   $('copyCode').onclick = ()=>{ if(partner){ navigator.clipboard.writeText(partner.code); toast('Coupon copied'); } };
   $('showLb').onchange = async (e)=>{ if(partner) await sb.from('partners').update({show_on_leaderboard:e.target.checked}).eq('id',partner.id); };
+  $('promoChannel').onchange = async (e)=>{ if(partner) await sb.from('partners').update({promo_channel:e.target.value}).eq('id',partner.id); };
   $('connect').onclick = async ()=>{
     if(!sb) return;
     const { data } = await sb.auth.getSession();

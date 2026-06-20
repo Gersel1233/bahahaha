@@ -18,8 +18,11 @@ create table if not exists partners (
   show_on_leaderboard   boolean not null default true,
   hide_username         boolean not null default false,
   display_name          text,
+  promo_channel         text,                            -- where the partner promotes (TikTok, etc.)
   created_at            timestamptz not null default now()
 );
+-- if the table already exists, add the column:
+alter table partners add column if not exists promo_channel text;
 
 -- ---------- referral_clicks (raw link hits, for analytics + fraud) ----------
 create table if not exists referral_clicks (
