@@ -114,6 +114,14 @@ nav.scrolled .bar{box-shadow:0 10px 40px rgba(70,52,34,.14)}
   background-size:220% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;
   animation:kinRise .8s var(--ease) forwards,shineMove 6s ease-in-out 1.2s infinite}
 @keyframes shineMove{0%,100%{background-position:120% 0}50%{background-position:-20% 0}}
+/* typewriter ("Type It") for the hero headline */
+.hero h1.type{min-height:2.2em}
+.tw .shine{background:linear-gradient(100deg,var(--clay) 0%,#dd8a4c 28%,#c44d6b 52%,var(--clay) 78%);
+  background-size:220% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;
+  animation:shineMove 6s ease-in-out infinite}
+.caret{display:inline-block;width:3px;height:.92em;background:var(--clay);border-radius:2px;
+  margin-left:.06em;vertical-align:-0.12em;animation:caretBlink 1.05s steps(1) infinite}
+@keyframes caretBlink{50%{opacity:0}}
 .kinwords .w{display:inline-block;opacity:0;transform:translateY(18px);transition:opacity .55s var(--ease),transform .55s var(--ease)}
 .kinwords.in .w{opacity:1;transform:none}
 .statement .kinwords .w.mut{color:var(--mut2)}
@@ -284,7 +292,7 @@ footer .legal{margin-top:32px;font-size:12.5px;color:var(--mut2);max-width:560px
 <!-- HERO -->
 <header class="hero wrap">
   <div class="eyebrow">Fyon Intelligence</div>
-  <h1 class="kin"><span class="w" style="animation-delay:.05s">A</span> <span class="w" style="animation-delay:.12s">self-improvement</span> <span class="w" style="animation-delay:.19s">intelligence</span> <span class="w" style="animation-delay:.26s">that</span> <span class="w shine" style="animation-delay:.36s">knows you.</span></h1>
+  <h1 class="type" aria-label="A self-improvement intelligence that knows you."><span id="tw" class="tw"></span><span id="caret" class="caret" aria-hidden="true"></span></h1>
   <p class="sub">Most tools rate you, report on you, or forget you. Fyon points frontier intelligence entirely at one
      person — and walks the path with you, learning more about you with every step.</p>
   <div class="cta-row">
@@ -459,6 +467,25 @@ footer .legal{margin-top:32px;font-size:12.5px;color:var(--mut2);max-width:560px
 </footer>
 
 <script>
+/* typewriter hero ("Type It") */
+(function(){
+  const tw=document.getElementById('tw'); if(!tw) return;
+  const SEGS=[{t:"A self-improvement intelligence that "},{t:"knows you.",c:"shine"}];
+  if(matchMedia('(prefers-reduced-motion:reduce)').matches){
+    SEGS.forEach(s=>{const sp=document.createElement('span'); if(s.c)sp.className=s.c; sp.textContent=s.t; tw.appendChild(sp);});
+    return;
+  }
+  let si=0,ci=0,cur=null;
+  (function step(){
+    if(si>=SEGS.length) return;
+    const seg=SEGS[si];
+    if(ci===0){ cur=document.createElement('span'); if(seg.c)cur.className=seg.c; tw.appendChild(cur); }
+    cur.textContent=seg.t.slice(0,++ci);
+    if(ci>=seg.t.length){ si++; ci=0; }
+    setTimeout(step, 34 + Math.random()*34);
+  })();
+})();
+
 const nav=document.getElementById('nav');
 const onScroll=()=>nav.classList.toggle('scrolled',scrollY>16);
 addEventListener('scroll',onScroll,{passive:true});onScroll();
