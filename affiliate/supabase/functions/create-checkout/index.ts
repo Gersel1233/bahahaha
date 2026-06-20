@@ -22,7 +22,7 @@ const cors = {
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: cors });
   const { referral_code, price_id, mode } = await req.json().catch(() => ({}));
-  const price = price_id || Deno.env.get("FYON_TEST_PRICE_ID");
+  const price = price_id || Deno.env.get("STRIPE_PRICE_ID") || Deno.env.get("FYON_TEST_PRICE_ID");
   if (!price) return new Response(JSON.stringify({ error: "no price" }), { status: 400, headers: cors });
 
   const session = await stripe.checkout.sessions.create({

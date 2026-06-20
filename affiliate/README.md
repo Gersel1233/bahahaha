@@ -91,12 +91,26 @@ run your own server instead of Edge Functions — ignore it for the static-site 
   location.href = (await r.json()).url;
   ```
 
-## 🧪 Test the loop (Stripe test mode)
-1. Sign up as a **test partner** at `/partner.html` → copy your link `…/?ref=CODE`.
-2. Open the link in a fresh browser (cookie is set), click buy → pay with `4242 4242 4242 4242`.
-3. Stripe fires `checkout.session.completed` / `invoice.paid` → webhook credits the commission.
-4. Refresh `/partner.html` → **the commission appears** (pending, in the 30-day hold).
-5. Refund the test charge in Stripe → the commission flips to `reversed`. ✅
+## 🧪 Test the loop end-to-end (Stripe TEST mode) — do this before payouts
+1. **Create a test product + price** in Stripe (test mode). Copy the Price id (`price_…`).
+2. Set it as a secret + deploy the checkout function:
+   ```
+   supabase secrets set STRIPE_PRICE_ID=price_...
+   supabase functions deploy create-checkout
+   supabase functions deploy stripe-webhook --no-verify-jwt
+   ```
+3. Add the **webhook** (Stripe → Webhooks → `https://vvwevqhdwumnethujxhy.supabase.co/functions/v1/stripe-webhook`,
+   events: checkout.session.completed, invoice.paid, invoice.payment_succeeded, charge.refunded) →
+   put its secret in `STRIPE_WEBHOOK_SECRET`.
+4. Sign up as a **test partner** at `/partner.html` → copy your code, e.g. `SIGMA57575757`.
+5. Visit the site as a customer with **`?ref=SIGMA57575757`**, click **Start free trial**,
+   pay with test card **`4242 4242 4242 4242`** (any future date / any CVC).
+6. The webhook fires → finds the partner by code → creates the referral + commission.
+7. Refresh `/partner.html` → **the commission shows up** (pending, 30-day hold). ✅
+8. (Optional) Refund the test charge in Stripe → the commission flips to `reversed`. ✅
+
+> Payouts come AFTER this loop is proven. Don't wire `request-payout` / `connect-stripe`
+> into the flow until referral attribution + commission crediting work in test mode.
 
 ## Build order (don't do payouts first)
 1. Partner signup/login ✅ (done in partner.html)

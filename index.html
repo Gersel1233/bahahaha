@@ -467,7 +467,7 @@ footer .legal{margin-top:32px;font-size:12.5px;color:var(--mut2);max-width:560px
   <div class="close-card rv">
     <h2>Meet the version of yourself you envisioned.</h2>
     <p>Two photos. A short conversation. An intelligence that gets to know you.</p>
-    <button class="btn btn-clay" style="font-size:15px;padding:14px 30px">Try Fyon</button>
+    <button class="btn btn-clay" id="buyBtn" style="font-size:15px;padding:14px 30px">Start free trial →</button>
   </div>
 </section>
 
@@ -489,6 +489,21 @@ footer .legal{margin-top:32px;font-size:12.5px;color:var(--mut2);max-width:560px
   if(r){var c=r.toUpperCase().slice(0,24);
     document.cookie='fyon_ref='+c+';max-age='+(60*60*24*60)+';path=/;samesite=lax';
     try{localStorage.setItem('fyon_ref',c);}catch(e){}}})();
+
+/* start checkout via Supabase Edge Function (carries the referral code; works without one) */
+const SUPA_FN = "https://vvwevqhdwumnethujxhy.supabase.co/functions/v1";
+function getRef(){ return (document.cookie.match(/fyon_ref=([^;]+)/)||[])[1] || (function(){try{return localStorage.getItem('fyon_ref')||''}catch(e){return ''}})(); }
+async function startCheckout(btn){
+  if(btn){ btn.dataset.t=btn.textContent; btn.textContent='Loading…'; btn.disabled=true; }
+  try{
+    const r = await fetch(SUPA_FN+"/create-checkout",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({referral_code:getRef()})});
+    const d = await r.json();
+    if(d && d.url){ location.href = d.url; return; }
+    alert("Checkout isn't live yet — finish the Stripe setup (STRIPE_PRICE_ID + deploy create-checkout).");
+  }catch(e){ alert("Checkout is temporarily unavailable."); }
+  if(btn){ btn.textContent=btn.dataset.t; btn.disabled=false; }
+}
+document.addEventListener('DOMContentLoaded',()=>{ var b=document.getElementById('buyBtn'); if(b) b.addEventListener('click',()=>startCheckout(b)); });
 
 /* typewriter hero ("Type It") */
 (function(){
