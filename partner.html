@@ -27,6 +27,7 @@
   .card{background:#fff;border:1px solid var(--line);border-radius:20px;box-shadow:0 20px 50px rgba(70,52,34,.06);padding:24px}
   .muted{color:var(--mut)} .small{font-size:13px}
   .notice{margin:20px auto;max-width:760px;border:1px solid var(--line);background:#fff;border-radius:18px;padding:22px}
+  .errbox{margin:16px auto;max-width:760px;border:1px solid #f0b8a4;background:#fff4f0;color:#8a2b14;border-radius:14px;padding:14px 16px;font-size:13.5px;white-space:pre-wrap}
   .mono{font-family:ui-monospace,Menlo,monospace}
   input{font-family:inherit;font-size:15px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;width:100%;background:#fff}
   .row{display:flex;gap:12px;flex-wrap:wrap}
@@ -51,13 +52,13 @@
 </nav>
 
 <div class="wrap" style="padding-bottom:80px">
+  <div id="err" class="errbox hidden"></div>
 
-  <!-- SETUP NOTICE (shown until Supabase keys are filled) -->
+  <!-- SETUP NOTICE -->
   <div id="setup" class="notice hidden">
     <h3 style="font-size:20px">One-time setup needed</h3>
-    <p class="muted small" style="margin-top:8px">Paste your Supabase project URL and anon key at the top of
-      <span class="mono">partner.html</span> (the <span class="mono">CONFIG</span> block), run the affiliate SQL,
-      and deploy the Stripe edge functions. See <span class="mono">affiliate/README.md</span>. These keys are safe to ship in the browser.</p>
+    <p class="muted small" style="margin-top:8px">Paste your Supabase URL + anon key in the CONFIG block of
+      <span class="mono">partner.html</span>, run the affiliate SQL, deploy the edge functions. See <span class="mono">affiliate/README.md</span>.</p>
   </div>
 
   <!-- SIGN IN -->
@@ -81,7 +82,7 @@
           <b style="color:#34d399"><span id="tierRate">15</span>% commission</b></p></div>
         <button class="btn btn-ghost" id="signout" style="color:#fff;border-color:rgba(255,255,255,.25)">Sign out</button>
       </div>
-      <div class="row" style="justify-content:space-between;color:rgba(255,255,255,.7);margin-top:18px" class="small">
+      <div class="row" style="justify-content:space-between;color:rgba(255,255,255,.7);margin-top:18px">
         <span id="revLabel">$0 revenue</span><span id="nextLabel"></span>
       </div>
       <div class="barwrap" style="background:rgba(255,255,255,.12)"><div class="bar" id="tierBar" style="width:0"></div></div>
@@ -126,107 +127,131 @@
 // ============== CONFIG — Supabase (safe to ship in the browser) ==============
 const SUPABASE_URL = "https://vvwevqhdwumnethujxhy.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ2d2V2cWhkd3VtbmV0aHVqeGh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyMDg0ODYsImV4cCI6MjA5Njc4NDQ4Nn0.G60xcGM0DwDBYX2j48iYgb_y8SuXYxdNNiExQlDzarU";
-// Public site base (GitHub Pages serves the site under /bahahaha, not the domain root)
 const SITE_URL = "https://gersel1233.github.io/bahahaha";
-// edge functions base (deployed to Supabase): connect-stripe, payout, create-promo, stripe-webhook
 const FN = SUPABASE_URL + "/functions/v1";
-// ===================================================================================
+// =============================================================================
 
 const TIERS = [
   ["Starter",15,0],["Bronze",17,10000],["Silver",18,25000],["Gold",20,50000],
   ["Platinum",22,100000],["Diamond",24,250000],["Elite",26,500000],["Champion",28,1000000],["Legend",30,2500000]
 ];
-const usd = c => "$" + (c/100).toFixed(2);
-const toast = (m) => { const t=document.getElementById('toast'); t.textContent=m; t.classList.add('on'); setTimeout(()=>t.classList.remove('on'),1600); };
-const show = (id,on=true)=>document.getElementById(id).classList.toggle('hidden',!on);
+const $ = id => document.getElementById(id);
+const usd = c => "$" + ((Number(c)||0)/100).toFixed(2);
+const show = (id,on=true)=>{ const e=$(id); if(e) e.classList.toggle('hidden',!on); };
+const toast = m => { const t=$('toast'); if(!t) return; t.textContent=m; t.classList.add('on'); setTimeout(()=>t.classList.remove('on'),1600); };
+const errs = [];
+function showError(msg){ errs.push(msg); console.error("[partner]", msg); const e=$('err'); if(e){ e.textContent="⚠ "+errs.join("\n⚠ "); e.classList.remove('hidden'); } }
+
+// every query is null-safe and logs (returns [] on error so one bad query can't blank the page)
+async function rows(builder, label){
+  try{ const { data, error } = await builder; if(error){ showError(label+": "+error.message); return []; } return data ?? []; }
+  catch(e){ showError(label+": "+(e.message||e)); return []; }
+}
 
 if (SUPABASE_URL.includes("YOUR-PROJECT")) { show('setup',true); }
 else {
-  const { createClient } = await import("https://esm.sh/@supabase/supabase-js@2");
-  const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-  let partner = null;
+  let sb, partner=null, booting=false;
+  try {
+    const { createClient } = await import("https://esm.sh/@supabase/supabase-js@2");
+    sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  } catch(e){ showError("Could not load Supabase library: "+(e.message||e)); }
 
   async function boot(){
-    const { data:{ session } } = await sb.auth.getSession();
-    if (!session){ show('auth',true); return; }
-    document.getElementById('who').textContent = session.user.email;
-    await ensurePartner(session.user);
-    await render();
-    show('dash',true);
+    if (!sb || booting) return; booting = true;
+    try{
+      const { data, error } = await sb.auth.getSession();
+      if (error) throw error;
+      const session = data?.session;
+      if (!session){ show('dash',false); show('auth',true); return; }
+      show('auth',false);
+      $('who').textContent = session.user.email || "";
+      await ensurePartner(session.user);
+      if (!partner){ showError("Couldn't load your partner profile."); return; }
+      show('dash',true);          // ← show the shell FIRST; a later query error can't blank it now
+      await render();
+    } catch(e){ showError("Dashboard failed to load: "+(e.message||e)); }
+    finally{ booting = false; }
   }
 
   async function ensurePartner(user){
-    let { data } = await sb.from('partners').select('*').eq('user_id', user.id).maybeSingle();
-    if (!data){
-      const code = Array.from({length:10},()=>"ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"[Math.floor(Math.random()*36)]).join('');
-      const ins = await sb.from('partners').insert({ user_id:user.id, code, coupon_code:code }).select().single();
-      data = ins.data;
-      fetch(`${FN}/create-promo`, {method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+SUPABASE_ANON_KEY},body:JSON.stringify({code})}).catch(()=>{});
+    const sel = await sb.from('partners').select('*').eq('user_id', user.id).maybeSingle();
+    if (sel.error) showError("partners read: "+sel.error.message);
+    if (sel.data){ partner = sel.data; return; }
+    const code = Array.from({length:10},()=>"ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"[Math.floor(Math.random()*36)]).join('');
+    const ins = await sb.from('partners').insert({ user_id:user.id, code, coupon_code:code }).select().maybeSingle();
+    if (ins.data){
+      partner = ins.data;
+      fetch(`${FN}/create-promo`,{method:'POST',headers:{'Authorization':'Bearer '+SUPABASE_ANON_KEY}}).catch(()=>{});
+      return;
     }
-    partner = data;
+    // race or RLS: re-select
+    const re = await sb.from('partners').select('*').eq('user_id', user.id).maybeSingle();
+    partner = re.data || null;
+    if (!partner && ins.error) showError("Enroll failed: "+ins.error.message);
   }
 
   async function render(){
-    const link = `${SITE_URL}/?ref=${partner.code}`;
-    document.getElementById('link').textContent = link;
-    document.getElementById('codeTxt').textContent = partner.code;
-    document.getElementById('showLb').checked = partner.show_on_leaderboard;
+    if (!partner) return;
+    $('link').textContent = `${SITE_URL}/?ref=${partner.code}`;
+    $('codeTxt').textContent = partner.code;
+    $('showLb').checked = !!partner.show_on_leaderboard;
     show('connectBanner', !partner.payout_enabled);
 
-    const { data:comms=[] } = await sb.from('commissions').select('commission_cents,gross_cents,status,created_at').eq('partner_id', partner.id);
-    const { data:refs=[] } = await sb.from('referrals').select('status').eq('partner_id', partner.id);
-    const live = comms.filter(c=>c.status!=='reversed');
-    const rev = live.reduce((s,c)=>s+c.gross_cents,0);
-    const life = live.reduce((s,c)=>s+c.commission_cents,0);
-    const ym = new Date().toISOString().slice(0,7);
-    const month = live.filter(c=>(c.created_at||'').slice(0,7)===ym).reduce((s,c)=>s+c.commission_cents,0);
-    const avail = comms.filter(c=>c.status==='available').reduce((s,c)=>s+c.commission_cents,0);
+    const comms = await rows(sb.from('commissions').select('commission_cents,gross_cents,status,created_at').eq('partner_id', partner.id), "commissions");
+    const refs  = await rows(sb.from('referrals').select('status').eq('partner_id', partner.id), "referrals");
+
+    const live  = comms.filter(c=>c.status!=='reversed');
+    const rev   = live.reduce((s,c)=>s+(c.gross_cents||0),0);
+    const life  = live.reduce((s,c)=>s+(c.commission_cents||0),0);
+    const ym    = new Date().toISOString().slice(0,7);
+    const month = live.filter(c=>(c.created_at||'').slice(0,7)===ym).reduce((s,c)=>s+(c.commission_cents||0),0);
+    const avail = comms.filter(c=>c.status==='available').reduce((s,c)=>s+(c.commission_cents||0),0);
 
     let ti=0; TIERS.forEach((t,i)=>{ if(rev>=t[2]) ti=i; });
     const [tn,tr]=TIERS[ti]; const nxt=TIERS[ti+1];
-    document.getElementById('tierName').textContent=tn;
-    document.getElementById('tierRate').textContent=tr;
-    document.getElementById('revLabel').textContent=usd(rev)+' revenue';
-    document.getElementById('nextLabel').textContent = nxt ? `${usd(nxt[2]-rev)} to ${nxt[0]}` : 'Top tier 🎉';
-    document.getElementById('tierBar').style.width = nxt ? Math.min(100,rev/nxt[2]*100)+'%' : '100%';
-    document.getElementById('sAvail').textContent=usd(avail);
-    document.getElementById('sMonth').textContent=usd(month);
-    document.getElementById('sLife').textContent=usd(life);
-    document.getElementById('sRef').textContent=refs.length;
-    document.getElementById('sRefA').textContent=refs.filter(r=>r.status==='active').length;
+    $('tierName').textContent=tn; $('tierRate').textContent=tr;
+    $('revLabel').textContent=usd(rev)+' revenue';
+    $('nextLabel').textContent = nxt ? `${usd(nxt[2]-rev)} to ${nxt[0]}` : 'Top tier 🎉';
+    $('tierBar').style.width = nxt ? Math.min(100,rev/nxt[2]*100)+'%' : '100%';
+    $('sAvail').textContent=usd(avail); $('sMonth').textContent=usd(month); $('sLife').textContent=usd(life);
+    $('sRef').textContent=refs.length; $('sRefA').textContent=refs.filter(r=>r.status==='active').length;
     show('withdraw', avail>=1000 && partner.payout_enabled);
 
-    document.getElementById('tiers').innerHTML = TIERS.map((t,i)=>`
+    $('tiers').innerHTML = TIERS.map((t,i)=>`
       <div class="tierrow ${i===ti?'cur':i===ti+1?'next':''}" style="${i>ti+1?'opacity:.5':''}">
         <div><b>${t[0]}</b> ${i===ti?'<span class="pill" style="background:#d1fae5;color:#047857">CURRENT</span>':i===ti+1?'<span class="pill" style="background:#fef3c7;color:#b45309">NEXT</span>':''}
         <div class="muted small">${t[2]===0?'Starting tier':'$'+(t[2]/100).toLocaleString()+' in referral revenue'}</div></div>
         <b style="color:var(--emerald)">${t[1]}%</b></div>`).join('');
 
-    const { data:lb=[] } = await sb.from('leaderboard_monthly').select('*').eq('show_on_leaderboard',true).order('month_cents',{ascending:false}).limit(8);
-    document.getElementById('board').innerHTML = lb.length ? lb.map((r,i)=>`<div class="row" style="justify-content:space-between;padding:5px 0"><span><b class="muted">${i+1}.</b> ${r.name}</span><b style="color:var(--emerald)">${usd(r.month_cents)}</b></div>`).join('') : 'No rankings yet — be the first.';
+    // leaderboard is optional — its failure must never blank the dashboard
+    const lb = await rows(sb.from('leaderboard_monthly').select('*').eq('show_on_leaderboard',true).order('month_cents',{ascending:false}).limit(8), "leaderboard");
+    $('board').innerHTML = lb.length
+      ? lb.map((r,i)=>`<div class="row" style="justify-content:space-between;padding:5px 0"><span><b class="muted">${i+1}.</b> ${r.name}</span><b style="color:var(--emerald)">${usd(r.month_cents)}</b></div>`).join('')
+      : 'No rankings yet — be the first.';
   }
 
-  // events
-  document.getElementById('signin').onclick = async ()=>{
-    const email=document.getElementById('email').value.trim(); if(!email) return;
+  // events (guarded)
+  $('signin').onclick = async ()=>{
+    const email=$('email').value.trim(); if(!email||!sb) return;
     const { error } = await sb.auth.signInWithOtp({ email, options:{ emailRedirectTo: location.href } });
-    document.getElementById('authmsg').textContent = error ? error.message : "Check your email for the sign-in link.";
+    $('authmsg').textContent = error ? error.message : "Check your email for the sign-in link.";
   };
-  document.getElementById('signout').onclick = async ()=>{ await sb.auth.signOut(); location.reload(); };
-  document.getElementById('copyLink').onclick = ()=>{ navigator.clipboard.writeText(document.getElementById('link').textContent); toast('Link copied'); };
-  document.getElementById('copyCode').onclick = ()=>{ navigator.clipboard.writeText(partner.code); toast('Coupon copied'); };
-  document.getElementById('showLb').onchange = async (e)=>{ await sb.from('partners').update({show_on_leaderboard:e.target.checked}).eq('id',partner.id); };
-  document.getElementById('connect').onclick = async ()=>{
-    const { data:{session} } = await sb.auth.getSession();
-    const r = await fetch(`${FN}/connect-stripe`,{method:'POST',headers:{'Authorization':'Bearer '+session.access_token}});
-    const d = await r.json(); if(d.url) location.href=d.url; else toast('Could not start Stripe');
+  $('signout').onclick = async ()=>{ if(sb) await sb.auth.signOut(); location.reload(); };
+  $('copyLink').onclick = ()=>{ navigator.clipboard.writeText($('link').textContent); toast('Link copied'); };
+  $('copyCode').onclick = ()=>{ if(partner){ navigator.clipboard.writeText(partner.code); toast('Coupon copied'); } };
+  $('showLb').onchange = async (e)=>{ if(partner) await sb.from('partners').update({show_on_leaderboard:e.target.checked}).eq('id',partner.id); };
+  $('connect').onclick = async ()=>{
+    const { data } = await sb.auth.getSession();
+    const r = await fetch(`${FN}/connect-stripe`,{method:'POST',headers:{'Authorization':'Bearer '+(data?.session?.access_token||'')}});
+    const d = await r.json().catch(()=>({})); if(d.url) location.href=d.url; else toast(d.error||'Could not start Stripe');
   };
-  document.getElementById('withdraw').onclick = async ()=>{
-    const { data:{session} } = await sb.auth.getSession();
-    const r = await fetch(`${FN}/request-payout`,{method:'POST',headers:{'Authorization':'Bearer '+session.access_token}});
-    toast(r.ok?'Payout sent':'Payout failed'); await render();
+  $('withdraw').onclick = async ()=>{
+    const { data } = await sb.auth.getSession();
+    const r = await fetch(`${FN}/request-payout`,{method:'POST',headers:{'Authorization':'Bearer '+(data?.session?.access_token||'')}});
+    const d = await r.json().catch(()=>({})); toast(r.ok?'Payout sent':(d.error||'Payout failed')); boot();
   };
-  sb.auth.onAuthStateChange(()=>boot());
+
+  if (sb) sb.auth.onAuthStateChange(()=>boot());
   boot();
 }
 </script>
