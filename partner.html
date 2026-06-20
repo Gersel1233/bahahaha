@@ -167,6 +167,7 @@ else {
       $('who').textContent = session.user.email || "";
       await ensurePartner(session.user);
       if (!partner){ showError("Couldn't load your partner profile."); return; }
+      await syncConnectIfReturning(session);
       show('dash',true);          // ← show the shell FIRST; a later query error can't blank it now
       await render();
     } catch(e){ showError("Dashboard failed to load: "+(e.message||e)); }
@@ -230,6 +231,20 @@ else {
       : 'No rankings yet — be the first.';
   }
 
+  // after returning from Stripe Connect onboarding, refresh payout status
+  async function syncConnectIfReturning(session){
+    if (new URLSearchParams(location.search).get('stripe') !== 'connected') return;
+    try{
+      const r = await fetch(`${FN}/check-connect-status`,{method:'POST',headers:{'Authorization':'Bearer '+(session.access_token||'')}});
+      const d = await r.json().catch(()=>({}));
+      if (d.error) showError("check-connect-status: "+d.error);
+      else toast(d.payout_enabled ? 'Stripe connected — payouts enabled' : 'Stripe onboarding not finished yet');
+      const re = await sb.from('partners').select('*').eq('user_id', session.user.id).maybeSingle();
+      if (re.data) partner = re.data;
+    }catch(e){ showError("check-connect-status failed: "+(e.message||e)); }
+    try{ history.replaceState({}, '', location.pathname); }catch(e){}
+  }
+
   // events (guarded)
   $('signin').onclick = async ()=>{
     const email=$('email').value.trim(); if(!email||!sb) return;
@@ -241,9 +256,17 @@ else {
   $('copyCode').onclick = ()=>{ if(partner){ navigator.clipboard.writeText(partner.code); toast('Coupon copied'); } };
   $('showLb').onchange = async (e)=>{ if(partner) await sb.from('partners').update({show_on_leaderboard:e.target.checked}).eq('id',partner.id); };
   $('connect').onclick = async ()=>{
+    if(!sb) return;
     const { data } = await sb.auth.getSession();
-    const r = await fetch(`${FN}/connect-stripe`,{method:'POST',headers:{'Authorization':'Bearer '+(data?.session?.access_token||'')}});
-    const d = await r.json().catch(()=>({})); if(d.url) location.href=d.url; else toast(d.error||'Could not start Stripe');
+    const tok = data?.session?.access_token || '';
+    const b=$('connect'), old=b.textContent; b.disabled=true; b.textContent='Opening Stripe…';
+    try{
+      const r = await fetch(`${FN}/connect-stripe`,{method:'POST',headers:{'Authorization':'Bearer '+tok}});
+      const d = await r.json().catch(()=>({}));
+      if(d.url){ location.href = d.url; return; }
+      showError("Connect Stripe: "+(d.error||("HTTP "+r.status)));
+    }catch(e){ showError("Connect Stripe failed: "+(e.message||e)); }
+    b.disabled=false; b.textContent=old;
   };
   $('withdraw').onclick = async ()=>{
     const { data } = await sb.auth.getSession();

@@ -1,6 +1,8 @@
-// Supabase Edge Function: connect-stripe  (Stripe Connect Express onboarding)
-// Deploy:  supabase functions deploy connect-stripe --no-verify-jwt
-// Secrets: STRIPE_SECRET_KEY, SITE_URL, CONNECT_COUNTRY (optional, default US)
+// Supabase Edge Function: check-connect-status
+// Called by partner.html after returning from Stripe onboarding (?stripe=connected).
+// Retrieves the connected account and flips partners.payout_enabled.
+// Deploy:  supabase functions deploy check-connect-status --no-verify-jwt
+// Secrets: STRIPE_SECRET_KEY
 
 import Stripe from "https://esm.sh/stripe@14?target=deno";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
@@ -13,8 +15,6 @@ const cors = {
 const json = (b: unknown, s = 200) => new Response(JSON.stringify(b), { status: s, headers: { ...cors, "content-type": "application/json" } });
 
 const sb = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
-const SITE = Deno.env.get("SITE_URL") ?? "https://gersel1233.github.io/bahahaha";
-const COUNTRY = Deno.env.get("CONNECT_COUNTRY") ?? "US";
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: cors });
@@ -29,28 +29,18 @@ Deno.serve(async (req) => {
 
     const { data: p } = await sb.from("partners").select("*").eq("user_id", user.id).maybeSingle();
     if (!p) return json({ error: "not a partner" }, 400);
+    if (!p.stripe_account_id) return json({ connected: false, payout_enabled: false });
 
-    let acct = p.stripe_account_id as string | null;
-    if (!acct) {
-      const account = await stripe.accounts.create({
-        type: "express",
-        country: COUNTRY,
-        business_type: "individual",
-        email: user.email ?? undefined,
-        capabilities: { transfers: { requested: true } },
-        metadata: { partner_id: p.id, user_id: user.id },
-      });
-      acct = account.id;
-      await sb.from("partners").update({ stripe_account_id: acct }).eq("id", p.id);
-    }
+    const acct = await stripe.accounts.retrieve(p.stripe_account_id);
+    const payout_enabled = !!(acct.charges_enabled && acct.payouts_enabled);
+    await sb.from("partners").update({ payout_enabled }).eq("id", p.id);
 
-    const link = await stripe.accountLinks.create({
-      account: acct,
-      type: "account_onboarding",
-      refresh_url: SITE + "/partner.html?stripe=refresh",
-      return_url: SITE + "/partner.html?stripe=connected",
+    return json({
+      connected: true, payout_enabled,
+      details_submitted: acct.details_submitted,
+      charges_enabled: acct.charges_enabled,
+      payouts_enabled: acct.payouts_enabled,
     });
-    return json({ url: link.url });
   } catch (e) {
     return json({ error: String((e as Error)?.message ?? e) }, 500);
   }
