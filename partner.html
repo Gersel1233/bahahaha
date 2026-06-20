@@ -46,7 +46,7 @@
   .btn-ghost{background:rgba(255,255,255,.5);border:1px solid var(--line);color:var(--ink)}.btn-ghost:hover{border-color:var(--ink)}
   .btn-sm{padding:9px 18px;font-size:13.5px}
 
-  .card{background:#fff;border:1px solid var(--line);border-radius:20px;box-shadow:0 20px 50px rgba(70,52,34,.06);padding:24px}
+  .card{position:relative;background:rgba(255,255,255,.55);-webkit-backdrop-filter:blur(18px) saturate(150%);backdrop-filter:blur(18px) saturate(150%);border:1px solid rgba(255,255,255,.6);border-radius:20px;box-shadow:0 1px 0 rgba(255,255,255,.7) inset,0 18px 44px rgba(70,52,34,.08);padding:24px}
   .muted{color:var(--mut)} .small{font-size:13px}
   .errbox{margin:16px auto;max-width:760px;border:1px solid #f0b8a4;background:#fff4f0;color:#8a2b14;border-radius:14px;padding:16px 18px;font-size:13.5px;white-space:pre-wrap}
   .notice{margin:20px auto;max-width:760px;border:1px solid var(--line);background:#fff;border-radius:18px;padding:22px}
@@ -54,8 +54,10 @@
   input,select{font-family:inherit;font-size:15px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;width:100%;background:#fff}
   .row{display:flex;gap:12px;flex-wrap:wrap}
   .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}@media(max-width:680px){.grid2{grid-template-columns:1fr}}
-  .stat{font-size:34px;font-weight:800}
-  .header-card{border-radius:26px;padding:28px;color:#fff;background:radial-gradient(120% 120% at 0% 0%,#2a2d36,#0d0e12)}
+  .stat{font-family:var(--serif);font-size:40px;font-weight:500;letter-spacing:-.02em;margin:6px 0 2px}
+  .header-card{position:relative;border-radius:26px;padding:28px;color:var(--ink);
+    background:rgba(255,255,255,.55);-webkit-backdrop-filter:blur(22px) saturate(160%);backdrop-filter:blur(22px) saturate(160%);
+    border:1px solid rgba(255,255,255,.65);box-shadow:0 1px 0 rgba(255,255,255,.85) inset,0 26px 60px rgba(70,52,34,.12)}
   .pill{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.06em;padding:5px 11px;border-radius:999px}
   .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 18px;border-radius:999px;font-size:14px;opacity:0;transition:.25s;pointer-events:none;z-index:60}
   .toast.on{opacity:1}
@@ -150,19 +152,20 @@
   <div id="dash" class="hidden">
     <div class="header-card">
       <div class="row" style="justify-content:space-between;align-items:flex-start">
-        <div><h1 style="color:#fff;font-size:26px">Partner Dashboard</h1>
-          <p style="color:rgba(255,255,255,.6)" class="small"><span id="tierName">Starter</span> ·
-          <b style="color:#34d399"><span id="tierRate">15</span>% commission</b></p></div>
-        <button class="btn btn-ghost" id="signout" style="color:#fff;border-color:rgba(255,255,255,.25);background:rgba(255,255,255,.06)">Sign out</button>
+        <div><div class="eyebrow" style="margin-bottom:8px">Fyon Partners</div>
+          <h1 style="font-size:28px">Partner Dashboard</h1>
+          <p class="muted small" style="margin-top:4px"><span id="tierName">Starter</span> ·
+          <b style="color:var(--clay)"><span id="tierRate">15</span>% commission</b></p></div>
+        <button class="btn btn-ghost btn-sm" id="signout">Sign out</button>
       </div>
-      <div class="row" style="justify-content:space-between;color:rgba(255,255,255,.7);margin-top:18px">
+      <div class="row" style="justify-content:space-between;color:var(--mut);font-size:14px;margin-top:18px">
         <span id="revLabel">$0 revenue</span><span id="nextLabel"></span>
       </div>
-      <div class="barwrap" style="background:rgba(255,255,255,.12)"><div class="bar" id="tierBar" style="width:0"></div></div>
+      <div class="barwrap" style="background:rgba(0,0,0,.06)"><div class="bar" id="tierBar" style="width:0"></div></div>
       <div class="row" style="margin-top:18px">
-        <div class="mono small" id="link" style="flex:1;min-width:200px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);padding:12px 14px;border-radius:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">…</div>
-        <button class="btn" id="copyLink" style="background:#fff;color:#000">Copy link</button>
-        <button class="btn" id="copyCode" style="background:rgba(193,95,60,.18);color:#ffd9a8;border:1px solid rgba(193,95,60,.5)"><span id="codeTxt">CODE</span> · 20% OFF</button>
+        <div class="mono small" id="link" style="flex:1;min-width:200px;background:rgba(255,255,255,.55);border:1px solid var(--line);padding:12px 14px;border-radius:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">…</div>
+        <button class="btn btn-ink" id="copyLink">Copy link</button>
+        <button class="btn" id="copyCode" style="background:rgba(193,95,60,.12);color:var(--clay-d);border:1px solid rgba(193,95,60,.4)"><span id="codeTxt">CODE</span> · 20% OFF</button>
       </div>
     </div>
 
@@ -187,9 +190,9 @@
     <div class="grid2" style="margin-top:16px">
       <div class="card"><div class="muted small">💚 Available</div><div class="stat" style="color:var(--emerald)" id="sAvail">$0.00</div>
         <div class="row" style="justify-content:space-between"><span class="muted small">Ready to withdraw</span><button class="btn btn-ghost btn-sm hidden" id="withdraw">Withdraw →</button></div></div>
-      <div class="card"><div class="muted small">📈 Monthly</div><div class="stat" style="color:#2563eb" id="sMonth">$0.00</div><div class="muted small">Recurring commission</div></div>
-      <div class="card"><div class="muted small">❖ Lifetime</div><div class="stat" style="color:#7c3aed" id="sLife">$0.00</div><div class="muted small">Total earned</div></div>
-      <div class="card"><div class="muted small">👥 Referrals</div><div class="stat" style="color:var(--clay)" id="sRef">0</div><div class="muted small"><span id="sRefA">0</span> active subscribers</div></div>
+      <div class="card"><div class="muted small">📈 Monthly</div><div class="stat" style="color:var(--ink)" id="sMonth">$0.00</div><div class="muted small">Recurring commission</div></div>
+      <div class="card"><div class="muted small">❖ Lifetime</div><div class="stat" style="color:var(--clay)" id="sLife">$0.00</div><div class="muted small">Total earned</div></div>
+      <div class="card"><div class="muted small">👥 Referrals</div><div class="stat" style="color:var(--ink)" id="sRef">0</div><div class="muted small"><span id="sRefA">0</span> active subscribers</div></div>
     </div>
 
     <div class="card" style="margin-top:16px">
