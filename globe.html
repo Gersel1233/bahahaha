@@ -25,7 +25,7 @@
   *{box-sizing:border-box;margin:0;padding:0;}
   html{scroll-behavior:auto;}
   body{
-    background:var(--bg);color:var(--ink);font-family:var(--sans);
+    background:transparent;color:var(--ink);font-family:var(--sans);
     -webkit-font-smoothing:antialiased;
   }
 
@@ -36,7 +36,7 @@
 
   /* ---- headline ---- */
   .copy{
-    position:absolute;top:clamp(34px,7vh,84px);left:50%;transform:translateX(-50%);
+    position:absolute;top:clamp(84px,12vh,128px);left:50%;transform:translateX(-50%);
     width:min(86vw,720px);text-align:center;z-index:3;pointer-events:none;
     will-change:opacity,transform;
   }
@@ -56,7 +56,7 @@
 
   /* ---- bottom readout ---- */
   .readout{
-    position:absolute;left:50%;bottom:clamp(30px,6vh,64px);transform:translateX(-50%);
+    position:absolute;left:50%;bottom:clamp(40px,7vh,84px);transform:translateX(-50%);
     width:min(90vw,640px);text-align:center;z-index:3;
   }
   .dots{display:flex;gap:10px;justify-content:center;margin-bottom:20px;pointer-events:auto;}
@@ -228,7 +228,7 @@
     ctx.setTransform(dpr,0,0,dpr,0,0);
     cx=W/2; cy=H*0.52;
     const m=Math.min(W,H);
-    BIG=m*0.52; SMALL=m*0.30;
+    BIG=m*0.44; SMALL=m*0.30;
     if(!curScale||curScale<2){ curScale=BIG; tgtScale=BIG; }
   }
   window.addEventListener('resize',()=>{ resize(); render(); });

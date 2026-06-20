@@ -120,8 +120,8 @@ nav.scrolled .bar{box-shadow:0 10px 40px rgba(70,52,34,.14)}
 
 /* ---- The Depth Map ---- */
 .mapwrap{position:relative;z-index:2;margin-top:60px;perspective:1400px}
-.globe-full{position:relative;z-index:2;width:100%;margin-top:20px;background:var(--bg)}
-.globe-frame{display:block;width:100%;height:100svh;min-height:560px;border:0;background:var(--bg)}
+.globe-full{position:relative;z-index:2;width:100%;margin-top:8px;background:transparent}
+.globe-frame{display:block;width:100%;height:92svh;min-height:540px;border:0;background:transparent}
 .map-card{padding:30px 30px 22px;position:relative;overflow:hidden;transition:transform .2s var(--ease);will-change:transform}
 .map-head{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px;margin-bottom:18px;position:relative}
 .map-head .t{font-family:var(--serif);font-size:20px}
@@ -296,7 +296,7 @@ footer .legal{margin-top:32px;font-size:12.5px;color:var(--mut2);max-width:560px
 
 <!-- THE GLOBE: full-screen, scroll-driven (where the loop breaks) -->
 <section class="globe-full">
-  <iframe class="globe-frame" src="globe.html?v=6" title="Where self-improvement breaks" loading="lazy" scrolling="no"></iframe>
+  <iframe class="globe-frame" src="globe.html?v=7" title="Where self-improvement breaks" loading="lazy" scrolling="no" allowtransparency="true"></iframe>
 </section>
 
 <div class="wrap">
