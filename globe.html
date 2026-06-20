@@ -228,7 +228,7 @@
     ctx.setTransform(dpr,0,0,dpr,0,0);
     cx=W/2; cy=H*0.52;
     const m=Math.min(W,H);
-    BIG=m*0.40; SMALL=m*0.26;
+    BIG=m*0.52; SMALL=m*0.30;
     if(!curScale||curScale<2){ curScale=BIG; tgtScale=BIG; }
   }
   window.addEventListener('resize',()=>{ resize(); render(); });
@@ -395,14 +395,9 @@
 
   function frame(now){
     const dt=Math.min((now-last)/1000,0.05); last=now;
-    // scroll-driven zoom
-    const p=scrollP();
-    tgtScale=lerp(BIG,SMALL,smooth(p));
+    // globe stays zoomed in — scroll-zoom removed so it never fights the page scroll
+    tgtScale=BIG;
     curScale+=(tgtScale-curScale)*0.11;
-    copyEl.style.opacity=clamp(1-p/0.38,0,1);
-    copyEl.style.transform='translateX(-50%) translateY('+(-p*44)+'px)';
-    heroui.style.opacity=clamp(1-(p-0.82)/0.18,0,1);
-    hintEl.style.opacity=clamp(1-p/0.04,0,1);
 
     hoverIdx=-1;   // country hover disabled — use the dots to navigate
     if(hoverIdx<0){
