@@ -126,6 +126,8 @@
 // ============== CONFIG — Supabase (safe to ship in the browser) ==============
 const SUPABASE_URL = "https://vvwevqhdwumnethujxhy.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ2d2V2cWhkd3VtbmV0aHVqeGh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyMDg0ODYsImV4cCI6MjA5Njc4NDQ4Nn0.G60xcGM0DwDBYX2j48iYgb_y8SuXYxdNNiExQlDzarU";
+// Public site base (GitHub Pages serves the site under /bahahaha, not the domain root)
+const SITE_URL = "https://gersel1233.github.io/bahahaha";
 // edge functions base (deployed to Supabase): connect-stripe, payout, create-promo, stripe-webhook
 const FN = SUPABASE_URL + "/functions/v1";
 // ===================================================================================
@@ -165,7 +167,7 @@ else {
   }
 
   async function render(){
-    const link = `${location.origin}/?ref=${partner.code}`;
+    const link = `${SITE_URL}/?ref=${partner.code}`;
     document.getElementById('link').textContent = link;
     document.getElementById('codeTxt').textContent = partner.code;
     document.getElementById('showLb').checked = partner.show_on_leaderboard;
