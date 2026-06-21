@@ -139,6 +139,12 @@ Deno.serve(async (req) => {
     for (const c of rows) {
       if (c.stripe_transfer_id) { alreadyPaid++; continue; } // already transferred — never pay twice
       const info = await chargeInfo(c, key);
+      console.log("[request-payout] resolve", JSON.stringify({
+        commission_id: c.id,
+        stored_currency: c.currency,
+        resolved_charge_currency: info?.currency ?? null,
+        charge: info?.charge ?? null,
+      }));
       if (info) ready.push({ id: c.id, commission_cents: c.commission_cents || 0, currency: info.currency, charge: info.charge });
       else notReady++;
     }
@@ -160,7 +166,15 @@ Deno.serve(async (req) => {
       return json({ error: `Minimum payout is $${(MIN / 100).toFixed(0)}`, available_cents: readyTotal, not_ready_count: notReady }, 400);
     }
 
-    const currency = ready[0].currency;
+    // Derive the payout currency ONLY from the resolved charge currencies (never
+    // from the stored commission currency, which may be stale, e.g. backfilled 'usd').
+    const currencies = [...new Set(ready.map((c) => c.currency))];
+    console.log("[request-payout] resolved currencies", JSON.stringify({ currencies, ready_total: readyTotal }));
+    if (currencies.length > 1) {
+      // (A) reject mixed currencies for now — our flow + payouts row are single-currency
+      return json({ error: `Mixed currencies not supported in one payout (${currencies.join(", ")}). Withdraw will need per-currency grouping.`, currencies }, 400);
+    }
+    const currency = currencies[0];
 
     // 4) open ONE pending payout row that groups all transfers from this attempt
     const { data: payout, error: pe } = await sb.from("payouts")
@@ -182,6 +196,9 @@ Deno.serve(async (req) => {
       if (!claimedRows || claimedRows.length === 0) continue; // already claimed elsewhere
 
       try {
+        console.log("[request-payout] transfer", JSON.stringify({
+          commission_id: c.id, transfer_currency: c.currency, amount_cents: c.commission_cents, source_charge: c.charge,
+        }));
         const transfer = await stripePost("transfers", key, {
           "amount": String(c.commission_cents),
           "currency": c.currency,
