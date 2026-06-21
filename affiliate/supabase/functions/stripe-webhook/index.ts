@@ -44,15 +44,37 @@ async function ensureReferral(partner_id: string, cust: string, referred_user_id
   }).select().maybeSingle();
   return ins.data;
 }
-async function credit(partner_id: string, referral_id: string | null, o: { invoice_id: string; charge_id?: string | null; amount: number; kind: "first" | "recurring"; currency?: string | null }) {
+// Create the commission, OR update an existing row for the same invoice when it
+// is missing a charge id (so we never insert a duplicate and always backfill the
+// charge once it's known). Returns the row id + what happened (for logging).
+async function credit(partner_id: string, referral_id: string | null, o: { invoice_id: string; charge_id?: string | null; amount: number; kind: "first" | "recurring"; currency?: string | null }): Promise<{ id: string | null; action: string }> {
   const rate = await rateFor(partner_id);
-  const { error } = await sb.from("commissions").insert({
+  const currency = (o.currency || "usd").toLowerCase();
+
+  const existing = await sb.from("commissions").select("id,stripe_charge_id,currency").eq("stripe_invoice_id", o.invoice_id).maybeSingle();
+  if (existing.data) {
+    const patch: Record<string, unknown> = {};
+    if (o.charge_id && !existing.data.stripe_charge_id) patch.stripe_charge_id = o.charge_id;
+    if (o.currency && (existing.data.currency || "").toLowerCase() !== currency) patch.currency = currency;
+    if (Object.keys(patch).length) {
+      await sb.from("commissions").update(patch).eq("id", existing.data.id);
+      return { id: existing.data.id, action: "updated:" + Object.keys(patch).join("+") };
+    }
+    return { id: existing.data.id, action: "exists" };
+  }
+
+  const ins = await sb.from("commissions").insert({
     partner_id, referral_id, stripe_invoice_id: o.invoice_id, stripe_charge_id: o.charge_id ?? null,
-    gross_cents: o.amount, rate, commission_cents: Math.round(o.amount * rate / 100),
-    currency: (o.currency || "usd").toLowerCase(),
+    gross_cents: o.amount, rate, commission_cents: Math.round(o.amount * rate / 100), currency,
     kind: o.kind, status: "pending", available_at: new Date(Date.now() + HOLD * 864e5).toISOString(),
-  });
-  return !error; // unique(stripe_invoice_id) -> false on duplicate (idempotent)
+  }).select("id").maybeSingle();
+  if (ins.error) {
+    // unique(stripe_invoice_id) race — fetch the row and patch its charge if missing
+    const ex2 = await sb.from("commissions").select("id,stripe_charge_id").eq("stripe_invoice_id", o.invoice_id).maybeSingle();
+    if (ex2.data && o.charge_id && !ex2.data.stripe_charge_id) await sb.from("commissions").update({ stripe_charge_id: o.charge_id, currency }).eq("id", ex2.data.id);
+    return { id: ex2.data?.id ?? null, action: "race" };
+  }
+  return { id: ins.data?.id ?? null, action: "inserted" };
 }
 // referral_code can live in many places on an invoice depending on API version
 function codeFromInvoice(o: any): string | null {
@@ -62,27 +84,59 @@ function codeFromInvoice(o: any): string | null {
     || o?.lines?.data?.[0]?.metadata?.referral_code
     || null;
 }
-// Resolve a REAL charge id (ch_...) AND its currency. Never store pi_... —
-// payouts use source_transaction which requires a charge, and the transfer
-// currency must match the charge currency. Resolves a payment_intent to its
-// latest_charge when only the PI is present.
-async function realChargeInfo(charge: any, paymentIntent: any): Promise<{ charge: string | null; currency: string | null }> {
-  if (typeof charge === "string" && charge.startsWith("ch_")) return { charge, currency: null };
-  if (charge && typeof charge === "object" && charge.id) return { charge: charge.id, currency: charge.currency ?? null };
-  const piId = typeof paymentIntent === "string" ? paymentIntent : paymentIntent?.id;
-  if (piId) {
-    try {
-      const pi = await stripe.paymentIntents.retrieve(piId);
-      const lc: any = (pi as any).latest_charge;
-      const ch = typeof lc === "string" ? lc : (lc?.id ?? null);
-      if (ch && String(ch).startsWith("ch_")) {
-        return { charge: ch, currency: (pi as any).currency ?? (typeof lc === "object" ? lc?.currency : null) ?? null };
-      }
-    } catch (e) {
-      console.warn("[stripe-webhook] could not resolve charge from payment_intent", piId, (e as Error)?.message);
-    }
+// Settlement currency of a charge = balance_transaction.currency (what
+// source_transaction transfers must match), falling back to charge.currency.
+async function chargeCurrency(chargeId: string): Promise<string | null> {
+  try {
+    const ch: any = await stripe.charges.retrieve(chargeId, { expand: ["balance_transaction"] });
+    const bt = ch?.balance_transaction;
+    return ((bt && typeof bt === "object") ? bt.currency : null) || ch?.currency || null;
+  } catch (e) {
+    console.warn("[stripe-webhook] chargeCurrency failed", chargeId, (e as Error)?.message);
+    return null;
   }
-  return { charge: null, currency: null };
+}
+
+// Resolve {chargeId, currency, piId} from an invoice id — retrieve it FRESH with
+// expands (the SDK is pinned to an API version that still exposes charge/
+// payment_intent), so we get a real ch_... even when the webhook event object
+// omitted it. Currency prefers balance_transaction (settlement) then invoice.
+async function resolveFromInvoice(invoiceId: string): Promise<{ chargeId: string | null; currency: string | null; piId: string | null }> {
+  let chargeId: string | null = null, currency: string | null = null, piId: string | null = null;
+  try {
+    const inv: any = await stripe.invoices.retrieve(invoiceId, {
+      expand: ["charge.balance_transaction", "payment_intent.latest_charge.balance_transaction"],
+    });
+    const ch = inv.charge;
+    if (ch && typeof ch === "object" && ch.id) { chargeId = ch.id; currency = ch.balance_transaction?.currency || ch.currency || null; }
+    else if (typeof ch === "string" && ch.startsWith("ch_")) chargeId = ch;
+
+    const pi = inv.payment_intent;
+    piId = typeof pi === "string" ? pi : (pi?.id ?? null);
+    if (!chargeId && pi && typeof pi === "object") {
+      const lc = pi.latest_charge;
+      if (lc && typeof lc === "object" && lc.id) { chargeId = lc.id; currency = currency || lc.balance_transaction?.currency || lc.currency || null; }
+      else if (typeof lc === "string" && lc.startsWith("ch_")) chargeId = lc;
+    }
+    if (chargeId && !currency) currency = await chargeCurrency(chargeId);
+    currency = currency || inv.currency || null;
+  } catch (e) {
+    console.warn("[stripe-webhook] resolveFromInvoice failed", invoiceId, (e as Error)?.message);
+  }
+  return { chargeId, currency, piId };
+}
+
+// Resolve {chargeId, currency} from a payment_intent id (one-time checkout, no invoice).
+async function resolveFromPI(piId: string): Promise<{ chargeId: string | null; currency: string | null }> {
+  try {
+    const pi: any = await stripe.paymentIntents.retrieve(piId, { expand: ["latest_charge.balance_transaction"] });
+    const lc = pi.latest_charge;
+    if (lc && typeof lc === "object" && lc.id) return { chargeId: lc.id, currency: lc.balance_transaction?.currency || lc.currency || pi.currency || null };
+    if (typeof lc === "string" && lc.startsWith("ch_")) return { chargeId: lc, currency: await chargeCurrency(lc) };
+  } catch (e) {
+    console.warn("[stripe-webhook] resolveFromPI failed", piId, (e as Error)?.message);
+  }
+  return { chargeId: null, currency: null };
 }
 
 Deno.serve(async (req) => {
@@ -114,12 +168,23 @@ Deno.serve(async (req) => {
         else {
           const ref = await ensureReferral(p.id, cust, o.client_reference_id || null);
           const amount = Number(o.amount_total ?? 0);
-          if (amount > 0) {
-            const ci = await realChargeInfo(null, o.payment_intent);
-            if (!ci.charge) console.warn("[stripe-webhook] checkout without resolvable charge — commission not payout-ready", o.id);
-            const ok = await credit(p.id, ref?.id ?? null, { invoice_id: o.invoice || ("cs_" + o.id), charge_id: ci.charge, amount, kind: "first", currency: ci.currency || o.currency });
-            note = ok ? "referral + commission created" : "referral ok; commission already existed";
-          } else note = "referral created; amount_total is 0 (trial/free) — commission waits for first paid invoice";
+          const piId = typeof o.payment_intent === "string" ? o.payment_intent : (o.payment_intent?.id ?? null);
+          console.log("[stripe-webhook] checkout.session.completed", JSON.stringify({ session: o.id, invoice: o.invoice ?? null, payment_intent: piId, amount }));
+          if (amount <= 0) {
+            note = "referral created; amount_total is 0 (trial/free) — commission waits for first paid invoice";
+          } else if (o.invoice) {
+            // subscription checkout: invoice.paid will create the commission (with a real charge)
+            note = "referral ready; subscription checkout — commission handled by invoice.paid";
+          } else if (piId) {
+            // one-time payment (no invoice): resolve the real charge now and credit
+            const r = await resolveFromPI(piId);
+            console.log("[stripe-webhook] checkout resolved", JSON.stringify({ payment_intent: piId, charge: r.chargeId, currency: r.currency }));
+            const res = await credit(p.id, ref?.id ?? null, { invoice_id: "cs_" + o.id, charge_id: r.chargeId, amount, kind: "first", currency: r.currency || o.currency });
+            console.log("[stripe-webhook] commission", JSON.stringify({ source: "checkout", commission_id: res.id, action: res.action, charge: r.chargeId }));
+            note = `checkout commission ${res.action} (charge ${r.chargeId ?? "none"})`;
+          } else {
+            note = "referral created; no invoice or payment_intent on session — commission deferred";
+          }
         }
       }
     } else if (event.type === "invoice.paid" || event.type === "invoice.payment_succeeded") {
@@ -131,13 +196,16 @@ Deno.serve(async (req) => {
         if (p) ref = await ensureReferral(p.id, cust, null);
       }
       partner_found = !!ref;
+      console.log("[stripe-webhook] invoice.paid", JSON.stringify({ invoice: o.id, customer: cust, amount, billing_reason: o.billing_reason }));
       if (!ref) note = "no referral for customer (no code found on invoice)";
       else if (amount <= 0) note = "amount_paid is 0 (trial) — no commission yet";
       else {
-        const ci = await realChargeInfo(o.charge, o.payment_intent);
-        if (!ci.charge) console.warn("[stripe-webhook] invoice without resolvable charge — commission not payout-ready", o.id);
-        const ok = await credit(ref.partner_id, ref.id, { invoice_id: o.id, charge_id: ci.charge, amount, kind: o.billing_reason === "subscription_create" ? "first" : "recurring", currency: ci.currency || o.currency });
-        note = ok ? "commission created" : "commission already existed (idempotent)";
+        const r = await resolveFromInvoice(o.id);
+        console.log("[stripe-webhook] invoice resolved", JSON.stringify({ invoice: o.id, payment_intent: r.piId, charge: r.chargeId, currency: r.currency }));
+        if (!r.chargeId) console.warn("[stripe-webhook] invoice without resolvable charge — commission not payout-ready", o.id);
+        const res = await credit(ref.partner_id, ref.id, { invoice_id: o.id, charge_id: r.chargeId, amount, kind: o.billing_reason === "subscription_create" ? "first" : "recurring", currency: r.currency || o.currency });
+        console.log("[stripe-webhook] commission", JSON.stringify({ source: "invoice", invoice: o.id, commission_id: res.id, action: res.action, charge: r.chargeId, currency: r.currency }));
+        note = `commission ${res.action} (charge ${r.chargeId ?? "none"})`;
       }
     } else if (event.type === "charge.refunded" || event.type === "refund.created" || event.type === "charge.refund.updated") {
       // charge.refunded: o is the charge (o.id = charge). refund.created: o is the refund (o.charge).
