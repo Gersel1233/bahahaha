@@ -336,9 +336,41 @@ footer .legal{margin-top:32px;font-size:12.5px;color:var(--mut2);max-width:560px
   width:46px;height:46px;display:flex;align-items:center;justify-content:center;border-radius:15px;
   border:1.6px solid rgba(193,95,60,.5);background:rgba(255,255,255,.42);
   box-shadow:0 1px 0 rgba(255,255,255,.8) inset,0 6px 16px rgba(70,52,34,.08);margin-bottom:16px}
+/* ===== Fyon loading screen ===== */
+#fyon-loader{position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;
+  background:radial-gradient(120% 90% at 50% 0%,#F7F3EA,#EDE7DA 70%);transition:opacity .85s ease,visibility .85s ease}
+.fl-core{position:relative;width:104px;height:104px;display:grid;place-items:center}
+.fl-ring{position:absolute;inset:0;width:104px;height:104px;transform:rotate(-90deg)}
+.fl-ring-track{fill:none;stroke:rgba(70,52,34,.12);stroke-width:3}
+.fl-ring-fill{fill:none;stroke:var(--clay);stroke-width:3;stroke-linecap:round;
+  transition:stroke-dashoffset .25s linear;filter:drop-shadow(0 2px 8px rgba(193,95,60,.4))}
+.fl-star{font-size:30px;color:var(--clay);animation:fl-pulse 1.8s var(--ease) infinite}
+@keyframes fl-pulse{0%,100%{transform:scale(1);opacity:.9}50%{transform:scale(1.12);opacity:1}}
+.fl-name{font-family:var(--serif);font-size:24px;font-weight:500;letter-spacing:-.01em;color:var(--ink)}
+.fl-meta{font-size:12.5px;letter-spacing:.16em;color:var(--mut);font-variant-numeric:tabular-nums}
+.fl-unit{margin-left:1px}
+html.fyon-loaded #fyon-loader{opacity:0;visibility:hidden;pointer-events:none}
+/* content reveal — opacity only, so position:fixed children keep working */
+.fyon-reveal{opacity:0;transition:opacity 1s ease .1s}
+html.fyon-loaded .fyon-reveal{opacity:1}
+@media(prefers-reduced-motion:reduce){#fyon-loader{transition:none}.fyon-reveal{transition:none}}
 </style>
 </head>
 <body>
+<noscript><style>#fyon-loader{display:none!important}.fyon-reveal{opacity:1!important}</style></noscript>
+<div id="fyon-loader" aria-hidden="true">
+  <div class="fl-core">
+    <svg class="fl-ring" viewBox="0 0 100 100" aria-hidden="true">
+      <circle class="fl-ring-track" cx="50" cy="50" r="46"></circle>
+      <circle class="fl-ring-fill" cx="50" cy="50" r="46"></circle>
+    </svg>
+    <span class="fl-star">✦</span>
+  </div>
+  <div class="fl-name">Fyon</div>
+  <div class="fl-meta"><span class="fl-pct">0</span><span class="fl-unit">%</span></div>
+</div>
+<script src="loader.js?v=1"></script>
+<div class="fyon-reveal">
 <div class="bgfx"><div class="base"></div><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div></div>
 <div class="grain"></div>
 
@@ -365,7 +397,7 @@ footer .legal{margin-top:32px;font-size:12.5px;color:var(--mut2);max-width:560px
 
 <!-- THE GLOBE: full-screen, scroll-driven (where the loop breaks) -->
 <section class="globe-full">
-  <iframe class="globe-frame" src="globe.html?v=7" title="Where self-improvement breaks" loading="lazy" scrolling="no" allowtransparency="true"></iframe>
+  <iframe class="globe-frame" src="globe.html?v=8" title="Where self-improvement breaks" scrolling="no" allowtransparency="true"></iframe>
 </section>
 
 <div class="wrap">
@@ -543,6 +575,7 @@ footer .legal{margin-top:32px;font-size:12.5px;color:var(--mut2);max-width:560px
   </div>
   <div class="legal">Fyon shows illustrative, non-medical visualisations and is not a substitute for professional advice. 18+. © 2026 Fyon.</div>
 </footer>
+</div><!-- /.fyon-reveal -->
 
 <script>
 /* referral capture (?ref=CODE -> 60-day cookie, used at checkout & partner attribution) */

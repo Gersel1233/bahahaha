@@ -407,6 +407,10 @@
       } else { dwellT+=dt; if(dwellT>=DWELL) startLeg((idx+1)%N); }
     }
     render();
+    if(!frame.done){ frame.done=true;
+      // tell the parent loading screen the globe has painted its first frame
+      try{ if(window.parent && window.parent!==window && typeof window.parent.fyonReady==='function') window.parent.fyonReady(); }catch(e){}
+    }
     requestAnimationFrame(frame);
   }
   document.addEventListener('visibilitychange',()=>{ if(!document.hidden) last=performance.now(); });
