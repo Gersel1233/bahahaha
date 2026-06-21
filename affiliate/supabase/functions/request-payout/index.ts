@@ -58,22 +58,21 @@ async function stripeGet(path: string, key: string) {
   return d;
 }
 
-// Resolve a usable charge id (ch_...) AND its real Stripe currency.
-// Accepts an existing ch_ (fetches the charge for its currency), or resolves a
-// payment_intent (pi_...) to its latest_charge. Persists the resolved charge id
-// and the real currency back onto the commission so future runs are cheap and
-// the transfer currency always matches the source charge.
+// Resolve a usable charge id (ch_...) AND the SETTLEMENT currency that a
+// source_transaction transfer must match. Stripe requires the transfer currency
+// to equal the charge's balance_transaction.currency (the settlement currency),
+// NOT charge.currency (the presentment currency) — they can differ (e.g. a charge
+// presented in usd that settles in dkk). Persists the resolved charge id + the
+// settlement currency back onto the commission.
 async function chargeInfo(
   c: { id: string; stripe_charge_id: string | null; currency: string | null },
   key: string,
 ): Promise<{ charge: string; currency: string } | null> {
   const cur = c.stripe_charge_id;
   let charge: string | null = null;
-  let currency: string | null = null;
 
   if (cur && cur.startsWith("ch_")) {
     charge = cur;
-    try { const ch = await stripeGet("charges/" + cur, key); currency = ch?.currency ?? null; } catch (_) { /* fall back below */ }
   } else if (cur && cur.startsWith("pi_")) {
     try {
       const pi = await stripeGet("payment_intents/" + cur, key);
@@ -81,31 +80,42 @@ async function chargeInfo(
       const id = typeof lc === "string" ? lc : (lc?.id ?? null);
       if (id && String(id).startsWith("ch_")) {
         charge = id;
-        currency = pi?.currency ?? (typeof lc === "object" ? lc?.currency : null) ?? null;
         await sb.from("commissions").update({ stripe_charge_id: id }).eq("id", c.id);
       }
     } catch (e) {
       console.warn("[request-payout] could not resolve charge for commission", c.id, String((e as Error)?.message ?? e));
     }
   }
-
   if (!charge) return null;
-  if (!currency) {
-    try { const ch = await stripeGet("charges/" + charge, key); currency = ch?.currency ?? null; } catch (_) { /* */ }
+
+  // Fetch the charge with the balance_transaction expanded to read the settlement currency.
+  let chargeCurrency: string | null = null;
+  let btCurrency: string | null = null;
+  try {
+    const ch = await stripeGet("charges/" + charge + "?expand[]=balance_transaction", key);
+    chargeCurrency = ch?.currency ?? null;
+    const bt = ch?.balance_transaction;
+    btCurrency = (bt && typeof bt === "object") ? (bt.currency ?? null) : null;
+  } catch (e) {
+    console.warn("[request-payout] charge retrieve failed", charge, String((e as Error)?.message ?? e));
   }
+
+  // settlement currency wins; charge.currency only as a fallback; never default to usd
+  const currency = btCurrency || chargeCurrency;
+  console.log("[request-payout] chargeInfo", JSON.stringify({
+    commission_id: c.id, charge, charge_currency: chargeCurrency, balance_transaction_currency: btCurrency, chosen_currency: currency,
+  }));
   if (!currency) {
-    // NEVER guess the currency — sending the wrong one is exactly what fails the
-    // transfer ("source_transaction balance ... must equal transfer currency").
-    console.warn("[request-payout] could not determine charge currency; skipping commission", c.id, charge);
+    console.warn("[request-payout] no balance_transaction/charge currency; skipping commission", c.id, charge);
     return null;
   }
-  currency = String(currency).toLowerCase();
+  const cl = String(currency).toLowerCase();
 
-  // persist the real currency back if it was missing/wrong (e.g. backfilled 'usd')
-  if ((c.currency || "").toLowerCase() !== currency) {
-    await sb.from("commissions").update({ currency }).eq("id", c.id);
+  // persist the settlement currency back (e.g. backfilled rows defaulted to 'usd')
+  if ((c.currency || "").toLowerCase() !== cl) {
+    await sb.from("commissions").update({ currency: cl }).eq("id", c.id);
   }
-  return { charge, currency };
+  return { charge, currency: cl };
 }
 
 Deno.serve(async (req) => {
