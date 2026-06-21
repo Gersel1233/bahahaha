@@ -160,11 +160,11 @@ Deno.serve(async (req) => {
           "metadata[partner_id]": p.id,
           "metadata[payout_id]": payout.id,
           "metadata[commission_id]": c.id,
-          // idempotency key bound to BOTH commission and charge: a backfill that
-          // changed the charge id yields a fresh key (no clash with an old cached
-          // key created with different params), while still preventing double-pay
-          // of the same commission+charge. The DB status claim is the primary guard.
-        }, `tr_comm_${c.id}_${c.charge}`);
+          // idempotency key includes the payout id, so every withdraw attempt uses a
+          // FRESH key (never clashes with a key Stripe cached from an earlier attempt
+          // with different params). Double-pay is still prevented by the DB status
+          // claim below and by skipping commissions that already have a transfer id.
+        }, `tr_payout_${payout.id}_comm_${c.id}_${c.charge}`);
 
         await sb.from("commissions").update({ stripe_transfer_id: transfer.id }).eq("id", c.id);
         transferIds.push(transfer.id);
