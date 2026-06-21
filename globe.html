@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script>try{if(new URLSearchParams(location.search).get('bare'))document.documentElement.classList.add('bare');}catch(e){}</script>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Where self-improvement breaks · Fyon</title>
@@ -28,6 +29,9 @@
     background:transparent;color:var(--ink);font-family:var(--sans);
     -webkit-font-smoothing:antialiased;
   }
+  /* bare mode (?bare=1): just the rotating globe, none of this page's own text/UI */
+  html.bare .hero-ui, html.bare #next, html.bare .spacer, html.bare .hint{ display:none !important; }
+  html.bare, html.bare body{ overflow:hidden; background:transparent; }
 
   /* ---- fixed globe + scroll spacer ---- */
   canvas#globe{position:fixed;inset:0;width:100vw;height:100vh;display:block;z-index:0;}
