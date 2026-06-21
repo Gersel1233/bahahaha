@@ -64,9 +64,51 @@ Work top to bottom. Everything in **TEST mode** first, then flip to **LIVE**.
 - [ ] Refund the test charge → unpaid commission becomes `reversed`; if already paid, a
       `commission_adjustments` (negative) row is logged (no auto-pull from partner)
 
-## G. Flip to production
+## G. Automatic commission release (REQUIRED before launch)
 
-- [ ] Set `PAYOUT_HOLD_DAYS = 30`
-- [ ] Schedule `release-commissions` daily (Supabase Scheduled Functions / pg_cron / GitHub Action)
+Commissions are created `pending` and must move to `available` after the hold
+period automatically — never by hand in production.
+
+### Option 1 — Supabase pg_cron (preferred: no public endpoint)
+
+- [ ] In the Supabase SQL editor, run `affiliate/supabase/006_schedule_release.sql`
+      (enables `pg_cron` and schedules `release_commissions(30)` daily at 03:07 UTC)
+- [ ] Verify the job exists:
+      ```sql
+      select jobid, schedule, command, active from cron.job where jobname='release-commissions-daily';
+      ```
+- [ ] After a day, check runs:
+      ```sql
+      select status, return_message, start_time
+      from cron.job_run_details
+      where jobid = (select jobid from cron.job where jobname='release-commissions-daily')
+      order by start_time desc limit 5;
+      ```
+
+> The hold is hard-coded to **30** in the SQL job (independent of
+> `PAYOUT_HOLD_DAYS`). Do not set it to 0 in production.
+
+### Option 2 — GitHub Actions (only if pg_cron isn't available on your plan)
+
+Use ONE option, not both.
+
+- [ ] Supabase secret: `supabase secrets set RELEASE_SECRET="$(openssl rand -hex 16)"`
+- [ ] Redeploy so the gate is required: `supabase functions deploy release-commissions --no-verify-jwt`
+      (the function now returns 503 if `RELEASE_SECRET` is unset, 403 without the header — never public)
+- [ ] Add the SAME value as a GitHub repo secret named `RELEASE_SECRET`
+      (repo → Settings → Secrets and variables → Actions → New repository secret)
+- [ ] The workflow `.github/workflows/release-commissions.yml` runs daily (03:17 UTC);
+      trigger once manually via the Actions tab → "Release commissions (daily)" → Run workflow
+- [ ] Confirm the run shows `HTTP 200` and `{ "ok": true, "released": N, "hold_days": 30 }`
+      (ensure `supabase secrets set PAYOUT_HOLD_DAYS=30` so this path uses a 30-day hold)
+
+## H. Flip to production
+
+- [ ] `PAYOUT_HOLD_DAYS = 30` (and the pg_cron job uses 30)
+- [ ] Automatic release scheduled (Option 1 or 2 above) and verified
 - [ ] Remove any test partners / test commissions if desired
+- [ ] Verify the commission ledger looks right:
+      ```sql
+      select status, count(*), sum(commission_cents) from commissions group by status;
+      ```
 - [ ] Announce 🎉

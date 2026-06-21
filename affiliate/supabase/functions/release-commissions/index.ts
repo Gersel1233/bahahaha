@@ -24,12 +24,12 @@ const HOLD = Number(Deno.env.get("PAYOUT_HOLD_DAYS") ?? "30");
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: cors });
   try {
-    // optional shared-secret gate (set RELEASE_SECRET to require it)
+    // REQUIRED shared-secret gate — this function is deployed with --no-verify-jwt,
+    // so this is the only thing protecting it. No secret configured => closed.
     const secret = Deno.env.get("RELEASE_SECRET");
-    if (secret) {
-      const got = req.headers.get("x-release-key") ?? new URL(req.url).searchParams.get("key");
-      if (got !== secret) return json({ error: "forbidden" }, 403);
-    }
+    if (!secret) return json({ error: "RELEASE_SECRET not configured — set it before using this endpoint" }, 503);
+    const got = req.headers.get("x-release-key") ?? new URL(req.url).searchParams.get("key");
+    if (got !== secret) return json({ error: "forbidden" }, 403);
 
     const { data, error } = await sb.rpc("release_commissions", { hold_days: HOLD });
     if (error) return json({ error: error.message }, 500);

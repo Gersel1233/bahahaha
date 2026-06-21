@@ -1,0 +1,32 @@
+name: Release commissions (daily)
+
+# FALLBACK to Supabase pg_cron (006_schedule_release.sql). Use ONE of the two,
+# not both. This calls the release-commissions edge function once a day with a
+# secret header. Requires:
+#   - Supabase secret:  RELEASE_SECRET   (gates the function)
+#   - GitHub repo secret: RELEASE_SECRET  (same value)
+# The endpoint is never public: it returns 403 without the matching header.
+
+on:
+  schedule:
+    - cron: "17 3 * * *" # daily at 03:17 UTC
+  workflow_dispatch: {}
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger release-commissions
+        env:
+          RELEASE_SECRET: ${{ secrets.RELEASE_SECRET }}
+        run: |
+          if [ -z "$RELEASE_SECRET" ]; then
+            echo "RELEASE_SECRET repo secret is not set"; exit 1
+          fi
+          code=$(curl -sS -o /tmp/out.json -w "%{http_code}" -X POST \
+            "https://vvwevqhdwumnethujxhy.supabase.co/functions/v1/release-commissions" \
+            -H "x-release-key: $RELEASE_SECRET")
+          echo "HTTP $code"
+          cat /tmp/out.json
+          echo
+          test "$code" = "200"
