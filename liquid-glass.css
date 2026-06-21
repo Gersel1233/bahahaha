@@ -1,0 +1,92 @@
+/* ===== Liquid glass button system ===== */
+.lg{
+  position:relative; isolation:isolate;
+  display:inline-flex; align-items:center; justify-content:center;
+  padding:.95em 1.7em; border:0; border-radius:999px;
+  font:600 16px/1 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  letter-spacing:.005em; color:#2c2620; cursor:pointer; user-select:none; white-space:nowrap;
+  background:rgba(255,255,255,.14);
+  -webkit-backdrop-filter:blur(14px) saturate(185%);
+  backdrop-filter:blur(14px) saturate(185%);
+  box-shadow:
+    inset 0 1px 1px rgba(255,255,255,.95),
+    inset 0 -8px 14px -8px rgba(255,255,255,.55),
+    inset 0 0 0 1px rgba(255,255,255,.28),
+    0 5px 16px -6px rgba(70,45,25,.35),
+    0 2px 5px -2px rgba(70,45,25,.25);
+  transition:transform .42s cubic-bezier(.2,.85,.25,1),box-shadow .42s,background .42s;
+}
+/* cursor-following specular highlight */
+.lg::before{
+  content:""; position:absolute; inset:0; border-radius:inherit; z-index:1; pointer-events:none;
+  background:radial-gradient(130px circle at var(--mx,50%) var(--my,-10%),
+            rgba(255,255,255,.9),rgba(255,255,255,0) 60%);
+  opacity:var(--spec,.55); transition:opacity .35s;
+}
+/* sheen that sweeps on hover */
+.lg::after{
+  content:""; position:absolute; inset:0; border-radius:inherit; z-index:2; pointer-events:none;
+  background:linear-gradient(105deg,transparent 32%,rgba(255,255,255,.55) 48%,transparent 64%);
+  background-size:260% 100%; background-position:165% 0;
+  mix-blend-mode:screen; transition:background-position .85s cubic-bezier(.3,.7,.3,1);
+}
+.lg:hover::after{ background-position:-60% 0; }
+.lg .lbl{ position:relative; z-index:3; display:inline-flex; align-items:center; gap:.5em; }
+.lg:hover{ transform:translateY(-2px) scale(1.025); }
+.lg:active{ transform:translateY(0) scale(.95); transition-duration:.11s; }
+.lg:focus-visible{ outline:2px solid #bd5d3a; outline-offset:3px; }
+
+/* sizes */
+.lg.sm{ font-size:13px; padding:.7em 1.15em; }
+.lg.lg-big{ font-size:18px; padding:1.05em 2.1em; }
+
+/* PRIMARY — orange glass */
+.lg.primary{
+  color:#fff; text-shadow:0 1px 1px rgba(120,40,20,.35);
+  background:linear-gradient(158deg,rgba(214,112,72,.92),rgba(170,73,42,.94));
+  box-shadow:
+    inset 0 1px 1px rgba(255,224,205,.85),
+    inset 0 -10px 16px -8px rgba(120,40,20,.5),
+    inset 0 0 0 1px rgba(255,180,140,.35),
+    0 10px 26px -8px rgba(150,60,30,.5),
+    0 2px 6px -2px rgba(120,40,20,.4);
+}
+.lg.primary::before{
+  background:radial-gradient(130px circle at var(--mx,50%) var(--my,-10%),
+            rgba(255,228,205,.85),rgba(255,228,205,0) 58%);
+}
+
+/* glass on DARK backgrounds */
+.lg.on-dark{
+  color:#f6f1ea; background:rgba(255,255,255,.1);
+  box-shadow:
+    inset 0 1px 1px rgba(255,255,255,.5),
+    inset 0 -8px 14px -8px rgba(255,255,255,.18),
+    inset 0 0 0 1px rgba(255,255,255,.16),
+    0 8px 22px -8px rgba(0,0,0,.5);
+}
+.lg.on-dark::before{
+  background:radial-gradient(130px circle at var(--mx,50%) var(--my,-10%),
+            rgba(255,255,255,.55),rgba(255,255,255,0) 60%);
+}
+
+/* CHIP — terracotta tag */
+.lg.chip{
+  color:#fff; font-size:12.5px; font-weight:700; letter-spacing:.13em; text-transform:uppercase;
+  padding:.62em 1.05em; text-shadow:0 1px 1px rgba(120,40,20,.4);
+  background:linear-gradient(158deg,rgba(202,98,62,.9),rgba(166,72,42,.92));
+  box-shadow:
+    inset 0 1px 1px rgba(255,220,200,.8),
+    inset 0 -6px 10px -6px rgba(120,40,20,.5),
+    inset 0 0 0 1px rgba(255,180,140,.3),
+    0 6px 16px -6px rgba(150,60,30,.45);
+}
+
+/* GHOST — quiet glass */
+.lg.ghost{
+  background:rgba(255,255,255,.08);
+  box-shadow:
+    inset 0 1px 1px rgba(255,255,255,.7),
+    inset 0 0 0 1px rgba(255,255,255,.2),
+    0 3px 10px -5px rgba(70,45,25,.25);
+}

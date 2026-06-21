@@ -6,6 +6,8 @@
 <title>Fyon Partners — earn recurring commission</title>
 <link rel="preconnect" href="https://esm.sh" crossorigin />
 <link rel="preconnect" href="https://vvwevqhdwumnethujxhy.supabase.co" crossorigin />
+<link rel="stylesheet" href="liquid-glass.css?v=1" />
+<script defer src="liquid-glass.js?v=1"></script>
 <style>
   :root{
     --bg:#F1EDE4; --ink:#1A1714; --ink2:#3a352e; --mut:#6f685c; --mut2:#9a9286; --line:#E4DECF;
@@ -199,9 +201,9 @@
     <a href="index.html#what">Why Fyon</a><a href="index.html#does">What it does</a><a href="index.html#approach">How it works</a><a href="index.html#principles">Principles</a><a href="partner.html?v=3" class="on">Partners</a>
   </div>
   <div style="display:flex;align-items:center;gap:10px">
-    <a class="btn btn-try btn-sm" href="index.html#close"><span>Try Fyon</span></a>
+    <a class="lg sm" href="index.html#close"><span class="lbl">Try Fyon</span></a>
     <div class="acct hidden" id="acctWrap">
-      <button class="btn btn-ghost btn-sm" id="acctBtn"><span id="who"></span><span class="chev">▾</span></button>
+      <button class="lg ghost sm" id="acctBtn"><span class="lbl"><span id="who"></span><span class="chev">▾</span></span></button>
       <div class="acctmenu glass hidden" id="acctMenu">
         <div class="who-full" id="whoFull"></div>
         <button class="amitem" id="signout">Sign out</button>
@@ -212,7 +214,7 @@
 
 <div class="wrap" style="padding:96px 22px 30px">
   <div id="err" class="errbox hidden"><span class="msg"></span>
-    <div style="margin-top:10px"><button class="btn btn-ghost btn-sm" onclick="location.reload()">Try again</button></div>
+    <div style="margin-top:10px"><button class="lg ghost sm" onclick="location.reload()"><span class="lbl">Try again</span></button></div>
   </div>
 
   <!-- SETUP NOTICE (only if Supabase keys not filled) -->
@@ -228,8 +230,8 @@
       <h1>Earn recurring commission<br>by referring <span class="accent">Fyon Intelligence.</span></h1>
       <p class="lead">Share your link, help others transform their life,<br>and earn 15% recurring commission.</p>
       <div class="row" style="justify-content:center;margin-top:24px">
-        <button class="btn btn-ink" onclick="document.getElementById('signupbox').scrollIntoView({behavior:'smooth'})">Become a partner</button>
-        <a class="btn btn-ghost" href="#signupbox">Already a partner? Sign in</a>
+        <button class="lg primary" onclick="document.getElementById('signupbox').scrollIntoView({behavior:'smooth'})"><span class="lbl">Become a partner</span></button>
+        <a class="lg ghost" href="#signupbox"><span class="lbl">Already a partner? Sign in</span></a>
       </div>
     </div>
 
@@ -249,7 +251,7 @@
     <div id="signupbox" class="card signup">
       <h3 style="font-size:22px">Become a partner</h3>
       <p class="muted small" style="margin-top:6px">Enter your email to sign in or create your partner account.</p>
-      <div class="row"><input id="email" type="email" placeholder="you@email.com" /><button class="btn btn-ink" id="signin">Send magic link</button></div>
+      <div class="row"><input id="email" type="email" placeholder="you@email.com" /><button class="lg primary" id="signin"><span class="lbl">Send magic link</span></button></div>
       <p id="authmsg" class="small muted" style="margin-top:12px"></p>
     </div>
   </section>
@@ -263,8 +265,8 @@
       <h1>Earn recurring commission<br>by referring <span class="accent">Fyon Intelligence.</span></h1>
       <p class="lead">Share your link, help others transform their life,<br>and earn <b id="heroRate">15</b>% recurring commission.</p>
       <div class="row" style="justify-content:center;margin-top:28px">
-        <button class="btn btn-clay" onclick="document.getElementById('dashTop').scrollIntoView({behavior:'smooth',block:'start'})">Get your link <span style="opacity:.85">→</span></button>
-        <button class="btn btn-ghost" onclick="document.getElementById('howbox').scrollIntoView({behavior:'smooth',block:'center'})"><span class="play">▶</span> How it works</button>
+        <button class="lg primary" onclick="document.getElementById('dashTop').scrollIntoView({behavior:'smooth',block:'start'})"><span class="lbl">Get your link →</span></button>
+        <button class="lg ghost" onclick="document.getElementById('howbox').scrollIntoView({behavior:'smooth',block:'center'})"><span class="lbl"><span class="play">▶</span> How it works</span></button>
       </div>
     </section>
 
@@ -280,8 +282,8 @@
         <div class="barwrap" style="background:rgba(0,0,0,.06)"><div class="bar" id="tierBar" style="width:0"></div></div>
         <div class="row" style="margin-top:18px;align-items:center">
           <div class="mono small" id="link" style="flex:1;min-width:200px;background:rgba(255,255,255,.55);border:1px solid var(--line);padding:12px 14px;border-radius:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">…</div>
-          <button class="btn btn-ink btn-sm" id="copyLink">Copy</button>
-          <button class="btn btn-sm" id="copyCode" style="background:rgba(193,95,60,.12);color:var(--clay-d);box-shadow:inset 0 0 0 1px rgba(193,95,60,.34)"><span id="codeTxt">CODE</span> · 20% OFF</button>
+          <button class="lg sm" id="copyLink"><span class="lbl">Copy</span></button>
+          <button class="lg chip" id="copyCode"><span class="lbl"><span id="codeTxt">CODE</span> · 20% OFF</span></button>
         </div>
       </div>
 
@@ -296,7 +298,7 @@
             <option>X / Twitter</option><option>Facebook</option><option>Blog / website</option>
             <option>Friends / word of mouth</option><option>Other</option>
           </select>
-          <div style="margin-top:14px"><button class="btn btn-ink btn-sm" id="connect">Connect Stripe</button></div>
+          <div style="margin-top:14px"><button class="lg primary sm" id="connect"><span class="lbl">Connect Stripe</span></button></div>
         </div>
 
         <div id="connectedBadge" class="card hidden" style="border-color:#a7f3d0;background:#ecfdf5">
@@ -304,14 +306,14 @@
             <span style="color:#047857;font-size:20px">✓</span>
             <div><b style="color:#065f46">Stripe connected</b><div class="muted small">Payouts enabled · ready to withdraw</div></div>
           </div>
-          <div style="margin-top:16px"><button class="btn btn-ghost btn-sm" id="manage">Manage payout account ⚙</button></div>
+          <div style="margin-top:16px"><button class="lg ghost sm" id="manage"><span class="lbl">Manage payout account ⚙</span></button></div>
         </div>
       </div>
     </div>
 
     <div class="grid4" style="margin-top:16px">
       <div class="card"><div class="muted small">💚 Available</div><div class="stat" style="color:var(--emerald)" id="sAvail">$0.00</div>
-        <div class="row" style="justify-content:space-between"><span class="muted small">Ready to withdraw</span><button class="btn btn-ghost btn-sm hidden" id="withdraw">Withdraw →</button></div></div>
+        <div class="row" style="justify-content:space-between"><span class="muted small">Ready to withdraw</span><button class="lg ghost sm hidden" id="withdraw"><span class="lbl">Withdraw →</span></button></div></div>
       <div class="card"><div class="muted small">📈 Monthly</div><div class="stat" style="color:var(--ink)" id="sMonth">$0.00</div><div class="muted small">Recurring commission</div></div>
       <div class="card"><div class="muted small">❖ Lifetime</div><div class="stat" style="color:var(--clay)" id="sLife">$0.00</div><div class="muted small">Total earned</div></div>
       <div class="card"><div class="muted small">👥 Referrals</div><div class="stat" style="color:var(--ink)" id="sRef">0</div><div class="muted small"><span id="sRefA">0</span> active subscribers</div></div>
