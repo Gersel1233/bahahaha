@@ -4,6 +4,9 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Fyon — a self-improvement intelligence that knows you</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&display=swap" />
 <style>
 /* ===========================================================================
    FYON · homepage — warm editorial + liquid glass everywhere
@@ -15,6 +18,7 @@
   --line:#E4DECF; --clay:#C15F3C; --clay-d:#A84E2E;
   --serif:"Tiempos Headline","Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
   --sans:-apple-system,BlinkMacSystemFont,"Inter","Segoe UI",sans-serif;
+  --archivo:"Archivo",-apple-system,BlinkMacSystemFont,"Inter","Segoe UI",sans-serif;
   --ease:cubic-bezier(.2,.8,.2,1);
 }
 *{box-sizing:border-box;margin:0;padding:0}
@@ -270,11 +274,40 @@ footer .legal{margin-top:32px;font-size:12.5px;color:var(--mut2);max-width:560px
 .pb-line .dim{color:var(--mut2)}.pb-line .em{color:var(--ink)}
 .pb-sub{text-align:center;color:var(--mut);font-size:15px;line-height:1.65;max-width:640px;margin:16px auto 0}
 
-/* refined reveal */
-.rv{opacity:0;transform:translateY(28px) scale(.985);filter:blur(6px);transition:opacity .8s var(--ease),transform .8s var(--ease),filter .8s var(--ease)}
+/* refined reveal — liquid-glass pop-in (fade + un-blur + gentle scale overshoot) */
+.rv{opacity:0;transform:translateY(30px) scale(.955);filter:blur(9px);will-change:transform,opacity,filter;
+  transition:opacity .65s var(--ease),transform .8s cubic-bezier(.2,1,.32,1.16),filter .65s var(--ease)}
 .rv.in{opacity:1;transform:none;filter:none}
-.rv.d1{transition-delay:.08s}.rv.d2{transition-delay:.16s}.rv.d3{transition-delay:.24s}
+.rv.d1{transition-delay:.09s}.rv.d2{transition-delay:.18s}.rv.d3{transition-delay:.27s}
 @media(prefers-reduced-motion:reduce){.rv,.kin .w,.kinwords .w{transition:none!important;animation:none!important;opacity:1!important;transform:none!important;filter:none!important}}
+
+/* ===== "Twitch" liquid-glass boxes — section boxes only (not nav, not #partners) ===== */
+#what .pb-panel,#does .gcard,#approach .spec,#principles .pr{border-radius:28px}
+/* iridescent edge ring: clay → violet → bright highlight → emerald (like the template) */
+#what .pb-panel::after,#does .gcard::after,#approach .spec::after,#principles .pr::after{
+  content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:3;padding:1.4px;
+  background:linear-gradient(135deg,
+    rgba(193,95,60,.75) 0%,
+    rgba(173,118,205,.45) 24%,
+    rgba(255,255,255,.9) 50%,
+    rgba(120,193,162,.5) 74%,
+    rgba(43,185,138,.75) 100%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask-composite:exclude;
+  opacity:0;transition:opacity 1s var(--ease) .15s}
+/* the ring blooms in as the box reveals */
+#what .pb-panel::after,#does .vis.in .gcard::after,#approach .spec.in::after,#principles .pr.in::after{opacity:.85}
+/* soft iridescent outer glow */
+#approach .spec,#principles .pr,#does .gcard{box-shadow:0 1px 0 rgba(255,255,255,.85) inset,0 -14px 30px rgba(255,255,255,.25) inset,0 24px 60px rgba(70,52,34,.10),0 0 30px rgba(120,193,162,.10)}
+
+/* Archivo type inside the numbered / principle list boxes (matches the template) */
+#approach .spec,#principles .pr{font-family:var(--archivo)}
+#approach .spec h4,#principles .pr h4{font-family:var(--archivo);font-weight:700;letter-spacing:-.005em}
+/* rounded-square outlined number badge */
+#approach .spec .n{font-family:var(--archivo);font-weight:800;font-size:17px;color:var(--ink);
+  width:46px;height:46px;display:flex;align-items:center;justify-content:center;border-radius:15px;
+  border:1.6px solid rgba(193,95,60,.5);background:rgba(255,255,255,.42);
+  box-shadow:0 1px 0 rgba(255,255,255,.8) inset,0 6px 16px rgba(70,52,34,.08);margin-bottom:16px}
 </style>
 </head>
 <body>
