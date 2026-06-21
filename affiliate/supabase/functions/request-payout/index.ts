@@ -93,9 +93,15 @@ async function chargeInfo(
   if (!currency) {
     try { const ch = await stripeGet("charges/" + charge, key); currency = ch?.currency ?? null; } catch (_) { /* */ }
   }
-  currency = String(currency || c.currency || "usd").toLowerCase();
+  if (!currency) {
+    // NEVER guess the currency — sending the wrong one is exactly what fails the
+    // transfer ("source_transaction balance ... must equal transfer currency").
+    console.warn("[request-payout] could not determine charge currency; skipping commission", c.id, charge);
+    return null;
+  }
+  currency = String(currency).toLowerCase();
 
-  // persist the real currency if it was missing/wrong (e.g. backfilled rows defaulted to 'usd')
+  // persist the real currency back if it was missing/wrong (e.g. backfilled 'usd')
   if ((c.currency || "").toLowerCase() !== currency) {
     await sb.from("commissions").update({ currency }).eq("id", c.id);
   }
