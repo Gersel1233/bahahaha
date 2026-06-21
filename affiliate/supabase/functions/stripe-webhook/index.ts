@@ -62,6 +62,25 @@ function codeFromInvoice(o: any): string | null {
     || o?.lines?.data?.[0]?.metadata?.referral_code
     || null;
 }
+// Resolve a REAL charge id (ch_...). Never store pi_... — payouts use
+// source_transaction which requires a charge. Resolves a payment_intent to its
+// latest_charge when only the PI is present. Returns null if unresolvable.
+async function realChargeId(charge: any, paymentIntent: any): Promise<string | null> {
+  if (typeof charge === "string" && charge.startsWith("ch_")) return charge;
+  if (charge && typeof charge === "object" && charge.id) return charge.id;
+  const piId = typeof paymentIntent === "string" ? paymentIntent : paymentIntent?.id;
+  if (piId) {
+    try {
+      const pi = await stripe.paymentIntents.retrieve(piId);
+      const lc: any = (pi as any).latest_charge;
+      const ch = typeof lc === "string" ? lc : (lc?.id ?? null);
+      if (ch && String(ch).startsWith("ch_")) return ch;
+    } catch (e) {
+      console.warn("[stripe-webhook] could not resolve charge from payment_intent", piId, (e as Error)?.message);
+    }
+  }
+  return null;
+}
 
 Deno.serve(async (req) => {
   const body = await req.text();
@@ -93,7 +112,9 @@ Deno.serve(async (req) => {
           const ref = await ensureReferral(p.id, cust, o.client_reference_id || null);
           const amount = Number(o.amount_total ?? 0);
           if (amount > 0) {
-            const ok = await credit(p.id, ref?.id ?? null, { invoice_id: o.invoice || ("cs_" + o.id), charge_id: o.payment_intent, amount, kind: "first", currency: o.currency });
+            const ch = await realChargeId(null, o.payment_intent);
+            if (!ch) console.warn("[stripe-webhook] checkout without resolvable charge — commission not payout-ready", o.id);
+            const ok = await credit(p.id, ref?.id ?? null, { invoice_id: o.invoice || ("cs_" + o.id), charge_id: ch, amount, kind: "first", currency: o.currency });
             note = ok ? "referral + commission created" : "referral ok; commission already existed";
           } else note = "referral created; amount_total is 0 (trial/free) — commission waits for first paid invoice";
         }
@@ -110,7 +131,9 @@ Deno.serve(async (req) => {
       if (!ref) note = "no referral for customer (no code found on invoice)";
       else if (amount <= 0) note = "amount_paid is 0 (trial) — no commission yet";
       else {
-        const ok = await credit(ref.partner_id, ref.id, { invoice_id: o.id, charge_id: o.charge, amount, kind: o.billing_reason === "subscription_create" ? "first" : "recurring", currency: o.currency });
+        const ch = await realChargeId(o.charge, o.payment_intent);
+        if (!ch) console.warn("[stripe-webhook] invoice without resolvable charge — commission not payout-ready", o.id);
+        const ok = await credit(ref.partner_id, ref.id, { invoice_id: o.id, charge_id: ch, amount, kind: o.billing_reason === "subscription_create" ? "first" : "recurring", currency: o.currency });
         note = ok ? "commission created" : "commission already existed (idempotent)";
       }
     } else if (event.type === "charge.refunded" || event.type === "refund.created" || event.type === "charge.refund.updated") {
