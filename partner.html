@@ -202,7 +202,7 @@
 <nav class="site" id="nav"><div class="bar glass">
   <a class="logo" href="index.html"><span class="star">✦</span>Fyon</a>
   <div class="nav-links">
-    <a href="index.html#what">Why Fyon</a><a href="index.html#does">What it does</a><a href="index.html#approach">How it works</a><a href="index.html#principles">Principles</a><a href="partner.html?v=6" class="on">Partners</a>
+    <a href="index.html#what">Why Fyon</a><a href="index.html#does">What it does</a><a href="index.html#approach">How it works</a><a href="index.html#principles">Principles</a><a href="partner.html?v=7" class="on">Partners</a>
   </div>
   <div style="display:flex;align-items:center;gap:10px">
     <a class="lg sm" href="index.html#close"><span class="lbl">Try Fyon</span></a>
@@ -369,7 +369,7 @@
     <a class="logo" href="index.html"><span class="s">✦</span>Fyon</a>
     <div class="links">
       <a href="index.html#does">Fyon Intelligence</a>
-      <a href="partner.html?v=6">Partners</a>
+      <a href="partner.html?v=7">Partners</a>
       <a href="#">Privacy</a>
       <a href="#">Terms</a>
     </div>
@@ -392,9 +392,9 @@ const TIERS = [
   ["Platinum",22,100000],["Diamond",24,250000],["Elite",26,500000],["Champion",28,1000000],["Legend",30,2500000]
 ];
 // Minimum withdrawable balance, in cents. MUST match the edge function's
-// MIN_PAYOUT_CENTS secret. TESTING = 100 ($1) so the $9.60 balance is payable;
-// set both this and `supabase secrets set MIN_PAYOUT_CENTS=1000` for launch.
-const MIN_PAYOUT = 100;
+// Minimum withdrawable balance, in cents. MUST match the edge function's
+// MIN_PAYOUT_CENTS secret. 1440 = $14.40 ≈ 3 paying customers (~$4.80 each).
+const MIN_PAYOUT = 1440;
 const $ = id => document.getElementById(id);
 const usd = c => "$" + ((Number(c)||0)/100).toFixed(2);
 const show = (id,on=true)=>{ const e=$(id); if(e) e.classList.toggle('hidden',!on); };
@@ -523,7 +523,7 @@ else {
         wh.textContent = !partner.payout_enabled ? 'Connect Stripe to withdraw'
           : avail<=0 ? 'No balance yet'
           : meets ? 'Ready to withdraw'
-          : ('Minimum payout is '+usd(MIN_PAYOUT));
+          : ('Minimum payout is '+usd(MIN_PAYOUT)+' (about 3 customers)');
       }
     }
 

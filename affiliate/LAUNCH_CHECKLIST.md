@@ -32,7 +32,7 @@ Work top to bottom. Everything in **TEST mode** first, then flip to **LIVE**.
 - [ ] `STRIPE_PRICE_ID`     = **live** recurring price id (`price_...`)
 - [ ] `SITE_URL`            = final site URL (GitHub Pages or custom domain)
 - [ ] `PAYOUT_HOLD_DAYS`    = `30` (set to `0` only while testing)
-- [ ] `MIN_PAYOUT_CENTS`    = `1000` (optional; default is $10)
+- [ ] `MIN_PAYOUT_CENTS`    = `1440` (optional; default is 1440 = $14.40 ≈ 3 customers). Keep in sync with `MIN_PAYOUT` in partner.html
 - [ ] `BUSINESS_URL`        = your business/marketing URL (Connect onboarding pre-fill)
 - [ ] `RELEASE_SECRET`      = random string (optional gate for `release-commissions`)
 

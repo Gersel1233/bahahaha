@@ -3,7 +3,7 @@
 // source_transaction so a transfer can draw from a specific charge even before
 // the platform's available balance has settled. Stripe REST via fetch (no SDK).
 // Deploy:  supabase functions deploy request-payout --no-verify-jwt
-// Secrets: STRIPE_SECRET_KEY, PAYOUT_HOLD_DAYS (default 30), MIN_PAYOUT_CENTS (default 1000)
+// Secrets: STRIPE_SECRET_KEY, PAYOUT_HOLD_DAYS (default 30), MIN_PAYOUT_CENTS (default 1440)
 //
 // Model:
 //  - ONE transfer per commission, source_transaction = commission.stripe_charge_id (ch_...)
@@ -32,7 +32,7 @@ const json = (b: unknown, s = 200) =>
 
 const sb = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
 const HOLD = Number(Deno.env.get("PAYOUT_HOLD_DAYS") ?? "30");
-const MIN = Number(Deno.env.get("MIN_PAYOUT_CENTS") ?? "1000"); // $10.00
+const MIN = Number(Deno.env.get("MIN_PAYOUT_CENTS") ?? "1440"); // $14.40 (~3 paying customers); env override supported
 
 async function stripePost(path: string, key: string, params: Record<string, string>, idemKey?: string) {
   const body = new URLSearchParams();
@@ -168,12 +168,12 @@ Deno.serve(async (req) => {
           ? "These commissions were already transferred — nothing left to withdraw. Refresh to update your balance."
           : notReady > 0
           ? "Your commissions aren't payout-ready yet — they're missing a Stripe charge reference. This resolves automatically once the paid invoice is processed."
-          : `Minimum payout is $${(MIN / 100).toFixed(0)}`,
+          : `Minimum payout is $${(MIN / 100).toFixed(2)} (about 3 customers)`,
         available_cents: availTotal, not_ready_count: notReady, already_paid_count: alreadyPaid,
       }, 400);
     }
     if (readyTotal < MIN) {
-      return json({ error: `Minimum payout is $${(MIN / 100).toFixed(0)}`, available_cents: readyTotal, not_ready_count: notReady }, 400);
+      return json({ error: `Minimum payout is $${(MIN / 100).toFixed(2)} (about 3 customers)`, available_cents: readyTotal, not_ready_count: notReady }, 400);
     }
 
     // Derive the payout currency ONLY from the resolved charge currencies (never
