@@ -58,25 +58,49 @@ async function stripeGet(path: string, key: string) {
   return d;
 }
 
-// Resolve a usable charge id (ch_...). Accepts an existing ch_, or resolves a
-// payment_intent (pi_...) to its latest_charge and persists it back on the row.
-async function chargeIdFor(c: { id: string; stripe_charge_id: string | null }, key: string): Promise<string | null> {
+// Resolve a usable charge id (ch_...) AND its real Stripe currency.
+// Accepts an existing ch_ (fetches the charge for its currency), or resolves a
+// payment_intent (pi_...) to its latest_charge. Persists the resolved charge id
+// and the real currency back onto the commission so future runs are cheap and
+// the transfer currency always matches the source charge.
+async function chargeInfo(
+  c: { id: string; stripe_charge_id: string | null; currency: string | null },
+  key: string,
+): Promise<{ charge: string; currency: string } | null> {
   const cur = c.stripe_charge_id;
-  if (cur && cur.startsWith("ch_")) return cur;
-  if (cur && cur.startsWith("pi_")) {
+  let charge: string | null = null;
+  let currency: string | null = null;
+
+  if (cur && cur.startsWith("ch_")) {
+    charge = cur;
+    try { const ch = await stripeGet("charges/" + cur, key); currency = ch?.currency ?? null; } catch (_) { /* fall back below */ }
+  } else if (cur && cur.startsWith("pi_")) {
     try {
       const pi = await stripeGet("payment_intents/" + cur, key);
       const lc = pi?.latest_charge;
-      const ch = typeof lc === "string" ? lc : (lc?.id ?? null);
-      if (ch && ch.startsWith("ch_")) {
-        await sb.from("commissions").update({ stripe_charge_id: ch }).eq("id", c.id);
-        return ch;
+      const id = typeof lc === "string" ? lc : (lc?.id ?? null);
+      if (id && String(id).startsWith("ch_")) {
+        charge = id;
+        currency = pi?.currency ?? (typeof lc === "object" ? lc?.currency : null) ?? null;
+        await sb.from("commissions").update({ stripe_charge_id: id }).eq("id", c.id);
       }
     } catch (e) {
       console.warn("[request-payout] could not resolve charge for commission", c.id, String((e as Error)?.message ?? e));
     }
   }
-  return null;
+
+  if (!charge) return null;
+  if (!currency) {
+    try { const ch = await stripeGet("charges/" + charge, key); currency = ch?.currency ?? null; } catch (_) { /* */ }
+  }
+  currency = String(currency || c.currency || "usd").toLowerCase();
+
+  // persist the real currency if it was missing/wrong (e.g. backfilled rows defaulted to 'usd')
+  if ((c.currency || "").toLowerCase() !== currency) {
+    await sb.from("commissions").update({ currency }).eq("id", c.id);
+  }
+  return { charge, currency };
+}
 }
 
 Deno.serve(async (req) => {
@@ -109,8 +133,8 @@ Deno.serve(async (req) => {
     let notReady = 0, alreadyPaid = 0;
     for (const c of rows) {
       if (c.stripe_transfer_id) { alreadyPaid++; continue; } // already transferred — never pay twice
-      const charge = await chargeIdFor(c, key);
-      if (charge) ready.push({ id: c.id, commission_cents: c.commission_cents || 0, currency: (c.currency || "usd").toLowerCase(), charge });
+      const info = await chargeInfo(c, key);
+      if (info) ready.push({ id: c.id, commission_cents: c.commission_cents || 0, currency: info.currency, charge: info.charge });
       else notReady++;
     }
 
@@ -141,6 +165,7 @@ Deno.serve(async (req) => {
     // 5) one transfer per commission, each tied to its source charge
     const transferIds: string[] = [];
     const errors: Array<{ commission_id: string; error: string }> = [];
+    const paidCurrencies = new Set<string>();
     let paidCents = 0;
     let insufficient = false;
 
@@ -168,6 +193,7 @@ Deno.serve(async (req) => {
 
         await sb.from("commissions").update({ stripe_transfer_id: transfer.id }).eq("id", c.id);
         transferIds.push(transfer.id);
+        paidCurrencies.add(c.currency);
         paidCents += c.commission_cents;
       } catch (e) {
         const msg = String((e as Error)?.message ?? e);
@@ -194,10 +220,14 @@ Deno.serve(async (req) => {
       return json({ error: "Payout failed: " + (errors[0]?.error ?? "no transfers created"), failed: errors.length }, 502);
     }
 
+    // payout currency reflects what was actually transferred (uniform -> that currency)
+    const payoutCurrency = paidCurrencies.size === 1 ? [...paidCurrencies][0] : currency;
+
     await sb.from("payouts").update({
       status: "paid",
       paid_at: new Date().toISOString(),
       amount_cents: paidCents,
+      currency: payoutCurrency,
       stripe_transfer_id: transferIds[0] ?? null,   // first id; the full set lives on commissions.stripe_transfer_id
       error_message: errors.length ? `partial: ${errors.length} transfer(s) failed and were reverted to available` : null,
     }).eq("id", payout.id);
@@ -205,7 +235,7 @@ Deno.serve(async (req) => {
     return json({
       ok: true,
       amount_cents: paidCents,
-      currency,
+      currency: payoutCurrency,
       transfer_ids: transferIds,
       transfers: transferIds.length,
       payout_id: payout.id,
