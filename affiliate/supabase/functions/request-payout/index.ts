@@ -99,14 +99,16 @@ Deno.serve(async (req) => {
 
     // 2) gather this partner's available commissions
     const { data: avail } = await sb.from("commissions")
-      .select("id,commission_cents,currency,stripe_charge_id")
+      .select("id,commission_cents,currency,stripe_charge_id,stripe_transfer_id")
       .eq("partner_id", p.id).eq("status", "available");
     const rows = avail ?? [];
 
-    // 3) resolve each to a real charge id (ch_...). Skip the un-resolvable ones.
+    // 3) resolve each to a real charge id (ch_...). Skip the un-resolvable ones and
+    //    anything that already has a transfer recorded (belt-and-braces vs double-pay).
     const ready: Array<{ id: string; commission_cents: number; currency: string; charge: string }> = [];
-    let notReady = 0;
+    let notReady = 0, alreadyPaid = 0;
     for (const c of rows) {
+      if (c.stripe_transfer_id) { alreadyPaid++; continue; } // already transferred — never pay twice
       const charge = await chargeIdFor(c, key);
       if (charge) ready.push({ id: c.id, commission_cents: c.commission_cents || 0, currency: (c.currency || "usd").toLowerCase(), charge });
       else notReady++;
@@ -117,10 +119,12 @@ Deno.serve(async (req) => {
 
     if (ready.length === 0) {
       return json({
-        error: notReady > 0
+        error: alreadyPaid > 0
+          ? "These commissions were already transferred — nothing left to withdraw. Refresh to update your balance."
+          : notReady > 0
           ? "Your commissions aren't payout-ready yet — they're missing a Stripe charge reference. This resolves automatically once the paid invoice is processed."
           : `Minimum payout is $${(MIN / 100).toFixed(0)}`,
-        available_cents: availTotal, not_ready_count: notReady,
+        available_cents: availTotal, not_ready_count: notReady, already_paid_count: alreadyPaid,
       }, 400);
     }
     if (readyTotal < MIN) {
@@ -156,7 +160,11 @@ Deno.serve(async (req) => {
           "metadata[partner_id]": p.id,
           "metadata[payout_id]": payout.id,
           "metadata[commission_id]": c.id,
-        }, "tr_comm_" + c.id);                      // stable per-commission idempotency key
+          // idempotency key bound to BOTH commission and charge: a backfill that
+          // changed the charge id yields a fresh key (no clash with an old cached
+          // key created with different params), while still preventing double-pay
+          // of the same commission+charge. The DB status claim is the primary guard.
+        }, `tr_comm_${c.id}_${c.charge}`);
 
         await sb.from("commissions").update({ stripe_transfer_id: transfer.id }).eq("id", c.id);
         transferIds.push(transfer.id);
