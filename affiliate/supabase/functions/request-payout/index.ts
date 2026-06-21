@@ -101,7 +101,6 @@ async function chargeInfo(
   }
   return { charge, currency };
 }
-}
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: cors });
