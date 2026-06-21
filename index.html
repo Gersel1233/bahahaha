@@ -12,6 +12,22 @@
 </head>
 <body>
 
+  <!-- ===================== LOADER ===================== -->
+  <div id="fyon-loader" role="status" aria-label="Loading Fyon">
+    <div class="fl-inner">
+      <div class="fl-stage">
+        <svg class="fl-svg" viewBox="0 0 120 120" aria-hidden="true">
+          <circle class="fl-ring-track" cx="60" cy="60" r="46"></circle>
+          <circle class="fl-ring-fill"  cx="60" cy="60" r="46"></circle>
+          <path class="fl-spark" d="M60,32 L65.3,54.7 L88,60 L65.3,65.3 L60,88 L54.7,65.3 L32,60 L54.7,54.7 Z"></path>
+        </svg>
+      </div>
+      <div class="fl-brand">Fyon</div>
+      <div class="fl-pct">0</div>
+    </div>
+  </div>
+  <script src="loader.js"></script>
+
   <!-- ===================== NAV ===================== -->
   <nav class="nav" data-screen-label="nav">
     <a class="brand" href="#top"><span class="spark">✦</span> Fyon</a>
@@ -24,6 +40,8 @@
     </div>
     <button class="btn">Try Fyon</button>
   </nav>
+
+  <div class="fyon-reveal">
 
   <!-- ===================== HERO ===================== -->
   <header id="top" class="hero" data-screen-label="hero">
@@ -41,7 +59,7 @@
   <section class="s loop" id="why" data-screen-label="self-improvement-loop">
     <div class="s-inner">
       <div class="loop-stage">
-        <svg class="globe-svg" viewBox="0 0 660 660" aria-hidden="true"><g class="g" id="siteGlobe"></g></svg>
+        <iframe class="globe-frame" src="globe.html?v=8" title="" scrolling="no" aria-hidden="true" tabindex="-1" allowtransparency="true" loading="eager"></iframe>
         <div class="loop-content" id="loopContent">
           <p class="loop-eyebrow">The self-improvement loop</p>
           <div class="loop-dots" id="loopDots"></div>
@@ -466,6 +484,7 @@
       <span class="copy">© 2026 Fyon Intelligence · 18+</span>
     </div>
   </footer>
+  </div><!-- /.fyon-reveal -->
 
   <script src="site.js"></script>
 
