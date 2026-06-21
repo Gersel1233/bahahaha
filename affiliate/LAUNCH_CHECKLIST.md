@@ -16,6 +16,19 @@ Work top to bottom. Everything in **TEST mode** first, then flip to **LIVE**.
 
 ## B. Edge Functions (deployed)
 
+All functions live in **`supabase/functions/`** — deploy from there:
+```bash
+cd supabase
+supabase functions deploy create-checkout       --no-verify-jwt
+supabase functions deploy stripe-webhook        --no-verify-jwt
+supabase functions deploy connect-stripe        --no-verify-jwt
+supabase functions deploy check-connect-status  --no-verify-jwt
+supabase functions deploy create-promo
+supabase functions deploy request-payout        --no-verify-jwt
+supabase functions deploy release-commissions   --no-verify-jwt
+supabase functions deploy backfill-charges      --no-verify-jwt
+supabase functions deploy admin-stats           --no-verify-jwt
+```
 - [ ] `create-checkout`     (`--no-verify-jwt`)
 - [ ] `stripe-webhook`      (`--no-verify-jwt`)
 - [ ] `connect-stripe`      (`--no-verify-jwt`)
@@ -23,6 +36,8 @@ Work top to bottom. Everything in **TEST mode** first, then flip to **LIVE**.
 - [ ] `create-promo`
 - [ ] `request-payout`      (`--no-verify-jwt`)
 - [ ] `release-commissions` (`--no-verify-jwt`)
+- [ ] `backfill-charges`    (`--no-verify-jwt`)
+- [ ] `admin-stats`         (`--no-verify-jwt`)
 
 ## C. Secrets (Supabase → Edge Functions → Secrets)
 
@@ -93,7 +108,7 @@ period automatically — never by hand in production.
 Use ONE option, not both.
 
 - [ ] Supabase secret: `supabase secrets set RELEASE_SECRET="$(openssl rand -hex 16)"`
-- [ ] Redeploy so the gate is required: `supabase functions deploy release-commissions --no-verify-jwt`
+- [ ] Redeploy so the gate is required: `cd supabase && supabase functions deploy release-commissions --no-verify-jwt`
       (the function now returns 503 if `RELEASE_SECRET` is unset, 403 without the header — never public)
 - [ ] Add the SAME value as a GitHub repo secret named `RELEASE_SECRET`
       (repo → Settings → Secrets and variables → Actions → New repository secret)

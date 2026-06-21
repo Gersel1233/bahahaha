@@ -41,8 +41,8 @@ npm install -g supabase
 supabase login
 git clone https://github.com/Gersel1233/bahahaha
 cd bahahaha
-mkdir -p supabase/functions
-cp -r affiliate/supabase/functions/* supabase/functions/
+# Edge functions already live in supabase/functions/ (single source of truth) —
+# no copying needed. SQL migrations are in affiliate/supabase/*.sql.
 supabase link --project-ref vvwevqhdwumnethujxhy
 
 supabase secrets set \
@@ -52,10 +52,18 @@ supabase secrets set \
   PAYOUT_HOLD_DAYS=30
 ```
 
-## 6) Supabase CLI: deploy de to functions
+## 6) Supabase CLI: deploy functions
 ```bash
-supabase functions deploy create-checkout --no-verify-jwt
-supabase functions deploy stripe-webhook --no-verify-jwt
+cd supabase
+supabase functions deploy create-checkout       --no-verify-jwt
+supabase functions deploy stripe-webhook        --no-verify-jwt
+supabase functions deploy create-promo
+supabase functions deploy connect-stripe        --no-verify-jwt
+supabase functions deploy check-connect-status  --no-verify-jwt
+supabase functions deploy request-payout        --no-verify-jwt
+supabase functions deploy release-commissions   --no-verify-jwt
+supabase functions deploy backfill-charges      --no-verify-jwt
+supabase functions deploy admin-stats           --no-verify-jwt
 ```
 
 ## 7) Stripe: tilføj webhook endpoint

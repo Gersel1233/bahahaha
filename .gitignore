@@ -1,0 +1,6 @@
+# Supabase CLI local state (never commit)
+supabase/.temp/
+supabase/.branches/
+**/.temp/
+.env
+.env.*

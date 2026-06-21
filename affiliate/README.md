@@ -21,19 +21,30 @@ Money (Stripe, inside Edge Fns):  webhook -> credits commission ; transfers -> p
 
 ## Files
 ```
-affiliate/
-├── supabase/003_affiliate.sql              # tables + RLS (Supabase Auth) + leaderboard
-└── supabase/functions/
-    ├── stripe-webhook/    index.ts         # ★ source of truth: credits/reverses commission
-    ├── create-checkout/   index.ts         # ★ checkout WITH referral_code metadata
-    ├── create-promo/      index.ts         # partner's 20%-off coupon code
-    ├── connect-stripe/    index.ts         # Connect Express onboarding   (later)
-    └── request-payout/    index.ts         # withdraw available balance   (last)
-partner.html                                # the dashboard (in the site root)
-index.html                                  # ?ref capture + "Become a partner" section + nav link
+supabase/functions/                         # ← CLI deploy dir (single source of truth)
+├── stripe-webhook/        index.ts         # ★ source of truth: credits/reverses commission
+├── create-checkout/       index.ts         # ★ checkout WITH referral_code metadata
+├── create-promo/          index.ts         # partner's 20%-off coupon code
+├── connect-stripe/        index.ts         # Connect Express onboarding
+├── check-connect-status/  index.ts         # flips payout_enabled after onboarding
+├── request-payout/        index.ts         # withdraw available balance (source_transaction)
+├── release-commissions/   index.ts         # pending -> available after the hold
+├── backfill-charges/      index.ts         # one-off: fill missing stripe_charge_id
+└── admin-stats/           index.ts         # admin dashboard data (ADMIN_EMAILS only)
+
+affiliate/supabase/                         # SQL migrations only (run in the SQL editor)
+├── 003_affiliate.sql      # tables + RLS (Supabase Auth) + leaderboard
+├── 004_payouts.sql        # payout columns, clawbacks, release_commissions()
+├── 005_source_transaction.sql  # commissions.stripe_transfer_id + payout_ready
+└── 006_schedule_release.sql    # pg_cron daily release
+
+partner.html                                # the partner dashboard (site root)
+admin.html                                  # the admin dashboard (site root)
+index.html                                  # ?ref capture + "Become a partner" + nav link
 ```
-(`affiliate/backend/fyon_affiliate.py` is an optional FastAPI equivalent if you ever
-run your own server instead of Edge Functions — ignore it for the static-site path.)
+> All edge functions live in **`supabase/functions/`** and deploy from there
+> (`cd supabase && supabase functions deploy …`). The SQL files live in
+> `affiliate/supabase/` and are pasted into the Supabase SQL editor.
 
 ## 🔑 Never put these in the frontend
 `STRIPE_SECRET_KEY` · `STRIPE_WEBHOOK_SECRET` · `SUPABASE_SERVICE_ROLE_KEY`
@@ -47,7 +58,8 @@ run your own server instead of Edge Functions — ignore it for the static-site 
 ## Setup checklist (build order — attribution first, payouts last)
 
 ### Step 1 — Database
-- Supabase → SQL editor → run `supabase/003_affiliate.sql`.
+- Supabase → SQL editor → run, in order: `affiliate/supabase/003_affiliate.sql`,
+  `004_payouts.sql`, `005_source_transaction.sql`, `006_schedule_release.sql`.
 
 ### Step 2 — Auth
 - Supabase → Authentication → Email → enable (magic link). Add your site URL to redirect URLs.
@@ -66,13 +78,18 @@ run your own server instead of Edge Functions — ignore it for the static-site 
   supabase secrets set SITE_URL=https://gersel1233.github.io/bahahaha
   supabase secrets set PAYOUT_HOLD_DAYS=30
   ```
-- Deploy the functions:
+- Deploy the functions (all live in `supabase/functions/`):
   ```
-  supabase functions deploy stripe-webhook --no-verify-jwt
-  supabase functions deploy create-checkout --no-verify-jwt
+  cd supabase
+  supabase functions deploy stripe-webhook        --no-verify-jwt
+  supabase functions deploy create-checkout       --no-verify-jwt
   supabase functions deploy create-promo
-  supabase functions deploy connect-stripe
-  supabase functions deploy request-payout
+  supabase functions deploy connect-stripe        --no-verify-jwt
+  supabase functions deploy check-connect-status  --no-verify-jwt
+  supabase functions deploy request-payout        --no-verify-jwt
+  supabase functions deploy release-commissions   --no-verify-jwt
+  supabase functions deploy backfill-charges      --no-verify-jwt
+  supabase functions deploy admin-stats           --no-verify-jwt
   ```
 
 ### Step 5 — Stripe webhook
@@ -96,6 +113,7 @@ run your own server instead of Edge Functions — ignore it for the static-site 
 2. Set it as a secret + deploy the checkout function:
    ```
    supabase secrets set STRIPE_PRICE_ID=price_...
+   cd supabase
    supabase functions deploy create-checkout --no-verify-jwt
    supabase functions deploy stripe-webhook --no-verify-jwt
    ```
