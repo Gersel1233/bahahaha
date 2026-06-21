@@ -44,11 +44,12 @@ async function ensureReferral(partner_id: string, cust: string, referred_user_id
   }).select().maybeSingle();
   return ins.data;
 }
-async function credit(partner_id: string, referral_id: string | null, o: { invoice_id: string; charge_id?: string | null; amount: number; kind: "first" | "recurring" }) {
+async function credit(partner_id: string, referral_id: string | null, o: { invoice_id: string; charge_id?: string | null; amount: number; kind: "first" | "recurring"; currency?: string | null }) {
   const rate = await rateFor(partner_id);
   const { error } = await sb.from("commissions").insert({
     partner_id, referral_id, stripe_invoice_id: o.invoice_id, stripe_charge_id: o.charge_id ?? null,
     gross_cents: o.amount, rate, commission_cents: Math.round(o.amount * rate / 100),
+    currency: (o.currency || "usd").toLowerCase(),
     kind: o.kind, status: "pending", available_at: new Date(Date.now() + HOLD * 864e5).toISOString(),
   });
   return !error; // unique(stripe_invoice_id) -> false on duplicate (idempotent)
@@ -92,7 +93,7 @@ Deno.serve(async (req) => {
           const ref = await ensureReferral(p.id, cust, o.client_reference_id || null);
           const amount = Number(o.amount_total ?? 0);
           if (amount > 0) {
-            const ok = await credit(p.id, ref?.id ?? null, { invoice_id: o.invoice || ("cs_" + o.id), charge_id: o.payment_intent, amount, kind: "first" });
+            const ok = await credit(p.id, ref?.id ?? null, { invoice_id: o.invoice || ("cs_" + o.id), charge_id: o.payment_intent, amount, kind: "first", currency: o.currency });
             note = ok ? "referral + commission created" : "referral ok; commission already existed";
           } else note = "referral created; amount_total is 0 (trial/free) — commission waits for first paid invoice";
         }
@@ -109,12 +110,33 @@ Deno.serve(async (req) => {
       if (!ref) note = "no referral for customer (no code found on invoice)";
       else if (amount <= 0) note = "amount_paid is 0 (trial) — no commission yet";
       else {
-        const ok = await credit(ref.partner_id, ref.id, { invoice_id: o.id, charge_id: o.charge, amount, kind: o.billing_reason === "subscription_create" ? "first" : "recurring" });
+        const ok = await credit(ref.partner_id, ref.id, { invoice_id: o.id, charge_id: o.charge, amount, kind: o.billing_reason === "subscription_create" ? "first" : "recurring", currency: o.currency });
         note = ok ? "commission created" : "commission already existed (idempotent)";
       }
-    } else if (event.type === "charge.refunded") {
-      await sb.from("commissions").update({ status: "reversed" }).eq("stripe_charge_id", o.id);
-      note = "refund -> commission reversed";
+    } else if (event.type === "charge.refunded" || event.type === "refund.created" || event.type === "charge.refund.updated") {
+      // charge.refunded: o is the charge (o.id = charge). refund.created: o is the refund (o.charge).
+      const chargeId: string | null = event.type === "charge.refunded" ? o.id : (o.charge ?? null);
+      if (!chargeId) { note = "refund event without a charge id"; }
+      else {
+        const { data: comms } = await sb.from("commissions").select("*").eq("stripe_charge_id", chargeId);
+        let reversed = 0, clawbacks = 0;
+        for (const c of comms ?? []) {
+          if (c.status === "paid") {
+            // already paid out — NEVER auto-pull from the partner. Log a negative adjustment.
+            await sb.from("commissions").update({ clawback_needed: true }).eq("id", c.id);
+            await sb.from("commission_adjustments").insert({
+              partner_id: c.partner_id, commission_id: c.id, amount_cents: -Math.abs(c.commission_cents),
+              reason: "refund after payout (manual clawback)", stripe_charge_id: chargeId,
+            });
+            clawbacks++;
+            console.warn("[stripe-webhook] CLAWBACK NEEDED: paid commission", c.id, "partner", c.partner_id, "charge", chargeId);
+          } else if (c.status !== "reversed") {
+            await sb.from("commissions").update({ status: "reversed" }).eq("id", c.id);
+            reversed++;
+          }
+        }
+        note = `refund on charge ${chargeId}: ${reversed} reversed, ${clawbacks} clawback(s) flagged`;
+      }
     } else if (event.type === "account.updated") {
       await sb.from("partners").update({ payout_enabled: !!(o.charges_enabled && o.payouts_enabled) }).eq("stripe_account_id", o.id);
       note = "account synced";

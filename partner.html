@@ -198,7 +198,7 @@
 <nav class="site" id="nav"><div class="bar glass">
   <a class="logo" href="index.html"><span class="star">✦</span>Fyon</a>
   <div class="nav-links">
-    <a href="index.html#what">Why Fyon</a><a href="index.html#does">What it does</a><a href="index.html#approach">How it works</a><a href="index.html#principles">Principles</a><a href="partner.html?v=3" class="on">Partners</a>
+    <a href="index.html#what">Why Fyon</a><a href="index.html#does">What it does</a><a href="index.html#approach">How it works</a><a href="index.html#principles">Principles</a><a href="partner.html?v=4" class="on">Partners</a>
   </div>
   <div style="display:flex;align-items:center;gap:10px">
     <a class="lg sm" href="index.html#close"><span class="lbl">Try Fyon</span></a>
@@ -313,7 +313,7 @@
 
     <div class="grid4" style="margin-top:16px">
       <div class="card"><div class="muted small">💚 Available</div><div class="stat" style="color:var(--emerald)" id="sAvail">$0.00</div>
-        <div class="row" style="justify-content:space-between"><span class="muted small">Ready to withdraw</span><button class="lg ghost sm hidden" id="withdraw"><span class="lbl">Withdraw →</span></button></div></div>
+        <div class="row" style="justify-content:space-between;align-items:center"><span class="muted small" id="withdrawHint">Ready to withdraw</span><button class="lg ghost sm hidden" id="withdraw"><span class="lbl">Withdraw</span></button></div></div>
       <div class="card"><div class="muted small">📈 Monthly</div><div class="stat" style="color:var(--ink)" id="sMonth">$0.00</div><div class="muted small">Recurring commission</div></div>
       <div class="card"><div class="muted small">❖ Lifetime</div><div class="stat" style="color:var(--clay)" id="sLife">$0.00</div><div class="muted small">Total earned</div></div>
       <div class="card"><div class="muted small">👥 Referrals</div><div class="stat" style="color:var(--ink)" id="sRef">0</div><div class="muted small"><span id="sRefA">0</span> active subscribers</div></div>
@@ -351,7 +351,7 @@
     <a class="logo" href="index.html"><span class="s">✦</span>Fyon</a>
     <div class="links">
       <a href="index.html#does">Fyon Intelligence</a>
-      <a href="partner.html?v=3">Partners</a>
+      <a href="partner.html?v=4">Partners</a>
       <a href="#">Privacy</a>
       <a href="#">Terms</a>
     </div>
@@ -373,6 +373,7 @@ const TIERS = [
   ["Starter",15,0],["Bronze",17,10000],["Silver",18,25000],["Gold",20,50000],
   ["Platinum",22,100000],["Diamond",24,250000],["Elite",26,500000],["Champion",28,1000000],["Legend",30,2500000]
 ];
+const MIN_PAYOUT = 1000; // $10.00 — keep in sync with MIN_PAYOUT_CENTS on the edge function
 const $ = id => document.getElementById(id);
 const usd = c => "$" + ((Number(c)||0)/100).toFixed(2);
 const show = (id,on=true)=>{ const e=$(id); if(e) e.classList.toggle('hidden',!on); };
@@ -466,7 +467,16 @@ else {
     $('tierBar').style.width = nxt ? Math.min(100,rev/nxt[2]*100)+'%' : '100%';
     $('sAvail').textContent=usd(avail); $('sMonth').textContent=usd(month); $('sLife').textContent=usd(life);
     $('sRef').textContent=refs.length; $('sRefA').textContent=refs.filter(r=>r.status==='active').length;
-    show('withdraw', avail>=1000 && partner.payout_enabled);
+    // withdraw: only when payouts are enabled AND the available balance clears the minimum
+    const canWithdraw = partner.payout_enabled && avail >= MIN_PAYOUT;
+    show('withdraw', canWithdraw);
+    { const wb=$('withdraw'); if(wb){ const l=wb.querySelector('.lbl'); if(l) l.textContent = 'Withdraw '+usd(avail); } }
+    { const wh=$('withdrawHint'); if(wh){
+        wh.textContent = !partner.payout_enabled ? 'Connect Stripe to withdraw'
+          : avail>=MIN_PAYOUT ? 'Ready to withdraw'
+          : avail>0 ? ('Minimum payout is '+usd(MIN_PAYOUT))
+          : 'Ready to withdraw';
+    } }
 
     $('tiers').innerHTML = TIERS.map((t,i)=>`
       <div class="tierrow ${i===ti?'cur':i===ti+1?'next':''}" style="${i>ti+1?'opacity:.5':''}">
@@ -534,9 +544,16 @@ else {
     mb.disabled=false; mb.textContent=old;
   }; }
   $('withdraw').onclick = async ()=>{
-    const { data } = await sb.auth.getSession();
-    const r = await fetch(`${FN}/request-payout`,{method:'POST',headers:{'Authorization':'Bearer '+(data?.session?.access_token||'')}});
-    const d = await r.json().catch(()=>({})); toast(r.ok?'Payout sent':(d.error||'Payout failed')); boot();
+    const wb=$('withdraw'); const lbl=wb.querySelector('.lbl'); const old=lbl?lbl.textContent:'';
+    wb.disabled=true; if(lbl) lbl.textContent='Sending…';
+    try{
+      const { data } = await sb.auth.getSession();
+      const r = await fetch(`${FN}/request-payout`,{method:'POST',headers:{'Authorization':'Bearer '+(data?.session?.access_token||'')}});
+      const d = await r.json().catch(()=>({}));
+      if (d.ok) toast('Paid '+usd(d.amount_cents)+' to your Stripe account 🎉');
+      else toast(d.error || 'Payout failed');
+    }catch(e){ toast('Payout failed: '+(e.message||e)); }
+    finally{ wb.disabled=false; if(lbl) lbl.textContent=old; boot(); }
   };
 
   if (sb) sb.auth.onAuthStateChange(()=>boot());
