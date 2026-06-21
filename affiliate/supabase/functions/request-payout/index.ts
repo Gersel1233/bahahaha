@@ -36,7 +36,11 @@ async function stripe(path: string, key: string, params: Record<string, string>,
   if (idemKey) headers["Idempotency-Key"] = idemKey;
   const r = await fetch("https://api.stripe.com/v1/" + path, { method: "POST", headers, body: body.toString() });
   const d = await r.json();
-  if (!r.ok) throw new Error(d?.error?.message || `Stripe ${path} failed (${r.status})`);
+  if (!r.ok) {
+    const err = new Error(d?.error?.message || `Stripe ${path} failed (${r.status})`) as Error & { stripeCode?: string };
+    err.stripeCode = d?.error?.code;
+    throw err;
+  }
   return d;
 }
 
@@ -110,11 +114,34 @@ Deno.serve(async (req) => {
 
       return json({ ok: true, amount_cents: claimedAmount, currency, transfer_id: transfer.id, payout_id: payout.id });
     } catch (e) {
-      // transfer failed -> put the money back as available, mark payout failed
+      const msg = String((e as Error)?.message ?? e);
+      const code = (e as { stripeCode?: string })?.stripeCode ?? "";
+      const insufficient = code === "balance_insufficient" || /insufficient/i.test(msg);
+      const testMode = key.startsWith("sk_test_");
+
+      // ALWAYS put the money back: commissions stay 'available'
       await sb.from("commissions").update({ status: "available", payout_id: null }).eq("payout_id", payout.id);
-      await sb.from("payouts").update({ status: "failed", error_message: String((e as Error)?.message ?? e) })
-        .eq("id", payout.id);
-      return json({ error: "Stripe transfer failed: " + String((e as Error)?.message ?? e) }, 502);
+
+      if (insufficient) {
+        // do NOT leave a failed payout row behind — remove the pending row we opened
+        await sb.from("payouts").delete().eq("id", payout.id);
+        return json({
+          ok: false,
+          code: "insufficient_balance",
+          test_mode: testMode,
+          available_cents: claimedAmount,
+          error: testMode
+            ? "Stripe TEST balance is empty. In test mode, payouts draw from your platform's test balance — fund it first " +
+              "(Stripe Dashboard → Balance → Add to balance, or run a test charge with card 4000 0000 0000 0077 which settles instantly), " +
+              "then try Withdraw again. Your commissions are still available — nothing was lost."
+            : "Your Stripe platform balance is too low to cover this payout right now. Customer payments need to settle " +
+              "into your available balance first. Your commissions are still available and you can withdraw once the balance clears.",
+        }, 200);
+      }
+
+      // other failures: mark the payout failed for the record
+      await sb.from("payouts").update({ status: "failed", error_message: msg }).eq("id", payout.id);
+      return json({ error: "Stripe transfer failed: " + msg }, 502);
     }
   } catch (e) {
     return json({ error: String((e as Error)?.message ?? e) }, 500);
