@@ -93,6 +93,10 @@
   /* neutral ghost (frosted) */
   .btn-ghost{color:var(--ink);background:rgba(255,255,255,.3)}
   .btn-sm{padding:10px 18px;font-size:13.5px}
+  /* disabled state for the liquid-glass (.lg) buttons */
+  .lg:disabled{opacity:.5;cursor:not-allowed}
+  .lg:disabled:hover{transform:none}
+  .lg:disabled::after{display:none}
   /* glossy silver "liquid glass" pill (Try Fyon) — matches 6_main_container.mov */
   .btn-try{color:var(--ink);font-weight:700;
     background:
@@ -198,7 +202,7 @@
 <nav class="site" id="nav"><div class="bar glass">
   <a class="logo" href="index.html"><span class="star">✦</span>Fyon</a>
   <div class="nav-links">
-    <a href="index.html#what">Why Fyon</a><a href="index.html#does">What it does</a><a href="index.html#approach">How it works</a><a href="index.html#principles">Principles</a><a href="partner.html?v=4" class="on">Partners</a>
+    <a href="index.html#what">Why Fyon</a><a href="index.html#does">What it does</a><a href="index.html#approach">How it works</a><a href="index.html#principles">Principles</a><a href="partner.html?v=5" class="on">Partners</a>
   </div>
   <div style="display:flex;align-items:center;gap:10px">
     <a class="lg sm" href="index.html#close"><span class="lbl">Try Fyon</span></a>
@@ -351,7 +355,7 @@
     <a class="logo" href="index.html"><span class="s">✦</span>Fyon</a>
     <div class="links">
       <a href="index.html#does">Fyon Intelligence</a>
-      <a href="partner.html?v=4">Partners</a>
+      <a href="partner.html?v=5">Partners</a>
       <a href="#">Privacy</a>
       <a href="#">Terms</a>
     </div>
@@ -373,7 +377,10 @@ const TIERS = [
   ["Starter",15,0],["Bronze",17,10000],["Silver",18,25000],["Gold",20,50000],
   ["Platinum",22,100000],["Diamond",24,250000],["Elite",26,500000],["Champion",28,1000000],["Legend",30,2500000]
 ];
-const MIN_PAYOUT = 1000; // $10.00 — keep in sync with MIN_PAYOUT_CENTS on the edge function
+// Minimum withdrawable balance, in cents. MUST match the edge function's
+// MIN_PAYOUT_CENTS secret. TESTING = 100 ($1) so the $9.60 balance is payable;
+// set both this and `supabase secrets set MIN_PAYOUT_CENTS=1000` for launch.
+const MIN_PAYOUT = 100;
 const $ = id => document.getElementById(id);
 const usd = c => "$" + ((Number(c)||0)/100).toFixed(2);
 const show = (id,on=true)=>{ const e=$(id); if(e) e.classList.toggle('hidden',!on); };
@@ -467,16 +474,26 @@ else {
     $('tierBar').style.width = nxt ? Math.min(100,rev/nxt[2]*100)+'%' : '100%';
     $('sAvail').textContent=usd(avail); $('sMonth').textContent=usd(month); $('sLife').textContent=usd(life);
     $('sRef').textContent=refs.length; $('sRefA').textContent=refs.filter(r=>r.status==='active').length;
-    // withdraw: only when payouts are enabled AND the available balance clears the minimum
-    const canWithdraw = partner.payout_enabled && avail >= MIN_PAYOUT;
-    show('withdraw', canWithdraw);
-    { const wb=$('withdraw'); if(wb){ const l=wb.querySelector('.lbl'); if(l) l.textContent = 'Withdraw '+usd(avail); } }
-    { const wh=$('withdrawHint'); if(wh){
+    // Withdraw button: VISIBLE whenever payouts are enabled and there's a balance.
+    // It is ENABLED only once the balance clears the minimum — below that it stays
+    // visible but disabled so the partner can see exactly why they can't click it.
+    {
+      const meets = avail >= MIN_PAYOUT;
+      show('withdraw', partner.payout_enabled && avail > 0);
+      const wb=$('withdraw');
+      if(wb){
+        wb.disabled = !meets;
+        const l=wb.querySelector('.lbl');
+        if(l) l.textContent = meets ? ('Withdraw '+usd(avail)) : 'Withdraw';
+      }
+      const wh=$('withdrawHint');
+      if(wh){
         wh.textContent = !partner.payout_enabled ? 'Connect Stripe to withdraw'
-          : avail>=MIN_PAYOUT ? 'Ready to withdraw'
-          : avail>0 ? ('Minimum payout is '+usd(MIN_PAYOUT))
-          : 'Ready to withdraw';
-    } }
+          : avail<=0 ? 'No balance yet'
+          : meets ? 'Ready to withdraw'
+          : ('Minimum payout is '+usd(MIN_PAYOUT));
+      }
+    }
 
     $('tiers').innerHTML = TIERS.map((t,i)=>`
       <div class="tierrow ${i===ti?'cur':i===ti+1?'next':''}" style="${i>ti+1?'opacity:.5':''}">
