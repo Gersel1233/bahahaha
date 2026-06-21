@@ -3,681 +3,514 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Fyon — a self-improvement intelligence that knows you</title>
+<title>Fyon — A self-improvement intelligence that knows you</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&display=swap" />
-<link rel="stylesheet" href="liquid-glass.css?v=1" />
-<script defer src="liquid-glass.js?v=1"></script>
-<style>
-/* ===========================================================================
-   FYON · homepage — warm editorial + liquid glass everywhere
-   Living warm background gives the frosted glass something to refract.
-   Refined scroll motion, tasteful hover tilt. Pure HTML/CSS/JS prototype.
-   =========================================================================== */
-:root{
-  --bg:#F1EDE4; --ink:#1A1714; --ink2:#3a352e; --mut:#6f685c; --mut2:#9a9286;
-  --line:#E4DECF; --clay:#C15F3C; --clay-d:#A84E2E;
-  --serif:"Tiempos Headline","Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
-  --sans:-apple-system,BlinkMacSystemFont,"Inter","Segoe UI",sans-serif;
-  --archivo:"Archivo",-apple-system,BlinkMacSystemFont,"Inter","Segoe UI",sans-serif;
-  --ease:cubic-bezier(.2,.8,.2,1);
-}
-*{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
-body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.5;overflow-x:hidden;-webkit-font-smoothing:antialiased}
-::selection{background:rgba(193,95,60,.18)}
-a{color:inherit;text-decoration:none}
-.wrap{max-width:1100px;margin:0 auto;padding:0 24px}
-h1,h2,h3{font-family:var(--serif);font-weight:500;letter-spacing:-.015em;line-height:1.08}
-
-/* ---- living warm background (so glass refracts something) ---- */
-.bgfx{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
-.bgfx .base{position:absolute;inset:0;
-  background:
-    radial-gradient(80% 60% at 82% 2%,rgba(193,95,60,.14),transparent 60%),
-    radial-gradient(70% 60% at 6% 30%,rgba(214,178,120,.16),transparent 60%),
-    radial-gradient(70% 70% at 50% 108%,rgba(120,150,135,.12),transparent 60%);}
-.blob{position:absolute;border-radius:50%;filter:blur(70px);opacity:.5;will-change:transform}
-.b1{width:46vw;height:46vw;left:-10vw;top:8vh;background:radial-gradient(circle,#e8b98a,transparent 68%)}
-.b2{width:40vw;height:40vw;right:-8vw;top:40vh;background:radial-gradient(circle,#d98f6e,transparent 68%);opacity:.4}
-.b3{width:38vw;height:38vw;left:30vw;top:120vh;background:radial-gradient(circle,#a9c3b3,transparent 68%);opacity:.38}
-.grain{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.025;background-image:radial-gradient(#000 1px,transparent 1px);background-size:3px 3px}
-
-/* ---- liquid glass primitive ---- */
-.glass{position:relative;background:rgba(255,255,255,.42);
-  -webkit-backdrop-filter:blur(22px) saturate(180%);backdrop-filter:blur(22px) saturate(180%);
-  border:1px solid rgba(255,255,255,.6);border-radius:22px;
-  box-shadow:0 1px 0 rgba(255,255,255,.85) inset,0 -14px 30px rgba(255,255,255,.25) inset,0 24px 60px rgba(70,52,34,.10)}
-.glass::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
-  background:linear-gradient(150deg,rgba(255,255,255,.55),transparent 46%);opacity:.7}
-
-/* ---- liquid glass buttons (Apple-style — on ALL buttons) ---- */
-.btn{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;
-  font-family:inherit;font-weight:600;font-size:14.5px;padding:14px 28px;border-radius:999px;border:none;
-  color:var(--ink);overflow:hidden;isolation:isolate;
-  background:rgba(255,255,255,.22);
-  -webkit-backdrop-filter:blur(16px) saturate(190%) brightness(1.12);backdrop-filter:blur(16px) saturate(190%) brightness(1.12);
-  box-shadow:
-    inset 0 1.5px 1px rgba(255,255,255,.95),
-    inset 0 -2px 3px rgba(255,255,255,.30),
-    inset 0 0 0 1px rgba(255,255,255,.32),
-    0 4px 10px rgba(70,52,34,.10),
-    0 12px 30px rgba(70,52,34,.17);
-  transition:transform .18s var(--ease),box-shadow .28s var(--ease),background .25s;will-change:transform}
-.btn>*{position:relative;z-index:2}
-/* glass sheen (sits above the frosted fill, below the text) */
-.btn::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:-1;
-  background:linear-gradient(180deg,rgba(255,255,255,.62),rgba(255,255,255,0) 42%,rgba(255,255,255,.12) 100%)}
-/* moving specular glint */
-.btn::after{content:"";position:absolute;top:-50%;left:-65%;width:40%;height:200%;pointer-events:none;z-index:-1;
-  background:linear-gradient(90deg,transparent,rgba(255,255,255,.72),transparent);transform:rotate(22deg);
-  transition:left .6s var(--ease);opacity:.85}
-.btn:hover::after{left:155%}
-.btn:hover{transform:translateY(-2px);
-  box-shadow:inset 0 1.5px 1px rgba(255,255,255,1),inset 0 -2px 3px rgba(255,255,255,.36),inset 0 0 0 1px rgba(255,255,255,.42),0 6px 14px rgba(70,52,34,.12),0 18px 40px rgba(70,52,34,.22)}
-.btn:active{transform:translateY(0) scale(.96)}
-/* neutral glass alias */
-.btn-glass{}
-/* dark "smoked" glass (primary) */
-.btn-ink{color:#fff;background:rgba(34,29,24,.55);
-  -webkit-backdrop-filter:blur(16px) saturate(170%);backdrop-filter:blur(16px) saturate(170%);
-  box-shadow:inset 0 1.5px 1px rgba(255,255,255,.45),inset 0 -2px 4px rgba(0,0,0,.25),inset 0 0 0 1px rgba(255,255,255,.16),0 4px 10px rgba(26,23,20,.22),0 14px 34px rgba(26,23,20,.32)}
-.btn-ink::before{background:linear-gradient(180deg,rgba(255,255,255,.38),rgba(255,255,255,0) 46%,rgba(255,255,255,.05))}
-.btn-ink:hover{background:rgba(26,23,20,.62);box-shadow:inset 0 1.5px 1px rgba(255,255,255,.55),inset 0 -2px 4px rgba(0,0,0,.28),inset 0 0 0 1px rgba(255,255,255,.22),0 6px 14px rgba(26,23,20,.26),0 20px 44px rgba(26,23,20,.4)}
-/* clay-tinted glass (accent / CTA) */
-.btn-clay{color:#fff;background:rgba(193,95,60,.52);
-  -webkit-backdrop-filter:blur(16px) saturate(200%) brightness(1.04);backdrop-filter:blur(16px) saturate(200%) brightness(1.04);
-  box-shadow:inset 0 1.5px 1px rgba(255,255,255,.7),inset 0 -3px 6px rgba(120,40,20,.32),inset 0 0 0 1px rgba(255,255,255,.26),0 6px 14px rgba(193,95,60,.25),0 16px 38px rgba(193,95,60,.4)}
-.btn-clay::before{background:linear-gradient(180deg,rgba(255,255,255,.5),rgba(255,255,255,0) 44%,rgba(120,40,20,.16))}
-.btn-clay:hover{background:rgba(193,95,60,.62);box-shadow:inset 0 1.5px 1px rgba(255,255,255,.8),inset 0 -3px 6px rgba(120,40,20,.35),inset 0 0 0 1px rgba(255,255,255,.34),0 8px 16px rgba(193,95,60,.3),0 22px 48px rgba(193,95,60,.5)}
-/* ---- glossy silver "liquid glass" pill (Try Fyon) — matches 6_main_container.mov ---- */
-.btn-try{color:var(--ink);font-weight:700;
-  background:
-    radial-gradient(125% 90% at 80% -8%,rgba(255,255,255,.98),rgba(255,255,255,0) 52%),
-    linear-gradient(180deg,rgba(250,249,246,.97),rgba(210,204,193,.92));
-  -webkit-backdrop-filter:blur(10px) saturate(135%);backdrop-filter:blur(10px) saturate(135%);
-  box-shadow:
-    inset 0 2px 0 rgba(255,255,255,1),
-    inset 0 -4px 9px rgba(120,108,92,.30),
-    inset 0 0 0 1px rgba(255,255,255,.6),
-    0 10px 24px rgba(70,52,34,.20),
-    0 3px 7px rgba(70,52,34,.14)}
-.btn-try::before{background:linear-gradient(180deg,rgba(255,255,255,.9),rgba(255,255,255,0) 52%,rgba(120,108,92,.08) 100%)}
-.btn-try:hover{transform:translateY(-2px);
-  background:
-    radial-gradient(125% 90% at 80% -8%,rgba(255,255,255,1),rgba(255,255,255,0) 54%),
-    linear-gradient(180deg,rgba(255,255,255,1),rgba(216,210,199,.95));
-  box-shadow:inset 0 2px 0 rgba(255,255,255,1),inset 0 -4px 9px rgba(120,108,92,.32),inset 0 0 0 1px rgba(255,255,255,.7),0 13px 30px rgba(70,52,34,.24),0 4px 9px rgba(70,52,34,.16)}
-/* grow-in entrance (small pill -> full width, elastic settle); label fades in after */
-.btn-try{transform-origin:center;opacity:0;transform:scaleX(.16);
-  transition:transform .62s cubic-bezier(.2,.9,.2,1.25),opacity .4s var(--ease),box-shadow .28s var(--ease),background .25s}
-.btn-try.in{opacity:1;transform:none}
-.btn-try>span{display:inline-block;opacity:0;transform:scale(.7);transition:opacity .34s var(--ease) .3s,transform .34s var(--ease) .3s}
-.btn-try.in>span{opacity:1;transform:none}
-@media(prefers-reduced-motion:reduce){.btn-try{opacity:1!important;transform:none!important;transition:none!important}.btn-try>span{opacity:1!important;transform:none!important;transition:none!important}}
-
-.link{font-size:14.5px;color:var(--ink);display:inline-flex;align-items:center;gap:6px;border-bottom:1px solid var(--clay);padding-bottom:2px;transition:.16s}
-.link:hover{gap:9px;color:var(--clay-d)}
-
-/* ---- nav (always glass) ---- */
-nav{position:fixed;top:14px;left:0;right:0;z-index:50}
-nav .bar{display:flex;align-items:center;justify-content:space-between;gap:16px;max-width:1040px;margin:0 auto;padding:10px 14px 10px 22px;
-  border-radius:999px;transition:box-shadow .25s,background .25s}
-nav.scrolled .bar{box-shadow:0 10px 40px rgba(70,52,34,.14)}
-.logo{display:flex;align-items:center;gap:9px;font-weight:700;font-size:18px;letter-spacing:-.01em}
-.logo .star{color:var(--clay)}
-.nav-links{display:flex;gap:26px;font-size:14px;color:var(--mut)}
-.nav-links a:hover{color:var(--ink)}
-@media(max-width:820px){.nav-links{display:none}}
-
-/* ---- hero ---- */
-.hero{position:relative;z-index:2;padding:150px 0 24px;text-align:center}
-.eyebrow{font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:var(--clay);font-weight:700;margin-bottom:20px}
-.hero h1{font-size:clamp(40px,6.6vw,78px);font-weight:500;letter-spacing:-.02em;max-width:920px;margin:0 auto}
-.hero .sub{max-width:600px;margin:26px auto 0;font-size:clamp(16px,2vw,20px);color:var(--mut);line-height:1.6}
-.hero .cta-row{margin-top:34px;display:flex;gap:14px;justify-content:center;align-items:center;flex-wrap:wrap}
-.hero .fine{margin-top:16px;font-size:13px;color:var(--mut2)}
-
-/* kinetic type */
-.kin .w{display:inline-block;opacity:0;transform:translateY(24px);animation:kinRise .8s var(--ease) forwards}
-@keyframes kinRise{to{opacity:1;transform:none}}
-.kin .shine{background:linear-gradient(100deg,var(--clay) 0%,#dd8a4c 28%,#c44d6b 52%,var(--clay) 78%);
-  background-size:220% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;
-  animation:kinRise .8s var(--ease) forwards,shineMove 6s ease-in-out 1.2s infinite}
-@keyframes shineMove{0%,100%{background-position:120% 0}50%{background-position:-20% 0}}
-/* typewriter ("Type It") for the hero headline */
-.hero h1.type{min-height:2.2em}
-.tw .shine{background:linear-gradient(100deg,var(--clay) 0%,#dd8a4c 28%,#c44d6b 52%,var(--clay) 78%);
-  background-size:220% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;
-  animation:shineMove 6s ease-in-out infinite}
-.caret{display:inline-block;width:3px;height:.92em;background:var(--clay);border-radius:2px;
-  margin-left:.06em;vertical-align:-0.12em;animation:caretBlink 1.05s steps(1) infinite}
-@keyframes caretBlink{50%{opacity:0}}
-.kinwords .w{display:inline-block;opacity:0;transform:translateY(18px);transition:opacity .55s var(--ease),transform .55s var(--ease)}
-.kinwords.in .w{opacity:1;transform:none}
-.statement .kinwords .w.mut{color:var(--mut2)}
-
-/* ---- The Depth Map ---- */
-.mapwrap{position:relative;z-index:2;margin-top:60px;perspective:1400px}
-.globe-full{position:relative;z-index:2;width:100%;margin-top:8px;background:transparent}
-.globe-frame{display:block;width:100%;height:92svh;min-height:540px;border:0;background:transparent}
-.map-card{padding:30px 30px 22px;position:relative;overflow:hidden;transition:transform .2s var(--ease);will-change:transform}
-.map-head{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px;margin-bottom:18px;position:relative}
-.map-head .t{font-family:var(--serif);font-size:20px}
-.map-head .meth{font-size:12px;color:var(--mut2)}
-.plot{position:relative;width:100%;aspect-ratio:16/9;border:1px solid rgba(255,255,255,.5);border-radius:16px;overflow:hidden;
-  background:
-    linear-gradient(rgba(255,255,255,.18),rgba(255,255,255,.04)),
-    repeating-linear-gradient(0deg,transparent,transparent 11.11%,rgba(150,135,110,.13) 11.11%,rgba(150,135,110,.13) calc(11.11% + 1px)),
-    repeating-linear-gradient(90deg,transparent,transparent 10%,rgba(150,135,110,.13) 10%,rgba(150,135,110,.13) calc(10% + 1px))}
-.plot .zone{position:absolute;right:6%;top:6%;width:34%;height:34%;border:1px dashed rgba(193,95,60,.45);border-radius:14px;background:rgba(193,95,60,.06)}
-.plot .zone span{position:absolute;top:8px;left:12px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--clay)}
-.ax{position:absolute;font-size:12px;color:var(--mut);font-weight:600}
-.ax.x{bottom:-30px;left:50%;transform:translateX(-50%)}
-.ax.y{top:50%;left:-12px;transform:rotate(-90deg) translateX(50%);transform-origin:left;white-space:nowrap}
-.ax .lo,.ax .hi{color:var(--mut2);font-weight:500}
-.pt{position:absolute;transform:translate(-50%,-50%) scale(.4);opacity:0;transition:opacity .6s var(--ease),transform .6s var(--ease)}
-.pt.in{opacity:1;transform:translate(-50%,-50%) scale(1)}
-.pt .dot{width:13px;height:13px;border-radius:50%;background:var(--mut2);margin:0 auto;border:2px solid rgba(255,255,255,.9);box-shadow:0 2px 6px rgba(0,0,0,.18)}
-.pt .lbl{position:absolute;left:50%;top:18px;transform:translateX(-50%);white-space:nowrap;font-size:11.5px;color:var(--mut);text-align:center;font-weight:500}
-.pt.fyon .dot{width:22px;height:22px;background:var(--clay);box-shadow:0 0 0 6px rgba(193,95,60,.16),0 4px 14px rgba(193,95,60,.4);animation:fyonpulse 3s ease-in-out infinite}
-.pt.fyon .lbl{font-family:var(--serif);font-size:15px;color:var(--ink);top:24px}
-.pt.fyon .lbl small{display:block;font-family:var(--sans);font-size:11px;color:var(--mut);margin-top:2px}
-@keyframes fyonpulse{0%,100%{box-shadow:0 0 0 6px rgba(193,95,60,.16),0 4px 14px rgba(193,95,60,.4)}50%{box-shadow:0 0 0 11px rgba(193,95,60,.06),0 4px 20px rgba(193,95,60,.55)}}
-.gap-line{position:absolute;inset:0;pointer-events:none}
-.gap-line path{stroke:var(--clay);stroke-width:1.5;stroke-dasharray:5 5;fill:none;opacity:0;stroke-dashoffset:300;transition:opacity .8s .8s,stroke-dashoffset 1.6s .8s var(--ease)}
-.plot.in .gap-line path{opacity:.5;stroke-dashoffset:0}
-.map-foot{margin-top:42px;font-size:13px;color:var(--mut);line-height:1.6;max-width:680px;position:relative}
-.map-foot b{color:var(--ink)}
-
-/* proof */
-.proof{text-align:center;padding:44px 0 0}
-.proof .row{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;margin-top:8px}
-.proof .row .chip{padding:14px 22px;border-radius:16px;min-width:170px}
-.proof .row b{font-family:var(--serif);font-size:24px;color:var(--ink);display:block}
-.proof .row span{font-size:13px;color:var(--mut)}
-
-/* sections */
-section.s{position:relative;z-index:2;padding:clamp(72px,10vw,124px) 0}
-.s h2{font-size:clamp(28px,4.2vw,46px);font-weight:500;max-width:720px}
-.s .lead{color:var(--mut);font-size:clamp(16px,1.9vw,19px);line-height:1.65;max-width:640px;margin-top:18px}
-
-/* contrast */
-.contrast{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:46px;perspective:1400px}
-@media(max-width:760px){.contrast{grid-template-columns:1fr}}
-.cc{padding:30px;border-radius:22px}
-.cc.plain{border:1px solid var(--line);background:transparent}
-.cc .t{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--mut2);margin-bottom:12px;position:relative}
-.cc h3{font-size:22px;margin-bottom:10px;font-weight:500;position:relative}
-.cc p{color:var(--mut);font-size:15.5px;line-height:1.6;position:relative}
-
-/* feature rows */
-.feat{display:grid;grid-template-columns:1fr 1fr;gap:54px;align-items:center;perspective:1400px}
-.feat+.feat{margin-top:clamp(56px,7vw,96px)}
-.feat.rev .vis{order:2}
-@media(max-width:860px){.feat,.feat.rev{grid-template-columns:1fr;gap:26px}.feat.rev .vis{order:0}}
-.feat .k{font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--clay);font-weight:700;margin-bottom:14px}
-.feat h3{font-size:clamp(23px,2.9vw,32px);font-weight:500}
-.feat p{color:var(--mut);font-size:16.5px;line-height:1.65;margin-top:15px;max-width:460px}
-.feat .tick{display:flex;gap:9px;margin-top:12px;color:var(--ink2);font-size:15px}
-.feat .tick .c{color:var(--clay)}
-.gcard{padding:22px;transition:transform .2s var(--ease);will-change:transform}
-.gcard>*{position:relative}
-.portraits{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.portrait{position:relative;aspect-ratio:3/4;border-radius:14px;overflow:hidden;background:linear-gradient(160deg,#d9d2c4,#b3a997)}
-.portrait .tag{position:absolute;top:9px;left:9px;font-size:10px;letter-spacing:.12em;color:#fff;background:rgba(40,34,28,.5);padding:4px 8px;border-radius:7px;backdrop-filter:blur(4px)}
-.portrait .face{position:absolute;left:50%;bottom:0;transform:translateX(-50%);width:62%;height:80%;border-radius:50% 50% 44% 44%/58% 58% 42% 42%;background:linear-gradient(180deg,#cfc7b7,#a89f8d)}
-.chat{display:flex;flex-direction:column;gap:10px}
-.chat .b{max-width:88%;padding:12px 15px;border-radius:16px;font-size:14.5px;line-height:1.5}
-.chat .b.f{align-self:flex-start;border-top-left-radius:5px;background:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.7);color:var(--ink2)}
-.chat .b.u{align-self:flex-end;border-top-right-radius:5px;background:var(--ink);color:#fff}
-.chat .meta{font-size:11px;color:var(--mut2);padding-left:3px}
-
-/* approach specs */
-.specs{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:46px;perspective:1400px}
-@media(max-width:680px){.specs{grid-template-columns:1fr}}
-.spec{padding:28px 26px;border-radius:20px;transition:transform .2s var(--ease);will-change:transform}
-.spec .n{font-family:ui-monospace,monospace;font-size:12px;color:var(--clay);display:block;margin-bottom:12px;position:relative}
-.spec h4{font-size:17px;font-weight:600;margin-bottom:8px;font-family:var(--sans);position:relative}
-.spec p{color:var(--mut);font-size:14.5px;line-height:1.6;position:relative}
-
-/* principles */
-.princ{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:44px}
-@media(max-width:860px){.princ{grid-template-columns:1fr 1fr}}@media(max-width:520px){.princ{grid-template-columns:1fr}}
-.pr{padding:24px;border-radius:18px}
-.pr .bar{width:30px;height:3px;border-radius:3px;background:var(--clay);margin-bottom:14px;position:relative}
-.pr h4{font-size:16px;font-weight:600;margin-bottom:8px;font-family:var(--sans);position:relative}
-.pr p{color:var(--mut);font-size:14px;line-height:1.55;position:relative}
-
-/* statement + close */
-.statement{text-align:center;padding:clamp(90px,12vw,150px) 0;position:relative;z-index:2}
-.statement h2{font-size:clamp(28px,4.6vw,54px);font-weight:500;max-width:860px;margin:0 auto;line-height:1.14}
-.close{text-align:center;padding:0 0 30px;position:relative;z-index:2}
-.close-card{position:relative;overflow:hidden;background:rgba(26,23,20,.82);color:#fff;border:1px solid rgba(255,255,255,.12);
-  -webkit-backdrop-filter:blur(22px) saturate(160%);backdrop-filter:blur(22px) saturate(160%);
-  border-radius:26px;padding:clamp(50px,8vw,90px) 24px;box-shadow:0 30px 80px rgba(70,52,34,.25)}
-.close-card::before{content:"";position:absolute;inset:0;background:linear-gradient(150deg,rgba(255,255,255,.12),transparent 45%);pointer-events:none}
-.close-card h2{font-size:clamp(28px,4vw,46px);font-weight:500;max-width:600px;margin:0 auto;color:#fff;position:relative}
-.close-card p{color:rgba(255,255,255,.72);font-size:17px;margin:16px auto 28px;max-width:440px;position:relative}
-.close-card .btn-clay{position:relative;box-shadow:0 0 50px rgba(193,95,60,.5)}
-
-footer{position:relative;z-index:2;border-top:1px solid var(--line);margin-top:80px;padding:44px 0 56px;color:var(--mut)}
-footer .top{display:flex;justify-content:space-between;flex-wrap:wrap;gap:24px}
-footer .cols{display:flex;gap:48px;flex-wrap:wrap}
-footer h5{color:var(--ink);font-size:13px;margin-bottom:11px;font-weight:600}
-footer a{display:block;font-size:13.5px;color:var(--mut);padding:4px 0}footer a:hover{color:var(--ink)}
-footer .legal{margin-top:32px;font-size:12.5px;color:var(--mut2);max-width:560px;line-height:1.6}
-
-/* ===== the problem we solve (animated) ===== */
-.pb-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:46px;align-items:stretch}
-@media(max-width:860px){.pb-grid{grid-template-columns:1fr}}
-.pb-panel{padding:26px;border-radius:22px;position:relative;overflow:hidden;display:flex;flex-direction:column}
-.pb-panel.fyon{box-shadow:0 1px 0 rgba(255,255,255,.85) inset,0 -14px 30px rgba(255,255,255,.25) inset,0 0 0 1px rgba(193,95,60,.22),0 24px 60px rgba(70,52,34,.12)}
-.pb-cap{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--mut2);margin-bottom:16px;position:relative}
-.pb-cap b{color:var(--ink)}
-.pb-chat{display:flex;flex-direction:column;gap:10px;position:relative;transition:filter .8s var(--ease),opacity .8s var(--ease)}
-.pb-chat .b{opacity:0;transform:translateY(10px);transition:opacity .5s var(--ease),transform .5s var(--ease)}
-.pb-panel.play .pb-chat .b{opacity:1;transform:none}
-.pb-panel.forget .pb-chat{filter:grayscale(1) blur(1.4px);opacity:.4}
-.pb-stamp{position:absolute;left:0;right:0;top:46%;display:grid;place-items:center;opacity:0;transition:opacity .6s var(--ease);pointer-events:none;z-index:3}
-.pb-stamp span{font-family:var(--serif);font-size:18px;color:var(--ink);background:rgba(255,255,255,.7);
-  -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.8);
-  padding:11px 17px;border-radius:13px;transform:rotate(-3deg);box-shadow:0 12px 30px rgba(70,52,34,.18)}
-.pb-panel.forget .pb-stamp{opacity:1}
-.pb-fails{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
-.pb-fails span{font-size:12.5px;color:var(--mut);padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.35);
-  opacity:0;transform:translateY(6px);transition:opacity .45s var(--ease),transform .45s var(--ease)}
-.pb-panel.play .pb-fails span{opacity:1;transform:none}
-.pb-note{font-size:13px;color:var(--mut);line-height:1.6;margin-top:16px;position:relative}
-.pb-fileLabel{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--clay);font-weight:700;margin-bottom:8px;position:relative}
-.filebar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
-.filechip{font-size:12.5px;color:var(--ink);padding:6px 12px;border-radius:999px;background:rgba(193,95,60,.12);border:1px solid rgba(193,95,60,.28);
-  opacity:0;transform:scale(.9);transition:opacity .4s var(--ease),transform .4s var(--ease)}
-.pb-panel.play .filechip{opacity:1;transform:none}
-.pb-li{display:flex;gap:10px;font-size:14.5px;color:var(--ink2);line-height:1.5;margin-top:11px;opacity:0;transform:translateX(-6px);transition:opacity .45s var(--ease),transform .45s var(--ease)}
-.pb-panel.play .pb-li{opacity:1;transform:none}
-.pb-li .c{color:var(--clay);flex:none}.pb-li b{color:var(--ink)}
-.pb-line{margin-top:38px;text-align:center;font-family:var(--serif);font-size:clamp(20px,2.7vw,31px);line-height:1.32;max-width:780px;margin-inline:auto}
-.pb-line .dim{color:var(--mut2)}.pb-line .em{color:var(--ink)}
-.pb-sub{text-align:center;color:var(--mut);font-size:15px;line-height:1.65;max-width:640px;margin:16px auto 0}
-
-/* refined reveal — liquid-glass pop-in (fade + un-blur + gentle scale overshoot) */
-.rv{opacity:0;transform:translateY(30px) scale(.955);filter:blur(9px);will-change:transform,opacity,filter;
-  transition:opacity .65s var(--ease),transform .8s cubic-bezier(.2,1,.32,1.16),filter .65s var(--ease)}
-.rv.in{opacity:1;transform:none;filter:none}
-.rv.d1{transition-delay:.09s}.rv.d2{transition-delay:.18s}.rv.d3{transition-delay:.27s}
-@media(prefers-reduced-motion:reduce){.rv,.kin .w,.kinwords .w{transition:none!important;animation:none!important;opacity:1!important;transform:none!important;filter:none!important}}
-
-/* ===== "Twitch" liquid-glass boxes — section boxes only (not nav, not #partners) ===== */
-#what .pb-panel,#does .gcard,#approach .spec,#principles .pr{border-radius:28px}
-/* iridescent edge ring: clay → violet → bright highlight → emerald (like the template) */
-#what .pb-panel::after,#does .gcard::after,#approach .spec::after,#principles .pr::after{
-  content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:3;padding:1.4px;
-  background:linear-gradient(135deg,
-    rgba(193,95,60,.75) 0%,
-    rgba(173,118,205,.45) 24%,
-    rgba(255,255,255,.9) 50%,
-    rgba(120,193,162,.5) 74%,
-    rgba(43,185,138,.75) 100%);
-  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
-  -webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask-composite:exclude;
-  opacity:0;transition:opacity 1s var(--ease) .15s}
-/* the ring blooms in as the box reveals */
-#what .pb-panel::after,#does .vis.in .gcard::after,#approach .spec.in::after,#principles .pr.in::after{opacity:.85}
-/* soft iridescent outer glow */
-#approach .spec,#principles .pr,#does .gcard{box-shadow:0 1px 0 rgba(255,255,255,.85) inset,0 -14px 30px rgba(255,255,255,.25) inset,0 24px 60px rgba(70,52,34,.10),0 0 30px rgba(120,193,162,.10)}
-
-/* Archivo type inside the numbered / principle list boxes (matches the template) */
-#approach .spec,#principles .pr{font-family:var(--archivo)}
-#approach .spec h4,#principles .pr h4{font-family:var(--archivo);font-weight:700;letter-spacing:-.005em}
-/* rounded-square outlined number badge */
-#approach .spec .n{font-family:var(--archivo);font-weight:800;font-size:17px;color:var(--ink);
-  width:46px;height:46px;display:flex;align-items:center;justify-content:center;border-radius:15px;
-  border:1.6px solid rgba(193,95,60,.5);background:rgba(255,255,255,.42);
-  box-shadow:0 1px 0 rgba(255,255,255,.8) inset,0 6px 16px rgba(70,52,34,.08);margin-bottom:16px}
-/* ===== Fyon loading screen ===== */
-#fyon-loader{position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;
-  background:radial-gradient(120% 90% at 50% 0%,#F7F3EA,#EDE7DA 70%);transition:opacity .85s ease,visibility .85s ease}
-.fl-core{position:relative;width:104px;height:104px;display:grid;place-items:center}
-.fl-ring{position:absolute;inset:0;width:104px;height:104px;transform:rotate(-90deg)}
-.fl-ring-track{fill:none;stroke:rgba(70,52,34,.12);stroke-width:3}
-.fl-ring-fill{fill:none;stroke:var(--clay);stroke-width:3;stroke-linecap:round;
-  transition:stroke-dashoffset .25s linear;filter:drop-shadow(0 2px 8px rgba(193,95,60,.4))}
-.fl-star{font-size:30px;color:var(--clay);animation:fl-pulse 1.8s var(--ease) infinite}
-@keyframes fl-pulse{0%,100%{transform:scale(1);opacity:.9}50%{transform:scale(1.12);opacity:1}}
-.fl-name{font-family:var(--serif);font-size:24px;font-weight:500;letter-spacing:-.01em;color:var(--ink)}
-.fl-meta{font-size:12.5px;letter-spacing:.16em;color:var(--mut);font-variant-numeric:tabular-nums}
-.fl-unit{margin-left:1px}
-html.fyon-loaded #fyon-loader{opacity:0;visibility:hidden;pointer-events:none}
-/* content reveal — opacity only, so position:fixed children keep working */
-.fyon-reveal{opacity:0;transition:opacity 1s ease .1s}
-html.fyon-loaded .fyon-reveal{opacity:1}
-@media(prefers-reduced-motion:reduce){#fyon-loader{transition:none}.fyon-reveal{transition:none}}
-</style>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+<script src="image-slot.js"></script>
 </head>
 <body>
-<noscript><style>#fyon-loader{display:none!important}.fyon-reveal{opacity:1!important}</style></noscript>
-<div id="fyon-loader" aria-hidden="true">
-  <div class="fl-core">
-    <svg class="fl-ring" viewBox="0 0 100 100" aria-hidden="true">
-      <circle class="fl-ring-track" cx="50" cy="50" r="46"></circle>
-      <circle class="fl-ring-fill" cx="50" cy="50" r="46"></circle>
-    </svg>
-    <span class="fl-star">✦</span>
-  </div>
-  <div class="fl-name">Fyon</div>
-  <div class="fl-meta"><span class="fl-pct">0</span><span class="fl-unit">%</span></div>
-</div>
-<script src="loader.js?v=1"></script>
-<div class="fyon-reveal">
-<div class="bgfx"><div class="base"></div><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div></div>
-<div class="grain"></div>
 
-<nav id="nav"><div class="bar glass">
-  <div class="logo"><span class="star">✦</span>Fyon</div>
-  <div class="nav-links">
-    <a href="#what">Why Fyon</a><a href="#does">What it does</a><a href="#approach">How it works</a><a href="#principles">Principles</a><a href="partner.html?v=7">Partners</a>
-  </div>
-  <button class="lg sm" onclick="document.querySelector('#close').scrollIntoView()"><span class="lbl">Try Fyon</span></button>
-</div></nav>
-
-<!-- HERO -->
-<header class="hero wrap">
-  <div class="eyebrow">Fyon Intelligence</div>
-  <h1 class="type" aria-label="A self-improvement intelligence that knows you."><span id="tw" class="tw"></span><span id="caret" class="caret" aria-hidden="true"></span></h1>
-  <p class="sub">Most tools rate you, report on you, or forget you. Fyon points frontier intelligence entirely at one
-     person — and walks the path with you, learning more about you with every step.</p>
-  <div class="cta-row">
-    <button class="lg lg-big" onclick="document.querySelector('#close').scrollIntoView()"><span class="lbl">Try Fyon</span></button>
-    <a class="link" href="#what">See how it's different →</a>
-  </div>
-  <p class="fine">Built for individuals · 18+</p>
-</header>
-
-<!-- THE GLOBE: full-screen, scroll-driven (where the loop breaks) -->
-<section class="globe-full">
-  <iframe class="globe-frame" src="globe.html?v=8" title="Where self-improvement breaks" scrolling="no" allowtransparency="true"></iframe>
-</section>
-
-<div class="wrap">
-  <div class="proof">
-    <div class="row">
-      <div class="chip glass rv"><b>~150k</b><span>views on the raw prototype</span></div>
-      <div class="chip glass rv d1"><b>First buyer</b><span>before launch</span></div>
-      <div class="chip glass rv d2"><b>One</b><span>understanding driving it all</span></div>
+  <!-- ===================== NAV ===================== -->
+  <nav class="nav" data-screen-label="nav">
+    <a class="brand" href="#top"><span class="spark">✦</span> Fyon</a>
+    <div class="navlinks">
+      <a href="#why">Why Fyon</a>
+      <a href="#what">What it does</a>
+      <a href="#how">How it works</a>
+      <a href="#principles">Principles</a>
+      <a href="#partners">Partners</a>
     </div>
-  </div>
-</div>
+    <button class="btn">Try Fyon</button>
+  </nav>
 
-<!-- THE PROBLEM WE SOLVE -->
-<section class="s wrap" id="what">
-  <div class="rv"><div class="eyebrow">The problem we solve</div>
-  <h2>Why isn't a general assistant enough?</h2>
-  <p class="lead">You can ask ChatGPT how to become more attractive or more confident — and get a good answer.
-     So why isn't that enough?</p></div>
+  <!-- ===================== HERO ===================== -->
+  <header id="top" class="hero" data-screen-label="hero">
+    <p class="eyebrow">Fyon Intelligence</p>
+    <h1>A self-improvement intelligence that <span class="knows">knows you.</span><span class="cursor"></span></h1>
+    <p class="sub">Most tools rate you, report on you, or forget you. Fyon points frontier intelligence entirely at one person — and walks the path with you, learning more about you with every step.</p>
+    <div class="cta-row">
+      <button class="btn btn-lg">Try Fyon</button>
+      <a class="link-arrow" href="#why">See how it's different <span class="ar">→</span></a>
+    </div>
+    <p class="meta">Built for individuals · 18+</p>
+  </header>
 
-  <div class="pb-grid" id="pbSection">
-    <div class="pb-panel glass" id="pbLeft">
-      <div class="pb-cap">Asking <b>a general assistant</b></div>
-      <div class="chat pb-chat">
-        <div class="b u" style="transition-delay:.15s">how do i become more attractive and confident?</div>
-        <div class="b f" style="transition-delay:.6s">Work on grooming and posture, keep a consistent skincare routine, and build confidence with small daily wins…</div>
-        <div class="b f" style="transition-delay:1.0s">…stand tall, make eye contact, practice in low-stakes situations.</div>
+  <!-- ===================== LOOP (globe) ===================== -->
+  <section class="s loop" id="why" data-screen-label="self-improvement-loop">
+    <div class="s-inner">
+      <div class="loop-stage">
+        <svg class="globe-svg" viewBox="0 0 660 660" aria-hidden="true"><g class="g" id="siteGlobe"></g></svg>
+        <div class="loop-content" id="loopContent">
+          <p class="loop-eyebrow">The self-improvement loop</p>
+          <div class="loop-dots" id="loopDots"></div>
+          <span class="loop-chip" id="loopChip">United Kingdom</span>
+          <p class="loop-idx" id="loopIdx">03 / 10</p>
+          <h2 class="loop-title" id="loopTitle">Advice for everyone</h2>
+          <p class="loop-desc" id="loopDesc">Generic guidance is true for everyone and made for no one. Fyon never talks to an abstract user — only to you, with full context.</p>
+        </div>
       </div>
-      <div class="pb-stamp"><span>Tomorrow, you're a stranger again.</span></div>
-      <div class="pb-fails">
-        <span style="transition-delay:1.3s">Can't see your face</span>
-        <span style="transition-delay:1.5s">Forgets you</span>
-        <span style="transition-delay:1.7s">A wall of words</span>
-        <span style="transition-delay:1.9s">Can only talk</span>
+      <div class="loop-stats">
+        <div class="stat reveal"><b>~150k</b><span>views on the raw prototype</span></div>
+        <div class="stat reveal d1"><b>First buyer</b><span>before launch</span></div>
+        <div class="stat reveal d2"><b>One</b><span>understanding driving it all</span></div>
       </div>
-      <p class="pb-note">Generic — true for everyone, made for no one. The thread scrolls away. Next week you start over.</p>
     </div>
+  </section>
 
-    <div class="pb-panel glass fyon" id="pbRight">
-      <div class="pb-cap">Opening <b>Fyon</b></div>
-      <div class="pb-fileLabel">Your file — open every time</div>
-      <div class="filebar">
-        <span class="filechip" style="transition-delay:1.0s">Face</span>
-        <span class="filechip" style="transition-delay:1.1s">Body</span>
-        <span class="filechip" style="transition-delay:1.2s">Goals</span>
-        <span class="filechip" style="transition-delay:1.3s">History</span>
-        <span class="filechip" style="transition-delay:1.4s">Insecurities</span>
-        <span class="filechip" style="transition-delay:1.5s">Limits</span>
+  <!-- ===================== PROBLEM ===================== -->
+  <section class="s" id="pbSection" data-screen-label="problem">
+    <div class="s-inner">
+      <p class="eyebrow reveal">The problem we solve</p>
+      <h2 class="h2 reveal" style="max-width:14ch;">Why isn't a general assistant enough?</h2>
+      <p class="lede reveal" style="margin-bottom:56px;">You can ask ChatGPT how to become more attractive or more confident — and get a good answer. So why isn't that enough?</p>
+
+      <div class="pb-grid">
+        <div class="pb-card left reveal">
+          <div class="pb-head">
+            <span class="pb-kicker">Asking <b>a general assistant</b></span>
+            <span class="pb-status stateless"><span class="led"></span>Stateless</span>
+          </div>
+          <div class="pb-chat" id="pbChat"></div>
+          <div class="pb-note" id="pbNote">Tomorrow, you're a stranger again.</div>
+          <div class="pb-fails">
+            <span class="pb-fail" data-k="face">Can't see your face</span>
+            <span class="pb-fail" data-k="forget">Forgets you</span>
+            <span class="pb-fail" data-k="wall">A wall of words</span>
+            <span class="pb-fail" data-k="talk">Can only talk</span>
+          </div>
+          <p class="pb-foot">Generic — true for everyone, made for no one. The thread scrolls away. Next week you start over.</p>
+        </div>
+
+        <div class="pb-card right reveal d1">
+          <div class="pb-head">
+            <span class="pb-kicker">Opening <b>Fyon</b></span>
+            <span class="pb-status memory"><span class="led"></span><span id="pbMemTag">Knows you · 4</span></span>
+          </div>
+          <div class="pb-fileLabel">Your file — open every time</div>
+          <div class="pb-tabs">
+            <span class="pb-tab">Face</span><span class="pb-tab">Body</span><span class="pb-tab">Goals</span>
+            <span class="pb-tab">History</span><span class="pb-tab">Insecurities</span><span class="pb-tab">Limits</span>
+          </div>
+          <div class="pb-points">
+            <div class="pb-point"><svg class="tick" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M7 12.5l3.2 3.2L17 8.5"></path></svg><span class="txt"><b>Shows</b> you the version you could become — a future self, not a description.</span></div>
+            <div class="pb-point"><svg class="tick" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M7 12.5l3.2 3.2L17 8.5"></path></svg><span class="txt"><b>Compounds</b> — knows you more every session, where a general chat resets.</span></div>
+            <div class="pb-point"><svg class="tick" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M7 12.5l3.2 3.2L17 8.5"></path></svg><span class="txt"><b>Maintains</b> your becoming as a living plan — you see where you are and what's next.</span></div>
+            <div class="pb-point"><svg class="tick" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M7 12.5l3.2 3.2L17 8.5"></path></svg><span class="txt"><b>Acts</b> — "move this in my plan," and it actually rebuilds it, honestly.</span></div>
+            <div class="pb-point"><svg class="tick" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M7 12.5l3.2 3.2L17 8.5"></path></svg><span class="txt"><b>Honest</b> about where you are — no false progress; it follows you over weeks.</span></div>
+          </div>
+          <div class="pb-memory">
+            <span class="pb-memDots" id="pbMemDots"><i></i><i></i><i></i><i></i><i></i><i></i></span>
+            <span class="pb-memText">It only learns <b>more</b> — never resets.</span>
+          </div>
+          <div class="pb-learned"><span class="chip" id="pbLearned"></span></div>
+        </div>
       </div>
-      <div class="pb-li" style="transition-delay:1.8s"><span class="c">✓</span><span><b>Shows</b> you the version you could become — a future self, not a description.</span></div>
-      <div class="pb-li" style="transition-delay:2.0s"><span class="c">✓</span><span><b>Compounds</b> — knows you more every session, where ChatGPT resets.</span></div>
-      <div class="pb-li" style="transition-delay:2.2s"><span class="c">✓</span><span><b>Maintains</b> your becoming as a living plan — you see where you are and what's next.</span></div>
-      <div class="pb-li" style="transition-delay:2.4s"><span class="c">✓</span><span><b>Acts</b> — "move this in my plan," and it actually rebuilds it, honestly.</span></div>
-      <div class="pb-li" style="transition-delay:2.6s"><span class="c">✓</span><span><b>Honest</b> about where you are — no false progress; it follows you over weeks.</span></div>
+
+      <p class="pb-closing reveal"><span class="grey">A general assistant answers, then forgets you the moment you close the tab.</span> <span class="ink">Fyon has been getting to know you for weeks — and only knows you better.</span></p>
     </div>
-  </div>
+  </section>
 
-  <p class="pb-line rv"><span class="dim">ChatGPT answers your question and forgets you.</span> <span class="em">Fyon holds your becoming.</span></p>
-  <p class="pb-sub rv">Same intelligence inside — the difference is that Fyon is a place that knows you. You don't visit it to ask
-     about self-improvement; you live in it, because it holds the whole project of becoming who you want to be.</p>
-</section>
+  <!-- ===================== WHAT IT DOES ===================== -->
+  <section class="s" id="what" data-screen-label="what-it-does">
+    <div class="s-inner">
+      <p class="eyebrow reveal">What it does</p>
+      <h2 class="h2 reveal" style="max-width:16ch;">One intelligence, working on your <em>whole self.</em></h2>
+      <p class="lede reveal" style="margin-bottom:24px;">Your face is where it starts — not where it stops.</p>
 
-<!-- WHAT IT DOES -->
-<section class="s wrap" id="does">
-  <div class="rv"><div class="eyebrow">What it does</div>
-  <h2>One intelligence, working on your whole self.</h2>
-  <p class="lead">Your face is where it starts — not where it stops.</p></div>
+      <!-- act 1: future self -->
+      <div class="wd-act reverse" style="margin-top:88px;">
+        <div class="wd-copy">
+          <p class="wd-kicker">An achievable you</p>
+          <h3>A version of yourself you could actually reach.</h3>
+          <p>Upload two photos. Fyon renders a realistic future self — identity-locked, visibly improved toward what you want, grounded in a real path. <em>Not fantasy.</em></p>
+          <span class="feeling">I could become this</span>
+        </div>
+        <div class="panel iri">
+          <div class="panel-tag"><span>Your future self</span><span>front · side</span></div>
+          <div class="frames">
+            <div class="frame"><image-slot id="fyon-front" shape="rounded" radius="16" placeholder="Drop future self · front"></image-slot><span class="flabel">Front · outcome aligned</span><div class="scan"></div></div>
+            <div class="frame"><image-slot id="fyon-side" shape="rounded" radius="16" placeholder="Drop future self · side"></image-slot><span class="flabel">Side · outcome aligned</span><div class="scan"></div></div>
+          </div>
+          <div class="panel-foot"><span class="lock">⬡</span> Identity-locked — features, bone structure and natural asymmetries preserved.</div>
+        </div>
+      </div>
 
-  <div style="margin-top:58px">
-    <div class="feat">
-      <div class="rv"><div class="k">An achievable you</div>
-        <h3>A version of yourself you could actually reach.</h3>
-        <p>Upload two photos. Fyon renders a realistic future self — identity-locked, visibly improved toward what you
-           want, grounded in a real path. Not fantasy. The quiet feeling: <em>I could become this.</em></p>
-        <div class="tick"><span class="c">✓</span><span>Your features, bone structure and natural asymmetries are preserved.</span></div>
-        <div class="tick"><span class="c">✓</span><span>Every change has an honest real-life path.</span></div></div>
-      <div class="vis rv d1"><div class="gcard glass tilt"><div class="portraits">
-        <div class="portrait"><span class="tag">FRONT · OUTCOME ALIGNED</span><div class="face"></div></div>
-        <div class="portrait"><span class="tag">SIDE · OUTCOME ALIGNED</span><div class="face"></div></div>
-      </div></div></div>
+      <!-- act 2: knows you -->
+      <div class="wd-act">
+        <div class="wd-copy">
+          <p class="wd-kicker">It knows you</p>
+          <h3>And it keeps knowing.</h3>
+          <p>It reads how you're perceived, has a short, intelligent conversation to understand what you really want, and remembers. Next time it already knows who you are — and builds on everything it has learned.</p>
+          <span class="feeling">it knows me</span>
+        </div>
+        <div class="panel iri">
+          <div class="panel-tag"><span>A conversation that's remembered</span><span>persistent</span></div>
+          <div class="kw-chat" id="kwChat"></div>
+          <div class="kw-foot">Fyon remembers across sessions</div>
+        </div>
+      </div>
+
+      <!-- act 3: honest plan -->
+      <div class="wd-act reverse">
+        <div class="wd-copy">
+          <p class="wd-kicker">An honest plan</p>
+          <h3>Grounded in you — not generic advice.</h3>
+          <p>Every step is causal and specific: <em>"redness neutralised → azelaic acid 10%"</em>, localised to your country. No score that calls you a number. No false progress. What the image can't honestly show lives in your plan instead.</p>
+          <span class="feeling">it doesn't lie to me</span>
+        </div>
+        <div class="panel iri">
+          <div class="panel-tag"><span>Your plan</span><span>causal · honest</span></div>
+          <div class="honest-list">
+            <div class="hrow"><span class="hk">Causal</span><span><b>redness neutralised → azelaic acid 10%</b>, localised to you.</span></div>
+            <div class="hrow"><span class="hk">No score</span><span>It never reduces you to a number.</span></div>
+            <div class="hrow"><span class="hk">Honest</span><span>What the image can't truthfully show lives in your plan instead.</span></div>
+            <div class="hrow"><span class="hk">Direction</span><span>Your whole self-improvement, in one place that knows you.</span></div>
+          </div>
+        </div>
+      </div>
     </div>
+  </section>
 
-    <div class="feat rev">
-      <div class="vis rv"><div class="gcard glass tilt"><div class="chat">
-        <div class="b f">Last time you said evenings are when your routine slips. Want to start there?</div>
-        <div class="b u">yeah, that's the hard part</div>
-        <div class="b f">Then we build around it — one step, tonight, that survives a long day.</div>
-        <div class="meta">Fyon remembers across sessions</div>
-      </div></div></div>
-      <div class="rv d1"><div class="k">It knows you</div>
-        <h3>And it keeps knowing.</h3>
-        <p>It reads how you're perceived, has a short, intelligent conversation to understand what you really want, and
-           remembers it. Next time, it already knows who you are — and builds on everything it has learned.</p></div>
+  <!-- ===================== THE INTELLIGENCE (brain) ===================== -->
+  <section class="s" id="intelligence" data-screen-label="intelligence">
+    <div class="s-inner">
+      <div style="text-align:center; max-width:780px; margin:0 auto 56px;">
+        <p class="eyebrow reveal">The intelligence behind it</p>
+        <h2 class="h2 reveal" style="margin-left:auto;margin-right:auto;">Not a smarter chatbot. A <em>brain built to get you there.</em></h2>
+        <p class="lede reveal" style="margin:0 auto;max-width:640px;">Fyon isn't one model with a clever prompt. It's a specialized intelligence — stacked from real transformation data, presence analysis, the standards where you actually live, and a sense of what's genuinely possible for you.</p>
+      </div>
+
+      <div class="bn-stage iri iri-dark reveal">
+        <div class="bn-tag"><span>Fyon · core intelligence</span><span class="live"><span class="led"></span>4 layers active</span></div>
+        <div class="bn-wrap">
+          <svg class="bn-links" viewBox="0 0 1000 580" preserveAspectRatio="none" aria-hidden="true"></svg>
+          <div class="bn-card c1">
+            <div class="bn-st"><span class="num">Layer 01</span><span class="dot">●</span></div>
+            <h3>Trained on real becoming</h3>
+            <p>Built on guided transformation journeys — how real people actually changed — not scraped web advice.</p>
+            <span class="bn-stat"><b>1,500+</b> user training sessions</span>
+          </div>
+          <div class="bn-card c2">
+            <div class="bn-st"><span class="num">Layer 02</span><span class="dot">●</span></div>
+            <h3>Presence analysis</h3>
+            <p>Dedicated vision backends and structured datasheets read how you're genuinely perceived — not a chat squinting at a selfie.</p>
+            <span class="bn-stat"><b>Specialized</b> backends + datasheets</span>
+          </div>
+          <div class="bn-card c3">
+            <div class="bn-st"><span class="num">Layer 03</span><span class="dot">●</span></div>
+            <h3>Localized to you</h3>
+            <p>It knows the standards and norms where you live — your country, your age, your context. "Better" defined right here.</p>
+            <span class="bn-stat"><b>Your country</b> · age · context</span>
+          </div>
+          <div class="bn-card c4">
+            <div class="bn-st"><span class="num">Layer 04</span><span class="dot">●</span></div>
+            <h3>Possibility engine</h3>
+            <p>Calibrated to what's truly achievable for you — and it re-plans as your motives shift, day to day or week to week.</p>
+            <span class="bn-stat"><b>Only</b> what's real for you</span>
+          </div>
+          <div class="bn-center">
+            <div class="bn-coreLabel"><div class="bnn">your becoming</div><div class="bns">one model · always on</div></div>
+          </div>
+        </div>
+        <p class="bn-tagline">Four layers feed one intelligence — so it's <em>impossible not to move</em> toward the version of you that's actually within reach.</p>
+      </div>
+
+      <!-- contrast -->
+      <div style="text-align:center; max-width:720px; margin:120px auto 0;">
+        <h2 class="h2 reveal" style="margin-left:auto;margin-right:auto;font-size:clamp(30px,4vw,48px);">Why this isn't the same <em>ball game</em>.</h2>
+        <p class="lede reveal" style="margin:0 auto;">Yes, a rating app can scan you and hand you a plan. Then it leaves you there. Fyon is built the opposite way.</p>
+      </div>
+      <div class="vs reveal">
+        <div class="vs-card vs-cold">
+          <p class="vk">Rating apps · Looksmax &amp; co.</p>
+          <p class="vt">Scores you, then stops.</p>
+          <div class="track">
+            <span class="tnode">Scan</span><span class="tarrow">→</span>
+            <span class="tnode score">7.5 / 10</span><span class="tarrow">→</span>
+            <span class="tnode">Generic plan</span><span class="tarrow">→</span>
+            <span class="deadend"><span class="x">✕</span> You're on your own</span>
+          </div>
+          <p class="vs-foot-cold">A number and a checklist that's <b>true for everyone, made for no one</b>. It doesn't know you, can't adapt, and won't follow you. The plateau is the product.</p>
+        </div>
+        <div class="vs-card vs-warm iri iri-dark">
+          <p class="vk">Fyon</p>
+          <p class="vt">Knows you, and never leaves.</p>
+          <div class="loop-tags" id="vsLoop">
+            <span class="lnode"><span class="d"></span>Knows you deeply</span>
+            <span class="lnode"><span class="d"></span>Sees what's possible</span>
+            <span class="lnode"><span class="d"></span>Living plan</span>
+            <span class="lnode"><span class="d"></span>Adapts to you</span>
+            <span class="lnode"><span class="d"></span>Honest, always</span>
+            <span class="loopback"><span class="r">↻</span> Keeps going with you</span>
+          </div>
+          <p class="vs-foot-warm">It analyses like a specialist, understands you like nothing generic can, and <b>adapts as you change</b> — simple goals or complex, steady or switching week to week. It only ever tells you what's genuinely possible, and walks the whole way.</p>
+        </div>
+      </div>
+      <p class="verdict reveal"><span class="grey">They rate you and walk away.</span> <span class="ink">Fyon stays — specialized, honest, and built so you</span> <em>can't help but get there.</em></p>
     </div>
+  </section>
 
-    <div class="feat">
-      <div class="rv"><div class="k">An honest plan</div>
-        <h3>Grounded in you — not generic advice.</h3>
-        <p>Every step is causal and specific: <em>"redness neutralised → azelaic acid 10%"</em>, localised to your country.
-           No score that calls you a number. No false progress. What the image can't honestly show lives in your plan instead.</p></div>
-      <div class="vis rv d1"><div class="gcard glass tilt">
-        <p style="font-family:var(--serif);font-size:19px;line-height:1.4;position:relative">"Looks are the entry point, not the limit."</p>
-        <p style="color:var(--mut);font-size:15px;line-height:1.6;margin-top:12px;position:relative">Tell Fyon you're struggling socially, and it
-           meets you there — with full context, not a blank page. The direction: your whole self-improvement, in one place that knows you.</p>
-      </div></div>
+  <!-- ===================== HOW IT WORKS ===================== -->
+  <section class="s" id="how" data-screen-label="how-it-works">
+    <div class="s-inner">
+      <p class="eyebrow reveal">How it works</p>
+      <h2 class="h2 reveal" style="max-width:18ch;">One understanding of you, driving everything.</h2>
+      <p class="lede reveal" style="margin-bottom:52px;max-width:600px;">Fyon learns you once — then everything you see comes from that same understanding. So nothing ever contradicts.</p>
+
+      <div class="hw-flow reveal">
+        <div class="hw-input"><span class="ph">Input</span> Your face + a short conversation</div>
+        <div class="hw-conn a"></div>
+        <div class="hw-core glass"><span class="ttl">One understanding of you</span><span class="sub2">learned once · locked</span></div>
+        <div class="hw-conn b"></div>
+        <div class="hw-branch">drives all three</div>
+        <div class="hw-outs">
+          <div class="hw-out glass"><span class="on">Output</span><b>Your image</b><p>The future self you're walking toward — a fixed, honest target.</p></div>
+          <div class="hw-out glass"><span class="on">Output</span><b>Your plan</b><p>The real steps that get you there, grounded in exactly you.</p></div>
+          <div class="hw-out glass"><span class="on">Output</span><b>Your journey</b><p>Where you are and what's next, tracked honestly week to week.</p></div>
+        </div>
+        <p class="hw-note">One source for all three — so your image, your plan and your journey <em>can never disagree.</em></p>
+      </div>
+
+      <p class="foot-note reveal" style="text-align:center;margin-left:auto;margin-right:auto;margin-top:36px;">Built on frontier reasoning and vision models, with facial geometry and identity-preserving image generation.</p>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- APPROACH -->
-<section class="s wrap" id="approach">
-  <div class="rv"><div class="eyebrow">How it works</div>
-  <h2>One understanding of you, driving everything.</h2>
-  <p class="lead">It reads your face, talks with you, renders your future self, and builds the path to it — all from a
-     single locked understanding of you, so the image, the plan and the journey never disagree.</p></div>
-  <div class="specs">
-    <div class="spec glass tilt rv"><span class="n">01</span><h4>One source of truth</h4><p>A single understanding of you drives the image, the plan and the journey. They move together, never apart.</p></div>
-    <div class="spec glass tilt rv d1"><span class="n">02</span><h4>The image is an anchor</h4><p>Your future self is the destination — a fixed target, never quietly redrawn. The plan is the living path to it.</p></div>
-    <div class="spec glass tilt rv d2"><span class="n">03</span><h4>Honest by construction</h4><p>A change appears in your image only if it has a real-life path. Your eyes stay untouched.</p></div>
-    <div class="spec glass tilt rv d3"><span class="n">04</span><h4>It compounds</h4><p>A lasting model of you, enriched every session. The longer you use it, the better it knows you.</p></div>
-  </div>
-  <p class="lead" style="margin-top:28px;color:var(--mut2);font-size:14px">Built on frontier reasoning and vision models, with facial geometry and identity-preserving image generation.</p>
-</section>
+  <!-- ===================== PRINCIPLES ===================== -->
+  <section class="s" id="principles" data-screen-label="principles">
+    <div class="s-inner">
+      <p class="eyebrow reveal">The principles behind Fyon</p>
+      <h2 class="h2 reveal" style="max-width:15ch;">Built on honesty, not judgment.</h2>
+      <p class="lede reveal" style="margin-bottom:8px;">The non-negotiable rules everything is built on — what makes Fyon, Fyon. They fall in three layers.</p>
 
-<!-- PRINCIPLES -->
-<section class="s wrap" id="principles">
-  <div class="rv"><div class="eyebrow">Our approach</div>
-  <h2>Built on honesty, not judgment.</h2></div>
-  <div class="princ">
-    <div class="pr glass rv d1"><div class="bar"></div><h4>Honest</h4><p>No score that reduces you to a number. Honest about progress, and about what it can and can't change.</p></div>
-    <div class="pr glass rv d1"><div class="bar"></div><h4>Achievable</h4><p>Every result has a real-life path. The feeling is "I could become this" — never fantasy.</p></div>
-    <div class="pr glass rv d2"><div class="bar"></div><h4>Always you</h4><p>Identity preserved — your features, bone structure, asymmetries. Improved, never replaced.</p></div>
-    <div class="pr glass rv d2"><div class="bar"></div><h4>For adults</h4><p>Strictly 18+. Care for the vulnerable, never pressure. No numeric diet targets.</p></div>
-  </div>
-</section>
+      <div class="charter">
 
-<!-- PARTNER PROGRAM -->
-<section class="s wrap" id="partners">
-  <div class="rv"><div class="eyebrow">Partner program</div>
-  <h2>Partner with Fyon</h2>
-  <p class="lead">Refer customers to Fyon Intelligence and earn recurring commission — every month they stay subscribed.</p></div>
-  <div class="specs" style="margin-top:40px">
-    <div class="spec glass tilt rv"><span class="n">01</span><h4>Your link &amp; coupon</h4><p>Get a referral link and a 20%-off code your audience will actually use.</p></div>
-    <div class="spec glass tilt rv d1"><span class="n">02</span><h4>Recurring commission</h4><p>Earn 15–30% on every payment, every month — not just the first.</p></div>
-    <div class="spec glass tilt rv d2"><span class="n">03</span><h4>Level up</h4><p>Nine tiers — the more you refer, the higher your rate climbs.</p></div>
-    <div class="spec glass tilt rv d3"><span class="n">04</span><h4>Get paid</h4><p>Connect Stripe and withdraw your earnings, honestly tracked.</p></div>
-  </div>
-  <div class="rv d1 cta-row" style="margin-top:30px;align-items:center">
-    <a class="lg primary" href="partner.html?v=7" style="text-decoration:none"><span class="lbl">Become a partner</span></a>
-    <a class="link" href="partner.html?v=7" style="text-decoration:none">Already a partner? Sign in →</a>
-  </div>
-</section>
+        <!-- LAYER 01 -->
+        <div class="layer reveal" style="--lac:var(--terra);">
+          <div class="layer-head">
+            <span class="layer-num">01</span>
+            <h3>The philosophy</h3>
+            <span class="layer-why">why it exists</span>
+          </div>
+          <div class="layer-items">
+            <div class="ch-card glass">
+              <span class="lead">You're <span class="em">not broken — you're hidden.</span></span>
+              <p>It never starts from what's wrong with you, but from the version that's already there, just underframed. Person-out, never verdict-out — the exact opposite of a rating.</p>
+            </div>
+            <div class="ch-card glass">
+              <span class="lead">It's the same intelligence, <span class="em">pointed at you.</span></span>
+              <p>Fyon never claims to be smarter than a general model. The edge isn't cleverer answers — it's that it knows you. Every answer is grounded in knowing exactly you, or it's just a worse chatbot.</p>
+            </div>
+            <div class="ch-card glass">
+              <span class="lead">The relationship is the product; <span class="em">the image is the hook.</span></span>
+              <p>The image draws you in; the intelligence that walks with you over time is what you become. The moat is the depth and the journey — never the image, never a number.</p>
+            </div>
+          </div>
+        </div>
 
-<!-- STATEMENT -->
-<section class="statement wrap">
-  <h2 class="rv kinwords">Fyon is the place you open <span class="mut">when you want your outside to match who you're becoming.</span></h2>
-</section>
+        <!-- LAYER 02 -->
+        <div class="layer reveal" style="--lac:var(--sage);">
+          <div class="layer-head">
+            <span class="layer-num">02</span>
+            <h3>The backbone</h3>
+            <span class="layer-why">what keeps it coherent</span>
+          </div>
+          <div class="layer-items">
+            <div class="ch-card glass">
+              <span class="lead">One locked change-set <span class="em">drives everything.</span></span>
+              <p>Image, plan, journey, products — one source of truth. They can never disagree; if the image says one thing and the plan another, something has broken.</p>
+            </div>
+            <div class="ch-card glass">
+              <span class="lead">Fixed anchor, <span class="em">living path.</span></span>
+              <p>The goal is fixed — never quietly redrawn; it's the self you walk toward. The plan is alive and adapts to your life. You don't move the target, you adjust the route.</p>
+            </div>
+            <div class="ch-card glass">
+              <span class="lead">The image only promises <span class="em">what's real.</span></span>
+              <p>A change shows in your image only if it has an honest real-life path — skin, hair, styling, leanness, presence. Everything else lives in the plan. The image never promises something false.</p>
+            </div>
+            <div class="ch-card glass">
+              <span class="lead">Identity preserved, <span class="em">eyes locked.</span></span>
+              <p>Sex, face shape, bone, natural asymmetry — untouched. Never masculinise or feminise, never add hair you can't grow. Eyes are pixel-locked. Front and side share one change-set.</p>
+            </div>
+          </div>
+        </div>
 
-<!-- CLOSE -->
-<section class="close wrap" id="close">
-  <div class="close-card rv">
-    <h2>Meet the version of yourself you envisioned.</h2>
-    <p>Two photos. A short conversation. An intelligence that gets to know you.</p>
-    <button class="lg primary lg-big" id="buyBtn"><span class="lbl">Start free trial →</span></button>
-  </div>
-</section>
+        <!-- LAYER 03 -->
+        <div class="layer reveal" style="--lac:var(--amber);">
+          <div class="layer-head">
+            <span class="layer-num">03</span>
+            <h3>The integrity</h3>
+            <span class="layer-why">honest and caring</span>
+          </div>
+          <div class="layer-items">
+            <div class="ch-card glass">
+              <span class="lead">It <span class="em">never lies.</span></span>
+              <p>No verdict number, no false progress, no "done" when nothing moved, no "you've arrived" at 0/5. If it sees no change, it says so — warmly, but honestly.</p>
+            </div>
+            <div class="ch-card glass">
+              <span class="lead">Everything is <span class="em">grounded in you.</span></span>
+              <p>No generic advice. Every surface, every step is rooted in what Fyon knows about exactly you. A plan that doesn't know your situation is just a chatbot with a face.</p>
+            </div>
+            <div class="ch-card glass">
+              <span class="lead">Surfaces <span class="em">stay alive.</span></span>
+              <p>What Fyon builds for you is maintained — it updates with your progress and stays coherent with the rest, never a one-off output left in a panel.</p>
+            </div>
+            <div class="ch-card glass">
+              <span class="lead">Discernment <span class="em">and care.</span></span>
+              <p>Fierce and honest for the motivated; real care for the vulnerable; wise enough to know the difference. It never reinforces self-destruction, and never pressures.</p>
+            </div>
+            <div class="ch-card glass keystone">
+              <span class="lead"><span class="pin">Non-negotiable</span> Strictly 18+.</span>
+              <p>The AI-generated version of a real face never runs on a minor. Ever.</p>
+            </div>
+          </div>
+        </div>
 
-<footer class="wrap">
-  <div class="top">
-    <div class="logo"><span class="star">✦</span>Fyon</div>
-    <div class="cols">
-      <div><h5>Fyon Intelligence</h5><a href="#what">What it is</a><a href="#does">What it does</a><a href="#approach">How it works</a></div>
-      <div><h5>Company</h5><a href="#">About</a><a href="#">Our approach</a></div>
-      <div><h5>Trust</h5><a href="#principles">Principles</a><a href="#">Privacy</a><a href="#">18+ policy</a></div>
+      </div>
+
+      <p class="charter-thread reveal"><span class="grey">The thread through all three:</span> Fyon is <em>honest and on your side</em> — it shows you only what's truly reachable, knows you before it speaks, and wants the best for you.</p>
     </div>
-  </div>
-  <div class="legal">Fyon shows illustrative, non-medical visualisations and is not a substitute for professional advice. 18+. © 2026 Fyon.</div>
-</footer>
-</div><!-- /.fyon-reveal -->
+  </section>
 
-<script>
-/* referral capture (?ref=CODE -> 60-day cookie, used at checkout & partner attribution) */
-(function(){var r=new URLSearchParams(location.search).get('ref');
-  if(r){var c=r.toUpperCase().slice(0,24);
-    document.cookie='fyon_ref='+c+';max-age='+(60*60*24*60)+';path=/;samesite=lax';
-    try{localStorage.setItem('fyon_ref',c);}catch(e){}}})();
+  <!-- ===================== PARTNER PROGRAM ===================== -->
+  <section class="s" id="partners" data-screen-label="partners">
+    <div class="s-inner">
+      <p class="eyebrow reveal">Partner program</p>
+      <h2 class="h2 reveal" style="max-width:14ch;">Earn with Fyon.</h2>
+      <p class="lede reveal" style="margin-bottom:40px;">Send people to an intelligence they'll actually keep — and get paid every month they stay. Real recurring income, honestly tracked.</p>
 
-/* start checkout via Supabase Edge Function (carries the referral code; works without one) */
-const SUPA_FN = "https://vvwevqhdwumnethujxhy.supabase.co/functions/v1";
-const SUPA_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ2d2V2cWhkd3VtbmV0aHVqeGh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyMDg0ODYsImV4cCI6MjA5Njc4NDQ4Nn0.G60xcGM0DwDBYX2j48iYgb_y8SuXYxdNNiExQlDzarU";
-function getRef(){ return (document.cookie.match(/fyon_ref=([^;]+)/)||[])[1] || (function(){try{return localStorage.getItem('fyon_ref')||''}catch(e){return ''}})(); }
-async function startCheckout(btn){
-  if(btn){ btn.dataset.t=btn.textContent; btn.textContent='Loading…'; btn.disabled=true; }
-  try{
-    const r = await fetch(SUPA_FN+"/create-checkout",{
-      method:"POST",
-      headers:{"content-type":"application/json","Authorization":"Bearer "+SUPA_ANON},
-      body:JSON.stringify({referral_code:getRef()})
+      <!-- earnings showpiece -->
+      <div class="pt-panel iri iri-dark reveal">
+        <div>
+          <p class="pk">Why it adds up</p>
+          <h3>Recurring revenue — <em>not a one-time payout.</em></h3>
+          <p class="pp">You earn on every payment your referrals make, for as long as they stay subscribed. Fyon is built to be kept — so your income compounds as your base grows, month after month.</p>
+          <div class="pt-figures">
+            <div class="pt-fig"><b><span class="rng">15–30%</span></b><span>of every payment</span></div>
+            <div class="pt-fig"><b>Every<br />month</b><span>not just the first</span></div>
+          </div>
+        </div>
+        <div class="pt-chart reveal">
+          <div class="pt-chart-head">
+            <span class="lbl">Your recurring payout</span>
+            <span class="amt" id="ptAmt">$0<span class="mo">/mo</span></span>
+          </div>
+          <svg class="pt-area" viewBox="0 0 320 140" preserveAspectRatio="none" aria-hidden="true">
+            <defs><linearGradient id="ptg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e2966a" stop-opacity="0.45"></stop><stop offset="1" stop-color="#e2966a" stop-opacity="0"></stop></linearGradient></defs>
+            <g class="pt-grid"><line x1="0" y1="35" x2="320" y2="35"></line><line x1="0" y1="70" x2="320" y2="70"></line><line x1="0" y1="105" x2="320" y2="105"></line></g>
+            <path class="pt-fill" d="M0,120 L29,114 L58,107 L87,99 L116,90 L145,80 L175,70 L204,59 L233,47 L262,36 L291,25 L318,16 L318,140 L0,140 Z" fill="url(#ptg)"></path>
+            <path class="pt-stroke" d="M0,120 L29,114 L58,107 L87,99 L116,90 L145,80 L175,70 L204,59 L233,47 L262,36 L291,25 L318,16"></path>
+            <circle class="pt-dot-glow" cx="318" cy="16" r="11"></circle>
+            <circle class="pt-dot" cx="318" cy="16" r="4.5"></circle>
+          </svg>
+          <div class="pt-chart-foot"><span>Month 1</span><span>Illustrative · referrals that stay</span><span>Month 12</span></div>
+        </div>
+      </div>
+
+      <!-- tier ladder -->
+      <div class="pt-tier-head reveal">
+        <h3>Nine tiers. Your rate climbs as you grow.</h3>
+        <span>The more members you bring who stay, the higher your share.</span>
+      </div>
+      <div class="pt-ladder reveal">
+        <div class="pt-step"><div class="bar2" style="height:24%"></div><span class="pct">15%</span></div>
+        <div class="pt-step"><div class="bar2" style="height:33%"></div><span class="pct">17%</span></div>
+        <div class="pt-step"><div class="bar2" style="height:42%"></div><span class="pct">19%</span></div>
+        <div class="pt-step hl"><div class="bar2" style="height:52%"></div><span class="pct">21%</span><span class="you">you</span></div>
+        <div class="pt-step"><div class="bar2" style="height:60%"></div><span class="pct">23%</span></div>
+        <div class="pt-step"><div class="bar2" style="height:69%"></div><span class="pct">25%</span></div>
+        <div class="pt-step"><div class="bar2" style="height:78%"></div><span class="pct">27%</span></div>
+        <div class="pt-step"><div class="bar2" style="height:89%"></div><span class="pct">28%</span></div>
+        <div class="pt-step"><div class="bar2" style="height:100%"></div><span class="pct">30%</span></div>
+      </div>
+
+      <!-- how it works -->
+      <div class="num-grid">
+        <div class="num-card glass reveal"><span class="idx">01</span><h3>Your link &amp; coupon</h3><p>Get a referral link and a 20%-off code your audience will actually want to use.</p></div>
+        <div class="num-card glass reveal d1"><span class="idx">02</span><h3>They subscribe &amp; stay</h3><p>Because Fyon keeps knowing them, they don't churn — and you keep earning.</p></div>
+        <div class="num-card glass reveal d2"><span class="idx">03</span><h3>Level up</h3><p>Climb the nine tiers from 15% toward 30% as your retained base grows.</p></div>
+        <div class="num-card glass reveal d3"><span class="idx">04</span><h3>Get paid</h3><p>Connect Stripe and withdraw your earnings — every figure honestly tracked.</p></div>
+      </div>
+
+      <div class="pt-cta reveal">
+        <button class="btn btn-primary btn-lg">Become a partner</button>
+        <a class="link-arrow" href="#">Already a partner? Sign in <span class="ar">→</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== FINAL CTA ===================== -->
+  <section class="s fc" data-screen-label="final-cta">
+    <div class="s-inner">
+      <p class="fc-line reveal"><span class="ink">Fyon is the place you open</span> <span class="grey">when you want your outside to match who you're becoming.</span></p>
+      <div class="fc-block iri iri-dark reveal">
+        <h2>Meet the version of yourself you envisioned.</h2>
+        <p>Two photos. A short conversation. An intelligence that gets to know you.</p>
+        <button class="btn btn-primary btn-lg">Start free trial →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== FOOTER ===================== -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <a class="brand" href="#top"><span class="spark">✦</span> Fyon</a>
+      <div class="links">
+        <a href="#why">Why Fyon</a>
+        <a href="#what">What it does</a>
+        <a href="#how">How it works</a>
+        <a href="#principles">Principles</a>
+        <a href="#partners">Partners</a>
+      </div>
+      <span class="copy">© 2026 Fyon Intelligence · 18+</span>
+    </div>
+  </footer>
+
+  <script src="site.js"></script>
+
+  <!-- CTA wiring — referral capture + product checkout + partner links.
+       Reuses the existing Supabase create-checkout flow; does NOT touch
+       partner.html or the affiliate backend. (anon key is public-safe) -->
+  <script>
+  (function(){
+    /* referral capture (?ref=CODE -> 60-day cookie) — same scheme the affiliate flow uses */
+    var rq=new URLSearchParams(location.search).get('ref');
+    if(rq){ var c=rq.toUpperCase().slice(0,24);
+      document.cookie='fyon_ref='+c+';max-age='+(60*60*24*60)+';path=/;samesite=lax';
+      try{ localStorage.setItem('fyon_ref',c); }catch(e){} }
+
+    var SUPA_FN="https://vvwevqhdwumnethujxhy.supabase.co/functions/v1";
+    var SUPA_ANON="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ2d2V2cWhkd3VtbmV0aHVqeGh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyMDg0ODYsImV4cCI6MjA5Njc4NDQ4Nn0.G60xcGM0DwDBYX2j48iYgb_y8SuXYxdNNiExQlDzarU";
+    var PARTNER="partner.html?v=7";
+    function getRef(){ return (document.cookie.match(/fyon_ref=([^;]+)/)||[])[1] || (function(){try{return localStorage.getItem('fyon_ref')||''}catch(e){return ''}})(); }
+
+    async function startCheckout(btn){
+      var lbl=btn&&btn.querySelector('.lbl'); var old=lbl?lbl.textContent:(btn?btn.textContent:'');
+      if(btn){ if(lbl) lbl.textContent='Loading…'; else btn.textContent='Loading…'; btn.disabled=true; }
+      try{
+        var res=await fetch(SUPA_FN+"/create-checkout",{method:"POST",
+          headers:{"content-type":"application/json","Authorization":"Bearer "+SUPA_ANON},
+          body:JSON.stringify({referral_code:getRef()})});
+        var d=await res.json().catch(function(){return{};});
+        if(d&&d.url){ location.href=d.url; return; }
+        alert("Checkout couldn't start: "+(d.error||("HTTP "+res.status)));
+      }catch(e){ alert("Checkout is temporarily unavailable: "+e.message); }
+      if(btn){ if(lbl) lbl.textContent=old; else btn.textContent=old; btn.disabled=false; }
+    }
+
+    document.addEventListener('DOMContentLoaded',function(){
+      [].slice.call(document.querySelectorAll('button, a.link-arrow')).forEach(function(b){
+        var t=(b.textContent||'').toLowerCase();
+        if(t.indexOf('become a partner')>=0 || t.indexOf('already a partner')>=0){
+          if(b.tagName==='A'){ b.setAttribute('href',PARTNER); }
+          else b.addEventListener('click',function(){ location.href=PARTNER; });
+        } else if(b.tagName==='BUTTON' && (t.indexOf('try fyon')>=0 || t.indexOf('start free trial')>=0)){
+          b.addEventListener('click',function(){ startCheckout(b); });
+        }
+      });
     });
-    const d = await r.json().catch(()=>({}));
-    if(d && d.url){ location.href = d.url; return; }
-    alert("Checkout couldn't start: "+(d.error||("HTTP "+r.status))+"\nCheck STRIPE_SECRET_KEY + STRIPE_PRICE_ID are set and that create-checkout was deployed with --no-verify-jwt.");
-  }catch(e){ alert("Checkout is temporarily unavailable: "+e.message); }
-  if(btn){ btn.textContent=btn.dataset.t; btn.disabled=false; }
-}
-document.addEventListener('DOMContentLoaded',()=>{ var b=document.getElementById('buyBtn'); if(b) b.addEventListener('click',()=>startCheckout(b)); });
-
-/* typewriter hero ("Type It") */
-(function(){
-  const tw=document.getElementById('tw'); if(!tw) return;
-  const SEGS=[{t:"A self-improvement intelligence that "},{t:"knows you.",c:"shine"}];
-  if(matchMedia('(prefers-reduced-motion:reduce)').matches){
-    SEGS.forEach(s=>{const sp=document.createElement('span'); if(s.c)sp.className=s.c; sp.textContent=s.t; tw.appendChild(sp);});
-    return;
-  }
-  let si=0,ci=0,cur=null;
-  (function step(){
-    if(si>=SEGS.length) return;
-    const seg=SEGS[si];
-    if(ci===0){ cur=document.createElement('span'); if(seg.c)cur.className=seg.c; tw.appendChild(cur); }
-    cur.textContent=seg.t.slice(0,++ci);
-    if(ci>=seg.t.length){ si++; ci=0; }
-    setTimeout(step, 34 + Math.random()*34);
   })();
-})();
-
-const nav=document.getElementById('nav');
-const onScroll=()=>nav.classList.toggle('scrolled',scrollY>16);
-addEventListener('scroll',onScroll,{passive:true});onScroll();
-
-/* split .kinwords into words */
-document.querySelectorAll('.kinwords').forEach(h=>{
-  let i=0;
-  const wrap=(node,mut)=>{const frag=document.createDocumentFragment();
-    (node.textContent||'').split(/(\s+)/).forEach(tok=>{
-      if(tok.trim()===''){frag.appendChild(document.createTextNode(tok));return;}
-      const s=document.createElement('span');s.className='w'+(mut?' mut':'');
-      s.style.transitionDelay=(i*0.045).toFixed(3)+'s';i++;s.textContent=tok;frag.appendChild(s);});
-    return frag;};
-  [...h.childNodes].forEach(n=>{
-    if(n.nodeType===3){h.replaceChild(wrap(n,false),n);}
-    else if(n.classList&&n.classList.contains('mut')){const f=wrap(n,true);n.textContent='';n.appendChild(f);}});
-});
-
-/* refined reveal */
-const io=new IntersectionObserver((es)=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}}),{threshold:.16});
-document.querySelectorAll('.rv').forEach(el=>io.observe(el));
-
-/* Try Fyon — grow-in entrance (like 6_main_container.mov) */
-requestAnimationFrame(()=>requestAnimationFrame(()=>{
-  document.querySelectorAll('.btn-try').forEach(b=>b.classList.add('in'));
-}));
-
-/* "the problem we solve" staged animation */
-const pb=document.getElementById('pbSection');
-if(pb){
-  const left=document.getElementById('pbLeft'),right=document.getElementById('pbRight');
-  const pbo=new IntersectionObserver((es)=>es.forEach(e=>{if(e.isIntersecting){
-    left.classList.add('play');right.classList.add('play');
-    setTimeout(()=>left.classList.add('forget'),2500);
-    pbo.unobserve(e.target);}}),{threshold:.32});
-  pbo.observe(pb);
-}
-
-/* subtle background parallax (rAF, transform-only) */
-const blobs=[...document.querySelectorAll('.blob')];let ticking=false;
-addEventListener('scroll',()=>{if(ticking)return;ticking=true;requestAnimationFrame(()=>{
-  const y=scrollY;blobs.forEach((b,i)=>b.style.transform=`translateY(${y*(0.04+i*0.03)}px)`);ticking=false;});},{passive:true});
-
-/* tasteful hover tilt on glass cards (desktop, fine pointer only) */
-if(matchMedia('(pointer:fine)').matches){
-  document.querySelectorAll('.tilt').forEach(el=>{
-    let raf=null,tx=0,ty=0,cx=0,cy=0;
-    const loop=()=>{cx+=(tx-cx)*.12;cy+=(ty-cy)*.12;
-      el.style.transform=`rotateX(${cy}deg) rotateY(${cx}deg)`;
-      if(Math.abs(tx-cx)>.02||Math.abs(ty-cy)>.02)raf=requestAnimationFrame(loop);else raf=null;};
-    el.addEventListener('mousemove',e=>{const r=el.getBoundingClientRect();
-      tx=((e.clientX-r.left)/r.width-.5)*4;ty=-((e.clientY-r.top)/r.height-.5)*3.4;if(!raf)raf=requestAnimationFrame(loop);});
-    el.addEventListener('mouseleave',()=>{tx=0;ty=0;if(!raf)raf=requestAnimationFrame(loop);});
-  });
-}
-</script>
+  </script>
 </body>
 </html>
