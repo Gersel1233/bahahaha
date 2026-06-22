@@ -21,13 +21,30 @@
   }
 
   function loop(){
-    var k = ready ? 0.09 : 0.05;          // ease faster on the final stretch
+    // slower creep while loading so the % visibly counts up the whole time
+    // (instead of snapping to 92 instantly), faster ease once the site is ready
+    var k = ready ? 0.09 : 0.028;
     p += (target - p) * k;
     if(ready && p > 0.997){ p = 1; draw(); finish(); return; }
     draw();
     requestAnimationFrame(loop);
   }
+  draw();                                 // paint 0% on the very first frame
   requestAnimationFrame(loop);
+
+  // Defer the heavy (same-thread) globe iframe until AFTER the loader has
+  // painted and the progress loop is running — otherwise the globe's canvas
+  // init janks the main thread and the loader looks frozen until the end.
+  function attachGlobe(){
+    var f = document.querySelector('iframe.globe-frame[data-src]');
+    if(f){ f.src = f.getAttribute('data-src'); f.removeAttribute('data-src'); }
+  }
+  // wait two frames so the loader is visibly alive first, then load the globe
+  requestAnimationFrame(function(){ requestAnimationFrame(attachGlobe); });
+  // safety: make sure it attaches even if rAF is throttled
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', attachGlobe, { once:true });
+  } else { setTimeout(attachGlobe, 400); }
 
   function markReady(){
     if(ready) return;
