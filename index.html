@@ -453,14 +453,15 @@
     </div>
   </section>
 
-  <!-- ===================== FINAL CTA ===================== -->
-  <section class="s fc" data-screen-label="final-cta">
+  <!-- ===================== WAITLIST (final CTA) ===================== -->
+  <section class="s fc" id="waitlist" data-screen-label="waitlist">
     <div class="s-inner">
-      <p class="fc-line reveal"><span class="ink">Fyon is the place you open</span> <span class="grey">when you want your outside to match who you're becoming.</span></p>
+      <p class="fc-line reveal"><span class="ink">Fyon is the place you'll open</span> <span class="grey">when you want your outside to match who you're becoming.</span></p>
       <div class="fc-block iri iri-dark reveal">
-        <h2>Meet the version of yourself you envisioned.</h2>
-        <p>Two photos. A short conversation. An intelligence that gets to know you.</p>
-        <button class="btn btn-primary btn-lg" data-cta="waitlist">Get early access →</button>
+        <p class="eyebrow" style="color:#e9b48f">Early access</p>
+        <h2>Be first to meet your future self.</h2>
+        <p>Fyon is opening access in waves. Join the waitlist and we'll bring you in — two photos, a short conversation, an intelligence that gets to know you.</p>
+        <button class="btn btn-primary btn-lg" data-cta="waitlist">Join the waitlist →</button>
       </div>
     </div>
   </section>
@@ -481,6 +482,30 @@
   </footer>
   </div><!-- /.fyon-reveal -->
 
+  <!-- ===================== WAITLIST MODAL ===================== -->
+  <div id="wl-modal" class="wl-modal hidden" role="dialog" aria-modal="true" aria-label="Join the waitlist">
+    <div class="wl-backdrop" data-wl-close></div>
+    <div class="wl-card glass" role="document">
+      <button class="wl-x" type="button" data-wl-close aria-label="Close">×</button>
+      <p class="eyebrow">Early access</p>
+      <h3 class="wl-h">Join the Fyon waitlist</h3>
+      <p class="wl-sub">We're opening access in waves. Leave your details and we'll email you when it's your turn.</p>
+      <form id="wl-form" novalidate>
+        <label class="wl-l">Name
+          <input name="name" type="text" autocomplete="name" placeholder="Your name" />
+        </label>
+        <label class="wl-l">Email
+          <input name="email" type="email" required autocomplete="email" placeholder="you@email.com" />
+        </label>
+        <label class="wl-l">What do you want Fyon for? <span class="wl-opt">optional</span>
+          <textarea name="use_case" rows="3" placeholder="e.g. skincare, confidence, training, dating…"></textarea>
+        </label>
+        <button class="btn btn-primary btn-lg" type="submit" id="wl-submit" style="width:100%">Join waitlist</button>
+        <p id="wl-msg" class="wl-msg" role="status"></p>
+      </form>
+    </div>
+  </div>
+
   <script src="site.js"></script>
 
   <!-- CTA wiring — referral capture + waitlist/early-access + partner links.
@@ -490,11 +515,12 @@
   <script>
   (function(){
     /* ---- CONFIG ---- */
-    // Set this when the Fyon product app is live, e.g. "https://app.fyon.com".
-    // While empty, the product CTAs act as a waitlist (no Stripe, no redirect).
+    // Set this when the Fyon product app is live, e.g. "https://app.fyon.ai".
+    // While empty, the product CTAs open the WAITLIST modal (no Stripe, no redirect).
     var PRODUCT_APP_URL = "";          // ← leave empty until the product app is ready
-    var WAITLIST_URL    = "";          // optional: a waitlist form (Tally/Typeform/etc.)
     var PARTNER         = "partner.html?v=7";
+    var SUPABASE_URL    = "https://vvwevqhdwumnethujxhy.supabase.co";
+    var SUPABASE_ANON   = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ2d2V2cWhkd3VtbmV0aHVqeGh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyMDg0ODYsImV4cCI6MjA5Njc4NDQ4Nn0.G60xcGM0DwDBYX2j48iYgb_y8SuXYxdNNiExQlDzarU";
 
     /* referral capture (?ref=CODE) — kept in a 60-day cookie AND localStorage for later */
     var rq=new URLSearchParams(location.search).get('ref');
@@ -503,31 +529,50 @@
       try{ localStorage.setItem('fyon_ref',c); }catch(e){} }
     function getRef(){ return (document.cookie.match(/fyon_ref=([^;]+)/)||[])[1] || (function(){try{return localStorage.getItem('fyon_ref')||''}catch(e){return ''}})(); }
 
-    function toast(msg){
-      var t=document.createElement('div'); t.textContent=msg;
-      t.style.cssText='position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(8px);'+
-        'background:#211d18;color:#f4ede1;font:600 14px/1.3 -apple-system,Segoe UI,sans-serif;'+
-        'padding:12px 18px;border-radius:999px;box-shadow:0 12px 30px -10px rgba(40,25,12,.5);'+
-        'opacity:0;transition:opacity .25s,transform .25s;z-index:10000;max-width:90vw;text-align:center;';
-      document.body.appendChild(t);
-      requestAnimationFrame(function(){ t.style.opacity='1'; t.style.transform='translateX(-50%) translateY(0)'; });
-      setTimeout(function(){ t.style.opacity='0'; t.style.transform='translateX(-50%) translateY(8px)';
-        setTimeout(function(){ t.remove(); },300); }, 2600);
-    }
+    /* ---- waitlist modal ---- */
+    var modal=document.getElementById('wl-modal');
+    function openModal(){ if(!modal) return; modal.classList.remove('hidden'); document.body.style.overflow='hidden';
+      var f=modal.querySelector('input[name=email]'); if(f) setTimeout(function(){f.focus();},60); }
+    function closeModal(){ if(!modal) return; modal.classList.add('hidden'); document.body.style.overflow=''; }
 
-    // Product CTA: redirect to the app (with ?ref) once it's live; otherwise waitlist.
+    // Product CTA: redirect to the app (with ?ref) once it's live; otherwise open the waitlist.
     function productCta(){
       var ref=getRef();
       if(PRODUCT_APP_URL){
         location.href = PRODUCT_APP_URL + (ref ? (PRODUCT_APP_URL.indexOf('?')>=0?'&':'?')+'ref='+encodeURIComponent(ref) : '');
         return;
       }
-      if(WAITLIST_URL){ location.href = WAITLIST_URL; return; }
-      toast("You're early ✦  We'll email you the moment access opens.");
+      openModal();
+    }
+
+    var sbP=null;
+    function sb(){ if(!sbP) sbP=import("https://esm.sh/@supabase/supabase-js@2").then(function(m){ return m.createClient(SUPABASE_URL,SUPABASE_ANON); }); return sbP; }
+
+    async function submitWaitlist(e){
+      e.preventDefault();
+      var form=e.target, btn=document.getElementById('wl-submit'), msg=document.getElementById('wl-msg');
+      var name=(form.name.value||'').trim(), email=(form.email.value||'').trim(), use_case=(form.use_case.value||'').trim();
+      if(!email || email.indexOf('@')<0){ msg.className='wl-msg err'; msg.textContent='Please enter a valid email.'; return; }
+      var old=btn.textContent; btn.disabled=true; btn.textContent='Joining…'; msg.textContent=''; msg.className='wl-msg';
+      try{
+        var client=await sb();
+        var row={ name:name||null, email:email, use_case:use_case||null, ref_code:getRef()||null, user_agent:navigator.userAgent };
+        var res=await client.from('waitlist').insert(row);
+        if(res.error){
+          // 23505 = duplicate email -> already on the list (treat as success)
+          if(String(res.error.code)==='23505' || /duplicate|unique/i.test(res.error.message||'')){
+            msg.className='wl-msg ok'; msg.textContent="You're already on the list ✦ We'll be in touch.";
+          } else { throw new Error(res.error.message); }
+        } else {
+          msg.className='wl-msg ok'; msg.textContent="You're on the list ✦ We'll email you when access opens.";
+          form.reset();
+        }
+      }catch(err){ msg.className='wl-msg err'; msg.textContent='Could not join right now: '+(err.message||err); }
+      btn.disabled=false; btn.textContent=old;
     }
 
     document.addEventListener('DOMContentLoaded',function(){
-      // product CTAs (Join waitlist / Get early access)
+      // product CTAs (Join waitlist / Get early access) -> modal (or app when live)
       [].slice.call(document.querySelectorAll('[data-cta="waitlist"]')).forEach(function(b){
         b.addEventListener('click',function(e){ e.preventDefault(); productCta(); });
       });
@@ -539,6 +584,12 @@
           else b.addEventListener('click',function(){ location.href=PARTNER; });
         }
       });
+      // modal close + submit
+      if(modal){
+        [].slice.call(modal.querySelectorAll('[data-wl-close]')).forEach(function(x){ x.addEventListener('click',closeModal); });
+        document.addEventListener('keydown',function(e){ if(e.key==='Escape') closeModal(); });
+        var form=document.getElementById('wl-form'); if(form) form.addEventListener('submit',submitWaitlist);
+      }
     });
   })();
   </script>
