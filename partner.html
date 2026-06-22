@@ -417,6 +417,22 @@ const $ = id => document.getElementById(id);
 const usd = c => "$" + ((Number(c)||0)/100).toFixed(2);
 const show = (id,on=true)=>{ const e=$(id); if(e) e.classList.toggle('hidden',!on); };
 const toast = m => { const t=$('toast'); if(!t) return; t.textContent=m; t.classList.add('on'); setTimeout(()=>t.classList.remove('on'),1600); };
+
+// Preserve incoming referral attribution (?ref=CODE) across the Google OAuth
+// round-trip: stash it in localStorage + a 60-day cookie before any redirect,
+// matching the homepage's `fyon_ref` convention. (Same key index.html uses.)
+function captureRef(){
+  try{
+    const q=new URLSearchParams(location.search).get('ref');
+    if(q){ const c=q.toUpperCase().slice(0,24);
+      try{ localStorage.setItem('fyon_ref',c); }catch(e){}
+      document.cookie='fyon_ref='+c+';max-age='+(60*60*24*60)+';path=/;samesite=lax';
+    }
+  }catch(e){}
+}
+function getRef(){ try{ return localStorage.getItem('fyon_ref')||''; }catch(e){ return ''; } }
+captureRef();
+
 const errs = [];
 function showError(msg){ errs.push(msg); console.error("[partner]", msg); const e=$('err'); if(e){ const m=e.querySelector('.msg')||e; m.textContent="⚠ "+errs.join("\n⚠ "); e.classList.remove('hidden'); } }
 
@@ -575,6 +591,7 @@ else {
   // events (guarded)
   { const g=$('googleBtn'); if(g) g.onclick = async ()=>{
     if(!sb) return;
+    captureRef(); // persist ?ref before we leave for Google
     const { error } = await sb.auth.signInWithOAuth({ provider:'google', options:{ redirectTo: location.href } });
     if(error) $('authmsg').textContent = error.message;
   }; }

@@ -39,10 +39,50 @@ Edge Functions) and Stripe (Connect payouts for partners).
 ## Auth
 
 - **Partner & admin** dashboards support **Google sign-in** (Supabase OAuth) with
-  **magic-link email as a fallback**. Enable the Google provider in
-  Supabase → Authentication → Providers, and add the site URL to the allowed
-  redirect URLs.
-- Admin access is restricted by the `ADMIN_EMAILS` secret (checked in `admin-stats`).
+  **magic-link email as a fallback** (both buttons sit on the same login card).
+- Sign-in uses `supabase.auth.signInWithOAuth({ provider:'google', options:{ redirectTo: location.href } })`,
+  so Google returns the user to the exact page they started on.
+- **Referral attribution survives OAuth:** `partner.html` stashes any `?ref=CODE`
+  into `localStorage` + a 60-day `fyon_ref` cookie *before* the redirect, so the
+  code is still available after returning from Google.
+- **Admin authorization is server-side and Google cannot bypass it.** `admin.html`
+  only renders the dashboard if the `admin-stats` Edge Function returns OK; that
+  function checks the caller's email against the `ADMIN_EMAILS` secret and returns
+  `403` otherwise (the page then shows "access denied", never the dashboard).
+
+### Enabling Google sign-in (one-time setup)
+
+**1. Google Cloud Console** → *APIs & Services → Credentials → Create OAuth client
+ID → Web application*:
+
+- **Authorized JavaScript origins:**
+  ```
+  https://lesreg.com
+  https://www.lesreg.com
+  https://gersel1233.github.io
+  ```
+- **Authorized redirect URIs:**
+  ```
+  https://vvwevqhdwumnethujxhy.supabase.co/auth/v1/callback
+  ```
+- Copy the generated **Client ID** and **Client secret**.
+
+**2. Supabase → Authentication → Providers → Google:** enable it and paste the
+Client ID + Client secret from step 1, then save.
+
+**3. Supabase → Authentication → URL Configuration:**
+
+- **Site URL:** `https://lesreg.com`
+- **Redirect URLs:**
+  ```
+  https://lesreg.com/**
+  https://www.lesreg.com/**
+  https://gersel1233.github.io/bahahaha/**
+  http://localhost:*/**
+  ```
+
+No code deploy is needed for Google sign-in — it's pure Supabase + Google config.
+The buttons are already wired in `partner.html` and `admin.html`.
 
 ## Backend
 

@@ -27,6 +27,24 @@ Webhook URL:  https://vvwevqhdwumnethujxhy.supabase.co/functions/v1/stripe-webho
 3. Under **Redirect URLs** → **Add URL** → indsæt:
    `https://gersel1233.github.io/bahahaha/partner.html` → **Save**.
 
+## 3b) Google Sign-In (valgfrit, anbefalet — "Continue with Google")
+Knapperne findes allerede i `partner.html` og `admin.html`. De virker når Google
+er sat op — ingen kodeudrulning nødvendig.
+1. **Google Cloud Console** → *APIs & Services → Credentials → Create OAuth client
+   ID → Web application*.
+   - **Authorized JavaScript origins:** `https://lesreg.com`,
+     `https://www.lesreg.com`, `https://gersel1233.github.io`
+   - **Authorized redirect URIs:** `https://vvwevqhdwumnethujxhy.supabase.co/auth/v1/callback`
+   - Kopiér **Client ID** + **Client secret**.
+2. **Supabase → Authentication → Providers → Google** → Enable → indsæt Client ID +
+   secret → **Save**.
+3. **Supabase → Authentication → URL Configuration → Redirect URLs** → tilføj:
+   `https://lesreg.com/**`, `https://www.lesreg.com/**`,
+   `https://gersel1233.github.io/bahahaha/**`, `http://localhost:*/**`.
+
+> Admin-adgang styres stadig serverside af `ADMIN_EMAILS` i `admin-stats` — Google
+> login giver IKKE admin-rettigheder af sig selv.
+
 ## 4) Stripe (TEST mode): opret product + price
 1. Gå til **dashboard.stripe.com** → slå **Test mode** til (kontakt øverst til højre).
 2. Venstre menu → **Product catalog** → **+ Add product**.
