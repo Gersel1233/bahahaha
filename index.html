@@ -545,28 +545,29 @@
       openModal();
     }
 
-    var sbP=null;
-    function sb(){ if(!sbP) sbP=import("https://esm.sh/@supabase/supabase-js@2").then(function(m){ return m.createClient(SUPABASE_URL,SUPABASE_ANON); }); return sbP; }
+    // Waitlist writes go through the secure join-waitlist Edge Function (service
+    // role server-side). The browser only ever holds the public anon key.
+    var WAITLIST_FN = SUPABASE_URL + "/functions/v1/join-waitlist";
 
     async function submitWaitlist(e){
       e.preventDefault();
       var form=e.target, btn=document.getElementById('wl-submit'), msg=document.getElementById('wl-msg');
       var name=(form.name.value||'').trim(), email=(form.email.value||'').trim(), use_case=(form.use_case.value||'').trim();
-      if(!email || email.indexOf('@')<0){ msg.className='wl-msg err'; msg.textContent='Please enter a valid email.'; return; }
+      if(!email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){ msg.className='wl-msg err'; msg.textContent='Please enter a valid email.'; return; }
       var old=btn.textContent; btn.disabled=true; btn.textContent='Joining…'; msg.textContent=''; msg.className='wl-msg';
       try{
-        var client=await sb();
-        var row={ name:name||null, email:email, use_case:use_case||null, ref_code:getRef()||null, user_agent:navigator.userAgent };
-        var res=await client.from('waitlist').insert(row);
-        if(res.error){
-          // 23505 = duplicate email -> already on the list (treat as success)
-          if(String(res.error.code)==='23505' || /duplicate|unique/i.test(res.error.message||'')){
-            msg.className='wl-msg ok'; msg.textContent="You're already on the list ✦ We'll be in touch.";
-          } else { throw new Error(res.error.message); }
-        } else {
-          msg.className='wl-msg ok'; msg.textContent="You're on the list ✦ We'll email you when access opens.";
+        var res=await fetch(WAITLIST_FN,{
+          method:'POST',
+          headers:{ 'content-type':'application/json', 'authorization':'Bearer '+SUPABASE_ANON, 'apikey':SUPABASE_ANON },
+          body:JSON.stringify({ name:name||null, email:email, use_case:use_case||null, referral_code:getRef()||null })
+        });
+        var data={}; try{ data=await res.json(); }catch(_){}
+        if(res.ok && data.ok){
+          msg.className='wl-msg ok'; msg.textContent="You're on the list — we'll email you when Fyon opens.";
           form.reset();
-        }
+        } else if(res.status===429){
+          msg.className='wl-msg err'; msg.textContent='Too many tries — give it a minute and retry.';
+        } else { throw new Error((data&&data.error)||('HTTP '+res.status)); }
       }catch(err){ msg.className='wl-msg err'; msg.textContent='Could not join right now: '+(err.message||err); }
       btn.disabled=false; btn.textContent=old;
     }

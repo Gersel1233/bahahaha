@@ -7,10 +7,26 @@ Work top to bottom. Everything in **TEST mode** first, then flip to **LIVE**.
 
 ---
 
+## 0. Launch mode (waitlist now, product app later)
+
+- **Lesreg** = company, **Fyon** = product. This site is the **Lesreg marketing
+  site + affiliate/admin**. It does **not** sell Fyon directly.
+- **Current — WAITLIST MODE:** homepage CTAs open the waitlist modal → POST to the
+  `join-waitlist` Edge Function → `waitlist` table. `?ref=CODE` is captured and
+  stored as `referral_code`.
+  - [ ] Run `affiliate/supabase/007_waitlist.sql`
+  - [ ] Deploy `join-waitlist` (see section B)
+- **Future — Fyon product app** (`app.lesreg.com` / `fyon.lesreg.com`): set
+  `PRODUCT_APP_URL` in `index.html`'s CTA config; CTAs then redirect there and
+  forward `?ref=CODE` so affiliate attribution carries into the product app.
+
+---
+
 ## A. Database (Supabase SQL editor)
 
 - [ ] Run `affiliate/supabase/003_affiliate.sql` (tables, RLS, tiers, leaderboard)
 - [ ] Run `affiliate/supabase/004_payouts.sql` (payout_id, currency, clawbacks, `release_commissions()`)
+- [ ] Run `affiliate/supabase/007_waitlist.sql` (waitlist table, RLS insert-only — see section 0)
 - [ ] Confirm tables exist: `partners, referrals, commissions, payouts, commission_adjustments, stripe_events, affiliate_tiers`
 - [ ] Confirm function exists: `select release_commissions(30);` returns an integer
 
@@ -28,6 +44,7 @@ supabase functions deploy request-payout        --no-verify-jwt
 supabase functions deploy release-commissions   --no-verify-jwt
 supabase functions deploy backfill-charges      --no-verify-jwt
 supabase functions deploy admin-stats           --no-verify-jwt
+supabase functions deploy join-waitlist         --no-verify-jwt
 ```
 - [ ] `create-checkout`     (`--no-verify-jwt`)
 - [ ] `stripe-webhook`      (`--no-verify-jwt`)
@@ -38,6 +55,7 @@ supabase functions deploy admin-stats           --no-verify-jwt
 - [ ] `release-commissions` (`--no-verify-jwt`)
 - [ ] `backfill-charges`    (`--no-verify-jwt`)
 - [ ] `admin-stats`         (`--no-verify-jwt`)
+- [ ] `join-waitlist`       (`--no-verify-jwt`; public waitlist endpoint)
 
 ## C. Secrets (Supabase → Edge Functions → Secrets)
 
