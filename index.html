@@ -13,10 +13,17 @@
 <body>
 
   <!-- ===================== LOADER ===================== -->
-  <div id="fyon-loader" role="status" aria-label="Loading Fyon">
+  <div id="fyon-loader" role="status" aria-label="Loading">
     <div class="fl-inner">
-      <div class="fl-mark">✦</div>
-      <div class="fl-brand">Fyon</div>
+      <div class="fl-mark" aria-hidden="true">
+        <svg viewBox="0 0 32 32">
+          <defs><linearGradient id="flMark" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2f9e91"/><stop offset="1" stop-color="#166b62"/></linearGradient></defs>
+          <rect x="1" y="1" width="30" height="30" rx="9" fill="url(#flMark)"/>
+          <path class="flc flc-1" d="M8.5 16.5 L16 10 L23.5 16.5" fill="none" stroke="#f7ece0" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+          <path class="flc flc-2" d="M8.5 22.5 L16 16 L23.5 22.5" fill="none" stroke="#f7ece0" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/>
+        </svg>
+      </div>
+      <div class="fl-brand">Lesreg</div>
       <div class="fl-bar"><i></i></div>
       <div class="fl-pct">0%</div>
     </div>

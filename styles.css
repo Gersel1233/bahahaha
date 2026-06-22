@@ -459,9 +459,16 @@ html.fyon-loaded #fyon-loader{ opacity:0; visibility:hidden; pointer-events:none
   animation:flIn 1s cubic-bezier(.2,.8,.2,1) both; }
 @keyframes flIn{ from{ opacity:0; transform:translateY(8px); } to{ opacity:1; transform:none; } }
 
-.fl-mark{ font-size:24px; color:var(--terra); line-height:1;
-  filter:drop-shadow(0 0 12px rgba(31,133,122,.35)); animation:flSpark 3s ease-in-out infinite; }
-@keyframes flSpark{ 0%,100%{ transform:rotate(0) scale(1); opacity:.95; } 50%{ transform:rotate(45deg) scale(1.12); opacity:1; } }
+.fl-mark{ width:48px; height:48px; display:grid; place-items:center; line-height:0;
+  filter:drop-shadow(0 6px 16px rgba(18,80,72,.28)); animation:flFloat 3.4s ease-in-out infinite; }
+.fl-mark svg{ width:100%; height:100%; display:block; }
+.fl-mark .flc{ transform-box:fill-box; transform-origin:center; }
+/* chevrons rise in sequence — an "ascending / loading" pulse that echoes the bar */
+.fl-mark .flc-1{ animation:flChev 1.5s cubic-bezier(.4,0,.4,1) infinite; }
+.fl-mark .flc-2{ animation:flChev 1.5s cubic-bezier(.4,0,.4,1) infinite .22s; }
+@keyframes flFloat{ 0%,100%{ transform:translateY(.5px) scale(1); filter:drop-shadow(0 6px 16px rgba(18,80,72,.26)); }
+  50%{ transform:translateY(-2px) scale(1.03); filter:drop-shadow(0 4px 20px rgba(47,158,145,.55)); } }
+@keyframes flChev{ 0%{ opacity:.25; transform:translateY(2px); } 45%{ opacity:1; transform:translateY(-2px); } 100%{ opacity:.25; transform:translateY(2px); } }
 .fl-brand{ font-family:var(--serif); font-weight:500; font-size:34px; letter-spacing:.02em; color:var(--ink); }
 .fl-bar{ position:relative; width:172px; height:2px; border-radius:2px; overflow:hidden;
   background:rgba(33,29,24,.1); margin-top:4px; }
@@ -473,7 +480,7 @@ html.fyon-loaded #fyon-loader{ opacity:0; visibility:hidden; pointer-events:none
 /* content reveal — nav is OUTSIDE this wrapper, so transform is safe here */
 .fyon-reveal{ opacity:0; transform:translateY(14px); transition:opacity 1s ease .05s, transform 1.1s cubic-bezier(.2,.8,.2,1) .05s; }
 html.fyon-loaded .fyon-reveal{ opacity:1; transform:none; }
-@media (prefers-reduced-motion: reduce){ .fl-mark{ animation:none; } .fyon-reveal{ opacity:1; transform:none; transition:none; } }
+@media (prefers-reduced-motion: reduce){ .fl-mark, .fl-mark .flc{ animation:none; } .fyon-reveal{ opacity:1; transform:none; transition:none; } }
 
 /* ============================================================
    WAITLIST MODAL
