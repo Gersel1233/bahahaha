@@ -47,7 +47,8 @@ Edge Functions) and Stripe (Connect payouts for partners).
 ## Backend
 
 - **Edge functions** live in **`supabase/functions/`** (single source of truth) —
-  deploy with `cd supabase && supabase functions deploy <name> --no-verify-jwt`.
+  deploy from the **repo root** with `supabase functions deploy <name> --no-verify-jwt`
+  (run the CLI where the `supabase/` folder lives, not from inside it).
   The public **`join-waitlist`** function backs the homepage waitlist (validates
   email, upserts by `lower(email)`, preserves `referral_code`, light per-IP rate
   limit). Affiliate/payout functions are unchanged.

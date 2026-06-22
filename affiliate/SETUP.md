@@ -53,8 +53,9 @@ supabase secrets set \
 ```
 
 ## 6) Supabase CLI: deploy functions
+Run from the **repo root** (the directory that contains the `supabase/` folder),
+not from inside `supabase/`:
 ```bash
-cd supabase
 supabase functions deploy create-checkout       --no-verify-jwt
 supabase functions deploy stripe-webhook        --no-verify-jwt
 supabase functions deploy create-promo

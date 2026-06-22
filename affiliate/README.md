@@ -42,9 +42,10 @@ partner.html                                # the partner dashboard (site root)
 admin.html                                  # the admin dashboard (site root)
 index.html                                  # ?ref capture + "Become a partner" + nav link
 ```
-> All edge functions live in **`supabase/functions/`** and deploy from there
-> (`cd supabase && supabase functions deploy …`). The SQL files live in
-> `affiliate/supabase/` and are pasted into the Supabase SQL editor.
+> All edge functions live in **`supabase/functions/`**. Deploy from the **repo
+> root** (`supabase functions deploy …`) — run the CLI where the `supabase/`
+> folder lives, not from inside it. The SQL files live in `affiliate/supabase/`
+> and are pasted into the Supabase SQL editor.
 
 ## 🔑 Never put these in the frontend
 `STRIPE_SECRET_KEY` · `STRIPE_WEBHOOK_SECRET` · `SUPABASE_SERVICE_ROLE_KEY`
@@ -78,9 +79,9 @@ index.html                                  # ?ref capture + "Become a partner" 
   supabase secrets set SITE_URL=https://gersel1233.github.io/bahahaha
   supabase secrets set PAYOUT_HOLD_DAYS=30
   ```
-- Deploy the functions (all live in `supabase/functions/`):
+- Deploy the functions (all live in `supabase/functions/`; run from the repo
+  root, not from inside `supabase/`):
   ```
-  cd supabase
   supabase functions deploy stripe-webhook        --no-verify-jwt
   supabase functions deploy create-checkout       --no-verify-jwt
   supabase functions deploy create-promo
@@ -113,7 +114,7 @@ index.html                                  # ?ref capture + "Become a partner" 
 2. Set it as a secret + deploy the checkout function:
    ```
    supabase secrets set STRIPE_PRICE_ID=price_...
-   cd supabase
+   # run from the repo root (where the supabase/ folder lives)
    supabase functions deploy create-checkout --no-verify-jwt
    supabase functions deploy stripe-webhook --no-verify-jwt
    ```
