@@ -135,7 +135,7 @@
      ============================================================ */
   (function brain(){
     var svg=document.querySelector('.bn-links'); if(!svg) return;
-    var ACCENT={ q1:'#bd5d3a', q2:'#5e8d6e', q3:'#c2914a', q4:'#a86f7d' };
+    var ACCENT={ q1:'#1f857a', q2:'#5e8d6e', q3:'#c2914a', q4:'#a86f7d' };
     var CORE={ x:500, y:290 };
     var CLUSTERS=[{key:'q1',cx:372,cy:200,ax:312,ay:150},{key:'q2',cx:628,cy:200,ax:688,ay:150},{key:'q3',cx:372,cy:380,ax:312,ay:430},{key:'q4',cx:628,cy:380,ax:688,ay:430}];
     var lobeGroups={};
@@ -147,8 +147,8 @@
       nodes.forEach(function(nn,i){ var d=nodes.map(function(m,j){ return {j:j,dist:Math.hypot(nn.x-m.x,nn.y-m.y)}; }).filter(function(o){ return o.j!==i; }).sort(function(a,b){ return a.dist-b.dist; }).slice(0,2);
         d.forEach(function(o){ if(o.j>i) g.appendChild(el('line',{class:'edge',x1:nn.x,y1:nn.y,x2:nodes[o.j].x,y2:nodes[o.j].y,stroke:col,'stroke-opacity':0.25})); }); });
       nodes.forEach(function(nn,i){ g.appendChild(el('circle',{class:'node',cx:nn.x,cy:nn.y,r:nn.r,fill:col,'fill-opacity':i===0?0.95:0.6})); }); });
-    svg.appendChild(el('circle',{cx:CORE.x,cy:CORE.y,r:16,fill:'#e9b48f','fill-opacity':0.12}));
-    svg.appendChild(el('circle',{class:'node node-core',cx:CORE.x,cy:CORE.y,r:7,fill:'#f0c9a8','fill-opacity':0.95}));
+    svg.appendChild(el('circle',{cx:CORE.x,cy:CORE.y,r:16,fill:'#9fd8cf','fill-opacity':0.12}));
+    svg.appendChild(el('circle',{class:'node node-core',cx:CORE.x,cy:CORE.y,r:7,fill:'#bfe3db','fill-opacity':0.95}));
     var cards=[document.querySelector('.bn-card.c1'),document.querySelector('.bn-card.c2'),document.querySelector('.bn-card.c3'),document.querySelector('.bn-card.c4')];
     var order=['q1','q2','q3','q4'];
     function setActive(i){ order.forEach(function(k,j){ var g=lobeGroups[k], on=(j===i);
