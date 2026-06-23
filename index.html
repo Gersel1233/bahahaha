@@ -9,6 +9,91 @@
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="styles.css" />
 <script src="image-slot.js" defer></script>
+<style id="fh-style">
+/* ===== Ported Fyon hero + scroll reveal — fully scoped under #fyon-hero so it
+   can't restyle the rest of the site. Colliding class names are prefixed fh-,
+   and every keyframe is prefixed fh (bmBreathA/B already exist for the nav logo). */
+#fyon-hero{ --terra-tint:#34a596; position:relative; isolation:isolate;
+  background:radial-gradient(70% 34% at 50% 6%, rgba(52,165,150,.12), transparent 60%); }
+
+#fyon-hero .fh-hero{ position:relative; z-index:1; min-height:84vh; max-width:1180px; margin:0 auto; padding:96px 32px 24px; text-align:center;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; }
+#fyon-hero .fh-badge{ display:inline-flex; align-items:center; gap:9px; font-family:var(--mono); font-size:11.5px; font-weight:600; letter-spacing:.2em; text-transform:uppercase;
+  color:var(--terra-deep); padding:7px 15px; border-radius:999px; background:rgba(52,165,150,.1); box-shadow:inset 0 0 0 1px rgba(52,165,150,.28); margin-bottom:28px; }
+#fyon-hero .fh-badge .fh-dot{ width:7px; height:7px; border-radius:50%; background:var(--terra); animation:fhPulseDot 2.4s ease-out infinite; }
+@keyframes fhPulseDot{ 0%{ box-shadow:0 0 0 0 rgba(31,133,122,.45);} 70%{ box-shadow:0 0 0 8px rgba(31,133,122,0);} 100%{ box-shadow:0 0 0 0 rgba(31,133,122,0);} }
+
+#fyon-hero h1{ font-family:var(--serif); font-weight:400; font-size:clamp(40px,6.6vw,82px); line-height:1.0; letter-spacing:-.028em; margin:0 0 26px; min-height:1.05em; color:var(--ink); }
+#fyon-hero h1 .fh-knows{ font-style:italic; background:linear-gradient(96deg,#34a596,#1f857a 42%,#2b7b86); -webkit-background-clip:text; background-clip:text; color:transparent; }
+#fyon-hero .fh-caret{ display:inline-block; width:3px; height:.86em; background:var(--terra); vertical-align:-.06em; margin-left:3px; border-radius:2px; animation:fhBlink 1s steps(2) infinite; }
+@keyframes fhBlink{ 50%{ opacity:0; } }
+#fyon-hero .fh-sub{ font-size:19px; line-height:1.62; color:var(--ink-soft); max-width:600px; margin:0 auto 32px; }
+#fyon-hero .fh-sub b{ color:var(--ink); font-weight:600; }
+#fyon-hero .fh-cta{ display:flex; align-items:center; justify-content:center; gap:24px; flex-wrap:wrap; }
+#fyon-hero .fh-btn{ border:0; border-radius:999px; padding:1.05em 2em; font:600 16px/1 var(--ui); color:#fff; cursor:pointer;
+  background:linear-gradient(158deg,#34a596,#13635a);
+  box-shadow:inset 0 1px 1px rgba(214,245,239,.6), inset 0 0 0 1px rgba(150,222,211,.3), 0 14px 32px -12px rgba(15,90,82,.55);
+  transition:transform .3s cubic-bezier(.2,.85,.25,1); }
+#fyon-hero .fh-btn:hover{ transform:translateY(-2px) scale(1.03); }
+#fyon-hero .fh-link{ font-size:15.5px; font-weight:500; color:var(--ink); text-decoration:none; display:inline-flex; align-items:center; gap:8px; }
+#fyon-hero .fh-link .ar{ color:var(--terra); transition:transform .3s; } #fyon-hero .fh-link:hover .ar{ transform:translateX(4px); }
+
+#fyon-hero .reveal-section{ position:relative; z-index:1; height:200vh; }
+#fyon-hero .reveal-sticky{ position:sticky; top:0; height:100vh; display:grid; place-items:center; overflow:hidden; }
+#fyon-hero .stage{ position:relative; width:100%; max-width:1100px; height:540px; display:grid; place-items:center; }
+#fyon-hero .intro-eyebrow{ position:absolute; top:24px; left:50%; transform:translateX(-50%); margin:0;
+  font-family:var(--mono); font-size:12px; font-weight:600; letter-spacing:.24em; text-transform:uppercase; color:var(--terra); white-space:nowrap; }
+#fyon-hero .wordglow{ position:absolute; top:46%; left:50%; width:760px; height:320px; transform:translate(-50%,-50%);
+  background:radial-gradient(closest-side, rgba(52,165,150,.15), transparent 72%); opacity:var(--glow,0); pointer-events:none; }
+#fyon-hero .word{ --rev:0; position:relative; display:flex; align-items:center; justify-content:center; gap:0; height:170px; transform-origin:center; will-change:transform,opacity; margin-bottom:140px; }
+#fyon-hero .col{ position:relative; display:flex; align-items:center; justify-content:center; flex:none; transform:translateX(var(--tx,0px)); will-change:transform; }
+#fyon-hero .ltr{ font-family:var(--serif); font-weight:500; font-size:clamp(70px,13vw,150px); line-height:1; letter-spacing:-.02em;
+  background:linear-gradient(150deg,#34a596,#13635a); -webkit-background-clip:text; background-clip:text; color:transparent; }
+#fyon-hero .word.ready .ltr{ animation:fhLtrIn .7s cubic-bezier(.2,.85,.25,1) backwards; }
+#fyon-hero .word.ready .col:nth-of-type(1) .ltr{ animation-delay:.05s; }
+#fyon-hero .word.ready .col:nth-of-type(2) .ltr{ animation-delay:.17s; }
+#fyon-hero .word.ready .col:nth-of-type(3) .ltr{ animation-delay:.29s; }
+#fyon-hero .word.ready .col:nth-of-type(4) .ltr{ animation-delay:.41s; }
+@keyframes fhLtrIn{ from{ opacity:0; transform:translateY(26px) scale(.92); } to{ opacity:1; transform:none; } }
+
+#fyon-hero .pillar{ position:absolute; top:100%; left:50%; width:206px; margin-top:24px;
+  transform:translateX(-50%) translateY(calc((1 - var(--rev,0)) * 12px));
+  display:flex; flex-direction:column; align-items:center; text-align:center; gap:7px; opacity:var(--rev,0); pointer-events:none; }
+#fyon-hero .pillar::before{ content:""; position:absolute; top:-22px; left:50%; width:1px; height:18px; transform:translateX(-50%);
+  background:linear-gradient(rgba(52,165,150,0), rgba(52,165,150,.5)); }
+#fyon-hero .pcat{ font-family:var(--mono); font-size:11px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; color:var(--terra-deep); }
+#fyon-hero .ptag{ font-family:var(--serif); font-style:italic; font-size:14.5px; color:var(--ink); margin-bottom:4px; }
+#fyon-hero .term{ font-family:var(--mono); font-size:10.5px; letter-spacing:.01em; color:var(--terra-deep); white-space:nowrap;
+  padding:4px 11px; border-radius:999px; background:rgba(52,165,150,.1); box-shadow:inset 0 0 0 1px rgba(52,165,150,.24); }
+@media(max-width:900px){ #fyon-hero .pillar{ width:150px; } #fyon-hero .term{ font-size:8.5px; padding:3px 7px; white-space:normal; } #fyon-hero .ptag{ font-size:12px; } }
+
+#fyon-hero .logoForm{ position:absolute; left:50%; top:46%; width:140px; height:140px; transform:translate(-50%,-50%) scale(.42);
+  display:grid; place-items:center; opacity:0; pointer-events:none; will-change:transform,opacity; }
+#fyon-hero .logoForm .ring{ position:absolute; inset:0; border-radius:50%;
+  background:radial-gradient(circle, rgba(52,165,150,.34) 0%, rgba(52,165,150,.07) 55%, transparent 72%); }
+#fyon-hero .logoForm.live .ring{ animation:fhCoreBreath 4.6s ease-in-out infinite; }
+#fyon-hero .logoForm .tile{ position:relative; width:80px; height:80px; border-radius:23px; display:grid; place-items:center;
+  background:linear-gradient(150deg,#34a596,#13635a); box-shadow:0 18px 38px -8px rgba(15,90,82,.6), inset 0 1px 1px rgba(214,245,239,.5); }
+#fyon-hero .logoForm.live .tile{ animation:fhTileBreath 4.6s ease-in-out infinite; }
+#fyon-hero .logoForm .tile svg{ width:46px; height:46px; display:block; }
+#fyon-hero .logoForm .bm-chev{ transform-box:fill-box; transform-origin:center; }
+#fyon-hero .logoForm.live .bm-chev-1{ animation:fhBreathA 4.6s cubic-bezier(.45,0,.55,1) infinite; }
+#fyon-hero .logoForm.live .bm-chev-2{ animation:fhBreathB 4.6s cubic-bezier(.45,0,.55,1) infinite; }
+@keyframes fhBreathA{ 0%,100%{ transform:translateY(.5px); opacity:.95; } 50%{ transform:translateY(-1.1px); opacity:1; } }
+@keyframes fhBreathB{ 0%,100%{ transform:translateY(-.5px); opacity:.5; } 50%{ transform:translateY(.8px); opacity:.72; } }
+@keyframes fhCoreBreath{ 0%,100%{ transform:scale(1); opacity:.9; } 50%{ transform:scale(1.18); opacity:1; } }
+@keyframes fhTileBreath{ 0%,100%{ transform:scale(1); } 50%{ transform:scale(1.05); } }
+
+#fyon-hero .intro-tag{ position:absolute; bottom:58px; left:50%; transform:translateX(-50%); margin:0; white-space:nowrap; text-align:center;
+  font-family:var(--serif); font-size:clamp(19px,2.5vw,27px); color:var(--ink); opacity:var(--tag,0); }
+#fyon-hero .intro-tag em{ font-style:italic; color:var(--terra); }
+#fyon-hero .intro-tag .sm{ display:block; font-family:var(--mono); font-style:normal; font-size:10.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-faint); margin-top:10px; }
+
+@media (prefers-reduced-motion: reduce){
+  #fyon-hero .word.ready .ltr{ animation:none; }
+  #fyon-hero .fh-badge .fh-dot{ animation:none; }
+}
+</style>
 </head>
 <body>
 
@@ -45,39 +130,172 @@
 
   <div class="fyon-reveal">
 
-  <!-- ===================== HERO ===================== -->
-  <header id="top" class="hero" data-screen-label="hero">
-    <p class="eyebrow">Fyon Intelligence</p>
-    <h1>A self-improvement intelligence that <span class="knows">knows you.</span><span class="cursor"></span></h1>
-    <p class="sub">Most tools rate you, report on you, or forget you. Fyon points frontier intelligence entirely at one person — and walks the path with you, learning more about you with every step.</p>
-    <div class="cta-row">
-      <button class="btn btn-lg" data-cta="waitlist">Join waitlist</button>
-      <a class="link-arrow" href="#why">See how it's different <span class="ar">→</span></a>
-    </div>
-    <p class="meta">Built for individuals · 18+</p>
-  </header>
+  <!-- ===================== HERO + SCROLL REVEAL (ported) ===================== -->
+  <div id="fyon-hero">
+    <header id="top" class="fh-hero" data-screen-label="hero">
+      <span class="fh-badge"><span class="fh-dot"></span>Fyon Intelligence · by Lesreg</span>
+      <h1 id="headline">Everything else rates you.</h1>
+      <p class="fh-sub" id="sub"></p>
+      <div class="fh-cta">
+        <button class="fh-btn" data-cta="waitlist">Try Fyon</button>
+        <a class="fh-link" href="#how">See how it works <span class="ar">→</span></a>
+      </div>
+    </header>
 
-  <!-- ===================== LOOP (globe) ===================== -->
-  <section class="s loop" id="why" data-screen-label="self-improvement-loop">
-    <div class="s-inner">
-      <div class="loop-stage">
-        <iframe class="globe-frame" data-src="globe.html?bare=1&v=9" title="" scrolling="no" aria-hidden="true" tabindex="-1" allowtransparency="true" loading="eager"></iframe>
-        <div class="loop-content" id="loopContent">
-          <p class="loop-eyebrow">The self-improvement loop</p>
-          <div class="loop-dots" id="loopDots"></div>
-          <span class="loop-chip" id="loopChip">United Kingdom</span>
-          <p class="loop-idx" id="loopIdx">03 / 10</p>
-          <h2 class="loop-title" id="loopTitle">Advice for everyone</h2>
-          <p class="loop-desc" id="loopDesc">Generic guidance is true for everyone and made for no one. Fyon never talks to an abstract user — only to you, with full context.</p>
+    <section class="reveal-section" id="why" data-screen-label="fyon-reveal">
+      <div class="reveal-sticky">
+        <div class="stage" id="stage">
+          <p class="intro-eyebrow" id="introEyebrow">Introducing Lesreg's latest project</p>
+          <div class="wordglow"></div>
+
+          <div class="word" id="word">
+            <div class="col">
+              <span class="ltr">F</span>
+              <div class="pillar">
+                <span class="pcat">Vision</span>
+                <span class="ptag">reads how you're seen</span>
+                <span class="term">facial-landmark geometry</span>
+                <span class="term">perception read</span>
+                <span class="term">identity-locked rendering</span>
+              </div>
+            </div>
+            <div class="col">
+              <span class="ltr">Y</span>
+              <div class="pillar">
+                <span class="pcat">Memory</span>
+                <span class="ptag">builds a model of you</span>
+                <span class="term">persistent model of you</span>
+                <span class="term">learns every session</span>
+                <span class="term">remembers across visits</span>
+              </div>
+            </div>
+            <div class="col">
+              <span class="ltr">O</span>
+              <div class="pillar">
+                <span class="pcat">Grounding</span>
+                <span class="ptag">keeps it real for you</span>
+                <span class="term">localized to your country</span>
+                <span class="term">calibrated to what's achievable</span>
+                <span class="term">honest progress, no score</span>
+              </div>
+            </div>
+            <div class="col">
+              <span class="ltr">N</span>
+              <div class="pillar">
+                <span class="pcat">Action</span>
+                <span class="ptag">plans and acts with you</span>
+                <span class="term">causal outcome plan</span>
+                <span class="term">adjusts as you change</span>
+                <span class="term">builds a surface for any goal</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="logoForm" id="logoForm">
+            <div class="ring"></div>
+            <div class="tile">
+              <svg viewBox="0 0 32 32" aria-hidden="true">
+                <path class="bm-chev bm-chev-1" d="M7 17 L16 9 L25 17" fill="none" stroke="#f7ece0" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"></path>
+                <path class="bm-chev bm-chev-2" d="M7 24 L16 16 L25 24" fill="none" stroke="#f7ece0" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"></path>
+              </svg>
+            </div>
+          </div>
+
+          <p class="intro-tag" id="introTag">FYON — intelligence trained to <em>get you there</em><span class="sm">Built for you · grows with you · never rates you</span></p>
         </div>
       </div>
-      <div class="loop-stats">
-        <div class="stat reveal"><b>~150k</b><span>views on the raw prototype</span></div>
-        <div class="stat reveal d1"><b>First buyer</b><span>before launch</span></div>
-        <div class="stat reveal d2"><b>One</b><span>understanding driving it all</span></div>
-      </div>
-    </div>
-  </section>
+    </section>
+  </div>
+
+  <script>
+  (function(){
+    var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var sleep=function(ms){ return new Promise(function(r){ setTimeout(r,ms); }); };
+
+    // start the headline stream only once the loader has lifted, so it's seen
+    function whenRevealed(cb){
+      var ran=false, go=function(){ if(ran) return; ran=true; cb(); };
+      if(document.documentElement.classList.contains('fyon-loaded')) return go();
+      var t=setInterval(function(){ if(document.documentElement.classList.contains('fyon-loaded')){ clearInterval(t); go(); } }, 80);
+      setTimeout(function(){ clearInterval(t); go(); }, 4500); // safety
+    }
+
+    /* ---------- type-stream headline + sub ---------- */
+    (function(){
+      var h1=document.getElementById('headline'), sub=document.getElementById('sub');
+      var segs=[ {t:"Everything else rates you."}, {br:true},
+                 {t:"Fyon uses intelligence to make sure you "}, {t:"get there.", cls:"fh-knows"} ];
+      var subHTML='You’re not behind — you’re <b>unseen</b>. Fyon learns who you actually are, then moves you, week by week, toward who you already could be.';
+      function full(){ h1.innerHTML=segs.map(function(s){ return s.br?'<br>':(s.cls?'<span class="'+s.cls+'">'+s.t+'</span>':s.t); }).join(''); sub.innerHTML=subHTML; }
+      if(prefersReduced){ full(); return; }
+      h1.innerHTML=''; sub.innerHTML='';
+      var caret=document.createElement('span'); caret.className='fh-caret'; h1.appendChild(caret);
+      async function run(){
+        for(var i=0;i<segs.length;i++){ var s=segs[i];
+          if(s.br){ h1.insertBefore(document.createElement('br'), caret); await sleep(140); continue; }
+          var target=h1;
+          if(s.cls){ target=document.createElement('span'); target.className=s.cls; h1.insertBefore(target, caret); }
+          for(var c=0;c<s.t.length;c++){ var ch=s.t[c];
+            if(target===h1) h1.insertBefore(document.createTextNode(ch), caret); else target.appendChild(document.createTextNode(ch));
+            await sleep(ch===' '?18:34);
+          }
+        }
+        await sleep(280); caret.style.transition='opacity .5s'; caret.style.opacity='0';
+        sub.style.opacity='0'; sub.innerHTML=subHTML; sub.style.transition='opacity .7s ease'; requestAnimationFrame(function(){ sub.style.opacity='1'; });
+        setTimeout(function(){ if(caret.parentNode) caret.parentNode.removeChild(caret); }, 600);
+      }
+      whenRevealed(run);
+    })();
+
+    /* ---------- scroll-driven reversible reveal (transform-only = smooth) ---------- */
+    (function(){
+      var section=document.getElementById('why'), stage=document.getElementById('stage'),
+          word=document.getElementById('word'), glow=document.querySelector('#fyon-hero .wordglow'),
+          eyebrow=document.getElementById('introEyebrow'), logo=document.getElementById('logoForm'),
+          tag=document.getElementById('introTag');
+      if(!section || !word) return;
+      var cols=[].slice.call(word.querySelectorAll('.col'));
+      function seg(p,a,b){ return Math.max(0,Math.min(1,(p-a)/(b-a))); }
+      function lerp(a,b,t){ return a+(b-a)*t; }
+      function easeOutBack(x){ var c1=1.70158, c3=c1+1; return 1 + c3*Math.pow(x-1,3) + c1*Math.pow(x-1,2); }
+
+      function render(p){
+        var spread=seg(p,0.06,0.30), conv=seg(p,0.60,0.84);
+        var open=spread*(1-conv);
+        var W=Math.min(stage.clientWidth||980, 1080);
+        var off=[-W*0.28, -W*0.115, W*0.115, W*0.28];
+        for(var i=0;i<cols.length;i++){ cols[i].style.setProperty('--tx', (off[i]*open).toFixed(1)+'px'); }
+        var rev = seg(p,0.30,0.46) * (1 - seg(p,0.58,0.70));
+        word.style.setProperty('--rev', rev.toFixed(3));
+        word.style.opacity=(1-conv).toFixed(3);
+        word.style.transform='scale('+(1-0.26*conv).toFixed(3)+')';
+        eyebrow.style.opacity=(1-seg(p,0.12,0.26)).toFixed(3);
+        glow.style.setProperty('--glow', Math.max(open*0.7, rev).toFixed(3));
+        var lp=seg(p,0.80,1.0), eb=easeOutBack(lp);
+        logo.style.opacity=seg(p,0.80,0.93).toFixed(3);
+        logo.style.transform='translate(-50%,-50%) scale('+(0.42+0.58*eb).toFixed(3)+') rotate('+lerp(-16,0,eb).toFixed(2)+'deg)';
+        logo.classList.toggle('live', lp>0.95);
+        tag.style.setProperty('--tag', seg(p,0.90,1.0).toFixed(3));
+      }
+
+      function compute(){
+        var rect=section.getBoundingClientRect();
+        var total=rect.height - window.innerHeight;
+        var p = total>0 ? Math.max(0,Math.min(1, -rect.top/total)) : 0;
+        render(p);
+      }
+      // synchronous on scroll — only transform/opacity writes, no layout, so it stays smooth
+      window.addEventListener('scroll', compute, {passive:true});
+      window.addEventListener('resize', compute);
+
+      var io=new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){ word.classList.add('ready'); io.disconnect(); } }); },{threshold:.25});
+      io.observe(word);
+
+      if(prefersReduced){ word.classList.add('ready'); render(0.0); word.style.setProperty('--rev','1'); var W=Math.min(stage.clientWidth||980,1080); var off=[-W*0.28,-W*0.115,W*0.115,W*0.28]; for(var i=0;i<cols.length;i++){ cols[i].style.setProperty('--tx',off[i].toFixed(1)+'px'); } }
+      compute();
+    })();
+  })();
+  </script>
 
   <!-- ===================== PROBLEM ===================== -->
   <section class="s" id="pbSection" data-screen-label="problem">
