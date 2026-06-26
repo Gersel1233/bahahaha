@@ -135,7 +135,7 @@
      ============================================================ */
   (function brain(){
     var svg=document.querySelector('.bn-links'); if(!svg) return;
-    var ACCENT={ q1:'#1f857a', q2:'#5e8d6e', q3:'#c2914a', q4:'#a86f7d' };
+    var ACCENT={ q1:'#1f857a', q2:'#5e8d6e', q3:'#2f9e91', q4:'#1f857a' };
     var CORE={ x:500, y:290 };
     var CLUSTERS=[{key:'q1',cx:372,cy:200,ax:312,ay:150},{key:'q2',cx:628,cy:200,ax:688,ay:150},{key:'q3',cx:372,cy:380,ax:312,ay:430},{key:'q4',cx:628,cy:380,ax:688,ay:430}];
     var lobeGroups={};
@@ -157,7 +157,17 @@
       g.querySelectorAll('.trunk').forEach(function(t){ t.style.opacity = on?0.95:0.32; });
       g.style.filter = on ? 'drop-shadow(0 0 6px '+ACCENT[k]+'aa)' : 'none';
       cards[j].classList.toggle('active', on); }); }
-    if(!prefersReduced){ var idx=0; setActive(0); setInterval(function(){ idx=(idx+1)%4; setActive(idx); },2400); }
+    if(!prefersReduced){
+      var idx=0, timer=null, stage=document.querySelector('.bn-stage');
+      setActive(0);
+      // Only animate (CSS flow/corePulse via .viz-on) and cycle cards while the
+      // brain is on screen — otherwise it repaints the SVG every frame off-screen.
+      var bo=new IntersectionObserver(function(es){ es.forEach(function(e){
+        if(e.isIntersecting){ if(stage) stage.classList.add('viz-on'); if(!timer) timer=setInterval(function(){ idx=(idx+1)%4; setActive(idx); },2400); }
+        else { if(stage) stage.classList.remove('viz-on'); if(timer){ clearInterval(timer); timer=null; } }
+      }); },{threshold:.12});
+      if(stage) bo.observe(stage);
+    }
     else { order.forEach(function(k,j){ cards[j].classList.add('active'); }); }
     // warm loop chase
     var lnodes=[].slice.call(document.querySelectorAll('#vsLoop .lnode'));
