@@ -7,8 +7,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="styles.css?v=11" />
-<script src="image-slot.js?v=11" defer></script>
+<link rel="stylesheet" href="styles.css?v=12" />
+<script src="image-slot.js?v=12" defer></script>
 <style id="fh-style">
 /* ===== Ported Fyon hero + scroll reveal — fully scoped under #fyon-hero so it
    can't restyle the rest of the site. Colliding class names are prefixed fh-,
@@ -40,7 +40,7 @@
 
 #fyon-hero .reveal-section{ position:relative; z-index:1; height:200vh; }
 #fyon-hero .reveal-sticky{ position:sticky; top:0; height:100vh; display:grid; place-items:center; overflow:hidden; }
-#fyon-hero .stage{ position:relative; width:100%; max-width:1100px; height:540px; display:grid; place-items:center; }
+#fyon-hero .stage{ position:relative; width:100%; max-width:1100px; height:540px; display:grid; place-items:center; contain:layout paint style; }
 #fyon-hero .intro-eyebrow{ position:absolute; top:24px; left:50%; transform:translateX(-50%); margin:0;
   font-family:var(--mono); font-size:12px; font-weight:600; letter-spacing:.24em; text-transform:uppercase; color:var(--terra); white-space:nowrap; }
 #fyon-hero .wordglow{ position:absolute; top:46%; left:50%; width:760px; height:320px; transform:translate(-50%,-50%) translateZ(0);
@@ -48,7 +48,9 @@
 #fyon-hero .word{ --rev:0; position:relative; display:flex; align-items:center; justify-content:center; gap:0; height:170px; transform-origin:center; will-change:transform,opacity; margin-bottom:140px; }
 #fyon-hero .col{ position:relative; display:flex; align-items:center; justify-content:center; flex:none; transform:translateX(var(--tx,0px)); will-change:transform; }
 #fyon-hero .ltr{ font-family:var(--serif); font-weight:500; font-size:clamp(70px,13vw,150px); line-height:1; letter-spacing:-.02em;
-  background:linear-gradient(150deg,#34a596,#13635a); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  background:linear-gradient(150deg,#34a596,#13635a); -webkit-background-clip:text; background-clip:text; color:transparent;
+  /* rasterize the gradient text once and composite transforms (no per-frame re-raster) */
+  transform:translateZ(0); will-change:transform; backface-visibility:hidden; }
 #fyon-hero .word.ready .ltr{ animation:fhLtrIn .7s cubic-bezier(.2,.85,.25,1) backwards; }
 #fyon-hero .word.ready .col:nth-of-type(1) .ltr{ animation-delay:.05s; }
 #fyon-hero .word.ready .col:nth-of-type(2) .ltr{ animation-delay:.17s; }
@@ -58,7 +60,7 @@
 
 #fyon-hero .pillar{ position:absolute; top:100%; left:50%; width:206px; margin-top:24px;
   transform:translateX(-50%) translateY(calc((1 - var(--rev,0)) * 12px));
-  display:flex; flex-direction:column; align-items:center; text-align:center; gap:7px; opacity:var(--rev,0); pointer-events:none; }
+  display:flex; flex-direction:column; align-items:center; text-align:center; gap:7px; opacity:var(--rev,0); pointer-events:none; will-change:opacity,transform; }
 #fyon-hero .pillar::before{ content:""; position:absolute; top:-22px; left:50%; width:1px; height:18px; transform:translateX(-50%);
   background:linear-gradient(rgba(52,165,150,0), rgba(52,165,150,.5)); }
 #fyon-hero .pcat{ font-family:var(--mono); font-size:11px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; color:var(--terra-deep); }
@@ -113,7 +115,7 @@
       <div class="fl-pct">0%</div>
     </div>
   </div>
-  <script src="loader.js?v=11"></script>
+  <script src="loader.js?v=12"></script>
 
   <!-- ===================== NAV ===================== -->
   <nav class="nav" data-screen-label="nav">
@@ -743,7 +745,7 @@
     </div>
   </div>
 
-  <script src="site.js?v=11" defer></script>
+  <script src="site.js?v=12" defer></script>
 
   <!-- CTA wiring — referral capture + waitlist/early-access + partner links.
        The product app isn't live yet, so the product CTAs DO NOT touch Stripe.
