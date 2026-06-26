@@ -32,20 +32,6 @@
   draw();                                 // paint 0% on the very first frame
   requestAnimationFrame(loop);
 
-  // Defer the heavy (same-thread) globe iframe until AFTER the loader has
-  // painted and the progress loop is running — otherwise the globe's canvas
-  // init janks the main thread and the loader looks frozen until the end.
-  function attachGlobe(){
-    var f = document.querySelector('iframe.globe-frame[data-src]');
-    if(f){ f.src = f.getAttribute('data-src'); f.removeAttribute('data-src'); }
-  }
-  // wait two frames so the loader is visibly alive first, then load the globe
-  requestAnimationFrame(function(){ requestAnimationFrame(attachGlobe); });
-  // safety: make sure it attaches even if rAF is throttled
-  if(document.readyState === 'loading'){
-    document.addEventListener('DOMContentLoaded', attachGlobe, { once:true });
-  } else { setTimeout(attachGlobe, 400); }
-
   function markReady(){
     if(ready) return;
     var wait = Math.max(0, MIN - (performance.now() - start));
@@ -60,12 +46,20 @@
     }, 160);
   }
 
-  // 1) BEST — globe paints its first frame -> window.fyonReady()
-  window.fyonReady = markReady;
-  // 2) Fallback — full load (incl. iframe) + fonts ready
-  window.addEventListener('load', function(){
-    (document.fonts ? document.fonts.ready : Promise.resolve()).then(markReady);
-  });
-  // 3) Safety net — never hang
-  setTimeout(markReady, 8000);
+  // The hero is plain HTML/CSS/inline-JS — there's no heavy globe to wait for —
+  // so the page is "ready" once the DOM is parsed and fonts settle. We do NOT
+  // wait for window.load: that blocks on every subresource (fonts, stray 404s)
+  // and was leaving the loader stuck at 92% on slow connections.
+  function readyDomFonts(){
+    var fontsP = (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve();
+    // never let slow/blocked fonts hold the reveal hostage
+    Promise.race([ fontsP, new Promise(function(r){ setTimeout(r, 1200); }) ]).then(markReady);
+  }
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', readyDomFonts, { once:true });
+  } else { readyDomFonts(); }
+
+  window.fyonReady = markReady;                 // kept for any future early signal
+  window.addEventListener('load', markReady);   // secondary trigger
+  setTimeout(markReady, 4500);                  // hard safety net — never hang
 })();
