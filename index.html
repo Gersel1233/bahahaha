@@ -7,8 +7,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="styles.css?v=12" />
-<script src="image-slot.js?v=12" defer></script>
+<link rel="stylesheet" href="styles.css?v=13" />
+<script src="image-slot.js?v=13" defer></script>
 <style id="fh-style">
 /* ===== Ported Fyon hero + scroll reveal — fully scoped under #fyon-hero so it
    can't restyle the rest of the site. Colliding class names are prefixed fh-,
@@ -48,9 +48,10 @@
 #fyon-hero .word{ --rev:0; position:relative; display:flex; align-items:center; justify-content:center; gap:0; height:170px; transform-origin:center; will-change:transform,opacity; margin-bottom:140px; }
 #fyon-hero .col{ position:relative; display:flex; align-items:center; justify-content:center; flex:none; transform:translateX(var(--tx,0px)); will-change:transform; }
 #fyon-hero .ltr{ font-family:var(--serif); font-weight:500; font-size:clamp(70px,13vw,150px); line-height:1; letter-spacing:-.02em;
-  background:linear-gradient(150deg,#34a596,#13635a); -webkit-background-clip:text; background-clip:text; color:transparent;
-  /* rasterize the gradient text once and composite transforms (no per-frame re-raster) */
-  transform:translateZ(0); will-change:transform; backface-visibility:hidden; }
+  /* solid spruce instead of background-clip:text gradient — gradient-clipped
+     text re-rasters every frame when transformed; solid colour composites
+     cheaply, so the spread/scale stays smooth on weak GPUs. */
+  color:#1f857a; }
 #fyon-hero .word.ready .ltr{ animation:fhLtrIn .7s cubic-bezier(.2,.85,.25,1) backwards; }
 #fyon-hero .word.ready .col:nth-of-type(1) .ltr{ animation-delay:.05s; }
 #fyon-hero .word.ready .col:nth-of-type(2) .ltr{ animation-delay:.17s; }
@@ -115,7 +116,7 @@
       <div class="fl-pct">0%</div>
     </div>
   </div>
-  <script src="loader.js?v=12"></script>
+  <script src="loader.js?v=13"></script>
 
   <!-- ===================== NAV ===================== -->
   <nav class="nav" data-screen-label="nav">
@@ -745,7 +746,7 @@
     </div>
   </div>
 
-  <script src="site.js?v=12" defer></script>
+  <script src="site.js?v=13" defer></script>
 
   <!-- CTA wiring — referral capture + waitlist/early-access + partner links.
        The product app isn't live yet, so the product CTAs DO NOT touch Stripe.
