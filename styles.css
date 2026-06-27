@@ -586,3 +586,17 @@ html.fyon-loaded .fyon-reveal{ opacity:1; transform:none; }
 #how{ content-visibility:auto; contain-intrinsic-size:auto 1200px; }
 #principles{ content-visibility:auto; contain-intrinsic-size:auto 2500px; }
 #partners{ content-visibility:auto; contain-intrinsic-size:auto 1750px; }
+
+/* ============================================================
+   WHY FYON — "built & gets you there" story (liquid glass, staggered)
+   ============================================================ */
+.wf-lead{ font-family:var(--serif); font-size:clamp(18px,2.2vw,24px); color:var(--ink); margin:0 0 22px; }
+.wf-story{ display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:52px; }
+@media(max-width:860px){ .wf-story{ grid-template-columns:1fr 1fr; } }
+@media(max-width:520px){ .wf-story{ grid-template-columns:1fr; } }
+.wf-step{ position:relative; border-radius:20px; padding:24px 22px 26px; transition:transform .4s cubic-bezier(.2,.8,.2,1); }
+.wf-step:hover{ transform:translateY(-5px); }
+.wf-k{ display:inline-flex; align-items:center; gap:8px; font-family:var(--mono); font-size:10.5px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--terra); }
+.wf-dot{ width:7px; height:7px; border-radius:50%; background:var(--terra); box-shadow:0 0 0 3px rgba(31,133,122,.14); flex:none; }
+.wf-step h3{ font-family:var(--serif); font-weight:500; font-size:21px; line-height:1.12; letter-spacing:-.01em; margin:13px 0 8px; color:var(--ink); }
+.wf-step p{ font-size:14px; line-height:1.56; color:var(--ink-soft); margin:0; }
