@@ -7,6 +7,9 @@
 @font-face{ font-family:'Newsreader'; font-style:italic; font-weight:400 500; font-display:swap;
   src:url(fonts/newsreader-latin-italic.woff2) format('woff2'); }
 
+/* Anchored sections clear the fixed nav when jumped to (nav links + #top). */
+.s, #top{ scroll-margin-top:96px; }
+
 :root{
   --paper-1:#f4ede1; --paper-2:#ece3d4; --peach:#f7e6d3;
   --ink:#211d18; --ink-soft:#6a6055; --ink-faint:#9a9082;
@@ -542,20 +545,9 @@ html.fyon-loaded .fyon-reveal{ opacity:1; transform:none; }
 @keyframes bmGlow{ 0%,100%{ filter:drop-shadow(0 4px 10px rgba(18,80,72,.26)); } 50%{ filter:drop-shadow(0 0 12px rgba(47,158,145,.7)); } }
 @media (prefers-reduced-motion: reduce){ .brand-mark .bm-chev, .brand-mark.thinking, .brand-mark.thinking .bm-chev{ animation:none; } }
 
-/* ============================================================
-   PERF — skip rendering below-the-fold sections until they're near
-   the viewport. Frees the main thread while scrubbing the FYON reveal
-   at the top. contain-intrinsic-size uses the `auto` keyword so the
-   browser remembers each section's real height after first render and
-   doesn't re-jump. (The hero / #why reveal is intentionally excluded.)
-   ============================================================ */
-/* #why intentionally NOT content-visibility — it runs JS-driven streaming +
-   chat animations that the skip-rendering optimisation can leave blank. */
-#what{ content-visibility:auto; contain-intrinsic-size:auto 2050px; }
-#intelligence{ content-visibility:auto; contain-intrinsic-size:auto 2100px; }
-#how{ content-visibility:auto; contain-intrinsic-size:auto 1200px; }
-#principles{ content-visibility:auto; contain-intrinsic-size:auto 2500px; }
-#partners{ content-visibility:auto; contain-intrinsic-size:auto 1750px; }
+/* (content-visibility removed — it mis-estimated section heights and made
+   anchor-link jumps land in the wrong place; the FYON scrub it once helped
+   is gone, so it's no longer needed.) */
 
 /* ============================================================
    WHY FYON — "built & gets you there" story (liquid glass, staggered)

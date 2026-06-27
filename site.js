@@ -191,6 +191,9 @@
     io.observe(h);
     async function stream(){
       var caret=document.createElement('span'); caret.className='caret'; h.appendChild(caret);
+      // reveal the pitch right away (fades in while the headline types) so there's
+      // no tall blank gap on narrow screens while it's hidden
+      sub.style.opacity='1'; sub.style.transform='none';
       for(var i=0;i<segs.length;i++){ var s=segs[i], target=h;
         if(s.em){ target=document.createElement('em'); h.insertBefore(target,caret); }
         for(var c=0;c<s.t.length;c++){ var ch=s.t[c];
@@ -200,7 +203,6 @@
         await sleep(90);
       }
       await sleep(240); caret.style.transition='opacity .4s'; caret.style.opacity='0';
-      sub.style.opacity='1'; sub.style.transform='none';
       setTimeout(function(){ if(caret.parentNode) caret.remove(); }, 520);
     }
   })();
