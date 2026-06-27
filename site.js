@@ -135,7 +135,7 @@
      ============================================================ */
   (function brain(){
     var svg=document.querySelector('.bn-links'); if(!svg) return;
-    var ACCENT={ q1:'#1f857a', q2:'#5e8d6e', q3:'#2f9e91', q4:'#1f857a' };
+    var ACCENT={ q1:'#1f857a', q2:'#34a596', q3:'#5e8d6e', q4:'#2f9e91' };
     var CORE={ x:500, y:290 };
     var CLUSTERS=[{key:'q1',cx:372,cy:200,ax:312,ay:150},{key:'q2',cx:628,cy:200,ax:688,ay:150},{key:'q3',cx:372,cy:380,ax:312,ay:430},{key:'q4',cx:628,cy:380,ax:688,ay:430}];
     var lobeGroups={};

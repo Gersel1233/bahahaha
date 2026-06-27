@@ -7,8 +7,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="styles.css?v=13" />
-<script src="image-slot.js?v=13" defer></script>
+<link rel="stylesheet" href="styles.css?v=14" />
+<script src="image-slot.js?v=14" defer></script>
 <style id="fh-style">
 /* ===== Ported Fyon hero + scroll reveal — fully scoped under #fyon-hero so it
    can't restyle the rest of the site. Colliding class names are prefixed fh-,
@@ -116,7 +116,7 @@
       <div class="fl-pct">0%</div>
     </div>
   </div>
-  <script src="loader.js?v=13"></script>
+  <script src="loader.js?v=14"></script>
 
   <!-- ===================== NAV ===================== -->
   <nav class="nav" data-screen-label="nav">
@@ -326,7 +326,7 @@
             <span class="pb-status stateless"><span class="led"></span>Stateless</span>
           </div>
           <div class="pb-chat" id="pbChat"></div>
-          <div class="pb-note" id="pbNote">Tomorrow, you're a stranger again.</div>
+          <div class="pb-note" id="pbNote">And now you're on your own.</div>
           <div class="pb-fails">
             <span class="pb-fail" data-k="face">Can't see your face</span>
             <span class="pb-fail" data-k="forget">Forgets you</span>
@@ -521,9 +521,26 @@
         <div class="hw-outs">
           <div class="hw-out glass"><span class="on">Output</span><b>Your future self</b><p>Identity-locked, eyes untouched — a realistic target with an honest real-life path.</p></div>
           <div class="hw-out glass"><span class="on">Output</span><b>Your plan</b><p>Concrete, grounded steps and country-localised products that actually get you there.</p></div>
-          <div class="hw-out glass"><span class="on">Output</span><b>Your journey</b><p>A living journey you can talk to — it keeps your full context and adjusts as you change.</p></div>
+          <div class="hw-out glass"><span class="on">Output</span><b>Your journey</b><p>A living journey you can talk to — ask it to go deeper, or tell it something changed, and it adjusts the whole plan.</p></div>
         </div>
         <p class="hw-note">One source for all three — so your image, your plan and your journey <em>can never disagree.</em></p>
+      </div>
+
+      <!-- always-adapting band -->
+      <div class="hw-adapt glass reveal">
+        <div class="ha-side">
+          <span class="ha-k">Always adapting</span>
+          <h3>It makes sure you <em>actually get there.</em></h3>
+        </div>
+        <div class="ha-body">
+          <p>Ask Fyon to go deeper on anything — a step, a product, why something works. Or just tell it something shifted: your goal, your routine, your week. Whatever it is, it adapts — re-planning the whole journey, honestly, and adjusting until you arrive.</p>
+          <div class="ha-chips">
+            <span class="ha-chip">Go deeper on any step</span>
+            <span class="ha-chip">Something changed? It re-plans</span>
+            <span class="ha-chip">Adjusts the whole plan</span>
+            <span class="ha-chip">Walks the entire way</span>
+          </div>
+        </div>
       </div>
 
       <p class="foot-note reveal" style="text-align:center;margin-left:auto;margin-right:auto;margin-top:36px;">Built on frontier reasoning and vision models, with facial geometry and identity-preserving image generation. Strictly 18+.</p>
@@ -631,7 +648,15 @@
     <div class="s-inner">
       <p class="eyebrow reveal">Partner program</p>
       <h2 class="h2 reveal" style="max-width:16ch;">Make money with Fyon.</h2>
-      <p class="lede reveal" style="margin-bottom:40px;">Recommend Fyon to people who'll actually keep using it, and take a share of every payment they make — every month they stay, not just the first. Paid out through Stripe, every figure tracked to the cent.</p>
+      <p class="lede reveal" style="margin-bottom:30px;">Recommend Fyon to people who'll actually keep it, and take a share of every payment they make — every month they stay, not just the first. It's built to be kept, so your income compounds instead of resetting. Paid out through Stripe, tracked to the cent.</p>
+
+      <!-- benefits -->
+      <div class="pt-benefits reveal">
+        <div class="pt-benefit glass"><span class="pb-ic">↻</span><b>Recurring income</b><span>Earn every month they stay — never a one-time bounty.</span></div>
+        <div class="pt-benefit glass"><span class="pb-ic">%</span><b>Up to 30%</b><span>Your share climbs across nine tiers as your base grows.</span></div>
+        <div class="pt-benefit glass"><span class="pb-ic">⬢</span><b>Paid via Stripe</b><span>Withdraw straight to your bank, on your own schedule.</span></div>
+        <div class="pt-benefit glass"><span class="pb-ic">✓</span><b>Honest tracking</b><span>Every click, sale and payout — visible, to the cent.</span></div>
+      </div>
 
       <!-- earnings showpiece -->
       <div class="pt-panel iri iri-dark reveal">
@@ -678,17 +703,27 @@
         <div class="pt-step"><div class="bar2" style="height:100%"></div><span class="pct">30%</span></div>
       </div>
 
-      <!-- how it works -->
-      <div class="num-grid">
+      <!-- start earning in <5 steps -->
+      <div class="pt-tier-head reveal">
+        <h3>Start earning in four simple steps.</h3>
+        <span>Free to join · no audience minimum · live in minutes.</span>
+      </div>
+      <div class="num-grid pt-steps">
         <div class="num-card glass reveal"><span class="idx">01</span><h3>Your link &amp; coupon</h3><p>Get a referral link and a 20%-off code your audience will actually want to use.</p></div>
         <div class="num-card glass reveal d1"><span class="idx">02</span><h3>They subscribe &amp; stay</h3><p>Because Fyon keeps knowing them, they don't churn — and you keep earning.</p></div>
         <div class="num-card glass reveal d2"><span class="idx">03</span><h3>Level up</h3><p>Climb the nine tiers from 15% toward 30% as your retained base grows.</p></div>
         <div class="num-card glass reveal d3"><span class="idx">04</span><h3>Get paid</h3><p>Connect Stripe and withdraw your earnings — every figure honestly tracked.</p></div>
       </div>
 
-      <div class="pt-cta reveal">
-        <button class="btn btn-primary btn-lg">Become a partner</button>
-        <a class="link-arrow" href="#">Already a partner? Sign in <span class="ar">→</span></a>
+      <div class="pt-final glass reveal">
+        <div class="ptf-copy">
+          <h3>Turn your audience into recurring income.</h3>
+          <p>Free to join · recurring commission · honest, transparent payouts.</p>
+        </div>
+        <div class="pt-cta">
+          <button class="btn btn-primary btn-lg">Become a partner</button>
+          <a class="link-arrow" href="#">Already a partner? Sign in <span class="ar">→</span></a>
+        </div>
       </div>
     </div>
   </section>
@@ -746,7 +781,7 @@
     </div>
   </div>
 
-  <script src="site.js?v=13" defer></script>
+  <script src="site.js?v=14" defer></script>
 
   <!-- CTA wiring — referral capture + waitlist/early-access + partner links.
        The product app isn't live yet, so the product CTAs DO NOT touch Stripe.
