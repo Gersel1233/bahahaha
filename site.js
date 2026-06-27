@@ -206,4 +206,31 @@
       setTimeout(function(){ if(caret.parentNode) caret.remove(); }, 520);
     }
   })();
+
+  /* ============================================================
+     MOBILE — tap to view the brain network fullscreen
+     ============================================================ */
+  (function brainFullscreen(){
+    var openBtn=document.getElementById('bnFsOpen'), ov=document.getElementById('bnFs'),
+        closeBtn=document.getElementById('bnFsClose'), map=document.getElementById('bnFsMap');
+    if(!openBtn||!ov||!map) return;
+    var filled=false;
+    function open(){
+      if(!filled){
+        var links=document.querySelector('.bn-stage .bn-links');
+        if(links){ var c=links.cloneNode(true);
+          // crop the viewBox to where the nodes actually are, so the network
+          // fills the screen instead of floating tiny in a sea of empty margin
+          c.setAttribute('viewBox','255 115 490 350');
+          c.setAttribute('preserveAspectRatio','xMidYMid meet');
+          map.appendChild(c); filled=true; }
+      }
+      ov.hidden=false; document.body.classList.add('bn-fs-open'); document.body.style.overflow='hidden';
+    }
+    function close(){ ov.hidden=true; document.body.classList.remove('bn-fs-open'); document.body.style.overflow=''; }
+    openBtn.addEventListener('click', open);
+    closeBtn.addEventListener('click', close);
+    ov.addEventListener('click', function(e){ if(e.target===ov) close(); });
+    document.addEventListener('keydown', function(e){ if(e.key==='Escape' && !ov.hidden) close(); });
+  })();
 })();

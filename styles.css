@@ -260,6 +260,32 @@ a{ color:inherit; text-decoration:none; }
 @media(max-width:560px){ .bn-stage{ padding:20px; } .bn-wrap{ grid-template-columns:1fr; gap:12px; }
   .bn-card.c1,.bn-card.c2,.bn-card.c3,.bn-card.c4{ grid-column:1; grid-row:auto; } }
 
+/* ---- mobile: "tap to view" the brain network fullscreen ---- */
+.bn-fs-btn{ display:none; }                 /* desktop: the network is already visible */
+@media(max-width:920px){
+  .bn-fs-btn{ display:flex; align-items:center; gap:9px; width:fit-content; margin:18px auto 0; cursor:pointer;
+    font:600 14px/1 var(--ui); color:#f6efe6; padding:13px 22px; border:0; border-radius:999px;
+    background:linear-gradient(158deg,#34a596,#13635a); box-shadow:inset 0 1px 1px rgba(214,245,239,.5), 0 12px 30px -12px rgba(15,90,82,.6); }
+}
+.bn-fs-btn .ic{ font-size:16px; }
+.bn-fs[hidden]{ display:none; }
+body.bn-fs-open .nav{ display:none; }   /* the map owns the screen */
+.bn-fs{ position:fixed; inset:0; z-index:10000; display:flex; flex-direction:column; padding:16px 16px 22px;
+  background:linear-gradient(165deg,var(--dark-2),var(--dark-3)); animation:bnFsIn .28s ease; }
+@keyframes bnFsIn{ from{ opacity:0; } to{ opacity:1; } }
+.bn-fs-bar{ display:flex; align-items:center; justify-content:space-between; }
+.bn-fs-ttl{ font-family:var(--mono); font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:rgba(244,237,225,.6); }
+.bn-fs-x{ width:40px; height:40px; border:0; border-radius:50%; cursor:pointer; font-size:22px; line-height:1; color:#f6efe6;
+  background:rgba(255,255,255,.08); box-shadow:inset 0 0 0 1px rgba(255,255,255,.16); }
+.bn-fs-map{ flex:1; display:grid; place-items:center; min-height:0; }
+.bn-fs-map .bn-links{ position:static !important; display:block !important; width:100%; height:auto; max-height:62vh; }
+.bn-fs-map .bn-links .trunk{ animation-play-state:running !important; }
+.bn-fs-map .bn-links .node-core{ animation-play-state:running !important; }
+.bn-fs-legend{ display:grid; grid-template-columns:1fr 1fr; gap:10px 14px; margin:8px auto 0; max-width:520px; width:100%; }
+.bn-fs-legend span{ display:inline-flex; align-items:center; gap:9px; font-size:13.5px; color:rgba(244,237,225,.82); }
+.bn-fs-legend i{ width:9px; height:9px; border-radius:50%; flex:none; }
+.bn-fs-cap{ text-align:center; margin:16px 0 0; font-family:var(--serif); font-size:17px; color:rgba(244,237,225,.7); }
+
 /* contrast (rating vs fyon) — prefix vs- */
 .vs{ display:grid; grid-template-columns:1fr 1fr; gap:26px; align-items:stretch; margin-top:56px; }
 @media(max-width:860px){ .vs{ grid-template-columns:1fr; } }
