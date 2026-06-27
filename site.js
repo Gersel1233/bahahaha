@@ -111,7 +111,7 @@
       chat.classList.add('wipe'); await sleep(520); note.classList.remove('show'); await sleep(850); }
     var startedP=false;
     var pObs=new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting && !startedP){ startedP=true; run(); } }); },{threshold:.25});
-    pObs.observe(document.getElementById('pbSection'));
+    { var pbSec=document.getElementById('why'); if(pbSec) pObs.observe(pbSec); }
     async function run(){ revealRight();
       if(prefersReduced){ var att=document.createElement('div'); att.className='attach done'; att.innerHTML='<div class="thumb"><span class="cam">IMG</span></div><div class="meta"><div class="fname">selfie.jpg <span class="check">\u2713</span></div><div class="state">uploaded \u00b7 2.1 MB</div></div>'; chat.appendChild(att); var u=addBubble('user'); u.textContent=QUESTION; ANSWER.forEach(function(t){ var a=addBubble('ai'); a.textContent=t; }); note.classList.add('show'); return; }
       await sleep(500); var n=0; while(true){ await leftCycle(n>0); n++; } }

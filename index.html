@@ -7,8 +7,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="styles.css?v=15" />
-<script src="image-slot.js?v=15" defer></script>
+<link rel="stylesheet" href="styles.css?v=16" />
+<script src="image-slot.js?v=16" defer></script>
 <style id="fh-style">
 /* ===== Ported Fyon hero + scroll reveal — fully scoped under #fyon-hero so it
    can't restyle the rest of the site. Colliding class names are prefixed fh-,
@@ -116,7 +116,7 @@
       <div class="fl-pct">0%</div>
     </div>
   </div>
-  <script src="loader.js?v=15"></script>
+  <script src="loader.js?v=16"></script>
 
   <!-- ===================== NAV ===================== -->
   <nav class="nav" data-screen-label="nav">
@@ -144,70 +144,6 @@
         <a class="fh-link" href="#how">See how it works <span class="ar">→</span></a>
       </div>
     </header>
-
-    <section class="reveal-section" id="why" data-screen-label="fyon-reveal">
-      <div class="reveal-sticky">
-        <div class="stage" id="stage">
-          <p class="intro-eyebrow" id="introEyebrow">Introducing Lesreg's latest project</p>
-          <div class="wordglow"></div>
-
-          <div class="word" id="word">
-            <div class="col">
-              <span class="ltr">F</span>
-              <div class="pillar">
-                <span class="pcat">Vision</span>
-                <span class="ptag">reads how you're seen</span>
-                <span class="term">facial-landmark geometry</span>
-                <span class="term">perception read</span>
-                <span class="term">identity-locked rendering</span>
-              </div>
-            </div>
-            <div class="col">
-              <span class="ltr">Y</span>
-              <div class="pillar">
-                <span class="pcat">Memory</span>
-                <span class="ptag">builds a model of you</span>
-                <span class="term">persistent model of you</span>
-                <span class="term">learns every session</span>
-                <span class="term">remembers across visits</span>
-              </div>
-            </div>
-            <div class="col">
-              <span class="ltr">O</span>
-              <div class="pillar">
-                <span class="pcat">Grounding</span>
-                <span class="ptag">keeps it real for you</span>
-                <span class="term">localized to your country</span>
-                <span class="term">calibrated to what's achievable</span>
-                <span class="term">honest progress, no score</span>
-              </div>
-            </div>
-            <div class="col">
-              <span class="ltr">N</span>
-              <div class="pillar">
-                <span class="pcat">Action</span>
-                <span class="ptag">plans and acts with you</span>
-                <span class="term">causal outcome plan</span>
-                <span class="term">adjusts as you change</span>
-                <span class="term">builds a surface for any goal</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="logoForm" id="logoForm">
-            <div class="ring"></div>
-            <div class="tile">
-              <svg viewBox="0 0 32 32" aria-hidden="true">
-                <path class="bm-chev bm-chev-1" d="M7 17 L16 9 L25 17" fill="none" stroke="#f7ece0" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"></path>
-                <path class="bm-chev bm-chev-2" d="M7 24 L16 16 L25 24" fill="none" stroke="#f7ece0" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"></path>
-              </svg>
-            </div>
-          </div>
-
-          <p class="intro-tag" id="introTag">FYON — intelligence trained to <em>get you there</em><span class="sm">Built for you · grows with you · never rates you</span></p>
-        </div>
-      </div>
-    </section>
   </div>
 
   <script>
@@ -249,104 +185,15 @@
       }
       whenRevealed(run);
     })();
-
-    /* ---------- self-playing, reversible reveal (Web Animations API = composited) ----------
-       The whole FYON → pillars → logo morph is a time-based timeline of transform/
-       opacity only, so the browser runs it on the GPU/compositor thread instead of
-       the main thread on every scroll event. It plays forward when the section
-       scrolls into view and reverses when it scrolls back out. */
-    (function(){
-      var section=document.getElementById('why'), stage=document.getElementById('stage'),
-          word=document.getElementById('word'), glow=document.querySelector('#fyon-hero .wordglow'),
-          eyebrow=document.getElementById('introEyebrow'), logo=document.getElementById('logoForm'),
-          tag=document.getElementById('introTag');
-      if(!section || !word) return;
-      var cols=[].slice.call(word.querySelectorAll('.col'));
-      var pillars=[].slice.call(word.querySelectorAll('.pillar'));
-
-      // No WAAPI (or reduced motion) → just show FYON statically.
-      if(prefersReduced || !word.animate){ word.classList.add('ready'); return; }
-
-      var D=2600, anims=[], logoAnim=null, built=false, atEnd=false;
-      function clearAnims(){ anims.forEach(function(a){ try{a.cancel();}catch(e){} }); anims=[]; }
-
-      function build(){
-        clearAnims();
-        var W=Math.min(stage.clientWidth||980,1080);
-        var off=[-W*0.28,-W*0.115,W*0.115,W*0.28];
-        var opt={duration:D, fill:'both', easing:'linear'};
-        cols.forEach(function(c,i){
-          anims.push(c.animate([
-            {offset:0,    transform:'translateX(0)'},
-            {offset:0.06, transform:'translateX(0)', easing:'cubic-bezier(.2,.8,.25,1)'},
-            {offset:0.30, transform:'translateX('+off[i].toFixed(1)+'px)'},
-            {offset:0.60, transform:'translateX('+off[i].toFixed(1)+'px)', easing:'cubic-bezier(.5,0,.2,1)'},
-            {offset:0.84, transform:'translateX(0)'},
-            {offset:1,    transform:'translateX(0)'}
-          ], opt));
-        });
-        anims.push(word.animate([
-          {offset:0,    transform:'scale(1)',  opacity:1},
-          {offset:0.60, transform:'scale(1)',  opacity:1, easing:'cubic-bezier(.5,0,.2,1)'},
-          {offset:0.84, transform:'scale(.74)',opacity:0},
-          {offset:1,    transform:'scale(.74)',opacity:0}
-        ], opt));
-        pillars.forEach(function(p){
-          anims.push(p.animate([
-            {offset:0,    opacity:0, transform:'translateX(-50%) translateY(12px)'},
-            {offset:0.30, opacity:0, transform:'translateX(-50%) translateY(12px)', easing:'cubic-bezier(.2,.8,.25,1)'},
-            {offset:0.46, opacity:1, transform:'translateX(-50%) translateY(0)'},
-            {offset:0.58, opacity:1, transform:'translateX(-50%) translateY(0)'},
-            {offset:0.70, opacity:0, transform:'translateX(-50%) translateY(12px)'},
-            {offset:1,    opacity:0, transform:'translateX(-50%) translateY(12px)'}
-          ], opt));
-        });
-        anims.push(glow.animate([
-          {offset:0,opacity:0},{offset:0.30,opacity:.5},{offset:0.46,opacity:.65},{offset:0.60,opacity:.4},{offset:0.84,opacity:0},{offset:1,opacity:0}
-        ], opt));
-        anims.push(eyebrow.animate([
-          {offset:0,opacity:1},{offset:0.12,opacity:1},{offset:0.26,opacity:0},{offset:1,opacity:0}
-        ], opt));
-        logoAnim=logo.animate([
-          {offset:0,    opacity:0, transform:'translate(-50%,-50%) scale(.42) rotate(-16deg)'},
-          {offset:0.80, opacity:0, transform:'translate(-50%,-50%) scale(.42) rotate(-16deg)', easing:'cubic-bezier(.2,.85,.25,1)'},
-          {offset:0.93, opacity:1, transform:'translate(-50%,-50%) scale(.94) rotate(-3deg)'},
-          {offset:1,    opacity:1, transform:'translate(-50%,-50%) scale(1) rotate(0deg)'}
-        ], opt);
-        anims.push(logoAnim);
-        anims.push(tag.animate([
-          {offset:0,opacity:0},{offset:0.90,opacity:0},{offset:1,opacity:1}
-        ], opt));
-        anims.forEach(function(a){ a.pause(); a.currentTime = atEnd ? D : 0; });
-        logoAnim.onfinish=function(){ if(logoAnim.playbackRate>0) logo.classList.add('live'); };
-        built=true;
-      }
-
-      function play(dir){
-        if(!built) build();
-        if(dir<0) logo.classList.remove('live');
-        anims.forEach(function(a){ a.playbackRate=dir; a.play(); });
-        atEnd = dir>0;
-      }
-
-      var io=new IntersectionObserver(function(es){ es.forEach(function(e){
-        if(e.isIntersecting){ word.classList.add('ready'); play(1); }
-        else { play(-1); }
-      }); }, {threshold:0.35});
-      io.observe(section);
-
-      // recompute the spread distance if the viewport changes width
-      var rt; window.addEventListener('resize', function(){ clearTimeout(rt); rt=setTimeout(function(){ built=false; build(); }, 200); });
-    })();
   })();
   </script>
 
   <!-- ===================== PROBLEM ===================== -->
-  <section class="s" id="pbSection" data-screen-label="problem">
+  <section class="s" id="why" data-screen-label="why-fyon">
     <div class="s-inner">
       <p class="eyebrow reveal">Why Fyon</p>
-      <h2 class="h2 reveal" style="max-width:14ch;">Why isn't a general assistant enough?</h2>
-      <p class="lede reveal" style="margin-bottom:56px;">Most self-improvement tools do one of three things: rate you with a number, report on you once, or forget you entirely. You can ask a general assistant how to get more attractive or more confident and get a decent answer — so why isn't that enough?</p>
+      <h2 class="h2 reveal" style="max-width:20ch;">The intelligence already exists. It just doesn't know you.</h2>
+      <p class="lede reveal" style="margin-bottom:56px;">Most tools rate you, report on you, or forget you. A general AI is different — ask it how to become more attractive or more confident and you'll get a genuinely good answer. So why Fyon? Because it's answering <em>a</em> person, not <em>you</em>. It can't see your face, doesn't know your body, your history or your limits, and forgets you the moment you close the tab. Fyon points that same intelligence entirely at one person — and stays.</p>
 
       <div class="pb-grid">
         <div class="pb-card left reveal">
@@ -390,7 +237,7 @@
         </div>
       </div>
 
-      <p class="pb-closing reveal"><span class="grey">A general assistant answers, then forgets you the moment you close the tab.</span> <span class="ink">You're not broken — you're hidden. Fyon has been getting to know you for weeks, and only knows you better.</span></p>
+      <p class="pb-closing reveal"><span class="grey">The difference isn't the intelligence — it's the same intelligence. It's that Fyon is a place that knows you, where a general AI is a conversation that doesn't.</span> <span class="ink">You don't go to Fyon to ask — you live in it, because it holds the whole project of becoming who you want to be: seen, remembered, followed. You're not behind — you're unseen.</span></p>
     </div>
   </section>
 
@@ -810,7 +657,7 @@
     </div>
   </div>
 
-  <script src="site.js?v=15" defer></script>
+  <script src="site.js?v=16" defer></script>
 
   <!-- CTA wiring — referral capture + waitlist/early-access + partner links.
        The product app isn't live yet, so the product CTAs DO NOT touch Stripe.

@@ -579,7 +579,7 @@ html.fyon-loaded .fyon-reveal{ opacity:1; transform:none; }
    browser remembers each section's real height after first render and
    doesn't re-jump. (The hero / #why reveal is intentionally excluded.)
    ============================================================ */
-#pbSection{ content-visibility:auto; contain-intrinsic-size:auto 1550px; }
+#why{ content-visibility:auto; contain-intrinsic-size:auto 1550px; }
 #what{ content-visibility:auto; contain-intrinsic-size:auto 2050px; }
 #intelligence{ content-visibility:auto; contain-intrinsic-size:auto 2100px; }
 #how{ content-visibility:auto; contain-intrinsic-size:auto 1200px; }
