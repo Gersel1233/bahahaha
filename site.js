@@ -107,8 +107,8 @@
       var typing=document.createElement('div'); typing.className='typing'; typing.innerHTML='<i></i><i></i><i></i>'; chat.appendChild(typing); await sleep(820); typing.remove();
       setFail('talk',true); att.classList.add('ignored'); att.querySelector('.state').textContent="couldn't read this image";
       for(var i=0;i<ANSWER.length;i++){ var a=addBubble('ai'); a.textContent=ANSWER[i]; if(i>=2){ setFail('wall',true); var ai=chat.querySelectorAll('.bubble.ai'); if(ai[i-2]) ai[i-2].classList.add('fading'); } await sleep(600); }
-      await sleep(680); setFail('forget',true); note.classList.add('show'); growMemory(); await sleep(1400);
-      chat.classList.add('wipe'); await sleep(520); note.classList.remove('show'); await sleep(850); }
+      await sleep(680); setFail('forget',true); note.classList.add('show'); growMemory(); await sleep(2900);
+      chat.classList.add('wipe'); await sleep(620); note.classList.remove('show'); await sleep(950); }
     var startedP=false;
     var pObs=new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting && !startedP){ startedP=true; run(); } }); },{threshold:.25});
     { var pbSec=document.getElementById('why'); if(pbSec) pObs.observe(pbSec); }
@@ -172,5 +172,36 @@
     // warm loop chase
     var lnodes=[].slice.call(document.querySelectorAll('#vsLoop .lnode'));
     if(!prefersReduced && lnodes.length){ var li=0; setInterval(function(){ lnodes.forEach(function(nn,j){ nn.classList.toggle('lit', j===li); }); li=(li+1)%lnodes.length; },900); }
+  })();
+
+  /* ============================================================
+     WHY FYON — streaming headline + sub reveal (on scroll into view)
+     ============================================================ */
+  (function whyHype(){
+    var h=document.getElementById('whyHead'), sub=document.getElementById('whySub');
+    if(!h||!sub) return;
+    // segments to type — final one is the spruce-accent <em>
+    var segs=[{t:"The most powerful AI ever made "},{t:"still doesn't know you.",em:true}];
+    if(prefersReduced) return;                 // markup already holds the final text
+    h.innerHTML='';                            // below the fold — cleared invisibly
+    sub.style.opacity='0'; sub.style.transform='translateY(12px)';
+    sub.style.transition='opacity .9s ease, transform .9s cubic-bezier(.2,.8,.2,1)';
+    var started=false;
+    var io=new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting && !started){ started=true; io.disconnect(); stream(); } }); },{threshold:.4});
+    io.observe(h);
+    async function stream(){
+      var caret=document.createElement('span'); caret.className='caret'; h.appendChild(caret);
+      for(var i=0;i<segs.length;i++){ var s=segs[i], target=h;
+        if(s.em){ target=document.createElement('em'); h.insertBefore(target,caret); }
+        for(var c=0;c<s.t.length;c++){ var ch=s.t[c];
+          if(target===h) h.insertBefore(document.createTextNode(ch),caret); else target.appendChild(document.createTextNode(ch));
+          await sleep(ch===' '?22:38);
+        }
+        await sleep(90);
+      }
+      await sleep(240); caret.style.transition='opacity .4s'; caret.style.opacity='0';
+      sub.style.opacity='1'; sub.style.transform='none';
+      setTimeout(function(){ if(caret.parentNode) caret.remove(); }, 520);
+    }
   })();
 })();
