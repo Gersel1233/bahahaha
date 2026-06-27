@@ -9,7 +9,7 @@
 
   var done = false;
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var SEQ = reduced ? 700 : 3900;     // full cinematic length (ms)
+  var SEQ = reduced ? 600 : 3800;     // full cinematic length (ms)
   var start = performance.now();
 
   function finish(){

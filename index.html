@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Fyon by Lesreg — A self-improvement intelligence that knows you</title>
 <link rel="preload" as="font" type="font/woff2" href="fonts/newsreader-latin-normal.woff2" crossorigin />
-<link rel="stylesheet" href="styles.css?v=29" />
-<script src="image-slot.js?v=29" defer></script>
+<link rel="stylesheet" href="styles.css?v=30" />
+<script src="image-slot.js?v=30" defer></script>
 <style id="fh-style">
 /* ===== Ported Fyon hero + scroll reveal — fully scoped under #fyon-hero so it
    can't restyle the rest of the site. Colliding class names are prefixed fh-,
@@ -46,21 +46,22 @@
   <!-- ===================== CINEMATIC INTRO ===================== -->
   <div id="fyon-intro" role="status" aria-label="Lesreg introduces Fyon">
     <div class="intro-inner">
-      <span class="intro-mark" aria-hidden="true">
-        <svg viewBox="0 0 32 32">
-          <defs><linearGradient id="flMark" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2f9e91"/><stop offset="1" stop-color="#166b62"/></linearGradient></defs>
-          <rect x="1" y="1" width="30" height="30" rx="9" fill="url(#flMark)"/>
-          <path class="flc flc-1" d="M8.5 16.5 L16 10 L23.5 16.5" fill="none" stroke="#f7ece0" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
-          <path class="flc flc-2" d="M8.5 22.5 L16 16 L23.5 22.5" fill="none" stroke="#f7ece0" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/>
-        </svg>
-      </span>
-      <p class="intro-pre">Lesreg introduces</p>
-      <h1 class="intro-word">Fyon</h1>
-      <p class="intro-tag">Intelligence built to get you there</p>
+      <p class="intro-pre">Lesreg introducing</p>
+      <div class="intro-stack">
+        <h1 class="intro-word">Fyon</h1>
+        <span class="intro-mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32">
+            <defs><linearGradient id="flMark" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2f9e91"/><stop offset="1" stop-color="#166b62"/></linearGradient></defs>
+            <rect x="1" y="1" width="30" height="30" rx="9" fill="url(#flMark)"/>
+            <path class="flc flc-1" d="M8.5 16.5 L16 10 L23.5 16.5" fill="none" stroke="#f7ece0" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+            <path class="flc flc-2" d="M8.5 22.5 L16 16 L23.5 22.5" fill="none" stroke="#f7ece0" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/>
+          </svg>
+        </span>
+      </div>
     </div>
     <span class="intro-skip">tap to skip</span>
   </div>
-  <script src="loader.js?v=29"></script>
+  <script src="loader.js?v=30"></script>
 
   <!-- ===================== NAV ===================== -->
   <nav class="nav" data-screen-label="nav">
@@ -651,7 +652,7 @@
     </div>
   </div>
 
-  <script src="site.js?v=29" defer></script>
+  <script src="site.js?v=30" defer></script>
 
   <!-- CTA wiring — referral capture + waitlist/early-access + partner links.
        The product app isn't live yet, so the product CTAs DO NOT touch Stripe.
