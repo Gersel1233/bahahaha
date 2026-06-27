@@ -108,13 +108,13 @@
       setFail('talk',true); att.classList.add('ignored'); att.querySelector('.state').textContent="couldn't read this image";
       for(var i=0;i<ANSWER.length;i++){ var a=addBubble('ai'); a.textContent=ANSWER[i]; if(i>=2){ setFail('wall',true); var ai=chat.querySelectorAll('.bubble.ai'); if(ai[i-2]) ai[i-2].classList.add('fading'); } await sleep(600); }
       await sleep(680); setFail('forget',true); note.classList.add('show'); growMemory(); await sleep(2900);
-      chat.classList.add('wipe'); await sleep(620); note.classList.remove('show'); await sleep(950); }
+      note.classList.remove('show'); }   // leave the conversation on screen — the story stays
     var startedP=false;
     var pObs=new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting && !startedP){ startedP=true; run(); } }); },{threshold:.25});
     { var pbSec=document.getElementById('why'); if(pbSec) pObs.observe(pbSec); }
     async function run(){ revealRight();
       if(prefersReduced){ var att=document.createElement('div'); att.className='attach done'; att.innerHTML='<div class="thumb"><span class="cam">IMG</span></div><div class="meta"><div class="fname">selfie.jpg <span class="check">\u2713</span></div><div class="state">uploaded \u00b7 2.1 MB</div></div>'; chat.appendChild(att); var u=addBubble('user'); u.textContent=QUESTION; ANSWER.forEach(function(t){ var a=addBubble('ai'); a.textContent=t; }); note.classList.add('show'); return; }
-      await sleep(500); var n=0; while(true){ await leftCycle(n>0); n++; } }
+      await sleep(500); await leftCycle(false); }   // play the story once, then it stays
   })();
 
   /* ============================================================
