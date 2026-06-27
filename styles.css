@@ -103,31 +103,7 @@ a{ color:inherit; text-decoration:none; }
 /* ============================================================
    LOOP (globe)
    ============================================================ */
-.loop{ text-align:center; }
-.loop-stage{ position:relative; height:560px; display:flex; align-items:center; justify-content:center; }
-.globe-svg{ position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:660px; height:660px; opacity:.62; pointer-events:none; }
-.globe-svg .g ellipse, .globe-svg .g circle.outline, .globe-svg .g line{ fill:none; stroke:rgba(33,29,24,.18); stroke-width:1; vector-effect:non-scaling-stroke; }
-.globe-svg .g .outline{ stroke:rgba(33,29,24,.24); }
-.globe-svg .g .equator{ stroke:rgba(31,133,122,.34); }
-.globe-svg .g .dot{ fill:rgba(33,29,24,.30); }
-.globe-svg .grot{ transform-box:fill-box; transform-origin:center; animation:gspin 26s linear infinite; }
-@keyframes gspin{ to{ transform:rotateY(0); } }
-.loop-content{ position:relative; z-index:3; }
-.loop-eyebrow{ font-family:var(--mono); font-size:11.5px; letter-spacing:.2em; text-transform:uppercase; color:var(--terra); margin-bottom:24px; }
-.loop-dots{ display:flex; gap:9px; justify-content:center; margin-bottom:22px; }
-.loop-dots i{ width:8px; height:8px; border-radius:50%; background:rgba(33,29,24,.16); transition:background .4s ease, transform .4s ease; }
-.loop-dots i.on{ background:var(--terra); transform:scale(1.25); }
-.loop-chip{ display:inline-block; font-family:var(--ui); font-size:13px; font-weight:700; letter-spacing:.13em; text-transform:uppercase; color:#fff;
-  padding:.6em 1.05em; border-radius:999px; background:linear-gradient(158deg, rgba(31,133,122,.95), rgba(22,107,98,.96));
-  box-shadow:inset 0 1px 1px rgba(224,245,242,.7), 0 6px 16px -6px rgba(18,80,72,.45); margin-bottom:16px; }
-.loop-idx{ font-family:var(--mono); font-size:12px; letter-spacing:.18em; color:var(--ink-faint); margin-bottom:14px; }
-.loop-title{ font-family:var(--serif); font-size:clamp(32px,4.4vw,52px); font-weight:400; letter-spacing:-.01em; margin:0 0 18px; min-height:1.1em; }
-.loop-desc{ font-size:18px; line-height:1.6; color:var(--ink-soft); max-width:520px; margin:0 auto; }
-.loop-stats{ display:grid; grid-template-columns:repeat(3,1fr); gap:18px; max-width:720px; margin:48px auto 0; }
-@media(max-width:680px){ .loop-stats{ grid-template-columns:1fr; } }
-.stat{ border-radius:18px; padding:26px 20px; background:rgba(255,255,255,.5); box-shadow:inset 0 1px 1px rgba(255,255,255,.9), inset 0 0 0 1px rgba(33,29,24,.06), 0 10px 28px -18px rgba(70,45,25,.4); }
-.stat b{ display:block; font-family:var(--serif); font-size:34px; font-weight:500; letter-spacing:-.01em; }
-.stat span{ font-size:13.5px; color:var(--ink-soft); }
+/* (loop/globe styles removed — feature replaced by the hero + Why Fyon sections) */
 
 /* ============================================================
    PROBLEM (animated)  — prefix pb-
@@ -266,7 +242,7 @@ a{ color:inherit; text-decoration:none; }
    brain section is actually on screen (set by IntersectionObserver in site.js) */
 .bn-stage.viz-on .bn-links .trunk, .bn-stage.viz-on .bn-links .node-core{ animation-play-state:running; }
 .bn-tagline{ position:relative; z-index:4; text-align:center; margin-top:14px; font-family:var(--serif); font-size:clamp(18px,2.2vw,24px); color:#f6efe6; } .bn-tagline em{ font-style:italic; color:#9fd8cf; }
-@media (prefers-reduced-motion: reduce){ .bn-links .trunk,.bn-links .node-core,.globe-svg .grot,.brand .spark{ animation:none; } }
+@media (prefers-reduced-motion: reduce){ .bn-links .trunk,.bn-links .node-core,.brand .spark{ animation:none; } }
 @media(max-width:920px){ .bn-wrap{ grid-template-columns:1fr 1fr; grid-template-rows:auto auto auto; min-height:0; gap:14px; } .bn-links,.bn-coreLabel{ display:none; } .bn-center{ grid-column:1 / span 2; grid-row:1; min-height:240px; height:240px; }
   .bn-card{ max-width:none; justify-self:stretch !important; } .bn-card.c1{ grid-column:1; grid-row:2; } .bn-card.c2{ grid-column:2; grid-row:2; } .bn-card.c3{ grid-column:1; grid-row:3; } .bn-card.c4{ grid-column:2; grid-row:3; } }
 
@@ -476,18 +452,6 @@ a{ color:inherit; text-decoration:none; }
 .footer .links a:hover{ color:var(--ink); }
 .footer .copy{ font-size:13px; color:var(--ink-faint); font-family:var(--mono); letter-spacing:.04em; }
 
-/* ============================================================
-   LOOP GLOBE (old functioning globe, embedded behind the text)
-   ============================================================ */
-.loop-stage .globe-frame{ position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
-  width:680px; height:680px; max-width:96vw; border:0; background:transparent; opacity:.5;
-  pointer-events:none; z-index:0; }
-@media(max-width:680px){ .loop-stage .globe-frame{ width:460px; height:460px; } }
-/* keep the cycling text crisp and readable over the globe */
-.loop-content{ position:relative; z-index:3; }
-.loop-content::before{ content:""; position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
-  width:680px; height:500px; max-width:94vw; z-index:-1; pointer-events:none;
-  background:radial-gradient(closest-side, rgba(243,236,224,.92), rgba(243,236,224,.6) 52%, rgba(243,236,224,0) 80%); }
 
 /* ============================================================
    LOADING SCREEN — minimal wordmark + thin progress line

@@ -7,8 +7,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="styles.css?v=19" />
-<script src="image-slot.js?v=19" defer></script>
+<link rel="stylesheet" href="styles.css?v=20" />
+<script src="image-slot.js?v=20" defer></script>
 <style id="fh-style">
 /* ===== Ported Fyon hero + scroll reveal — fully scoped under #fyon-hero so it
    can't restyle the rest of the site. Colliding class names are prefixed fh-,
@@ -38,62 +38,7 @@
 #fyon-hero .fh-link{ font-size:15.5px; font-weight:500; color:var(--ink); text-decoration:none; display:inline-flex; align-items:center; gap:8px; }
 #fyon-hero .fh-link .ar{ color:var(--terra); transition:transform .3s; } #fyon-hero .fh-link:hover .ar{ transform:translateX(4px); }
 
-#fyon-hero .reveal-section{ position:relative; z-index:1; }
-#fyon-hero .reveal-sticky{ position:relative; min-height:100vh; display:grid; place-items:center; overflow:hidden; }
-#fyon-hero .stage{ position:relative; width:100%; max-width:1100px; height:540px; display:grid; place-items:center; contain:layout paint style; }
-#fyon-hero .intro-eyebrow{ position:absolute; top:24px; left:50%; transform:translateX(-50%); margin:0;
-  font-family:var(--mono); font-size:12px; font-weight:600; letter-spacing:.24em; text-transform:uppercase; color:var(--terra); white-space:nowrap; }
-#fyon-hero .wordglow{ position:absolute; top:46%; left:50%; width:760px; height:320px; transform:translate(-50%,-50%) translateZ(0);
-  background:radial-gradient(closest-side, rgba(52,165,150,.15), transparent 72%); opacity:var(--glow,0); pointer-events:none; will-change:opacity; }
-#fyon-hero .word{ --rev:0; position:relative; display:flex; align-items:center; justify-content:center; gap:0; height:170px; transform-origin:center; will-change:transform,opacity; margin-bottom:140px; }
-#fyon-hero .col{ position:relative; display:flex; align-items:center; justify-content:center; flex:none; transform:translateX(var(--tx,0px)); will-change:transform; }
-#fyon-hero .ltr{ font-family:var(--serif); font-weight:500; font-size:clamp(70px,13vw,150px); line-height:1; letter-spacing:-.02em;
-  /* solid spruce instead of background-clip:text gradient — gradient-clipped
-     text re-rasters every frame when transformed; solid colour composites
-     cheaply, so the spread/scale stays smooth on weak GPUs. */
-  color:#1f857a; }
-#fyon-hero .word.ready .ltr{ animation:fhLtrIn .7s cubic-bezier(.2,.85,.25,1) backwards; }
-#fyon-hero .word.ready .col:nth-of-type(1) .ltr{ animation-delay:.05s; }
-#fyon-hero .word.ready .col:nth-of-type(2) .ltr{ animation-delay:.17s; }
-#fyon-hero .word.ready .col:nth-of-type(3) .ltr{ animation-delay:.29s; }
-#fyon-hero .word.ready .col:nth-of-type(4) .ltr{ animation-delay:.41s; }
-@keyframes fhLtrIn{ from{ opacity:0; transform:translateY(26px) scale(.92); } to{ opacity:1; transform:none; } }
-
-#fyon-hero .pillar{ position:absolute; top:100%; left:50%; width:206px; margin-top:24px;
-  transform:translateX(-50%) translateY(calc((1 - var(--rev,0)) * 12px));
-  display:flex; flex-direction:column; align-items:center; text-align:center; gap:7px; opacity:var(--rev,0); pointer-events:none; will-change:opacity,transform; }
-#fyon-hero .pillar::before{ content:""; position:absolute; top:-22px; left:50%; width:1px; height:18px; transform:translateX(-50%);
-  background:linear-gradient(rgba(52,165,150,0), rgba(52,165,150,.5)); }
-#fyon-hero .pcat{ font-family:var(--mono); font-size:11px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; color:var(--terra-deep); }
-#fyon-hero .ptag{ font-family:var(--serif); font-style:italic; font-size:14.5px; color:var(--ink); margin-bottom:4px; }
-#fyon-hero .term{ font-family:var(--mono); font-size:10.5px; letter-spacing:.01em; color:var(--terra-deep); white-space:nowrap;
-  padding:4px 11px; border-radius:999px; background:rgba(52,165,150,.1); box-shadow:inset 0 0 0 1px rgba(52,165,150,.24); }
-@media(max-width:900px){ #fyon-hero .pillar{ width:150px; } #fyon-hero .term{ font-size:8.5px; padding:3px 7px; white-space:normal; } #fyon-hero .ptag{ font-size:12px; } }
-
-#fyon-hero .logoForm{ position:absolute; left:50%; top:46%; width:140px; height:140px; transform:translate(-50%,-50%) scale(.42);
-  display:grid; place-items:center; opacity:0; pointer-events:none; will-change:transform,opacity; }
-#fyon-hero .logoForm .ring{ position:absolute; inset:0; border-radius:50%;
-  background:radial-gradient(circle, rgba(52,165,150,.34) 0%, rgba(52,165,150,.07) 55%, transparent 72%); }
-#fyon-hero .logoForm.live .ring{ animation:fhCoreBreath 4.6s ease-in-out infinite; }
-#fyon-hero .logoForm .tile{ position:relative; width:80px; height:80px; border-radius:23px; display:grid; place-items:center;
-  background:linear-gradient(150deg,#34a596,#13635a); box-shadow:0 18px 38px -8px rgba(15,90,82,.6), inset 0 1px 1px rgba(214,245,239,.5); }
-#fyon-hero .logoForm.live .tile{ animation:fhTileBreath 4.6s ease-in-out infinite; }
-#fyon-hero .logoForm .tile svg{ width:46px; height:46px; display:block; }
-#fyon-hero .logoForm .bm-chev{ transform-box:fill-box; transform-origin:center; }
-#fyon-hero .logoForm.live .bm-chev-1{ animation:fhBreathA 4.6s cubic-bezier(.45,0,.55,1) infinite; }
-#fyon-hero .logoForm.live .bm-chev-2{ animation:fhBreathB 4.6s cubic-bezier(.45,0,.55,1) infinite; }
-@keyframes fhBreathA{ 0%,100%{ transform:translateY(.5px); opacity:.95; } 50%{ transform:translateY(-1.1px); opacity:1; } }
-@keyframes fhBreathB{ 0%,100%{ transform:translateY(-.5px); opacity:.5; } 50%{ transform:translateY(.8px); opacity:.72; } }
-@keyframes fhCoreBreath{ 0%,100%{ transform:scale(1); opacity:.9; } 50%{ transform:scale(1.18); opacity:1; } }
-@keyframes fhTileBreath{ 0%,100%{ transform:scale(1); } 50%{ transform:scale(1.05); } }
-
-#fyon-hero .intro-tag{ position:absolute; bottom:58px; left:50%; transform:translateX(-50%); margin:0; white-space:nowrap; text-align:center;
-  font-family:var(--serif); font-size:clamp(19px,2.5vw,27px); color:var(--ink); opacity:var(--tag,0); }
-#fyon-hero .intro-tag em{ font-style:italic; color:var(--terra); }
-#fyon-hero .intro-tag .sm{ display:block; font-family:var(--mono); font-style:normal; font-size:10.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-faint); margin-top:10px; }
-
 @media (prefers-reduced-motion: reduce){
-  #fyon-hero .word.ready .ltr{ animation:none; }
   #fyon-hero .fh-badge .fh-dot{ animation:none; }
 }
 </style>
@@ -116,7 +61,7 @@
       <div class="fl-pct">0%</div>
     </div>
   </div>
-  <script src="loader.js?v=19"></script>
+  <script src="loader.js?v=20"></script>
 
   <!-- ===================== NAV ===================== -->
   <nav class="nav" data-screen-label="nav">
@@ -690,7 +635,7 @@
     </div>
   </div>
 
-  <script src="site.js?v=19" defer></script>
+  <script src="site.js?v=20" defer></script>
 
   <!-- CTA wiring — referral capture + waitlist/early-access + partner links.
        The product app isn't live yet, so the product CTAs DO NOT touch Stripe.
