@@ -8,7 +8,7 @@
 <link rel="mask-icon" href="favicon.svg?v=1" color="#0f9b8e" />
 <link rel="preload" as="font" type="font/woff2" href="fonts/newsreader-latin-normal.woff2" crossorigin />
 <link rel="preload" as="font" type="font/woff2" href="fonts/sora-latin-600.woff2" crossorigin />
-<link rel="stylesheet" href="styles.css?v=33" />
+<link rel="stylesheet" href="styles.css?v=34" />
 <script src="image-slot.js?v=31" defer></script>
 <style id="fh-style">
 /* ===== Ported Fyon hero + scroll reveal — fully scoped under #fyon-hero so it
@@ -150,49 +150,78 @@
       <p class="lede" id="whySub" style="margin-bottom:50px;">You've tried them all — the looksmaxing apps, the scores, the generic (and sometimes "personalised") plans. They always fall short, and they never change as <em>you</em> change. The most capable intelligence on earth can answer almost anything… but it answers everyone, so it answers no one. What's never existed is an intelligence built entirely around <em>one person</em> — that sees your face, holds your history, and moves with you. <b>That's exactly why Fyon exists.</b></p>
 
       <p class="wf-lead reveal">Same question. Two completely different things.</p>
+      <p class="lede reveal" style="margin-bottom:46px;max-width:640px;">Ask a general assistant how to become more attractive and confident, and you get words. Open Fyon, and it <em>sees you, knows you, and shows you</em> who you could become.</p>
       <div class="pb-grid">
+
+        <!-- LEFT — a general assistant -->
         <div class="pb-card left reveal">
           <div class="pb-head">
             <span class="pb-kicker">Asking <b>a general assistant</b></span>
             <span class="pb-status stateless"><span class="led"></span>Stateless</span>
           </div>
           <div class="pb-chat" id="pbChat"></div>
-          <div class="pb-note" id="pbNote">And now you're on your own.</div>
           <div class="pb-fails">
-            <span class="pb-fail" data-k="face">Doesn't read your face</span>
+            <span class="pb-fail" data-k="face">Sees the image, doesn't read your face</span>
             <span class="pb-fail" data-k="forget">Forgets you</span>
             <span class="pb-fail" data-k="wall">A wall of words</span>
             <span class="pb-fail" data-k="talk">Can only talk</span>
           </div>
-          <p class="pb-foot">Generic — true for everyone, made for no one. The thread scrolls away. Next week you start over.</p>
+          <p class="pb-foot">Generic — true for everyone, made for no one. The thread scrolls away. Tomorrow you're on your own.</p>
         </div>
 
+        <!-- RIGHT — opening Fyon: reads you · knows you · shows you -->
         <div class="pb-card right reveal d1">
           <div class="pb-head">
             <span class="pb-kicker">Opening <b>Fyon</b></span>
-            <span class="pb-status memory"><span class="led"></span><span id="pbMemTag">Knows you · 4</span></span>
+            <span class="pb-status memory"><span class="led"></span>Knows you · 12</span>
           </div>
-          <div class="pb-fileLabel">Your file — open every time</div>
-          <div class="pb-tabs">
-            <span class="pb-tab">Face</span><span class="pb-tab">Body</span><span class="pb-tab">Goals</span>
-            <span class="pb-tab">History</span><span class="pb-tab">Insecurities</span><span class="pb-tab">Limits</span>
+
+          <div class="fy-panel">
+            <span class="fy-label"><span class="d"></span>It reads you</span>
+            <div class="fy-reads">
+              <div class="fy-tile">
+                <span class="fy-tile-tag">You · now</span>
+                <span class="fy-glyph" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="8.5" cy="9.5" r="1.7"/><path d="M4 18l5-5 4 3 3-3 4 4"/></svg></span>
+                <span class="fy-tile-ph">Drop your photo</span>
+                <span class="fy-tile-sub">or browse files</span>
+              </div>
+              <div class="fy-reads-body">
+                <p class="fy-mini">How you actually land:</p>
+                <div class="fy-chips">
+                  <span class="fy-chip">reserved</span>
+                  <span class="fy-chip">strong features</span>
+                  <span class="fy-chip">redness adds heat</span>
+                </div>
+                <p class="fy-cap">An understanding — <em>not a score.</em></p>
+              </div>
+            </div>
           </div>
-          <div class="pb-points">
-            <div class="pb-point"><svg class="tick" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M7 12.5l3.2 3.2L17 8.5"></path></svg><span class="txt"><b>Shows</b> you the version you could become — a future self, not a description.</span></div>
-            <div class="pb-point"><svg class="tick" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M7 12.5l3.2 3.2L17 8.5"></path></svg><span class="txt"><b>Compounds</b> — knows you more every session, where a general chat resets.</span></div>
-            <div class="pb-point"><svg class="tick" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M7 12.5l3.2 3.2L17 8.5"></path></svg><span class="txt"><b>Maintains</b> your becoming as a living plan — you see where you are and what's next.</span></div>
-            <div class="pb-point"><svg class="tick" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M7 12.5l3.2 3.2L17 8.5"></path></svg><span class="txt"><b>Acts</b> — "move this in my plan," and it actually rebuilds it, honestly.</span></div>
-            <div class="pb-point"><svg class="tick" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M7 12.5l3.2 3.2L17 8.5"></path></svg><span class="txt"><b>Honest</b> about where you are — no false progress; it follows you over weeks.</span></div>
+
+          <div class="fy-panel">
+            <span class="fy-label"><span class="d"></span>It knows you</span>
+            <div class="pb-tabs fy-tabs">
+              <span class="pb-tab">Face</span><span class="pb-tab">Body</span><span class="pb-tab">Goals</span><span class="pb-tab" data-lit>History</span>
+            </div>
+            <p class="fy-remember"><span class="fy-pill">Remembered</span> Last time you said evenings are when your routine slips.</p>
           </div>
-          <div class="pb-memory">
-            <span class="pb-memDots" id="pbMemDots"><i></i><i></i><i></i><i></i><i></i><i></i></span>
-            <span class="pb-memText">It only learns <b>more</b> — never resets.</span>
+
+          <div class="fy-panel">
+            <span class="fy-label"><span class="d"></span>It shows you</span>
+            <div class="fy-shows">
+              <div class="fy-future">
+                <div class="fy-tile sm"><span class="fy-tile-tag">Front</span><span class="fy-glyph" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="8.5" cy="9.5" r="1.7"/><path d="M4 18l5-5 4 3 3-3 4 4"/></svg></span><span class="fy-tile-ph">Front · future self</span><span class="fy-tile-sub">or browse files</span></div>
+                <div class="fy-tile sm"><span class="fy-tile-tag">Side</span><span class="fy-glyph" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="8.5" cy="9.5" r="1.7"/><path d="M4 18l5-5 4 3 3-3 4 4"/></svg></span><span class="fy-tile-ph">Side · future self</span><span class="fy-tile-sub">or browse files</span></div>
+              </div>
+              <div class="fy-shows-body">
+                <p class="fy-mini big">The version you could become.</p>
+                <p class="fy-cap"><span class="fy-lock" aria-hidden="true">⬡</span> <b>Identity-locked</b> — your face, not a fantasy.</p>
+              </div>
+            </div>
           </div>
-          <div class="pb-learned"><span class="chip" id="pbLearned"></span></div>
         </div>
       </div>
 
-      <p class="pb-closing reveal"><span class="grey">Answers are everywhere now — every app, every chatbot, the same ten tips.</span> <span class="ink">Fyon is the opposite: not a conversation you open, but a place that reads your face, holds your history, knows exactly where you are, and moves you toward who you want to be — week after week. You're not behind. You've just never been seen.</span></p>
+      <p class="pb-closing reveal"><span class="grey">A general assistant answers your question and forgets you.</span> <span class="ink">Fyon holds your becoming.</span></p>
     </div>
   </section>
 
@@ -504,7 +533,7 @@
     </div>
   </div>
 
-  <script src="site.js?v=32" defer></script>
+  <script src="site.js?v=33" defer></script>
 
   <!-- CTA wiring — referral capture + waitlist/early-access + partner links.
        The product app isn't live yet, so the product CTAs DO NOT touch Stripe.

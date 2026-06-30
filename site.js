@@ -78,43 +78,47 @@
      ============================================================ */
   (function problem(){
     var chat=document.getElementById('pbChat'); if(!chat) return;
-    var note=document.getElementById('pbNote'), memTag=document.getElementById('pbMemTag'),
-        memDots=document.getElementById('pbMemDots'), learned=document.getElementById('pbLearned'),
-        fails=document.querySelectorAll('.pb-fail');
+    var fails=document.querySelectorAll('.pb-fail');
     var QUESTION="how do i become more attractive and confident?";
     var ANSWER=["Work on grooming and posture.","Keep a consistent skincare routine.","Build confidence with small daily wins.","Stand tall in social situations.","Dress for your body type and smile more."];
-    var FACTS=[{t:"evenings are when your routine slips",tab:"History"},{t:"you want to feel it, not just look it",tab:"Goals"},{t:"redness \u2192 azelaic acid 10%",tab:"Face"},{t:"social confidence is the real goal",tab:"Goals"},{t:"week 3: posture is improving",tab:"Body"},{t:"you restart your plan at 11pm",tab:"History"}];
     function setFail(k,on){ fails.forEach(function(f){ if(f.dataset.k===k) f.classList.toggle('hot',on); }); }
     function clearFails(){ fails.forEach(function(f){ f.classList.remove('hot'); }); }
     function addBubble(cls){ var b=document.createElement('div'); b.className='bubble '+cls; chat.appendChild(b); return b; }
     async function typeInto(el2,text,speed){ if(prefersReduced){ el2.textContent=text; return; } el2.innerHTML=''; var caret=document.createElement('span'); caret.className='caret'; el2.appendChild(caret); for(var i=0;i<text.length;i++){ caret.insertAdjacentText('beforebegin',text[i]); await sleep(speed);} caret.remove(); }
     async function fillProgress(inner,dur){ if(prefersReduced){ inner.style.width='100%'; return; } var steps=18; for(var i=1;i<=steps;i++){ inner.style.width=Math.round(i/steps*100)+'%'; await sleep(dur/steps);} }
-    function litTab(name){ var arr=[].slice.call(document.querySelectorAll('.pb-tab')); var t=arr.filter(function(x){ return x.textContent.trim()===name; })[0]; if(t){ t.classList.add('lit'); setTimeout(function(){ t.classList.remove('lit'); },2200);} }
-    function reopenFile(){ var label=document.querySelector('.pb-fileLabel'), tabs=document.querySelectorAll('.pb-tab'); if(label){ label.style.opacity=0; label.style.transform='translateY(6px)'; } tabs.forEach(function(t){ t.classList.remove('in'); }); void chat.offsetWidth; setTimeout(function(){ if(label){ label.style.opacity=1; label.style.transform='none'; } },30); tabs.forEach(function(t,i){ setTimeout(function(){ t.classList.add('in'); },70+i*55); }); }
-    var session=4, dotsOn=3, factIdx=0;
-    function revealRight(){ var tabs=document.querySelectorAll('.pb-tab'), points=document.querySelectorAll('.pb-point'), dots=memDots.children;
-      tabs.forEach(function(t,i){ setTimeout(function(){ t.classList.add('in'); },120*i); });
-      points.forEach(function(p,i){ setTimeout(function(){ p.classList.add('in'); },700+220*i); });
-      for(var i=0;i<dotsOn;i++) dots[i].classList.add('on'); dots[dotsOn-1].classList.add('pulse'); }
-    function growMemory(){ var dots=memDots.children; if(session<9){ session++; } memTag.textContent='Knows you \u00b7 '+session;
-      if(dotsOn<dots.length){ dots[dotsOn-1].classList.remove('pulse'); dots[dotsOn].classList.add('on'); dotsOn++; dots[dotsOn-1].classList.add('pulse'); }
-      var f=FACTS[factIdx%FACTS.length]; factIdx++; litTab(f.tab); learned.classList.remove('show');
-      setTimeout(function(){ learned.textContent='remembered: '+f.t; learned.classList.add('show'); },220); }
-    async function leftCycle(reopen){ clearFails(); chat.classList.remove('wipe'); chat.innerHTML=''; if(reopen) reopenFile();
+    // RIGHT card \u2014 reveal the three panels with a spring stagger; within each
+    // panel, its chips / tabs / tiles / memory line pop in one after another.
+    function panelBits(p){ return [].slice.call(p.querySelectorAll('.fy-chip, .pb-tab, .fy-tile, .fy-remember')); }
+    function revealRight(){
+      var panels=[].slice.call(document.querySelectorAll('.pb-card.right .fy-panel'));
+      panels.forEach(function(p,i){ setTimeout(function(){
+        p.classList.add('in');
+        var bits=panelBits(p);
+        bits.forEach(function(el,j){ setTimeout(function(){ el.classList.add('in'); }, 150+j*85); });
+        var lit=p.querySelector('.pb-tab[data-lit]');
+        if(lit) setTimeout(function(){ lit.classList.add('lit'); }, 150+bits.length*85+200);
+      }, 220+i*300); });
+    }
+    function revealRightInstant(){
+      [].slice.call(document.querySelectorAll('.pb-card.right .fy-panel')).forEach(function(p){ p.classList.add('in'); panelBits(p).forEach(function(el){ el.classList.add('in'); }); });
+      var lit=document.querySelector('.pb-card.right .pb-tab[data-lit]'); if(lit) lit.classList.add('lit');
+    }
+    async function leftCycle(){ clearFails(); chat.innerHTML='';
       var att=document.createElement('div'); att.className='attach'; att.innerHTML='<div class="thumb"><span class="cam">IMG</span></div><div class="meta"><div class="fname">selfie.jpg <span class="check">\u2713</span></div><div class="bar"><i></i></div><div class="state">uploading\u2026</div></div>'; chat.appendChild(att);
       await fillProgress(att.querySelector('.bar i'),820); att.classList.add('done'); att.querySelector('.state').textContent='uploaded \u00b7 2.1 MB'; await sleep(520);
       setFail('face',true); var u=addBubble('user'); await typeInto(u,QUESTION,26); await sleep(420);
       var typing=document.createElement('div'); typing.className='typing'; typing.innerHTML='<i></i><i></i><i></i>'; chat.appendChild(typing); await sleep(820); typing.remove();
-      setFail('talk',true); att.classList.add('ignored'); att.querySelector('.state').textContent="doesn't read your face";
+      setFail('talk',true); att.classList.add('ignored'); att.querySelector('.state').textContent="saw the image — didn't read your face";
       for(var i=0;i<ANSWER.length;i++){ var a=addBubble('ai'); a.textContent=ANSWER[i]; if(i>=2){ setFail('wall',true); var ai=chat.querySelectorAll('.bubble.ai'); if(ai[i-2]) ai[i-2].classList.add('fading'); } await sleep(600); }
-      await sleep(680); setFail('forget',true); note.classList.add('show'); growMemory(); await sleep(2900);
-      note.classList.remove('show'); }   // leave the conversation on screen — the story stays
+      await sleep(680); setFail('forget',true); }
     var startedP=false;
-    var pObs=new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting && !startedP){ startedP=true; run(); } }); },{threshold:.25});
-    { var pbSec=document.getElementById('contrast')||document.getElementById('why'); if(pbSec) pObs.observe(pbSec); }
-    async function run(){ revealRight();
-      if(prefersReduced){ var att=document.createElement('div'); att.className='attach done'; att.innerHTML='<div class="thumb"><span class="cam">IMG</span></div><div class="meta"><div class="fname">selfie.jpg <span class="check">\u2713</span></div><div class="state">uploaded \u00b7 2.1 MB</div></div>'; chat.appendChild(att); var u=addBubble('user'); u.textContent=QUESTION; ANSWER.forEach(function(t){ var a=addBubble('ai'); a.textContent=t; }); note.classList.add('show'); return; }
-      await sleep(500); await leftCycle(false); }   // play the story once, then it stays
+    var pObs=new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting && !startedP){ startedP=true; run(); } }); },{threshold:.2});
+    { var pbSec=document.getElementById('why'); if(pbSec) pObs.observe(pbSec); }
+    async function run(){
+      if(prefersReduced){ revealRightInstant();
+        var att=document.createElement('div'); att.className='attach done ignored'; att.innerHTML='<div class="thumb"><span class="cam">IMG</span></div><div class="meta"><div class="fname">selfie.jpg <span class="check">\u2713</span></div><div class="state">saw the image \u2014 didn\'t read your face</div></div>'; chat.appendChild(att);
+        var u=addBubble('user'); u.textContent=QUESTION; ANSWER.forEach(function(t){ var a=addBubble('ai'); a.textContent=t; }); return; }
+      revealRight(); await sleep(500); await leftCycle(); }   // play once, then it stays
   })();
 
   /* ============================================================

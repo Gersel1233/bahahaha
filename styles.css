@@ -188,6 +188,70 @@ a{ color:inherit; text-decoration:none; }
 .pb-closing{ text-align:center; margin:64px auto 0; max-width:880px; font-family:var(--serif); font-size:clamp(24px,3.2vw,36px); line-height:1.3; }
 .pb-closing .grey{ color:var(--ink-faint); } .pb-closing .ink{ color:var(--ink); }
 
+/* ---- redesigned Fyon card (right): reads you · knows you · shows you ---- */
+.pb-grid{ align-items:start; }            /* top-align: the two cards size to content */
+.pb-card{ height:auto; }                  /* override the old fixed height */
+.pb-card.left{ min-height:600px; }        /* keep the chat a tall, settled column */
+.pb-card.right{ gap:13px; }
+.pb-card.right .pb-head{ margin-bottom:5px; }
+
+.fy-panel{ background:rgba(255,255,255,.5); border-radius:18px; padding:15px 16px 17px;
+  box-shadow:inset 0 0 0 1px rgba(31,133,122,.13), inset 0 1px 1px rgba(255,255,255,.7), 0 2px 8px -5px rgba(70,45,25,.18);
+  opacity:0; transform:translateY(16px); transition:opacity .55s ease, transform .7s cubic-bezier(.34,1.24,.45,1); }
+.fy-panel.in{ opacity:1; transform:none; }
+.fy-label{ display:inline-flex; align-items:center; gap:8px; font-family:var(--mono); font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--terra-deep); font-weight:600; margin-bottom:13px; }
+.fy-label .d{ width:6px; height:6px; border-radius:50%; background:var(--terra); }
+
+/* illustrative upload-look tiles (static mock — not a live uploader) */
+.fy-reads{ display:flex; gap:16px; align-items:stretch; }
+.fy-tile{ position:relative; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; gap:3px; text-align:center;
+  border-radius:14px; padding:32px 12px 13px; background:rgba(247,238,228,.6); border:1.5px dashed rgba(33,29,24,.2);
+  opacity:0; transform:translateY(10px) scale(.97); transition:opacity .55s ease, transform .6s cubic-bezier(.34,1.3,.5,1); }
+.fy-tile.in{ opacity:1; transform:none; }
+.fy-reads .fy-tile{ flex:none; width:122px; }
+.fy-tile.sm{ flex:1; padding:28px 8px 12px; }
+.fy-tile-tag{ position:absolute; top:9px; left:9px; font-family:var(--mono); font-size:8.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-soft); background:rgba(33,29,24,.07); padding:3px 7px; border-radius:6px; }
+.fy-glyph{ line-height:0; margin-bottom:5px; }
+.fy-glyph svg{ width:26px; height:26px; }
+.fy-glyph svg rect,.fy-glyph svg path{ fill:none; stroke:var(--ink-faint); stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; }
+.fy-glyph svg circle{ fill:var(--ink-faint); stroke:none; }
+.fy-tile-ph{ font-size:12.5px; color:var(--ink-soft); font-weight:500; line-height:1.25; }
+.fy-tile-sub{ font-size:11px; color:var(--terra); text-decoration:underline; text-underline-offset:2px; }
+
+.fy-reads-body{ flex:1; display:flex; flex-direction:column; gap:9px; min-width:0; }
+.fy-mini{ font-size:13.5px; color:var(--ink-soft); margin:0; }
+.fy-mini.big{ font-family:var(--serif); font-size:clamp(19px,2.4vw,23px); color:var(--ink); line-height:1.2; margin:0 0 8px; }
+.fy-chips{ display:flex; flex-wrap:wrap; gap:8px; }
+.fy-chip{ font-size:13px; color:var(--ink); padding:6px 13px; border-radius:999px; background:rgba(255,255,255,.72); box-shadow:inset 0 0 0 1px rgba(31,133,122,.22);
+  opacity:0; transform:translateY(8px) scale(.95); transition:opacity .5s cubic-bezier(.2,.8,.2,1), transform .5s cubic-bezier(.34,1.35,.5,1); }
+.fy-chip.in{ opacity:1; transform:none; }
+.fy-cap{ font-family:var(--serif); font-style:italic; font-size:14px; color:var(--terra-deep); margin:1px 0 0; }
+.fy-cap em{ font-style:italic; } .fy-cap b{ font-style:normal; font-weight:600; }
+.fy-lock{ font-style:normal; color:var(--terra); }
+
+.fy-tabs{ margin-bottom:13px; }
+.fy-remember{ font-size:14.5px; line-height:1.5; color:var(--ink-soft); margin:0;
+  opacity:0; transform:translateY(8px); transition:opacity .5s ease, transform .55s cubic-bezier(.2,.9,.3,1); }
+.fy-remember.in{ opacity:1; transform:none; }
+.fy-pill{ font-family:var(--mono); font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--terra-deep); background:rgba(31,133,122,.12); padding:3px 8px; border-radius:6px; margin-right:8px; white-space:nowrap; }
+
+.fy-shows{ display:flex; gap:18px; align-items:center; }
+.fy-future{ display:flex; gap:11px; flex:none; }
+.fy-future .fy-tile{ width:104px; }
+.fy-shows-body{ flex:1; min-width:0; }
+
+@media(max-width:900px){
+  .pb-grid{ grid-template-columns:1fr; }
+  .pb-card.left{ min-height:0; }
+}
+@media(max-width:520px){
+  .fy-reads,.fy-shows{ flex-direction:column; align-items:stretch; }
+  .fy-reads .fy-tile{ width:auto; }
+}
+@media (prefers-reduced-motion: reduce){
+  .fy-panel,.fy-tile,.fy-chip,.fy-remember{ opacity:1; transform:none; transition:none; }
+}
+
 /* ============================================================
    WHAT IT DOES — prefix wd-
    ============================================================ */
