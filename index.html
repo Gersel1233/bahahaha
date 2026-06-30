@@ -91,7 +91,7 @@
   <div id="fyon-hero">
     <header id="top" class="fh-hero" data-screen-label="hero">
       <span class="fh-badge"><span class="fh-dot"></span>Fyon Intelligence · by Lesreg</span>
-      <h1 id="headline">Everything else rates you.</h1>
+      <h1 id="headline">Everything else rates you and walks away.</h1>
       <p class="fh-sub" id="sub"></p>
       <div class="fh-cta">
         <button class="fh-btn" data-cta="waitlist">Try Fyon</button>
@@ -116,9 +116,9 @@
     /* ---------- type-stream headline + sub ---------- */
     (function(){
       var h1=document.getElementById('headline'), sub=document.getElementById('sub');
-      var segs=[ {t:"Everything else rates you."}, {br:true},
-                 {t:"Fyon uses intelligence to make sure you "}, {t:"get there.", cls:"fh-knows"} ];
-      var subHTML='You’re not behind — you’re <b>unseen</b>. Fyon learns who you actually are, then moves you, week by week, toward who you already could be.';
+      var segs=[ {t:"Everything else rates you and walks away."}, {br:true},
+                 {t:"Fyon "}, {t:"shows you.", cls:"fh-knows"} ];
+      var subHTML='Upload two photos and meet your <b>actual future self</b>. Then the intelligence that knows you creates the plan, adapts it as you change, and makes sure you actually get there.';
       function full(){ h1.innerHTML=segs.map(function(s){ return s.br?'<br>':(s.cls?'<span class="'+s.cls+'">'+s.t+'</span>':s.t); }).join(''); sub.innerHTML=subHTML; }
       if(prefersReduced){ full(); return; }
       h1.innerHTML=''; sub.innerHTML='';
