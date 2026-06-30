@@ -105,7 +105,7 @@
       await fillProgress(att.querySelector('.bar i'),820); att.classList.add('done'); att.querySelector('.state').textContent='uploaded \u00b7 2.1 MB'; await sleep(520);
       setFail('face',true); var u=addBubble('user'); await typeInto(u,QUESTION,26); await sleep(420);
       var typing=document.createElement('div'); typing.className='typing'; typing.innerHTML='<i></i><i></i><i></i>'; chat.appendChild(typing); await sleep(820); typing.remove();
-      setFail('talk',true); att.classList.add('ignored'); att.querySelector('.state').textContent="couldn't read this image";
+      setFail('talk',true); att.classList.add('ignored'); att.querySelector('.state').textContent="doesn't read your face";
       for(var i=0;i<ANSWER.length;i++){ var a=addBubble('ai'); a.textContent=ANSWER[i]; if(i>=2){ setFail('wall',true); var ai=chat.querySelectorAll('.bubble.ai'); if(ai[i-2]) ai[i-2].classList.add('fading'); } await sleep(600); }
       await sleep(680); setFail('forget',true); note.classList.add('show'); growMemory(); await sleep(2900);
       note.classList.remove('show'); }   // leave the conversation on screen — the story stays
@@ -181,7 +181,7 @@
     var h=document.getElementById('whyHead'), sub=document.getElementById('whySub');
     if(!h||!sub) return;
     // segments to type — final one is the spruce-accent <em>
-    var segs=[{t:"The most powerful AI ever made "},{t:"still doesn't know you.",em:true}];
+    var segs=[{t:"A general assistant answers everyone. "},{t:"Fyon is built around one person — you.",em:true}];
     if(prefersReduced) return;                 // markup already holds the final text
     h.innerHTML='';                            // below the fold — cleared invisibly
     sub.style.opacity='0'; sub.style.transform='translateY(12px)';
