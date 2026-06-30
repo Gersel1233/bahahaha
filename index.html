@@ -5,8 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Fyon by Lesreg — A self-improvement intelligence that knows you</title>
 <link rel="preload" as="font" type="font/woff2" href="fonts/newsreader-latin-normal.woff2" crossorigin />
-<link rel="stylesheet" href="styles.css?v=30" />
-<script src="image-slot.js?v=30" defer></script>
+<link rel="preload" as="font" type="font/woff2" href="fonts/sora-latin-600.woff2" crossorigin />
+<link rel="stylesheet" href="styles.css?v=31" />
+<script src="image-slot.js?v=31" defer></script>
 <style id="fh-style">
 /* ===== Ported Fyon hero + scroll reveal — fully scoped under #fyon-hero so it
    can't restyle the rest of the site. Colliding class names are prefixed fh-,
@@ -43,25 +44,32 @@
 </head>
 <body>
 
-  <!-- ===================== CINEMATIC INTRO ===================== -->
-  <div id="fyon-intro" role="status" aria-label="Lesreg introduces Fyon">
-    <div class="intro-inner">
-      <p class="intro-pre">Lesreg introducing</p>
-      <div class="intro-stack">
-        <h1 class="intro-word">Fyon</h1>
-        <span class="intro-mark" aria-hidden="true">
-          <svg viewBox="0 0 32 32">
-            <defs><linearGradient id="flMark" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2f9e91"/><stop offset="1" stop-color="#166b62"/></linearGradient></defs>
-            <rect x="1" y="1" width="30" height="30" rx="9" fill="url(#flMark)"/>
-            <path class="flc flc-1" d="M8.5 16.5 L16 10 L23.5 16.5" fill="none" stroke="#f7ece0" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
-            <path class="flc flc-2" d="M8.5 22.5 L16 16 L23.5 22.5" fill="none" stroke="#f7ece0" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/>
-          </svg>
+  <!-- ===================== CINEMATIC INTRO (Orbit) ===================== -->
+  <div id="lg-intro" role="status" aria-label="Lesreg">
+    <div class="lgi-stage" aria-hidden="true">
+      <!-- 1 · four ink blocks rush in + collide, teal impact ring -->
+      <div class="lgi-collide">
+        <span class="lgi-blk n"></span><span class="lgi-blk e"></span>
+        <span class="lgi-blk s"></span><span class="lgi-blk w"></span>
+        <span class="lgi-ring"></span>
+      </div>
+      <!-- 2 + 3 · GERSEL assembles, card-flips to LESREG; 4 · collapses -->
+      <div class="lgi-word3">
+        <div class="lgi-front"><span>G</span><span>E</span><span>R</span><span>S</span><span>E</span><span>L</span></div>
+        <div class="lgi-back">LESREG</div>
+      </div>
+      <!-- 4 · Orbit mark + wordmark lockup -->
+      <div class="lgi-lockup">
+        <span class="lgi-orbit">
+          <span class="o n"></span><span class="o e"></span><span class="o s"></span><span class="o w"></span>
+          <span class="o core"></span>
         </span>
+        <span class="lgi-word">Lesreg</span>
       </div>
     </div>
-    <span class="intro-skip">tap to skip</span>
+    <span class="lgi-skip">tap to skip</span>
   </div>
-  <script src="loader.js?v=30"></script>
+  <script src="loader.js?v=31"></script>
 
   <!-- ===================== NAV ===================== -->
   <nav class="nav" data-screen-label="nav">
@@ -101,7 +109,7 @@
       var ran=false, go=function(){ if(ran) return; ran=true; cb(); };
       if(document.documentElement.classList.contains('fyon-loaded')) return go();
       var t=setInterval(function(){ if(document.documentElement.classList.contains('fyon-loaded')){ clearInterval(t); go(); } }, 80);
-      setTimeout(function(){ clearInterval(t); go(); }, 4500); // safety
+      setTimeout(function(){ clearInterval(t); go(); }, 9000); // safety
     }
 
     /* ---------- type-stream headline + sub ---------- */
@@ -652,7 +660,7 @@
     </div>
   </div>
 
-  <script src="site.js?v=30" defer></script>
+  <script src="site.js?v=31" defer></script>
 
   <!-- CTA wiring — referral capture + waitlist/early-access + partner links.
        The product app isn't live yet, so the product CTAs DO NOT touch Stripe.
@@ -700,7 +708,8 @@
       var form=e.target, btn=document.getElementById('wl-submit'), msg=document.getElementById('wl-msg');
       var name=(form.name.value||'').trim(), email=(form.email.value||'').trim(), use_case=(form.use_case.value||'').trim();
       if(!email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){ msg.className='wl-msg err'; msg.textContent='Please enter a valid email.'; return; }
-      var old=btn.textContent; btn.disabled=true; btn.textContent='Joining…'; msg.textContent=''; msg.className='wl-msg';
+      var old=btn.innerHTML; btn.disabled=true; msg.textContent=''; msg.className='wl-msg';
+      btn.innerHTML='<span class="orbit-spin dark" style="--size:18px;margin-right:9px" aria-hidden="true"><i class="os-core"></i><i class="os-sat n"></i><i class="os-sat e"></i><i class="os-sat s"></i><i class="os-sat w"></i></span>Joining…';
       try{
         var res=await fetch(WAITLIST_FN,{
           method:'POST',
@@ -715,7 +724,7 @@
           msg.className='wl-msg err'; msg.textContent='Too many tries — give it a minute and retry.';
         } else { throw new Error((data&&data.error)||('HTTP '+res.status)); }
       }catch(err){ msg.className='wl-msg err'; msg.textContent='Could not join right now: '+(err.message||err); }
-      btn.disabled=false; btn.textContent=old;
+      btn.disabled=false; btn.innerHTML=old;
     }
 
     document.addEventListener('DOMContentLoaded',function(){
