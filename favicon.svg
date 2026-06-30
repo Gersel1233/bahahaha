@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Lesreg "Orbit" mark: teal core + 4 satellites. Satellites adapt to the
+       browser tab theme (ink on light, cream on dark); core stays teal. -->
+  <style>
+    .sat{ fill:#18181b; }
+    @media (prefers-color-scheme: dark){ .sat{ fill:#f6f6f2; } }
+  </style>
+  <rect class="sat" x="42" y="13" width="16" height="16" rx="5"/>
+  <rect class="sat" x="71" y="42" width="16" height="16" rx="5"/>
+  <rect class="sat" x="42" y="71" width="16" height="16" rx="5"/>
+  <rect class="sat" x="13" y="42" width="16" height="16" rx="5"/>
+  <rect x="42" y="42" width="16" height="16" rx="5" fill="#0f9b8e"/>
+</svg>
