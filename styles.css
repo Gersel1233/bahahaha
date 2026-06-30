@@ -438,10 +438,11 @@ body.bn-fs-open .nav{ display:none; }   /* the map owns the screen */
   background:radial-gradient(58% 48% at 50% 44%, rgba(15,155,142,.10) 0%, rgba(15,155,142,0) 60%),
     radial-gradient(120% 80% at 50% -8%, var(--peach) 0%, rgba(247,230,211,0) 46%),
     linear-gradient(172deg, var(--paper-1) 0%, var(--paper-2) 58%, #e6dccb 100%);
-  transition:opacity .9s cubic-bezier(.4,0,.2,1), visibility .9s, transform .9s cubic-bezier(.4,0,.2,1); }
+  transition:opacity .5s cubic-bezier(.4,0,.2,1), visibility .5s, transform .5s cubic-bezier(.4,0,.2,1); }
 /* ENDING — splash lifts slightly and fades; site fades in underneath. */
 html.fyon-loaded #lg-intro{ opacity:0; visibility:hidden; pointer-events:none; transform:translateY(-2.2%) scale(1.015); }
-html.lg-instant #lg-intro{ display:none; }              /* reduced-motion / repeat visit */
+html.lg-rush #lg-intro{ transition-duration:.3s; }      /* user tapped to skip — snap it */
+html.lg-instant #lg-intro{ display:none; }              /* reduced-motion */
 
 .lgi-stage{ position:relative; display:grid; place-items:center; perspective:1100px; }
 .lgi-collide,.lgi-word3,.lgi-lockup{ grid-area:1/1; }
