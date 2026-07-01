@@ -55,10 +55,11 @@ a{ color:inherit; text-decoration:none; }
 @media(max-width:680px){ .s-inner{ padding:74px 22px; } }
 
 /* reveal on scroll */
-.reveal{ opacity:0; transform:translateY(26px); transition:opacity .8s cubic-bezier(.2,.8,.2,1), transform .8s cubic-bezier(.2,.8,.2,1); }
-.reveal.in{ opacity:1; transform:none; }
+.reveal{ opacity:0; transform:translateY(18px); filter:blur(7px);
+  transition:opacity .75s ease, transform .95s cubic-bezier(.16,1,.3,1), filter .75s ease; }
+.reveal.in{ opacity:1; transform:none; filter:none; }
 .reveal.d1{ transition-delay:.08s; } .reveal.d2{ transition-delay:.16s; } .reveal.d3{ transition-delay:.24s; } .reveal.d4{ transition-delay:.32s; }
-@media (prefers-reduced-motion: reduce){ .reveal{ opacity:1 !important; transform:none !important; } }
+@media (prefers-reduced-motion: reduce){ .reveal{ opacity:1 !important; transform:none !important; filter:none !important; } }
 
 /* ---------- glass buttons ---------- */
 .btn{ position:relative; isolation:isolate; display:inline-flex; align-items:center; justify-content:center; gap:.5em;
@@ -388,28 +389,7 @@ body.bn-fs-open .nav{ display:none; }   /* the map owns the screen */
 /* partner CTA row */
 .pt-cta{ display:flex; align-items:center; gap:24px; flex-wrap:wrap; margin-top:0; }
 
-/* ---- partner: benefits strip ---- */
-.pt-benefits{ display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:30px; }
-@media(max-width:840px){ .pt-benefits{ grid-template-columns:1fr 1fr; } }
-@media(max-width:460px){ .pt-benefits{ grid-template-columns:1fr; } }
-.pt-benefit{ border-radius:18px; padding:22px 20px; display:flex; flex-direction:column; gap:5px;
-  transition:transform .35s cubic-bezier(.2,.8,.2,1); }
-.pt-benefit:hover{ transform:translateY(-4px); }
-.pt-benefit .pb-ic{ width:38px; height:38px; display:grid; place-items:center; margin-bottom:8px; border-radius:11px;
-  font-size:18px; font-weight:600; color:var(--terra); background:rgba(31,133,122,.1); box-shadow:inset 0 0 0 1px rgba(31,133,122,.22); }
-.pt-benefit b{ font-family:var(--serif); font-weight:500; font-size:19px; letter-spacing:-.01em; color:var(--ink); }
-.pt-benefit span{ font-size:13.5px; line-height:1.5; color:var(--ink-soft); }
 
-/* ---- partner: steps get a little hover lift ---- */
-.pt-steps{ margin-bottom:46px; }
-.pt-steps .num-card{ transition:transform .35s cubic-bezier(.2,.8,.2,1); }
-.pt-steps .num-card:hover{ transform:translateY(-5px); }
-
-/* ---- partner: final liquid-glass CTA band ---- */
-.pt-final{ margin-top:40px; border-radius:24px; padding:clamp(24px,3vw,40px);
-  display:flex; align-items:center; justify-content:space-between; gap:26px; flex-wrap:wrap; }
-.pt-final .ptf-copy h3{ font-family:var(--serif); font-weight:500; font-size:clamp(22px,2.7vw,32px); line-height:1.08; letter-spacing:-.01em; margin:0 0 7px; color:var(--ink); }
-.pt-final .ptf-copy p{ font-size:14.5px; color:var(--ink-soft); margin:0; }
 
 /* ============================================================
    PARTNER — earnings showpiece
@@ -422,11 +402,6 @@ body.bn-fs-open .nav{ display:none; }   /* the map owns the screen */
 .pt-panel h3{ font-family:var(--serif); font-weight:500; font-size:clamp(26px,3vw,36px); line-height:1.1; letter-spacing:-.01em; color:#f6efe6; margin:0 0 16px; }
 .pt-panel h3 em{ font-style:italic; color:#9fd8cf; }
 .pt-panel .pp{ font-size:16px; line-height:1.6; color:rgba(244,237,225,.7); margin:0 0 24px; max-width:38ch; }
-.pt-figures{ display:flex; gap:14px; flex-wrap:wrap; }
-.pt-fig{ padding:14px 18px; border-radius:14px; background:rgba(255,255,255,.05); box-shadow:inset 0 0 0 1px rgba(255,255,255,.1); }
-.pt-fig b{ display:block; font-family:var(--ui); font-weight:700; font-size:26px; letter-spacing:-.015em; color:#f6efe6; }
-.pt-fig b .rng{ color:var(--terra); }
-.pt-fig span{ font-family:var(--mono); font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; color:rgba(244,237,225,.5); }
 
 /* recurring chart */
 .pt-chart{ position:relative; border-radius:18px; padding:24px 22px 18px; background:rgba(255,255,255,.04); box-shadow:inset 0 0 0 1px rgba(255,255,255,.08); }
@@ -445,17 +420,6 @@ body.bn-fs-open .nav{ display:none; }   /* the map owns the screen */
 .pt-chart-foot{ margin-top:12px; display:flex; align-items:center; justify-content:space-between; font-family:var(--mono); font-size:10px; letter-spacing:.06em; text-transform:uppercase; color:rgba(244,237,225,.4); }
 @media (prefers-reduced-motion: reduce){ .pt-stroke{ stroke-dashoffset:0; } .pt-fill,.pt-dot,.pt-dot-glow{ opacity:1; transform:none; } }
 
-/* tier ladder */
-.pt-tier-head{ display:flex; align-items:baseline; justify-content:space-between; gap:16px; flex-wrap:wrap; margin:0 0 18px; }
-.pt-tier-head h3{ font-family:var(--serif); font-weight:500; font-size:clamp(22px,2.6vw,30px); margin:0; letter-spacing:-.01em; }
-.pt-tier-head span{ font-size:15px; color:var(--ink-soft); }
-.pt-ladder{ display:flex; align-items:flex-end; gap:8px; height:110px; padding:18px 20px; border-radius:18px; margin-bottom:40px;
-  background:linear-gradient(160deg, rgba(247,237,225,.6), rgba(238,231,220,.45)); box-shadow:inset 0 1px 1px rgba(255,255,255,.8), inset 0 0 0 1px rgba(33,29,24,.06); }
-.pt-step{ flex:1; position:relative; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; gap:8px; height:100%; }
-.pt-step .bar2{ width:100%; border-radius:6px 6px 0 0; background:linear-gradient(to top, rgba(31,133,122,.3), rgba(31,133,122,.55)); }
-.pt-step.hl .bar2{ background:linear-gradient(to top, var(--terra-deep), #2f9e91); box-shadow:0 6px 16px -6px rgba(31,133,122,.6); }
-.pt-step .pct{ font-family:var(--mono); font-size:11px; font-weight:600; color:var(--ink-soft); } .pt-step.hl .pct{ color:var(--terra-deep); }
-.pt-step .you{ position:absolute; top:-22px; font-family:var(--mono); font-size:9px; letter-spacing:.1em; text-transform:uppercase; color:var(--terra); white-space:nowrap; }
 
 /* ============================================================
    FINAL CTA
@@ -727,17 +691,31 @@ html.fyon-loaded .fyon-reveal{ opacity:1; transform:none; }
 .fy-lock.pulse{ animation:fyLock 1.5s ease .1s 2; }
 @keyframes fyLock{ 0%,100%{ transform:scale(1); } 28%{ transform:scale(1.4); } }
 
-/* ambient node twinkle — only while the card is on screen */
-.pb-card.right.fy-live .cf.in .n{ animation:cfTw 3.4s ease-in-out infinite; }
-.pb-card.right.fy-live .cf.in .n:nth-child(3n){ animation-delay:.9s; }
-.pb-card.right.fy-live .cf.in .n:nth-child(3n+1){ animation-delay:1.8s; }
-.pb-card.right.fy-live .cf.in .n.eye{ animation:none; }
-@keyframes cfTw{ 0%,100%{ opacity:.55; } 50%{ opacity:1; } }
-
 @media (prefers-reduced-motion: reduce){
   .cf .e{ stroke-dashoffset:0; transition:none; }
   .cf .n{ opacity:.72; transition:none; } .cf .n.eye{ opacity:.95; }
   .fy-scan{ display:none; }
-  .pb-card.right.fy-live .cf.in .n{ animation:none; }
   .fy-lock.pulse{ animation:none; }
 }
+
+/* ============================================================
+   PRO PASS — compact partner facts, primary-button shine
+   ============================================================ */
+.pt-facts{ display:flex; flex-direction:column; gap:12px; margin:4px 0 26px; }
+.pt-fact{ display:flex; align-items:baseline; gap:16px; padding:13px 17px; border-radius:14px;
+  background:rgba(255,255,255,.05); box-shadow:inset 0 0 0 1px rgba(255,255,255,.1); }
+.pt-fact b{ font-family:var(--ui); font-weight:700; font-size:18px; letter-spacing:-.01em; color:#f6efe6; white-space:nowrap; }
+.pt-fact span{ font-size:13.5px; line-height:1.5; color:rgba(244,237,225,.66); }
+.pt-panel .link-arrow{ color:#f6efe6; }
+.pt-note{ margin:26px 0 0; font-family:var(--mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-faint); }
+
+/* liquid-glass primary — shine sweep + soft accent ring on hover */
+.btn-primary{ overflow:hidden; }
+.btn-primary::after{ content:""; position:absolute; inset:0; border-radius:inherit; pointer-events:none; z-index:1;
+  background:linear-gradient(115deg, transparent 32%, rgba(255,255,255,.26) 46%, rgba(255,255,255,.48) 50%, rgba(255,255,255,.26) 54%, transparent 68%);
+  transform:translateX(-140%); transition:transform .9s cubic-bezier(.3,.7,.2,1); }
+.btn-primary:hover::after{ transform:translateX(140%); }
+.btn-primary:hover{ box-shadow:inset 0 1px 1px rgba(255,255,255,.95), inset 0 0 0 1px rgba(255,255,255,.45),
+  0 12px 26px -8px rgba(70,45,25,.45), 0 0 0 6px rgba(52,165,150,.12); }
+@media (prefers-reduced-motion: reduce){ .btn-primary::after{ display:none; } }
+@media(max-width:560px){ .pt-fact{ flex-direction:column; gap:3px; } }

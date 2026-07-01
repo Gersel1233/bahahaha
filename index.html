@@ -15,7 +15,7 @@
 <link rel="mask-icon" href="favicon.svg?v=1" color="#0f9b8e" />
 <link rel="preload" as="font" type="font/woff2" href="fonts/newsreader-latin-normal.woff2" crossorigin />
 <link rel="preload" as="font" type="font/woff2" href="fonts/sora-latin-600.woff2" crossorigin />
-<link rel="stylesheet" href="styles.css?v=36" />
+<link rel="stylesheet" href="styles.css?v=37" />
 <script src="image-slot.js?v=31" defer></script>
 <style id="fh-style">
 /* ===== Ported Fyon hero + scroll reveal — fully scoped under #fyon-hero so it
@@ -31,23 +31,43 @@
 #fyon-hero .fh-badge .fh-dot{ width:7px; height:7px; border-radius:50%; background:var(--terra); animation:fhPulseDot 2.4s ease-out infinite; }
 @keyframes fhPulseDot{ 0%{ box-shadow:0 0 0 0 rgba(31,133,122,.45);} 70%{ box-shadow:0 0 0 8px rgba(31,133,122,0);} 100%{ box-shadow:0 0 0 0 rgba(31,133,122,0);} }
 
-#fyon-hero h1{ font-family:var(--serif); font-weight:400; font-size:clamp(40px,6.6vw,82px); line-height:1.0; letter-spacing:-.028em; margin:0 0 26px; min-height:1.05em; color:var(--ink); }
+#fyon-hero h1{ font-family:var(--serif); font-weight:400; font-size:clamp(40px,6.6vw,78px); line-height:1.04; letter-spacing:-.028em; margin:0 0 26px; color:var(--ink); }
 #fyon-hero h1 .fh-knows{ font-style:italic; background:linear-gradient(96deg,#34a596,#1f857a 42%,#2b7b86); -webkit-background-clip:text; background-clip:text; color:transparent; }
-#fyon-hero .fh-caret{ display:inline-block; width:3px; height:.86em; background:var(--terra); vertical-align:-.06em; margin-left:3px; border-radius:2px; animation:fhBlink 1s steps(2) infinite; }
-@keyframes fhBlink{ 50%{ opacity:0; } }
+/* line-mask reveal — each line rises out of its own clip, softly staggered */
+#fyon-hero .hl-line{ display:block; overflow:hidden; padding-bottom:.10em; margin-bottom:-.10em; }
+#fyon-hero .hl-t{ display:inline-block; transform:translateY(118%); transition:transform 1.05s cubic-bezier(.16,1,.3,1) .15s; will-change:transform; }
+#fyon-hero .hl-line:nth-child(2) .hl-t{ transition-delay:.25s; }
+#fyon-hero .hl-line:nth-child(3) .hl-t{ transition-delay:.35s; }
+#fyon-hero .fh-badge, #fyon-hero .fh-sub, #fyon-hero .fh-cta{ opacity:0; transform:translateY(12px);
+  transition:opacity .8s ease, transform .9s cubic-bezier(.16,1,.3,1); }
+#fyon-hero .fh-badge{ transition-delay:.05s; }
+#fyon-hero .fh-sub{ transition-delay:.62s; }
+#fyon-hero .fh-cta{ transition-delay:.74s; }
+#fyon-hero .fh-hero.go .hl-t{ transform:translateY(0); }
+#fyon-hero .fh-hero.go .fh-badge, #fyon-hero .fh-hero.go .fh-sub, #fyon-hero .fh-hero.go .fh-cta{ opacity:1; transform:none; }
 #fyon-hero .fh-sub{ font-size:19px; line-height:1.62; color:var(--ink-soft); max-width:600px; margin:0 auto 32px; }
 #fyon-hero .fh-sub b{ color:var(--ink); font-weight:600; }
 #fyon-hero .fh-cta{ display:flex; align-items:center; justify-content:center; gap:24px; flex-wrap:wrap; }
-#fyon-hero .fh-btn{ border:0; border-radius:999px; padding:1.05em 2em; font:600 16px/1 var(--ui); color:#fff; cursor:pointer;
+#fyon-hero .fh-btn{ position:relative; overflow:hidden; border:0; border-radius:999px; padding:1.05em 1.9em; font:600 16px/1 var(--ui); color:#fff; cursor:pointer;
+  display:inline-flex; align-items:center; gap:9px;
   background:linear-gradient(158deg,#34a596,#13635a);
   box-shadow:inset 0 1px 1px rgba(214,245,239,.6), inset 0 0 0 1px rgba(150,222,211,.3), 0 14px 32px -12px rgba(15,90,82,.55);
-  transition:transform .3s cubic-bezier(.2,.85,.25,1); }
-#fyon-hero .fh-btn:hover{ transform:translateY(-2px) scale(1.03); }
+  transition:transform .3s cubic-bezier(.2,.85,.25,1), box-shadow .35s ease; }
+#fyon-hero .fh-btn .ar{ transition:transform .3s cubic-bezier(.2,.85,.25,1); }
+#fyon-hero .fh-btn:hover{ transform:translateY(-2px); box-shadow:inset 0 1px 1px rgba(214,245,239,.7), inset 0 0 0 1px rgba(150,222,211,.4), 0 16px 38px -12px rgba(15,90,82,.6), 0 0 0 6px rgba(52,165,150,.12); }
+#fyon-hero .fh-btn:hover .ar{ transform:translateX(3px); }
+#fyon-hero .fh-btn::after{ content:""; position:absolute; inset:0; border-radius:inherit; pointer-events:none;
+  background:linear-gradient(115deg, transparent 32%, rgba(255,255,255,.28) 46%, rgba(255,255,255,.5) 50%, rgba(255,255,255,.28) 54%, transparent 68%);
+  transform:translateX(-140%); transition:transform .9s cubic-bezier(.3,.7,.2,1); }
+#fyon-hero .fh-btn:hover::after{ transform:translateX(140%); }
 #fyon-hero .fh-link{ font-size:15.5px; font-weight:500; color:var(--ink); text-decoration:none; display:inline-flex; align-items:center; gap:8px; }
 #fyon-hero .fh-link .ar{ color:var(--terra); transition:transform .3s; } #fyon-hero .fh-link:hover .ar{ transform:translateX(4px); }
 
 @media (prefers-reduced-motion: reduce){
   #fyon-hero .fh-badge .fh-dot{ animation:none; }
+  #fyon-hero .hl-t{ transform:none; transition:none; }
+  #fyon-hero .fh-badge, #fyon-hero .fh-sub, #fyon-hero .fh-cta{ opacity:1; transform:none; transition:none; }
+  #fyon-hero .fh-btn::after{ display:none; }
 }
 </style>
 </head>
@@ -97,14 +117,18 @@
 
   <div class="fyon-reveal">
 
-  <!-- ===================== HERO + SCROLL REVEAL (ported) ===================== -->
+  <!-- ===================== HERO ===================== -->
   <div id="fyon-hero">
     <header id="top" class="fh-hero" data-screen-label="hero">
       <span class="fh-badge"><span class="fh-dot"></span>Fyon Intelligence · by Lesreg</span>
-      <h1 id="headline">Everything else rates you and walks away.</h1>
-      <p class="fh-sub" id="sub"></p>
+      <h1 id="headline">
+        <span class="hl-line"><span class="hl-t">Everything else rates you</span></span>
+        <span class="hl-line"><span class="hl-t">and walks away.</span></span>
+        <span class="hl-line"><span class="hl-t">Fyon <em class="fh-knows">shows you.</em></span></span>
+      </h1>
+      <p class="fh-sub">Upload two photos and meet your <b>actual future self</b>. Then the intelligence that knows you creates the plan, adapts it as you change, and makes sure you actually get there.</p>
       <div class="fh-cta">
-        <button class="fh-btn" data-cta="waitlist">Try Fyon</button>
+        <button class="fh-btn" data-cta="waitlist">Try Fyon <span class="ar">→</span></button>
         <a class="fh-link" href="#what">See how it works <span class="ar">→</span></a>
       </div>
     </header>
@@ -112,43 +136,13 @@
 
   <script>
   (function(){
-    var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    var sleep=function(ms){ return new Promise(function(r){ setTimeout(r,ms); }); };
-
-    // start the headline stream only once the loader has lifted, so it's seen
-    function whenRevealed(cb){
-      var ran=false, go=function(){ if(ran) return; ran=true; cb(); };
-      if(document.documentElement.classList.contains('fyon-loaded')) return go();
-      var t=setInterval(function(){ if(document.documentElement.classList.contains('fyon-loaded')){ clearInterval(t); go(); } }, 80);
-      setTimeout(function(){ clearInterval(t); go(); }, 9000); // safety
-    }
-
-    /* ---------- type-stream headline + sub ---------- */
-    (function(){
-      var h1=document.getElementById('headline'), sub=document.getElementById('sub');
-      var segs=[ {t:"Everything else rates you and walks away."}, {br:true},
-                 {t:"Fyon "}, {t:"shows you.", cls:"fh-knows"} ];
-      var subHTML='Upload two photos and meet your <b>actual future self</b>. Then the intelligence that knows you creates the plan, adapts it as you change, and makes sure you actually get there.';
-      function full(){ h1.innerHTML=segs.map(function(s){ return s.br?'<br>':(s.cls?'<span class="'+s.cls+'">'+s.t+'</span>':s.t); }).join(''); sub.innerHTML=subHTML; }
-      if(prefersReduced){ full(); return; }
-      h1.innerHTML=''; sub.innerHTML='';
-      var caret=document.createElement('span'); caret.className='fh-caret'; h1.appendChild(caret);
-      async function run(){
-        for(var i=0;i<segs.length;i++){ var s=segs[i];
-          if(s.br){ h1.insertBefore(document.createElement('br'), caret); await sleep(140); continue; }
-          var target=h1;
-          if(s.cls){ target=document.createElement('span'); target.className=s.cls; h1.insertBefore(target, caret); }
-          for(var c=0;c<s.t.length;c++){ var ch=s.t[c];
-            if(target===h1) h1.insertBefore(document.createTextNode(ch), caret); else target.appendChild(document.createTextNode(ch));
-            await sleep(ch===' '?18:34);
-          }
-        }
-        await sleep(280); caret.style.transition='opacity .5s'; caret.style.opacity='0';
-        sub.style.opacity='0'; sub.innerHTML=subHTML; sub.style.transition='opacity .7s ease'; requestAnimationFrame(function(){ sub.style.opacity='1'; });
-        setTimeout(function(){ if(caret.parentNode) caret.parentNode.removeChild(caret); }, 600);
-      }
-      whenRevealed(run);
-    })();
+    // reveal the hero once the intro lifts — CSS owns the line-mask timeline
+    var hero=document.querySelector('.fh-hero'); if(!hero) return;
+    var done=false;
+    function go(){ if(done) return; done=true; requestAnimationFrame(function(){ hero.classList.add('go'); }); }
+    if(document.documentElement.classList.contains('fyon-loaded')){ go(); return; }
+    var t=setInterval(function(){ if(document.documentElement.classList.contains('fyon-loaded')){ clearInterval(t); go(); } }, 80);
+    setTimeout(function(){ clearInterval(t); go(); }, 9000);
   })();
   </script>
 
@@ -156,7 +150,7 @@
   <section class="s" id="why" data-screen-label="why-fyon">
     <div class="s-inner">
       <p class="eyebrow reveal">Why Fyon</p>
-      <h2 class="h2" id="whyHead" style="max-width:24ch;min-height:4.4em;">A general assistant answers everyone. <em>Fyon is built around one person — you.</em></h2>
+      <h2 class="h2" id="whyHead" style="max-width:24ch;">A general assistant answers everyone. <em>Fyon is built around one person — you.</em></h2>
       <p class="lede" id="whySub" style="margin-bottom:50px;">You've tried them all — the looksmaxing apps, the scores, the generic (and sometimes "personalised") plans. They always fall short, and they never change as <em>you</em> change. The most capable intelligence on earth can answer almost anything… but it answers everyone, so it answers no one. What's never existed is an intelligence built entirely around <em>one person</em> — that sees your face, holds your history, and moves with you. <b>That's exactly why Fyon exists.</b></p>
 
       <p class="wf-lead reveal">Same question. Two completely different things.</p>
@@ -447,31 +441,26 @@
     <div class="s-inner">
       <p class="eyebrow reveal">Partner program</p>
       <h2 class="h2 reveal" style="max-width:16ch;">Make money with Fyon.</h2>
-      <p class="lede reveal" style="margin-bottom:30px;">Recommend Fyon to people who'll actually keep it, and take a share of every payment they make — every month they stay, not just the first. It's built to be kept, so your income compounds instead of resetting. Paid out through Stripe, tracked to the cent.</p>
+      <p class="lede reveal" style="margin-bottom:44px;max-width:640px;">Recommend Fyon and take a share of every payment your referrals make — every month they stay, not just the first. Free to join, paid out through Stripe, tracked to the cent.</p>
 
-      <!-- benefits -->
-      <div class="pt-benefits reveal">
-        <div class="pt-benefit glass"><span class="pb-ic">↻</span><b>Recurring income</b><span>Earn every month they stay — never a one-time bounty.</span></div>
-        <div class="pt-benefit glass"><span class="pb-ic">%</span><b>Up to 30%</b><span>Your share climbs across nine tiers as your base grows.</span></div>
-        <div class="pt-benefit glass"><span class="pb-ic">⬢</span><b>Paid via Stripe</b><span>Withdraw straight to your bank, on your own schedule.</span></div>
-        <div class="pt-benefit glass"><span class="pb-ic">✓</span><b>Honest tracking</b><span>Every click, sale and payout — visible, to the cent.</span></div>
-      </div>
-
-      <!-- earnings showpiece -->
       <div class="pt-panel iri iri-dark reveal">
         <div>
-          <p class="pk">How the money works</p>
-          <h3>You get paid every month — <em>not once.</em></h3>
-          <p class="pp">Most programs pay you a single bounty and forget you. Fyon pays you a share of each subscription payment your referrals make, for as long as they stay. Because Fyon keeps knowing them, they tend to stay — so your income builds instead of resetting.</p>
-          <div class="pt-figures">
-            <div class="pt-fig"><b><span class="rng">15–30%</span></b><span>of every payment</span></div>
-            <div class="pt-fig"><b>Every<br />month</b><span>not just the first</span></div>
+          <p class="pk">How it works</p>
+          <h3>Recurring — <em>not a one-time bounty.</em></h3>
+          <div class="pt-facts">
+            <div class="pt-fact"><b>15–30%</b><span>of every payment — your rate climbs across nine tiers as your base grows</span></div>
+            <div class="pt-fact"><b>Every month</b><span>for as long as your referrals stay — income compounds instead of resetting</span></div>
+            <div class="pt-fact"><b>Stripe payouts</b><span>withdraw to your bank; every click, sale and payout visible to the cent</span></div>
+          </div>
+          <div class="pt-cta">
+            <button class="btn btn-primary btn-lg">Become a partner</button>
+            <a class="link-arrow" href="#">Already a partner? Sign in <span class="ar">→</span></a>
           </div>
         </div>
         <div class="pt-chart reveal">
           <div class="pt-chart-head">
             <span class="lbl">Your recurring payout</span>
-            <span class="amt" id="ptAmt">$0<span class="mo">/mo</span></span>
+            <span class="amt">$1,840<span class="mo">/mo</span></span>
           </div>
           <svg class="pt-area" viewBox="0 0 320 140" preserveAspectRatio="none" aria-hidden="true">
             <defs><linearGradient id="ptg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2f9e91" stop-opacity="0.45"></stop><stop offset="1" stop-color="#2f9e91" stop-opacity="0"></stop></linearGradient></defs>
@@ -485,45 +474,7 @@
         </div>
       </div>
 
-      <!-- tier ladder -->
-      <div class="pt-tier-head reveal">
-        <h3>Nine tiers. Your rate climbs as you grow.</h3>
-        <span>The more members you bring who stay, the higher your share.</span>
-      </div>
-      <div class="pt-ladder reveal">
-        <div class="pt-step"><div class="bar2" style="height:24%"></div><span class="pct">15%</span></div>
-        <div class="pt-step"><div class="bar2" style="height:33%"></div><span class="pct">17%</span></div>
-        <div class="pt-step"><div class="bar2" style="height:42%"></div><span class="pct">19%</span></div>
-        <div class="pt-step hl"><div class="bar2" style="height:52%"></div><span class="pct">21%</span><span class="you">you</span></div>
-        <div class="pt-step"><div class="bar2" style="height:60%"></div><span class="pct">23%</span></div>
-        <div class="pt-step"><div class="bar2" style="height:69%"></div><span class="pct">25%</span></div>
-        <div class="pt-step"><div class="bar2" style="height:78%"></div><span class="pct">27%</span></div>
-        <div class="pt-step"><div class="bar2" style="height:89%"></div><span class="pct">28%</span></div>
-        <div class="pt-step"><div class="bar2" style="height:100%"></div><span class="pct">30%</span></div>
-      </div>
-
-      <!-- start earning in <5 steps -->
-      <div class="pt-tier-head reveal">
-        <h3>Start earning in four simple steps.</h3>
-        <span>Free to join · no audience minimum · live in minutes.</span>
-      </div>
-      <div class="num-grid pt-steps">
-        <div class="num-card glass reveal"><span class="idx">01</span><h3>Your link &amp; coupon</h3><p>Get a referral link and a 20%-off code your audience will actually want to use.</p></div>
-        <div class="num-card glass reveal d1"><span class="idx">02</span><h3>They subscribe &amp; stay</h3><p>Because Fyon keeps knowing them, they don't churn — and you keep earning.</p></div>
-        <div class="num-card glass reveal d2"><span class="idx">03</span><h3>Level up</h3><p>Climb the nine tiers from 15% toward 30% as your retained base grows.</p></div>
-        <div class="num-card glass reveal d3"><span class="idx">04</span><h3>Get paid</h3><p>Connect Stripe and withdraw your earnings — every figure honestly tracked.</p></div>
-      </div>
-
-      <div class="pt-final glass reveal">
-        <div class="ptf-copy">
-          <h3>Turn your audience into recurring income.</h3>
-          <p>Free to join · recurring commission · honest, transparent payouts.</p>
-        </div>
-        <div class="pt-cta">
-          <button class="btn btn-primary btn-lg">Become a partner</button>
-          <a class="link-arrow" href="#">Already a partner? Sign in <span class="ar">→</span></a>
-        </div>
-      </div>
+      <p class="pt-note reveal">Free to join · no audience minimum · your link and 20%-off code are live in minutes.</p>
     </div>
   </section>
 
@@ -578,7 +529,7 @@
     </div>
   </div>
 
-  <script src="site.js?v=35" defer></script>
+  <script src="site.js?v=36" defer></script>
 
   <!-- CTA wiring — referral capture + waitlist/early-access + partner links.
        The product app isn't live yet, so the product CTAs DO NOT touch Stripe.

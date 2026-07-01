@@ -25,19 +25,6 @@
   var io=new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } }); }, {threshold:.16});
   document.querySelectorAll('.reveal, .wd-act').forEach(function(n){ io.observe(n); });
 
-  /* ---------- partner payout count-up ---------- */
-  (function(){
-    var amt=document.getElementById('ptAmt'); if(!amt) return;
-    var TARGET=1840, started=false;
-    function format(n){ return '$'+Math.round(n).toLocaleString('en-US')+'<span class="mo">/mo</span>'; }
-    var po=new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting && !started){ started=true;
-      if(prefersReduced){ amt.innerHTML=format(TARGET); return; }
-      var t0=performance.now(), dur=1500;
-      (function tick(now){ var p=Math.min(1,(now-t0)/dur); var e2=1-Math.pow(1-p,3); amt.innerHTML=format(TARGET*e2); if(p<1) requestAnimationFrame(tick); })(t0);
-    } }); },{threshold:.5});
-    po.observe(amt);
-  })();
-
   /* ============================================================
      PROBLEM SECTION (animated forgetting vs compounding)
      ============================================================ */
@@ -49,8 +36,6 @@
     function setFail(k,on){ fails.forEach(function(f){ if(f.dataset.k===k) f.classList.toggle('hot',on); }); }
     function clearFails(){ fails.forEach(function(f){ f.classList.remove('hot'); }); }
     function addBubble(cls){ var b=document.createElement('div'); b.className='bubble '+cls; chat.appendChild(b); return b; }
-    async function typeInto(el2,text,speed){ if(prefersReduced){ el2.textContent=text; return; } el2.innerHTML=''; var caret=document.createElement('span'); caret.className='caret'; el2.appendChild(caret); for(var i=0;i<text.length;i++){ caret.insertAdjacentText('beforebegin',text[i]); await sleep(speed);} caret.remove(); }
-    async function fillProgress(inner,dur){ if(prefersReduced){ inner.style.width='100%'; return; } var steps=18; for(var i=1;i<=steps;i++){ inner.style.width=Math.round(i/steps*100)+'%'; await sleep(dur/steps);} }
     // RIGHT card — a sequenced read: scan sweeps the tile, the presence map
     // draws itself, chips land; tabs pop; the future renders in teal.
     var card=document.querySelector('.pb-card.right');
@@ -64,16 +49,14 @@
       tabs.forEach(function(t){ t.classList.toggle('lit', t.textContent.trim()===f.tab); });
       if(!factEl) return;
       if(instant||prefersReduced){ factEl.textContent=f.t; return; }
-      factEl.style.opacity='0'; factEl.style.transform='translateY(-5px)';
-      setTimeout(function(){ factEl.textContent=f.t;
-        factEl.style.transition='none'; factEl.style.transform='translateY(6px)';
-        void factEl.offsetWidth; factEl.style.transition=''; factEl.style.opacity='1'; factEl.style.transform='none'; },300); }
+      factEl.style.opacity='0';
+      setTimeout(function(){ factEl.textContent=f.t; factEl.style.opacity='1'; },320); }
     var factIdx=0, factTimer=null, revealed=false;
     // ambient life (fact cycle + node twinkle) only while the card is on screen
     if(card && !prefersReduced){
       var live=new IntersectionObserver(function(es){ es.forEach(function(e){
         if(e.isIntersecting){ card.classList.add('fy-live');
-          if(revealed && !factTimer) factTimer=setInterval(function(){ factIdx++; setFact(factIdx); },3600); }
+          if(revealed && !factTimer) factTimer=setInterval(function(){ factIdx++; setFact(factIdx); },5200); }
         else { card.classList.remove('fy-live'); if(factTimer){ clearInterval(factTimer); factTimer=null; } }
       }); },{threshold:.25});
       live.observe(card);
@@ -96,7 +79,7 @@
       [].slice.call(card.querySelectorAll('.cf.future')).forEach(function(f,i){ setTimeout(function(){ f.classList.add('in'); }, 1550+i*240); });
       var lock=card.querySelector('.fy-lock'); setTimeout(function(){ if(lock) lock.classList.add('pulse'); }, 2700);
       setTimeout(function(){ revealed=true;
-        if(card.classList.contains('fy-live') && !factTimer) factTimer=setInterval(function(){ factIdx++; setFact(factIdx); },3600);
+        if(card.classList.contains('fy-live') && !factTimer) factTimer=setInterval(function(){ factIdx++; setFact(factIdx); },5200);
       }, 3600);
     }
     function revealRightInstant(){ if(!card) return;
@@ -109,14 +92,17 @@
       wipe.textContent='\u2014 new chat \u00b7 nothing remembered \u2014'; chat.appendChild(wipe);
       void wipe.offsetWidth; chat.classList.add('ghost'); }
     async function leftCycle(){ clearFails(); chat.innerHTML='';
-      var att=document.createElement('div'); att.className='attach'; att.innerHTML='<div class="thumb"><span class="cam">IMG</span></div><div class="meta"><div class="fname">selfie.jpg <span class="check">\u2713</span></div><div class="bar"><i></i></div><div class="state">uploading\u2026</div></div>'; chat.appendChild(att);
-      await fillProgress(att.querySelector('.bar i'),820); att.classList.add('done'); att.querySelector('.state').textContent='uploaded \u00b7 2.1 MB'; await sleep(520);
-      setFail('face',true); var u=addBubble('user'); await typeInto(u,QUESTION,26); await sleep(420);
-      var typing=document.createElement('div'); typing.className='typing'; typing.innerHTML='<i></i><i></i><i></i>'; chat.appendChild(typing); await sleep(820); typing.remove();
-      setFail('talk',true); att.classList.add('ignored'); att.querySelector('.state').textContent="saw the image \u2014 didn't read your face";
-      for(var i=0;i<ANSWER.length;i++){ var a=addBubble('ai'); a.textContent=ANSWER[i]; if(i>=2){ setFail('wall',true); var ai=chat.querySelectorAll('.bubble.ai'); if(ai[i-2]) ai[i-2].classList.add('fading'); } await sleep(600); }
-      await sleep(680); setFail('forget',true);
-      await sleep(1700); forget(); }
+      function put(el,d){ el.style.animationDelay=d+'ms'; chat.appendChild(el); }
+      var att=document.createElement('div'); att.className='attach done ignored';
+      att.innerHTML='<div class="thumb"><span class="cam">IMG</span></div><div class="meta"><div class="fname">selfie.jpg <span class="check">\u2713</span></div><div class="state">saw the image \u2014 didn\'t read your face</div></div>';
+      put(att,0);
+      var u=document.createElement('div'); u.className='bubble user'; u.textContent=QUESTION; put(u,140);
+      ANSWER.forEach(function(t,i){ var a=document.createElement('div'); a.className='bubble ai'+(i<3?' fading':''); a.textContent=t; put(a,300+i*130); });
+      setTimeout(function(){ setFail('face',true); },400);
+      setTimeout(function(){ setFail('talk',true); },700);
+      setTimeout(function(){ setFail('wall',true); },1000);
+      setTimeout(function(){ setFail('forget',true); },1300);
+      await sleep(2700); forget(); }
     var startedP=false;
     var pObs=new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting && !startedP){ startedP=true; run(); } }); },{threshold:.2});
     { var pbSec=document.getElementById('why'); if(pbSec) pObs.observe(pbSec); }
@@ -174,7 +160,7 @@
       // Only animate (CSS flow/corePulse via .viz-on) and cycle cards while the
       // brain is on screen — otherwise it repaints the SVG every frame off-screen.
       var bo=new IntersectionObserver(function(es){ es.forEach(function(e){
-        if(e.isIntersecting){ if(stage) stage.classList.add('viz-on'); if(!timer) timer=setInterval(function(){ idx=(idx+1)%4; setActive(idx); },2400); }
+        if(e.isIntersecting){ if(stage) stage.classList.add('viz-on'); if(!timer) timer=setInterval(function(){ idx=(idx+1)%4; setActive(idx); },5200); }
         else { if(stage) stage.classList.remove('viz-on'); if(timer){ clearInterval(timer); timer=null; } }
       }); },{threshold:.12});
       if(stage) bo.observe(stage);
@@ -185,38 +171,6 @@
     if(!prefersReduced && lnodes.length){ var li=0; setInterval(function(){ lnodes.forEach(function(nn,j){ nn.classList.toggle('lit', j===li); }); li=(li+1)%lnodes.length; },900); }
   })();
 
-  /* ============================================================
-     WHY FYON — streaming headline + sub reveal (on scroll into view)
-     ============================================================ */
-  (function whyHype(){
-    var h=document.getElementById('whyHead'), sub=document.getElementById('whySub');
-    if(!h||!sub) return;
-    // segments to type — final one is the spruce-accent <em>
-    var segs=[{t:"A general assistant answers everyone. "},{t:"Fyon is built around one person — you.",em:true}];
-    if(prefersReduced) return;                 // markup already holds the final text
-    h.innerHTML='';                            // below the fold — cleared invisibly
-    sub.style.opacity='0'; sub.style.transform='translateY(12px)';
-    sub.style.transition='opacity .9s ease, transform .9s cubic-bezier(.2,.8,.2,1)';
-    var started=false;
-    var io=new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting && !started){ started=true; io.disconnect(); stream(); } }); },{threshold:.4});
-    io.observe(h);
-    async function stream(){
-      var caret=document.createElement('span'); caret.className='caret'; h.appendChild(caret);
-      // reveal the pitch right away (fades in while the headline types) so there's
-      // no tall blank gap on narrow screens while it's hidden
-      sub.style.opacity='1'; sub.style.transform='none';
-      for(var i=0;i<segs.length;i++){ var s=segs[i], target=h;
-        if(s.em){ target=document.createElement('em'); h.insertBefore(target,caret); }
-        for(var c=0;c<s.t.length;c++){ var ch=s.t[c];
-          if(target===h) h.insertBefore(document.createTextNode(ch),caret); else target.appendChild(document.createTextNode(ch));
-          await sleep(ch===' '?22:38);
-        }
-        await sleep(90);
-      }
-      await sleep(240); caret.style.transition='opacity .4s'; caret.style.opacity='0';
-      setTimeout(function(){ if(caret.parentNode) caret.remove(); }, 520);
-    }
-  })();
 
   /* ============================================================
      MOBILE — tap to view the brain network fullscreen
