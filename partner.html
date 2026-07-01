@@ -401,7 +401,12 @@
 // ============== CONFIG — Supabase (safe to ship in the browser) ==============
 const SUPABASE_URL = "https://vvwevqhdwumnethujxhy.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ2d2V2cWhkd3VtbmV0aHVqeGh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyMDg0ODYsImV4cCI6MjA5Njc4NDQ4Nn0.G60xcGM0DwDBYX2j48iYgb_y8SuXYxdNNiExQlDzarU";
-const SITE_URL = "https://gersel1233.github.io/bahahaha";
+// Affiliate links point at the FYON PRODUCT app (where a referred visitor lands
+// and signs up) — NOT the Lesreg marketing site. Change this ONE value to move
+// the link target. No trailing slash — the "/?ref=CODE" is appended below.
+//   dev:  http://localhost:3000
+//   prod: https://app.lesreg.com   (or  https://fyon.ai)
+const PRODUCT_APP_URL = "https://app.lesreg.com";
 const FN = SUPABASE_URL + "/functions/v1";
 // =============================================================================
 
@@ -514,7 +519,7 @@ else {
 
   async function render(){
     if (!partner) return;
-    $('link').textContent = `${SITE_URL}/?ref=${partner.code}`;
+    $('link').textContent = `${PRODUCT_APP_URL}/?ref=${partner.code}`;
     $('codeTxt').textContent = partner.code;
     $('showLb').checked = !!partner.show_on_leaderboard;
     show('connectBanner', !partner.payout_enabled);
