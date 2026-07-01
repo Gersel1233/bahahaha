@@ -4,11 +4,18 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Fyon by Lesreg — A self-improvement intelligence that knows you</title>
+<meta name="description" content="Everything else rates you and walks away. Fyon shows you your actual future self — then the intelligence that knows you builds an honest plan and adapts it as you change. By Lesreg. 18+." />
+<meta name="theme-color" content="#f4ede1" />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Fyon by Lesreg — the intelligence that knows you" />
+<meta property="og:description" content="Everything else rates you and walks away. Fyon shows you — your actual future self, and an honest plan that moves with you." />
+<meta property="og:image" content="https://gersel1233.github.io/bahahaha/og.jpg" />
+<meta name="twitter:card" content="summary_large_image" />
 <link rel="icon" type="image/svg+xml" href="favicon.svg?v=1" />
 <link rel="mask-icon" href="favicon.svg?v=1" color="#0f9b8e" />
 <link rel="preload" as="font" type="font/woff2" href="fonts/newsreader-latin-normal.woff2" crossorigin />
 <link rel="preload" as="font" type="font/woff2" href="fonts/sora-latin-600.woff2" crossorigin />
-<link rel="stylesheet" href="styles.css?v=34" />
+<link rel="stylesheet" href="styles.css?v=35" />
 <script src="image-slot.js?v=31" defer></script>
 <style id="fh-style">
 /* ===== Ported Fyon hero + scroll reveal — fully scoped under #fyon-hero so it
@@ -45,6 +52,9 @@
 </style>
 </head>
 <body>
+
+  <!-- reading progress — thin spruce line above everything -->
+  <div id="sprog" aria-hidden="true"><i></i></div>
 
   <!-- ===================== CINEMATIC INTRO (Orbit) ===================== -->
   <div id="lg-intro" role="status" aria-label="Lesreg">
@@ -95,7 +105,7 @@
       <p class="fh-sub" id="sub"></p>
       <div class="fh-cta">
         <button class="fh-btn" data-cta="waitlist">Try Fyon</button>
-        <a class="fh-link" href="#how">See how it works <span class="ar">→</span></a>
+        <a class="fh-link" href="#what">See how it works <span class="ar">→</span></a>
       </div>
     </header>
   </div>
@@ -225,7 +235,9 @@
     </div>
   </section>
 
-  <!-- ===================== 2 · WHAT FYON DOES ===================== -->
+    <div class="odiv reveal" aria-hidden="true"><span class="ol"></span><span class="om"><i class="s1"></i><i class="s2"></i><i class="s3"></i><i class="s4"></i><i class="oc"></i></span><span class="ol r"></span></div>
+
+<!-- ===================== 2 · WHAT FYON DOES ===================== -->
   <section class="s" id="what" data-screen-label="what-it-does">
     <div class="s-inner">
       <p class="eyebrow reveal">What it does</p>
@@ -305,7 +317,9 @@
     </div>
   </section>
 
-  <!-- ===================== 3 · WHY IT WORKS ===================== -->
+    <div class="odiv reveal" aria-hidden="true"><span class="ol"></span><span class="om"><i class="s1"></i><i class="s2"></i><i class="s3"></i><i class="s4"></i><i class="oc"></i></span><span class="ol r"></span></div>
+
+<!-- ===================== 3 · WHY IT WORKS ===================== -->
   <section class="s" id="intelligence" data-screen-label="why-it-works">
     <div class="s-inner">
       <div style="text-align:center; max-width:780px; margin:0 auto 56px;">
@@ -397,7 +411,9 @@
     </div>
   </section>
 
-  <!-- ===================== 4 · MAKE MONEY WITH FYON ===================== -->
+    <div class="odiv reveal" aria-hidden="true"><span class="ol"></span><span class="om"><i class="s1"></i><i class="s2"></i><i class="s3"></i><i class="s4"></i><i class="oc"></i></span><span class="ol r"></span></div>
+
+<!-- ===================== 4 · MAKE MONEY WITH FYON ===================== -->
   <section class="s" id="partners" data-screen-label="partners">
     <div class="s-inner">
       <p class="eyebrow reveal">Partner program</p>
@@ -533,7 +549,7 @@
     </div>
   </div>
 
-  <script src="site.js?v=33" defer></script>
+  <script src="site.js?v=34" defer></script>
 
   <!-- CTA wiring — referral capture + waitlist/early-access + partner links.
        The product app isn't live yet, so the product CTAs DO NOT touch Stripe.

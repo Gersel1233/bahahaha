@@ -8,10 +8,18 @@
   function el(t,a){ var e=document.createElementNS(NS,t); for(var k in a) e.setAttribute(k,a[k]); return e; }
   function rand(a,b){ return a+Math.random()*(b-a); }
 
-  /* ---------- nav scroll state ---------- */
-  var nav=document.querySelector('.nav');
-  function onScroll(){ if(nav) nav.classList.toggle('scrolled', window.scrollY>20); }
-  window.addEventListener('scroll', onScroll, {passive:true}); onScroll();
+  /* ---------- nav scroll state + reading progress (one rAF-throttled pass) ---------- */
+  var nav=document.querySelector('.nav'), sprog=document.querySelector('#sprog i');
+  var scrollQueued=false;
+  function applyScroll(){ scrollQueued=false;
+    var y=window.scrollY;
+    if(nav) nav.classList.toggle('scrolled', y>20);
+    if(sprog){ var max=document.documentElement.scrollHeight-window.innerHeight;
+      sprog.style.transform='scaleX('+(max>0?Math.min(1,y/max):0)+')'; } }
+  function onScroll(){ if(!scrollQueued){ scrollQueued=true; requestAnimationFrame(applyScroll); } }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  window.addEventListener('resize', onScroll, {passive:true});
+  applyScroll();
 
   /* ---------- reveal on scroll ---------- */
   var io=new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } }); }, {threshold:.16});
@@ -28,49 +36,6 @@
       (function tick(now){ var p=Math.min(1,(now-t0)/dur); var e2=1-Math.pow(1-p,3); amt.innerHTML=format(TARGET*e2); if(p<1) requestAnimationFrame(tick); })(t0);
     } }); },{threshold:.5});
     po.observe(amt);
-  })();
-
-  /* ---------- hero headline caret (typed feel on load) ---------- */
-  // (static end-state in markup; nothing required)
-
-  /* ============================================================
-     SELF-IMPROVEMENT LOOP (globe + cycling generic advice)
-     ============================================================ */
-  (function buildGlobe(){
-    var g=document.getElementById('siteGlobe'); if(!g) return;
-    var C=330, R=300;
-    g.appendChild(el('circle',{class:'outline',cx:C,cy:C,r:R}));
-    [-0.66,-0.34,0,0.34,0.66].forEach(function(f){ var dy=f*R, rx=Math.sqrt(R*R-dy*dy); g.appendChild(el('ellipse',{class:f===0?'equator':'',cx:C,cy:C+dy,rx:rx,ry:rx*0.16})); });
-    var rot=el('g',{class:'grot'});
-    [0.95,0.7,0.42,0.14].forEach(function(f){ rot.appendChild(el('ellipse',{cx:C,cy:C,rx:R*f,ry:R})); });
-    rot.appendChild(el('line',{x1:C,y1:C-R,x2:C,y2:C+R}));
-    g.appendChild(rot);
-    for(var i=0;i<150;i++){ var a=Math.random()*Math.PI*2, rr=Math.sqrt(Math.random())*R*0.96; g.appendChild(el('circle',{class:'dot',cx:C+Math.cos(a)*rr,cy:C+Math.sin(a)*rr*0.99,r:Math.random()*1.1+0.5})); }
-  })();
-  (function loopCycle(){
-    var chip=document.getElementById('loopChip'), idx=document.getElementById('loopIdx'),
-        title=document.getElementById('loopTitle'), desc=document.getElementById('loopDesc'),
-        dotsWrap=document.getElementById('loopDots');
-    if(!chip) return;
-    var ITEMS=[
-      { c:'United States', t:'Advice for everyone', d:'Generic guidance is true for everyone and made for no one. Fyon never talks to an abstract user — only to you, with full context.' },
-      { c:'United Kingdom', t:'The same ten tips', d:'Every app hands out the same checklist worldwide. Standards differ by place and person — Fyon knows yours.' },
-      { c:'Japan', t:'A score, then silence', d:'A number tells you where you rank, not how to move. Fyon turns understanding into a living, honest plan.' },
-      { c:'Brazil', t:'It forgets you', d:'Close the tab and you start over. Fyon remembers — your file only gets richer every session.' },
-      { c:'Germany', t:'Built for no one', d:'Mass advice averages everybody out. Fyon is calibrated to your face, your goals, your life.' }
-    ];
-    var TOTAL=10;
-    for(var i=0;i<TOTAL;i++){ var d=document.createElement('i'); if(i===0) d.classList.add('on'); dotsWrap.appendChild(d); }
-    var dots=dotsWrap.children, n=0;
-    function render(it,k){
-      chip.textContent=it.c; idx.textContent=String((k%TOTAL)+1).padStart(2,'0')+' / '+TOTAL;
-      title.textContent=it.t; desc.textContent=it.d;
-      for(var j=0;j<dots.length;j++) dots[j].classList.toggle('on', j===(k%TOTAL));
-    }
-    render(ITEMS[0],2); n=2; var k=2;
-    if(prefersReduced) return;
-    setInterval(function(){ k++; n=(n+1)%ITEMS.length; var card=document.getElementById('loopContent'); card.style.transition='opacity .4s ease'; card.style.opacity='0';
-      setTimeout(function(){ render(ITEMS[n], k); card.style.opacity='1'; }, 420); }, 4200);
   })();
 
   /* ============================================================
