@@ -29,89 +29,20 @@
      PROBLEM SECTION (animated forgetting vs compounding)
      ============================================================ */
   (function problem(){
+    // Static composition — both cards read as finished evidence, not a demo.
     var chat=document.getElementById('pbChat'); if(!chat) return;
-    var fails=document.querySelectorAll('.pb-fail');
     var QUESTION="how do i become more attractive and confident?";
     var ANSWER=["Work on grooming and posture.","Keep a consistent skincare routine.","Build confidence with small daily wins.","Stand tall in social situations.","Dress for your body type and smile more."];
-    function setFail(k,on){ fails.forEach(function(f){ if(f.dataset.k===k) f.classList.toggle('hot',on); }); }
-    function clearFails(){ fails.forEach(function(f){ f.classList.remove('hot'); }); }
-    function addBubble(cls){ var b=document.createElement('div'); b.className='bubble '+cls; chat.appendChild(b); return b; }
-    // RIGHT card — a sequenced read: scan sweeps the tile, the presence map
-    // draws itself, chips land; tabs pop; the future renders in teal.
+    document.querySelectorAll('.pb-fail').forEach(function(f){ f.classList.add('hot'); });
+    var att=document.createElement('div'); att.className='attach done ignored';
+    att.innerHTML='<div class="thumb"><span class="cam">IMG</span></div><div class="meta"><div class="fname">selfie.jpg <span class="check">\u2713</span></div><div class="state">saw the image \u2014 didn\'t read your face</div></div>';
+    chat.appendChild(att);
+    var u=document.createElement('div'); u.className='bubble user'; u.textContent=QUESTION; chat.appendChild(u);
+    ANSWER.forEach(function(t,i){ var a=document.createElement('div'); a.className='bubble ai'+(i<3?' fading':''); a.textContent=t; chat.appendChild(a); });
+    var wipe=document.createElement('div'); wipe.className='pb-wipe'; wipe.textContent='\u2014 new chat \u00b7 nothing remembered \u2014'; chat.appendChild(wipe);
+    chat.classList.add('ghost');
     var card=document.querySelector('.pb-card.right');
-    var FACTS=[ {tab:'History', t:'evenings are when your routine slips'},
-                {tab:'Face',    t:'redness calming \u2192 azelaic acid 10%'},
-                {tab:'Goals',   t:'social confidence is the real goal'},
-                {tab:'Body',    t:'week 3 \u2014 posture visibly improving'} ];
-    var factEl=document.getElementById('fyFact');
-    var tabs=card?[].slice.call(card.querySelectorAll('.pb-tab')):[];
-    function setFact(i,instant){ var f=FACTS[i%FACTS.length];
-      tabs.forEach(function(t){ t.classList.toggle('lit', t.textContent.trim()===f.tab); });
-      if(!factEl) return;
-      if(instant||prefersReduced){ factEl.textContent=f.t; return; }
-      factEl.style.opacity='0';
-      setTimeout(function(){ factEl.textContent=f.t; factEl.style.opacity='1'; },320); }
-    var factIdx=0, factTimer=null, revealed=false;
-    // ambient life (fact cycle + node twinkle) only while the card is on screen
-    if(card && !prefersReduced){
-      var live=new IntersectionObserver(function(es){ es.forEach(function(e){
-        if(e.isIntersecting){ card.classList.add('fy-live');
-          if(revealed && !factTimer) factTimer=setInterval(function(){ factIdx++; setFact(factIdx); },5200); }
-        else { card.classList.remove('fy-live'); if(factTimer){ clearInterval(factTimer); factTimer=null; } }
-      }); },{threshold:.25});
-      live.observe(card);
-    }
-    function revealRight(){ if(!card) return;
-      var panels=[].slice.call(card.querySelectorAll('.fy-panel'));
-      panels.forEach(function(p,i){ setTimeout(function(){ p.classList.add('in'); }, 200+i*420); });
-      var tile1=card.querySelector('.fy-reads .fy-tile');
-      var face1=card.querySelector('.cf.now');
-      var state=card.querySelector('.fy-read-state');
-      setTimeout(function(){ if(tile1) tile1.classList.add('in'); }, 420);
-      [].slice.call(card.querySelectorAll('.fy-future .fy-tile')).forEach(function(t,i){ setTimeout(function(){ t.classList.add('in'); }, 1380+i*200); });
-      setTimeout(function(){ if(tile1) tile1.classList.add('scanning'); }, 550);
-      setTimeout(function(){ if(face1) face1.classList.add('in'); }, 800);
-      setTimeout(function(){ if(state) state.textContent='presence read \u2713'; }, 2450);
-      [].slice.call(card.querySelectorAll('.fy-chip')).forEach(function(c,i){ setTimeout(function(){ c.classList.add('in'); }, 1550+i*190); });
-      tabs.forEach(function(t,i){ setTimeout(function(){ t.classList.add('in'); }, 880+i*95); });
-      var rem=card.querySelector('.fy-remember'); setTimeout(function(){ if(rem) rem.classList.add('in'); }, 1350);
-      setTimeout(function(){ setFact(0,true); }, 1450);
-      [].slice.call(card.querySelectorAll('.cf.future')).forEach(function(f,i){ setTimeout(function(){ f.classList.add('in'); }, 1550+i*240); });
-      var lock=card.querySelector('.fy-lock'); setTimeout(function(){ if(lock) lock.classList.add('pulse'); }, 2700);
-      setTimeout(function(){ revealed=true;
-        if(card.classList.contains('fy-live') && !factTimer) factTimer=setInterval(function(){ factIdx++; setFact(factIdx); },5200);
-      }, 3600);
-    }
-    function revealRightInstant(){ if(!card) return;
-      [].slice.call(card.querySelectorAll('.fy-panel, .fy-chip, .pb-tab, .fy-tile, .fy-remember, .cf')).forEach(function(n){ n.classList.add('in'); });
-      var state=card.querySelector('.fy-read-state'); if(state) state.textContent='presence read \u2713';
-      setFact(0,true);
-    }
-    // the thread visibly forgets — bubbles ghost out, a stamp remains
-    function forget(){ var wipe=document.createElement('div'); wipe.className='pb-wipe';
-      wipe.textContent='\u2014 new chat \u00b7 nothing remembered \u2014'; chat.appendChild(wipe);
-      void wipe.offsetWidth; chat.classList.add('ghost'); }
-    async function leftCycle(){ clearFails(); chat.innerHTML='';
-      function put(el,d){ el.style.animationDelay=d+'ms'; chat.appendChild(el); }
-      var att=document.createElement('div'); att.className='attach done ignored';
-      att.innerHTML='<div class="thumb"><span class="cam">IMG</span></div><div class="meta"><div class="fname">selfie.jpg <span class="check">\u2713</span></div><div class="state">saw the image \u2014 didn\'t read your face</div></div>';
-      put(att,0);
-      var u=document.createElement('div'); u.className='bubble user'; u.textContent=QUESTION; put(u,140);
-      ANSWER.forEach(function(t,i){ var a=document.createElement('div'); a.className='bubble ai'+(i<3?' fading':''); a.textContent=t; put(a,300+i*130); });
-      setTimeout(function(){ setFail('face',true); },400);
-      setTimeout(function(){ setFail('talk',true); },700);
-      setTimeout(function(){ setFail('wall',true); },1000);
-      setTimeout(function(){ setFail('forget',true); },1300);
-      await sleep(2700); forget(); }
-    var startedP=false;
-    var pObs=new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting && !startedP){ startedP=true; run(); } }); },{threshold:.2});
-    { var pbSec=document.getElementById('why'); if(pbSec) pObs.observe(pbSec); }
-    async function run(){
-      if(prefersReduced){ revealRightInstant();
-        var att=document.createElement('div'); att.className='attach done ignored'; att.innerHTML='<div class="thumb"><span class="cam">IMG</span></div><div class="meta"><div class="fname">selfie.jpg <span class="check">\u2713</span></div><div class="state">saw the image \u2014 didn\'t read your face</div></div>'; chat.appendChild(att);
-        var u=addBubble('user'); u.textContent=QUESTION; ANSWER.forEach(function(t){ var a=addBubble('ai'); a.textContent=t; });
-        forget(); return; }
-      revealRight(); await sleep(500); await leftCycle(); }   // play once, then it stays
+    if(card) [].slice.call(card.querySelectorAll('.fy-panel, .fy-chip, .pb-tab, .fy-tile, .fy-remember, .cf')).forEach(function(n){ n.classList.add('in'); });
   })();
 
   /* ============================================================
@@ -133,44 +64,64 @@
   (function brain(){
     var svg=document.querySelector('.bn-links'); if(!svg) return;
     var ACCENT={ q1:'#1f857a', q2:'#34a596', q3:'#5e8d6e', q4:'#2f9e91' };
-    var CORE={ x:500, y:290 };
-    var CLUSTERS=[{key:'q1',cx:372,cy:200,ax:312,ay:150},{key:'q2',cx:628,cy:200,ax:688,ay:150},{key:'q3',cx:372,cy:380,ax:312,ay:430},{key:'q4',cx:628,cy:380,ax:688,ay:430}];
-    var lobeGroups={};
-    CLUSTERS.forEach(function(cl){ var g=el('g',{class:'lobe '+cl.key}); svg.appendChild(g); lobeGroups[cl.key]=g; var col=ACCENT[cl.key];
-      g.appendChild(el('path',{class:'trunk',d:'M'+cl.cx+' '+cl.cy+' L'+cl.ax+' '+cl.ay,stroke:col}));
-      var spine=el('path',{class:'trunk',d:'M'+cl.cx+' '+cl.cy+' L'+CORE.x+' '+CORE.y,stroke:col}); spine.style.animationDelay=(Math.random()*-2)+'s'; g.appendChild(spine);
-      var nodes=[{x:cl.cx,y:cl.cy,r:4.5}];
-      for(var i=0;i<11;i++){ var ang=rand(0,Math.PI*2), rad=rand(26,74); nodes.push({x:cl.cx+Math.cos(ang)*rad,y:cl.cy+Math.sin(ang)*rad*0.82,r:rand(1.6,3.4)}); }
-      nodes.forEach(function(nn,i){ var d=nodes.map(function(m,j){ return {j:j,dist:Math.hypot(nn.x-m.x,nn.y-m.y)}; }).filter(function(o){ return o.j!==i; }).sort(function(a,b){ return a.dist-b.dist; }).slice(0,2);
-        d.forEach(function(o){ if(o.j>i) g.appendChild(el('line',{class:'edge',x1:nn.x,y1:nn.y,x2:nodes[o.j].x,y2:nodes[o.j].y,stroke:col,'stroke-opacity':0.25})); }); });
-      nodes.forEach(function(nn,i){ g.appendChild(el('circle',{class:'node',cx:nn.x,cy:nn.y,r:nn.r,fill:col,'fill-opacity':i===0?0.95:0.6})); }); });
-    svg.appendChild(el('circle',{cx:CORE.x,cy:CORE.y,r:16,fill:'#9fd8cf','fill-opacity':0.12}));
-    svg.appendChild(el('circle',{class:'node node-core',cx:CORE.x,cy:CORE.y,r:7,fill:'#bfe3db','fill-opacity':0.95}));
+    var CX=500, CY=290, D2R=Math.PI/180;
+    function pt(a,r){ return { x:+(CX+Math.cos(a*D2R)*r).toFixed(1), y:+(CY+Math.sin(a*D2R)*r).toFixed(1) }; }
+    function arcPath(a1,a2,r){ var p1=pt(a1,r), p2=pt(a2,r);
+      return 'M'+p1.x+' '+p1.y+' A'+r+' '+r+' 0 0 1 '+p2.x+' '+p2.y; }
+
+    // core glow gradient
+    var defs=el('defs',{});
+    defs.innerHTML='<radialGradient id="bnGlow"><stop offset="0" stop-color="#2f9e91" stop-opacity=".36"/><stop offset="1" stop-color="#2f9e91" stop-opacity="0"/></radialGradient>';
+    svg.appendChild(defs);
+    // faint concentric guides — depth without noise
+    [92,152,212].forEach(function(r,i){ svg.appendChild(el('circle',{cx:CX,cy:CY,r:r,fill:'none',stroke:'rgba(244,237,225,'+(0.055-i*0.014)+')','stroke-width':1})); });
+
+    // the orbital system — four constellation arms feeding one core
+    var sys=el('g',{class:'bn-sys'}); svg.appendChild(sys);
+    var ARMS=[{key:'q1',a:225},{key:'q2',a:315},{key:'q3',a:135},{key:'q4',a:45}];
+    var armGroups={};
+    ARMS.forEach(function(A){ var col=ACCENT[A.key];
+      var g=el('g',{class:'bn-arm '+A.key}); g.style.setProperty('--acol', col+'99'); sys.appendChild(g); armGroups[A.key]=g;
+      g.appendChild(el('path',{class:'arc',d:arcPath(A.a-30,A.a+30,168),stroke:col,'stroke-opacity':.5,'stroke-width':1.2}));
+      g.appendChild(el('path',{class:'arc',d:arcPath(A.a-17,A.a+17,124),stroke:col,'stroke-opacity':.26,'stroke-width':1}));
+      var hub=pt(A.a,146);
+      var nodes=[{x:hub.x,y:hub.y,r:4.4,hub:true}];
+      for(var i=0;i<7;i++){ var p=pt(A.a-30+i*10+rand(-2.5,2.5), 168+rand(-7,7)); nodes.push({x:p.x,y:p.y,r:rand(1.8,3.4)}); }
+      for(var j=0;j<4;j++){ var q=pt(A.a-15+j*10+rand(-3,3), 124+rand(-6,6)); nodes.push({x:q.x,y:q.y,r:rand(1.6,2.6)}); }
+      for(var i=1;i<7;i++){ g.appendChild(el('line',{class:'edge',x1:nodes[i].x,y1:nodes[i].y,x2:nodes[i+1].x,y2:nodes[i+1].y,stroke:col,'stroke-opacity':.2})); }
+      [2,5,8,10].forEach(function(k){ if(nodes[k]) g.appendChild(el('line',{class:'edge',x1:hub.x,y1:hub.y,x2:nodes[k].x,y2:nodes[k].y,stroke:col,'stroke-opacity':.3})); });
+      nodes.forEach(function(nn){ g.appendChild(el('circle',{class:'node',cx:nn.x,cy:nn.y,r:nn.r,fill:col,'fill-opacity':nn.hub?.95:.6})); });
+      // the stream — a drawn curve from the hub into the core, ridden by comets
+      var end=pt(A.a+14,36), ctl=pt(A.a-12,88);
+      var d='M'+hub.x+' '+hub.y+' Q'+ctl.x+' '+ctl.y+' '+end.x+' '+end.y;
+      g.appendChild(el('path',{class:'stream',d:d,stroke:col,'stroke-opacity':.15,'stroke-width':1}));
+      if(!prefersReduced){ for(var k=0;k<3;k++){
+        var c=el('circle',{class:'comet',r:2.2,fill:col});
+        c.appendChild(el('animateMotion',{dur:'4.6s',repeatCount:'indefinite',begin:(-k*1.53)+'s',path:d}));
+        c.appendChild(el('animate',{attributeName:'opacity',values:'0;.95;.95;0',keyTimes:'0;.15;.8;1',dur:'4.6s',repeatCount:'indefinite',begin:(-k*1.53)+'s'}));
+        g.appendChild(c); } }
+    });
+
+    // the core — halo, rotating tick ring, steady ring, bright heart
+    svg.appendChild(el('circle',{class:'bn-halo',cx:CX,cy:CY,r:62,fill:'url(#bnGlow)'}));
+    svg.appendChild(el('circle',{class:'bn-ringDash',cx:CX,cy:CY,r:41,fill:'none',stroke:'#2f9e91','stroke-opacity':.42,'stroke-width':1,'stroke-dasharray':'3 8'}));
+    svg.appendChild(el('circle',{cx:CX,cy:CY,r:27,fill:'none',stroke:'rgba(191,227,219,.38)','stroke-width':1.2}));
+    svg.appendChild(el('circle',{class:'bn-coreDot',cx:CX,cy:CY,r:10,fill:'#dff3ef'}));
+
     var cards=[document.querySelector('.bn-card.c1'),document.querySelector('.bn-card.c2'),document.querySelector('.bn-card.c3'),document.querySelector('.bn-card.c4')];
-    var order=['q1','q2','q3','q4'];
-    function setActive(i){ order.forEach(function(k,j){ var g=lobeGroups[k], on=(j===i);
-      g.querySelectorAll('.node').forEach(function(nn){ nn.setAttribute('fill-opacity', on?0.95:0.5); });
-      g.querySelectorAll('.edge').forEach(function(e){ e.setAttribute('stroke-opacity', on?0.6:0.18); });
-      g.querySelectorAll('.trunk').forEach(function(t){ t.style.opacity = on?0.95:0.32; });
-      g.style.filter = on ? 'drop-shadow(0 0 6px '+ACCENT[k]+'aa)' : 'none';
-      cards[j].classList.toggle('active', on); }); }
+    function setActive(i){ ARMS.forEach(function(A,j){ var on=(j===i);
+      armGroups[A.key].classList.toggle('on',on); armGroups[A.key].classList.toggle('dim',!on);
+      if(cards[j]) cards[j].classList.toggle('active',on); }); }
     if(!prefersReduced){
       var idx=0, timer=null, stage=document.querySelector('.bn-stage');
       setActive(0);
-      // Only animate (CSS flow/corePulse via .viz-on) and cycle cards while the
-      // brain is on screen — otherwise it repaints the SVG every frame off-screen.
       var bo=new IntersectionObserver(function(es){ es.forEach(function(e){
         if(e.isIntersecting){ if(stage) stage.classList.add('viz-on'); if(!timer) timer=setInterval(function(){ idx=(idx+1)%4; setActive(idx); },5200); }
         else { if(stage) stage.classList.remove('viz-on'); if(timer){ clearInterval(timer); timer=null; } }
       }); },{threshold:.12});
       if(stage) bo.observe(stage);
-    }
-    else { order.forEach(function(k,j){ cards[j].classList.add('active'); }); }
-    // warm loop chase
-    var lnodes=[].slice.call(document.querySelectorAll('#vsLoop .lnode'));
-    if(!prefersReduced && lnodes.length){ var li=0; setInterval(function(){ lnodes.forEach(function(nn,j){ nn.classList.toggle('lit', j===li); }); li=(li+1)%lnodes.length; },900); }
+    } else { cards.forEach(function(c){ if(c) c.classList.add('active'); }); }
   })();
-
 
   /* ============================================================
      MOBILE — tap to view the brain network fullscreen
@@ -186,7 +137,7 @@
         if(links){ var c=links.cloneNode(true);
           // crop the viewBox to where the nodes actually are, so the network
           // fills the screen instead of floating tiny in a sea of empty margin
-          c.setAttribute('viewBox','255 115 490 350');
+          c.setAttribute('viewBox','265 55 470 470');
           c.setAttribute('preserveAspectRatio','xMidYMid meet');
           map.appendChild(c); filled=true; }
       }

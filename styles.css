@@ -299,14 +299,28 @@ a{ color:inherit; text-decoration:none; }
 .bn-coreLabel .bnn{ font-family:var(--serif); font-style:italic; font-size:19px; color:#f6efe6; }
 .bn-coreLabel .bns{ font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:rgba(244,237,225,.4); margin-top:4px; }
 .bn-links .edge{ stroke-width:1; fill:none; }
-.bn-links .trunk{ fill:none; stroke-width:1.7; stroke-linecap:round; stroke-dasharray:5 11; animation:flow 2.6s linear infinite; animation-play-state:paused; opacity:.62; }
-@keyframes flow{ to{ stroke-dashoffset:-32; } }
-.bn-links .node{ transition:r .5s ease, opacity .5s ease; }
-.bn-links .node-core{ animation:corePulse 2.8s ease-in-out infinite; animation-play-state:paused; filter:drop-shadow(0 0 7px rgba(159,216,207,.9)); }
-@keyframes corePulse{ 0%,100%{ opacity:.9; } 50%{ opacity:.5; } }
+.bn-links .arc, .bn-links .stream{ fill:none; stroke-linecap:round; }
+/* orbital system — the whole constellation drifts a few degrees, breathing */
+.bn-sys{ transform-origin:500px 290px; animation:bnDrift 38s ease-in-out infinite alternate; animation-play-state:paused; }
+@keyframes bnDrift{ from{ transform:rotate(-3.2deg); } to{ transform:rotate(3.2deg); } }
+.bn-arm{ opacity:.55; transition:opacity .9s ease, filter .9s ease; }
+.bn-arm.on{ opacity:1; filter:drop-shadow(0 0 7px var(--acol)); }
+.bn-arm.dim{ opacity:.34; }
+/* the core — rotating tick ring, breathing halo, bright heart */
+.bn-ringDash{ transform-origin:500px 290px; animation:bnSpin 46s linear infinite; animation-play-state:paused; }
+@keyframes bnSpin{ to{ transform:rotate(360deg); } }
+.bn-halo{ transform-origin:500px 290px; animation:bnBreath 7s ease-in-out infinite; animation-play-state:paused; }
+@keyframes bnBreath{ 0%,100%{ transform:scale(1); opacity:.85; } 50%{ transform:scale(1.15); opacity:1; } }
+.bn-coreDot{ filter:drop-shadow(0 0 10px rgba(159,216,207,.95)); animation:bnCore 3.6s ease-in-out infinite; animation-play-state:paused; }
+@keyframes bnCore{ 0%,100%{ opacity:1; } 50%{ opacity:.72; } }
 /* the SVG "data flow" lines repaint every frame — only run them while the
    brain section is actually on screen (set by IntersectionObserver in site.js) */
-.bn-stage.viz-on .bn-links .trunk, .bn-stage.viz-on .bn-links .node-core{ animation-play-state:running; }
+.bn-stage.viz-on .bn-sys, .bn-stage.viz-on .bn-ringDash, .bn-stage.viz-on .bn-halo, .bn-stage.viz-on .bn-coreDot,
+.bn-fs-map .bn-sys, .bn-fs-map .bn-ringDash, .bn-fs-map .bn-halo, .bn-fs-map .bn-coreDot{ animation-play-state:running; }
+@media (prefers-reduced-motion: reduce){
+  .bn-sys,.bn-ringDash,.bn-halo,.bn-coreDot{ animation:none; }
+  .bn-arm{ opacity:.75; }
+}
 .bn-tagline{ position:relative; z-index:4; text-align:center; margin-top:14px; font-family:var(--serif); font-size:clamp(18px,2.2vw,24px); color:#f6efe6; } .bn-tagline em{ font-style:italic; color:#9fd8cf; }
 @media (prefers-reduced-motion: reduce){ .bn-links .trunk,.bn-links .node-core,.brand .spark{ animation:none; } }
 /* Tablet: the network/center make no sense without the SVG links, so hide them
@@ -676,26 +690,15 @@ html.fyon-loaded .fyon-reveal{ opacity:1; transform:none; }
 .fy-future .fy-tile.face{ border-color:rgba(31,133,122,.28);
   background:radial-gradient(70% 55% at 50% 38%, rgba(47,158,145,.12), rgba(247,238,228,.55)); }
 
-/* scan sweep + read state */
-.fy-scan{ position:absolute; left:6px; right:6px; top:-30px; height:26px; pointer-events:none; opacity:0;
-  background:linear-gradient(180deg, rgba(47,158,145,0), rgba(47,158,145,.16) 42%, rgba(47,158,145,.5) 50%, rgba(47,158,145,.16) 58%, rgba(47,158,145,0)); }
-.fy-tile.scanning .fy-scan{ animation:fyScan 1.15s ease-in-out .1s 2; }
-@keyframes fyScan{ 0%{ opacity:0; transform:translateY(0); } 12%{ opacity:1; } 88%{ opacity:1; } 100%{ opacity:0; transform:translateY(128px); } }
 .fy-read-state{ font-family:var(--mono); font-size:9.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--terra-deep); opacity:.85; margin-top:8px; }
 
 /* living memory — fact swap under the tabs */
 .fy-fact{ display:inline-block; transition:opacity .3s ease, transform .3s cubic-bezier(.2,.8,.3,1); }
 
-/* identity lock pulse */
-.fy-lock{ display:inline-block; }
-.fy-lock.pulse{ animation:fyLock 1.5s ease .1s 2; }
-@keyframes fyLock{ 0%,100%{ transform:scale(1); } 28%{ transform:scale(1.4); } }
 
 @media (prefers-reduced-motion: reduce){
   .cf .e{ stroke-dashoffset:0; transition:none; }
   .cf .n{ opacity:.72; transition:none; } .cf .n.eye{ opacity:.95; }
-  .fy-scan{ display:none; }
-  .fy-lock.pulse{ animation:none; }
 }
 
 /* ============================================================
