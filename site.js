@@ -51,38 +51,80 @@
     function addBubble(cls){ var b=document.createElement('div'); b.className='bubble '+cls; chat.appendChild(b); return b; }
     async function typeInto(el2,text,speed){ if(prefersReduced){ el2.textContent=text; return; } el2.innerHTML=''; var caret=document.createElement('span'); caret.className='caret'; el2.appendChild(caret); for(var i=0;i<text.length;i++){ caret.insertAdjacentText('beforebegin',text[i]); await sleep(speed);} caret.remove(); }
     async function fillProgress(inner,dur){ if(prefersReduced){ inner.style.width='100%'; return; } var steps=18; for(var i=1;i<=steps;i++){ inner.style.width=Math.round(i/steps*100)+'%'; await sleep(dur/steps);} }
-    // RIGHT card \u2014 reveal the three panels with a spring stagger; within each
-    // panel, its chips / tabs / tiles / memory line pop in one after another.
-    function panelBits(p){ return [].slice.call(p.querySelectorAll('.fy-chip, .pb-tab, .fy-tile, .fy-remember')); }
-    function revealRight(){
-      var panels=[].slice.call(document.querySelectorAll('.pb-card.right .fy-panel'));
-      panels.forEach(function(p,i){ setTimeout(function(){
-        p.classList.add('in');
-        var bits=panelBits(p);
-        bits.forEach(function(el,j){ setTimeout(function(){ el.classList.add('in'); }, 150+j*85); });
-        var lit=p.querySelector('.pb-tab[data-lit]');
-        if(lit) setTimeout(function(){ lit.classList.add('lit'); }, 150+bits.length*85+200);
-      }, 220+i*300); });
+    // RIGHT card — a sequenced read: scan sweeps the tile, the presence map
+    // draws itself, chips land; tabs pop; the future renders in teal.
+    var card=document.querySelector('.pb-card.right');
+    var FACTS=[ {tab:'History', t:'evenings are when your routine slips'},
+                {tab:'Face',    t:'redness calming \u2192 azelaic acid 10%'},
+                {tab:'Goals',   t:'social confidence is the real goal'},
+                {tab:'Body',    t:'week 3 \u2014 posture visibly improving'} ];
+    var factEl=document.getElementById('fyFact');
+    var tabs=card?[].slice.call(card.querySelectorAll('.pb-tab')):[];
+    function setFact(i,instant){ var f=FACTS[i%FACTS.length];
+      tabs.forEach(function(t){ t.classList.toggle('lit', t.textContent.trim()===f.tab); });
+      if(!factEl) return;
+      if(instant||prefersReduced){ factEl.textContent=f.t; return; }
+      factEl.style.opacity='0'; factEl.style.transform='translateY(-5px)';
+      setTimeout(function(){ factEl.textContent=f.t;
+        factEl.style.transition='none'; factEl.style.transform='translateY(6px)';
+        void factEl.offsetWidth; factEl.style.transition=''; factEl.style.opacity='1'; factEl.style.transform='none'; },300); }
+    var factIdx=0, factTimer=null, revealed=false;
+    // ambient life (fact cycle + node twinkle) only while the card is on screen
+    if(card && !prefersReduced){
+      var live=new IntersectionObserver(function(es){ es.forEach(function(e){
+        if(e.isIntersecting){ card.classList.add('fy-live');
+          if(revealed && !factTimer) factTimer=setInterval(function(){ factIdx++; setFact(factIdx); },3600); }
+        else { card.classList.remove('fy-live'); if(factTimer){ clearInterval(factTimer); factTimer=null; } }
+      }); },{threshold:.25});
+      live.observe(card);
     }
-    function revealRightInstant(){
-      [].slice.call(document.querySelectorAll('.pb-card.right .fy-panel')).forEach(function(p){ p.classList.add('in'); panelBits(p).forEach(function(el){ el.classList.add('in'); }); });
-      var lit=document.querySelector('.pb-card.right .pb-tab[data-lit]'); if(lit) lit.classList.add('lit');
+    function revealRight(){ if(!card) return;
+      var panels=[].slice.call(card.querySelectorAll('.fy-panel'));
+      panels.forEach(function(p,i){ setTimeout(function(){ p.classList.add('in'); }, 200+i*420); });
+      var tile1=card.querySelector('.fy-reads .fy-tile');
+      var face1=card.querySelector('.cf.now');
+      var state=card.querySelector('.fy-read-state');
+      setTimeout(function(){ if(tile1) tile1.classList.add('in'); }, 420);
+      [].slice.call(card.querySelectorAll('.fy-future .fy-tile')).forEach(function(t,i){ setTimeout(function(){ t.classList.add('in'); }, 1380+i*200); });
+      setTimeout(function(){ if(tile1) tile1.classList.add('scanning'); }, 550);
+      setTimeout(function(){ if(face1) face1.classList.add('in'); }, 800);
+      setTimeout(function(){ if(state) state.textContent='presence read \u2713'; }, 2450);
+      [].slice.call(card.querySelectorAll('.fy-chip')).forEach(function(c,i){ setTimeout(function(){ c.classList.add('in'); }, 1550+i*190); });
+      tabs.forEach(function(t,i){ setTimeout(function(){ t.classList.add('in'); }, 880+i*95); });
+      var rem=card.querySelector('.fy-remember'); setTimeout(function(){ if(rem) rem.classList.add('in'); }, 1350);
+      setTimeout(function(){ setFact(0,true); }, 1450);
+      [].slice.call(card.querySelectorAll('.cf.future')).forEach(function(f,i){ setTimeout(function(){ f.classList.add('in'); }, 1550+i*240); });
+      var lock=card.querySelector('.fy-lock'); setTimeout(function(){ if(lock) lock.classList.add('pulse'); }, 2700);
+      setTimeout(function(){ revealed=true;
+        if(card.classList.contains('fy-live') && !factTimer) factTimer=setInterval(function(){ factIdx++; setFact(factIdx); },3600);
+      }, 3600);
     }
+    function revealRightInstant(){ if(!card) return;
+      [].slice.call(card.querySelectorAll('.fy-panel, .fy-chip, .pb-tab, .fy-tile, .fy-remember, .cf')).forEach(function(n){ n.classList.add('in'); });
+      var state=card.querySelector('.fy-read-state'); if(state) state.textContent='presence read \u2713';
+      setFact(0,true);
+    }
+    // the thread visibly forgets — bubbles ghost out, a stamp remains
+    function forget(){ var wipe=document.createElement('div'); wipe.className='pb-wipe';
+      wipe.textContent='\u2014 new chat \u00b7 nothing remembered \u2014'; chat.appendChild(wipe);
+      void wipe.offsetWidth; chat.classList.add('ghost'); }
     async function leftCycle(){ clearFails(); chat.innerHTML='';
       var att=document.createElement('div'); att.className='attach'; att.innerHTML='<div class="thumb"><span class="cam">IMG</span></div><div class="meta"><div class="fname">selfie.jpg <span class="check">\u2713</span></div><div class="bar"><i></i></div><div class="state">uploading\u2026</div></div>'; chat.appendChild(att);
       await fillProgress(att.querySelector('.bar i'),820); att.classList.add('done'); att.querySelector('.state').textContent='uploaded \u00b7 2.1 MB'; await sleep(520);
       setFail('face',true); var u=addBubble('user'); await typeInto(u,QUESTION,26); await sleep(420);
       var typing=document.createElement('div'); typing.className='typing'; typing.innerHTML='<i></i><i></i><i></i>'; chat.appendChild(typing); await sleep(820); typing.remove();
-      setFail('talk',true); att.classList.add('ignored'); att.querySelector('.state').textContent="saw the image — didn't read your face";
+      setFail('talk',true); att.classList.add('ignored'); att.querySelector('.state').textContent="saw the image \u2014 didn't read your face";
       for(var i=0;i<ANSWER.length;i++){ var a=addBubble('ai'); a.textContent=ANSWER[i]; if(i>=2){ setFail('wall',true); var ai=chat.querySelectorAll('.bubble.ai'); if(ai[i-2]) ai[i-2].classList.add('fading'); } await sleep(600); }
-      await sleep(680); setFail('forget',true); }
+      await sleep(680); setFail('forget',true);
+      await sleep(1700); forget(); }
     var startedP=false;
     var pObs=new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting && !startedP){ startedP=true; run(); } }); },{threshold:.2});
     { var pbSec=document.getElementById('why'); if(pbSec) pObs.observe(pbSec); }
     async function run(){
       if(prefersReduced){ revealRightInstant();
         var att=document.createElement('div'); att.className='attach done ignored'; att.innerHTML='<div class="thumb"><span class="cam">IMG</span></div><div class="meta"><div class="fname">selfie.jpg <span class="check">\u2713</span></div><div class="state">saw the image \u2014 didn\'t read your face</div></div>'; chat.appendChild(att);
-        var u=addBubble('user'); u.textContent=QUESTION; ANSWER.forEach(function(t){ var a=addBubble('ai'); a.textContent=t; }); return; }
+        var u=addBubble('user'); u.textContent=QUESTION; ANSWER.forEach(function(t){ var a=addBubble('ai'); a.textContent=t; });
+        forget(); return; }
       revealRight(); await sleep(500); await leftCycle(); }   // play once, then it stays
   })();
 

@@ -15,7 +15,7 @@
 <link rel="mask-icon" href="favicon.svg?v=1" color="#0f9b8e" />
 <link rel="preload" as="font" type="font/woff2" href="fonts/newsreader-latin-normal.woff2" crossorigin />
 <link rel="preload" as="font" type="font/woff2" href="fonts/sora-latin-600.woff2" crossorigin />
-<link rel="stylesheet" href="styles.css?v=35" />
+<link rel="stylesheet" href="styles.css?v=36" />
 <script src="image-slot.js?v=31" defer></script>
 <style id="fh-style">
 /* ===== Ported Fyon hero + scroll reveal — fully scoped under #fyon-hero so it
@@ -189,11 +189,19 @@
           <div class="fy-panel">
             <span class="fy-label"><span class="d"></span>It reads you</span>
             <div class="fy-reads">
-              <div class="fy-tile">
+              <div class="fy-tile face">
                 <span class="fy-tile-tag">You · now</span>
-                <span class="fy-glyph" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="8.5" cy="9.5" r="1.7"/><path d="M4 18l5-5 4 3 3-3 4 4"/></svg></span>
-                <span class="fy-tile-ph">Drop your photo</span>
-                <span class="fy-tile-sub">or browse files</span>
+                <svg class="cf now" viewBox="0 0 100 116" aria-hidden="true">
+                  <path class="e" pathLength="1" d="M50 8 L26 22 L20 48 L26 78 L38 98 L50 106 L62 98 L74 78 L80 48 L74 22 Z"/>
+                  <path class="e" pathLength="1" d="M30 38 L44 36 M56 36 L70 38"/>
+                  <path class="e" pathLength="1" d="M50 52 L50 64 M44 68 L50 64 L56 68"/>
+                  <path class="e" pathLength="1" d="M40 84 Q50 90 60 84"/>
+                  <path class="e" pathLength="1" d="M26 22 L38 46 L50 64 L62 46 L74 22 M38 46 L44 36 M62 46 L56 36"/>
+                  <circle class="n" cx="50" cy="8" r="2"/><circle class="n" cx="26" cy="22" r="2"/><circle class="n" cx="74" cy="22" r="2"/><circle class="n" cx="20" cy="48" r="2"/><circle class="n" cx="80" cy="48" r="2"/><circle class="n" cx="26" cy="78" r="2"/><circle class="n" cx="74" cy="78" r="2"/><circle class="n" cx="50" cy="106" r="2"/><circle class="n" cx="50" cy="64" r="2"/><circle class="n" cx="40" cy="84" r="1.7"/><circle class="n" cx="60" cy="84" r="1.7"/>
+                  <circle class="n eye" cx="38" cy="46" r="2.8"/><circle class="n eye" cx="62" cy="46" r="2.8"/>
+                </svg>
+                <span class="fy-scan" aria-hidden="true"></span>
+                <span class="fy-read-state">reading presence…</span>
               </div>
               <div class="fy-reads-body">
                 <p class="fy-mini">How you actually land:</p>
@@ -210,21 +218,42 @@
           <div class="fy-panel">
             <span class="fy-label"><span class="d"></span>It knows you</span>
             <div class="pb-tabs fy-tabs">
-              <span class="pb-tab">Face</span><span class="pb-tab">Body</span><span class="pb-tab">Goals</span><span class="pb-tab" data-lit>History</span>
+              <span class="pb-tab">Face</span><span class="pb-tab">Body</span><span class="pb-tab">Goals</span><span class="pb-tab">History</span>
             </div>
-            <p class="fy-remember"><span class="fy-pill">Remembered</span> Last time you said evenings are when your routine slips.</p>
+            <p class="fy-remember"><span class="fy-pill">Remembered</span> <span class="fy-fact" id="fyFact">Last time you said evenings are when your routine slips.</span></p>
           </div>
 
           <div class="fy-panel">
             <span class="fy-label"><span class="d"></span>It shows you</span>
             <div class="fy-shows">
               <div class="fy-future">
-                <div class="fy-tile sm"><span class="fy-tile-tag">Front</span><span class="fy-glyph" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="8.5" cy="9.5" r="1.7"/><path d="M4 18l5-5 4 3 3-3 4 4"/></svg></span><span class="fy-tile-ph">Front · future self</span><span class="fy-tile-sub">or browse files</span></div>
-                <div class="fy-tile sm"><span class="fy-tile-tag">Side</span><span class="fy-glyph" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="8.5" cy="9.5" r="1.7"/><path d="M4 18l5-5 4 3 3-3 4 4"/></svg></span><span class="fy-tile-ph">Side · future self</span><span class="fy-tile-sub">or browse files</span></div>
+                <div class="fy-tile sm face">
+                  <span class="fy-tile-tag">Front</span>
+                  <svg class="cf future" viewBox="0 0 100 116" aria-hidden="true">
+                    <path class="e" pathLength="1" d="M50 8 L26 22 L20 48 L26 78 L38 98 L50 106 L62 98 L74 78 L80 48 L74 22 Z"/>
+                    <path class="e" pathLength="1" d="M30 38 L44 36 M56 36 L70 38"/>
+                    <path class="e" pathLength="1" d="M50 52 L50 64 M44 68 L50 64 L56 68"/>
+                    <path class="e" pathLength="1" d="M40 84 Q50 90 60 84"/>
+                    <path class="e" pathLength="1" d="M26 22 L38 46 L50 64 L62 46 L74 22 M38 46 L44 36 M62 46 L56 36"/>
+                    <circle class="n" cx="50" cy="8" r="2"/><circle class="n" cx="26" cy="22" r="2"/><circle class="n" cx="74" cy="22" r="2"/><circle class="n" cx="20" cy="48" r="2"/><circle class="n" cx="80" cy="48" r="2"/><circle class="n" cx="26" cy="78" r="2"/><circle class="n" cx="74" cy="78" r="2"/><circle class="n" cx="50" cy="106" r="2"/><circle class="n" cx="50" cy="64" r="2"/><circle class="n" cx="40" cy="84" r="1.7"/><circle class="n" cx="60" cy="84" r="1.7"/>
+                    <circle class="n eye" cx="38" cy="46" r="2.8"/><circle class="n eye" cx="62" cy="46" r="2.8"/>
+                  </svg>
+                </div>
+                <div class="fy-tile sm face">
+                  <span class="fy-tile-tag">Side</span>
+                  <svg class="cf future" viewBox="0 0 100 116" aria-hidden="true">
+                    <path class="e" pathLength="1" d="M36 12 Q58 6 66 22 L72 38 L70 48 L80 58 L70 64 L74 72 L68 80 L72 90 L58 100 L40 102 L34 86 L32 44 Z"/>
+                    <path class="e" pathLength="1" d="M44 56 Q50 52 48 62 Q46 68 42 62"/>
+                    <path class="e" pathLength="1" d="M52 36 L66 38"/>
+                    <path class="e" pathLength="1" d="M46 60 L58 44 L70 48"/>
+                    <circle class="n" cx="36" cy="12" r="2"/><circle class="n" cx="32" cy="44" r="2"/><circle class="n" cx="34" cy="86" r="2"/><circle class="n" cx="40" cy="102" r="2"/><circle class="n" cx="58" cy="100" r="2"/><circle class="n" cx="72" cy="90" r="2"/><circle class="n" cx="74" cy="72" r="1.7"/><circle class="n" cx="80" cy="58" r="2"/><circle class="n" cx="70" cy="48" r="1.7"/><circle class="n" cx="72" cy="38" r="1.7"/><circle class="n" cx="66" cy="22" r="2"/><circle class="n" cx="45" cy="60" r="2"/>
+                    <circle class="n eye" cx="60" cy="42" r="2.8"/>
+                  </svg>
+                </div>
               </div>
               <div class="fy-shows-body">
                 <p class="fy-mini big">The version you could become.</p>
-                <p class="fy-cap"><span class="fy-lock" aria-hidden="true">⬡</span> <b>Identity-locked</b> — your face, not a fantasy.</p>
+                <p class="fy-cap"><span class="fy-lock" aria-hidden="true">⬡</span> <b>Identity-locked</b> — same geometry, your face. <em>Not a fantasy.</em></p>
               </div>
             </div>
           </div>
@@ -549,7 +578,7 @@
     </div>
   </div>
 
-  <script src="site.js?v=34" defer></script>
+  <script src="site.js?v=35" defer></script>
 
   <!-- CTA wiring — referral capture + waitlist/early-access + partner links.
        The product app isn't live yet, so the product CTAs DO NOT touch Stripe.
