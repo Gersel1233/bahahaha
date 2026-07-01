@@ -110,6 +110,12 @@
     svg.appendChild(el('circle',{class:'bn-gulp',cx:CX,cy:CY,r:13,fill:'none',stroke:'#9fd8cf','stroke-width':1.2}));
     svg.appendChild(el('circle',{class:'bn-coreDot',cx:CX,cy:CY,r:10,fill:'#dff3ef'}));
 
+    // phones see the same system inline — square crop centred on the core
+    var mq=window.matchMedia('(max-width:920px)');
+    function fitViewBox(){ svg.setAttribute('viewBox', mq.matches ? '265 55 470 470' : '0 0 1000 580'); }
+    fitViewBox();
+    if(mq.addEventListener) mq.addEventListener('change', fitViewBox);
+
     var cards=[document.querySelector('.bn-card.c1'),document.querySelector('.bn-card.c2'),document.querySelector('.bn-card.c3'),document.querySelector('.bn-card.c4')];
     function setActive(i){ ARMS.forEach(function(A,j){ var on=(j===i);
       armGroups[A.key].classList.toggle('on',on); armGroups[A.key].classList.toggle('dim',!on);
