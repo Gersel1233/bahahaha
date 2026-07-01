@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Fyon · Liquid Glass Buttons</title>
+<style>
+/* ============================================================
+   FYON LIQUID GLASS BUTTONS — standalone, no dependencies
+   Copy everything between the ==== markers into any project.
+
+   Variants:
+     .btn                 frosted glass (secondary)
+     .btn.btn-primary     spruce glass + hover shine sweep + glow ring
+     .btn.btn-hero        deeper spruce gradient (hero CTA) + arrow nudge
+     .btn.btn-lg          larger size
+     .btn.btn-ghost       borderless quiet button
+     .btn.is-loading      built-in orbit spinner (add/remove the class)
+   Works on light and dark backgrounds (glass adapts via backdrop-filter).
+   ============================================================ */
+
+/* ==== FYON GLASS BUTTONS · START ============================ */
+:root{
+  --fy-ink:#2c2620;            /* text on glass */
+  --fy-teal-1:#34a596;         /* spruce light  */
+  --fy-teal-2:#1f857a;         /* spruce        */
+  --fy-teal-3:#166b62;         /* spruce deep   */
+  --fy-font:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Helvetica,Arial,sans-serif;
+}
+
+.btn{
+  position:relative; isolation:isolate; overflow:hidden;
+  display:inline-flex; align-items:center; justify-content:center; gap:.5em;
+  padding:.92em 1.6em; border:0; border-radius:999px;
+  font-family:var(--fy-font); font-size:15.5px; font-weight:600; white-space:nowrap;
+  color:var(--fy-ink); cursor:pointer; text-decoration:none;
+  background:rgba(255,255,255,.42);
+  -webkit-backdrop-filter:blur(13px) saturate(180%); backdrop-filter:blur(13px) saturate(180%);
+  box-shadow:inset 0 1px 1px rgba(255,255,255,.95),   /* top bevel      */
+             inset 0 0 0 1px rgba(255,255,255,.4),    /* glass hairline */
+             0 6px 18px -8px rgba(70,45,25,.4);       /* soft drop      */
+  transition:transform .35s cubic-bezier(.2,.85,.25,1), box-shadow .35s ease;
+}
+.btn:hover{ transform:translateY(-2px) scale(1.025);
+  box-shadow:inset 0 1px 1px rgba(255,255,255,1), inset 0 0 0 1px rgba(255,255,255,.5),
+             0 12px 26px -8px rgba(70,45,25,.45); }
+.btn:active{ transform:translateY(0) scale(.97); transition-duration:.12s; }
+.btn:focus-visible{ outline:2px solid var(--fy-teal-2); outline-offset:3px; }
+
+/* arrow nudge — put the arrow in <span class="ar">→</span> */
+.btn .ar{ transition:transform .3s cubic-bezier(.2,.85,.25,1); }
+.btn:hover .ar{ transform:translateX(3px); }
+
+/* ---- primary: spruce glass + shine sweep + glow ring ---- */
+.btn-primary{
+  color:#fff; text-shadow:0 1px 1px rgba(14,64,58,.35);
+  background:linear-gradient(158deg, rgba(47,158,145,.96), rgba(22,107,98,.97));
+  box-shadow:inset 0 1px 1px rgba(224,245,242,.7), inset 0 0 0 1px rgba(150,210,200,.3),
+             0 10px 26px -8px rgba(18,80,72,.5);
+}
+.btn-primary::after{                                   /* the shine sweep */
+  content:""; position:absolute; inset:0; border-radius:inherit; pointer-events:none; z-index:1;
+  background:linear-gradient(115deg, transparent 32%, rgba(255,255,255,.26) 46%,
+             rgba(255,255,255,.48) 50%, rgba(255,255,255,.26) 54%, transparent 68%);
+  transform:translateX(-140%); transition:transform .9s cubic-bezier(.3,.7,.2,1);
+}
+.btn-primary:hover::after{ transform:translateX(140%); }
+.btn-primary:hover{
+  box-shadow:inset 0 1px 1px rgba(230,248,245,1), inset 0 0 0 1px rgba(150,210,200,.5),
+             0 16px 34px -8px rgba(18,80,72,.55),
+             0 0 0 6px rgba(52,165,150,.12);           /* the glow ring */
+}
+
+/* ---- hero: deeper gradient, same glass language ---- */
+.btn-hero{
+  color:#fff; padding:1.05em 1.9em; font-size:16px;
+  background:linear-gradient(158deg, var(--fy-teal-1), #13635a);
+  box-shadow:inset 0 1px 1px rgba(214,245,239,.6), inset 0 0 0 1px rgba(150,222,211,.3),
+             0 14px 32px -12px rgba(15,90,82,.55);
+}
+.btn-hero::after{ content:""; position:absolute; inset:0; border-radius:inherit; pointer-events:none;
+  background:linear-gradient(115deg, transparent 32%, rgba(255,255,255,.28) 46%,
+             rgba(255,255,255,.5) 50%, rgba(255,255,255,.28) 54%, transparent 68%);
+  transform:translateX(-140%); transition:transform .9s cubic-bezier(.3,.7,.2,1); }
+.btn-hero:hover::after{ transform:translateX(140%); }
+.btn-hero:hover{ transform:translateY(-2px);
+  box-shadow:inset 0 1px 1px rgba(214,245,239,.7), inset 0 0 0 1px rgba(150,222,211,.4),
+             0 16px 38px -12px rgba(15,90,82,.6), 0 0 0 6px rgba(52,165,150,.12); }
+
+/* ---- sizes + quiet ---- */
+.btn-lg{ font-size:17px; padding:1.02em 2em; }
+.btn-ghost{ background:transparent; box-shadow:none; padding:.7em .4em; backdrop-filter:none; -webkit-backdrop-filter:none; }
+.btn-ghost:hover{ transform:translateY(-1px); box-shadow:none; }
+
+/* ---- loading state: the Fyon orbit spinner, pure CSS ---- */
+.btn .orbit{ --s:16px; position:relative; width:var(--s); height:var(--s); display:none; flex:none; }
+.btn.is-loading .orbit{ display:inline-block; }
+.btn .orbit i{ position:absolute; width:26%; height:26%; border-radius:34%; background:currentColor; opacity:.25;
+  animation:fyOrbit 1.5s ease-in-out infinite; }
+.btn .orbit i:nth-child(1){ top:0; left:37%; animation-delay:0s; }
+.btn .orbit i:nth-child(2){ top:37%; left:74%; animation-delay:.375s; }
+.btn .orbit i:nth-child(3){ top:74%; left:37%; animation-delay:.75s; }
+.btn .orbit i:nth-child(4){ top:37%; left:0; animation-delay:1.125s; }
+@keyframes fyOrbit{ 0%{ opacity:1; transform:scale(1.15); } 30%,100%{ opacity:.25; transform:scale(.8); } }
+
+@media (prefers-reduced-motion: reduce){
+  .btn, .btn .ar{ transition:none; }
+  .btn-primary::after, .btn-hero::after{ display:none; }
+  .btn .orbit i{ animation:none; opacity:1; }
+}
+/* ==== FYON GLASS BUTTONS · END ============================== */
+
+/* ------- demo page chrome (not part of the component) ------- */
+body{ margin:0; font-family:var(--fy-font); }
+.demo{ padding:64px 32px; display:flex; flex-wrap:wrap; gap:18px; align-items:center; justify-content:center; }
+.demo.light{ background:radial-gradient(120% 80% at 50% -8%, #f7e6d3 0%, rgba(247,230,211,0) 46%),
+  linear-gradient(172deg,#f4ede1 0%,#ece3d4 100%); }
+.demo.dark{ background:linear-gradient(160deg,#322e29,#26231f); }
+.lbl{ width:100%; text-align:center; font:600 11px/1 ui-monospace,Menlo,monospace; letter-spacing:.22em;
+  text-transform:uppercase; color:#9a9082; margin-bottom:8px; }
+</style>
+</head>
+<body>
+
+  <section class="demo light">
+    <span class="lbl">On light — Fyon cream</span>
+    <button class="btn">Join waitlist</button>
+    <button class="btn btn-primary">Become a partner</button>
+    <button class="btn btn-primary btn-lg">Join the waitlist <span class="ar">→</span></button>
+    <button class="btn btn-hero">Try Fyon <span class="ar">→</span></button>
+    <button class="btn btn-ghost">Learn more <span class="ar">→</span></button>
+    <button class="btn btn-primary is-loading"><span class="orbit"><i></i><i></i><i></i><i></i></span>Joining…</button>
+  </section>
+
+  <section class="demo dark">
+    <span class="lbl">On dark — same components, glass adapts</span>
+    <button class="btn">Sign in</button>
+    <button class="btn btn-primary">Become a partner</button>
+    <button class="btn btn-hero btn-lg">Try Fyon <span class="ar">→</span></button>
+  </section>
+
+</body>
+</html>
