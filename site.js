@@ -63,7 +63,7 @@
      ============================================================ */
   (function brain(){
     var svg=document.querySelector('.bn-links'); if(!svg) return;
-    var ACCENT={ q1:'#1f857a', q2:'#34a596', q3:'#5e8d6e', q4:'#2f9e91' };
+    var ACCENT={ q1:'#2f9e91', q2:'#c2914a', q3:'#5e8d6e', q4:'#a86f7d' };   // spruce · amber · sage · plum
     var CX=500, CY=290, D2R=Math.PI/180;
     function pt(a,r){ return { x:+(CX+Math.cos(a*D2R)*r).toFixed(1), y:+(CY+Math.sin(a*D2R)*r).toFixed(1) }; }
     function arcPath(a1,a2,r){ var p1=pt(a1,r), p2=pt(a2,r);
@@ -94,11 +94,12 @@
       // the stream — a drawn curve from the hub into the core, ridden by comets
       var end=pt(A.a+14,36), ctl=pt(A.a-12,88);
       var d='M'+hub.x+' '+hub.y+' Q'+ctl.x+' '+ctl.y+' '+end.x+' '+end.y;
-      g.appendChild(el('path',{class:'stream',d:d,stroke:col,'stroke-opacity':.15,'stroke-width':1}));
+      g.appendChild(el('path',{class:'stream',d:d,stroke:col,'stroke-opacity':.3,'stroke-width':1.1,'stroke-dasharray':'2 7'}));
       if(!prefersReduced){ for(var k=0;k<3;k++){
-        var c=el('circle',{class:'comet',r:2.2,fill:col});
+        var c=el('circle',{class:'comet',r:2.4,fill:col});
         c.appendChild(el('animateMotion',{dur:'4.6s',repeatCount:'indefinite',begin:(-k*1.53)+'s',path:d}));
-        c.appendChild(el('animate',{attributeName:'opacity',values:'0;.95;.95;0',keyTimes:'0;.15;.8;1',dur:'4.6s',repeatCount:'indefinite',begin:(-k*1.53)+'s'}));
+        c.appendChild(el('animate',{attributeName:'opacity',values:'0;.95;.95;0',keyTimes:'0;.12;.94;1',dur:'4.6s',repeatCount:'indefinite',begin:(-k*1.53)+'s'}));
+        c.appendChild(el('animate',{attributeName:'r',values:'2.4;2.4;3.1;.4',keyTimes:'0;.72;.9;1',dur:'4.6s',repeatCount:'indefinite',begin:(-k*1.53)+'s'}));
         g.appendChild(c); } }
     });
 
@@ -106,6 +107,7 @@
     svg.appendChild(el('circle',{class:'bn-halo',cx:CX,cy:CY,r:62,fill:'url(#bnGlow)'}));
     svg.appendChild(el('circle',{class:'bn-ringDash',cx:CX,cy:CY,r:41,fill:'none',stroke:'#2f9e91','stroke-opacity':.42,'stroke-width':1,'stroke-dasharray':'3 8'}));
     svg.appendChild(el('circle',{cx:CX,cy:CY,r:27,fill:'none',stroke:'rgba(191,227,219,.38)','stroke-width':1.2}));
+    svg.appendChild(el('circle',{class:'bn-gulp',cx:CX,cy:CY,r:13,fill:'none',stroke:'#9fd8cf','stroke-width':1.2}));
     svg.appendChild(el('circle',{class:'bn-coreDot',cx:CX,cy:CY,r:10,fill:'#dff3ef'}));
 
     var cards=[document.querySelector('.bn-card.c1'),document.querySelector('.bn-card.c2'),document.querySelector('.bn-card.c3'),document.querySelector('.bn-card.c4')];

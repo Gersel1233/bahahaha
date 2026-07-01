@@ -283,23 +283,27 @@ a{ color:inherit; text-decoration:none; }
 .bn-card.c1{ grid-column:1; grid-row:1; justify-self:start; } .bn-card.c2{ grid-column:3; grid-row:1; justify-self:end; }
 .bn-card.c3{ grid-column:1; grid-row:2; justify-self:start; } .bn-card.c4{ grid-column:3; grid-row:2; justify-self:end; }
 .bn-card.active{ background:rgba(255,255,255,.08); transform:translateY(-3px); }
-.bn-card.c1.active{ box-shadow:inset 0 0 0 1px rgba(31,133,122,.6), 0 14px 34px -14px rgba(31,133,122,.5); }
-.bn-card.c2.active{ box-shadow:inset 0 0 0 1px rgba(52,165,150,.6), 0 14px 34px -14px rgba(52,165,150,.5); }
+.bn-card.c1.active{ box-shadow:inset 0 0 0 1px rgba(47,158,145,.6), 0 14px 34px -14px rgba(47,158,145,.5); }
+.bn-card.c2.active{ box-shadow:inset 0 0 0 1px rgba(194,145,74,.55), 0 14px 34px -14px rgba(194,145,74,.45); }
 .bn-card.c3.active{ box-shadow:inset 0 0 0 1px rgba(94,141,110,.6), 0 14px 34px -14px rgba(94,141,110,.5); }
-.bn-card.c4.active{ box-shadow:inset 0 0 0 1px rgba(47,158,145,.6), 0 14px 34px -14px rgba(47,158,145,.5); }
+.bn-card.c4.active{ box-shadow:inset 0 0 0 1px rgba(168,111,125,.55), 0 14px 34px -14px rgba(168,111,125,.45); }
 .bn-st{ font-family:var(--mono); font-size:10px; letter-spacing:.16em; text-transform:uppercase; margin-bottom:9px; display:flex; align-items:center; gap:8px; } .bn-st .num{ color:rgba(244,237,225,.4); }
-.c1 .bn-st .dot{ color:#1f857a; } .c2 .bn-st .dot{ color:#34a596; } .c3 .bn-st .dot{ color:#5e8d6e; } .c4 .bn-st .dot{ color:#2f9e91; } .bn-st .dot{ font-size:13px; }
+.c1 .bn-st .dot{ color:#2f9e91; } .c2 .bn-st .dot{ color:#c2914a; } .c3 .bn-st .dot{ color:#5e8d6e; } .c4 .bn-st .dot{ color:#a86f7d; } .bn-st .dot{ font-size:13px; }
 .bn-card h3{ font-family:var(--serif); font-weight:500; font-size:21px; line-height:1.12; margin:0 0 8px; color:#f6efe6; }
 .bn-card p{ font-size:13.5px; line-height:1.55; color:rgba(244,237,225,.66); margin:0 0 13px; }
 .bn-stat{ display:inline-flex; align-items:baseline; gap:7px; font-family:var(--mono); font-size:11px; letter-spacing:.04em; color:rgba(244,237,225,.5); }
 .bn-stat b{ font-family:var(--ui); font-size:18px; font-weight:700; letter-spacing:-.01em; }
-.c1 .bn-stat b{ color:#1f857a; } .c2 .bn-stat b{ color:#34a596; } .c3 .bn-stat b{ color:#5e8d6e; } .c4 .bn-stat b{ color:#2f9e91; }
+.c1 .bn-stat b{ color:#2f9e91; } .c2 .bn-stat b{ color:#c2914a; } .c3 .bn-stat b{ color:#7ba98a; } .c4 .bn-stat b{ color:#bb8a97; }
 .bn-center{ grid-column:2; grid-row:1 / span 2; position:relative; z-index:2; height:100%; min-height:520px; }
 .bn-coreLabel{ position:absolute; left:50%; bottom:14px; transform:translateX(-50%); z-index:4; text-align:center; pointer-events:none; }
 .bn-coreLabel .bnn{ font-family:var(--serif); font-style:italic; font-size:19px; color:#f6efe6; }
 .bn-coreLabel .bns{ font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:rgba(244,237,225,.4); margin-top:4px; }
 .bn-links .edge{ stroke-width:1; fill:none; }
 .bn-links .arc, .bn-links .stream{ fill:none; stroke-linecap:round; }
+.bn-links .stream{ animation:bnFlow 1.9s linear infinite; animation-play-state:paused; }
+@keyframes bnFlow{ to{ stroke-dashoffset:-63; } }
+.bn-gulp{ transform-origin:500px 290px; animation:bnGulp 1.53s ease-out infinite; animation-play-state:paused; opacity:0; }
+@keyframes bnGulp{ 0%{ transform:scale(.55); opacity:.6; } 100%{ transform:scale(2.5); opacity:0; } }
 /* orbital system — the whole constellation drifts a few degrees, breathing */
 .bn-sys{ transform-origin:500px 290px; animation:bnDrift 38s ease-in-out infinite alternate; animation-play-state:paused; }
 @keyframes bnDrift{ from{ transform:rotate(-3.2deg); } to{ transform:rotate(3.2deg); } }
@@ -316,9 +320,11 @@ a{ color:inherit; text-decoration:none; }
 /* the SVG "data flow" lines repaint every frame — only run them while the
    brain section is actually on screen (set by IntersectionObserver in site.js) */
 .bn-stage.viz-on .bn-sys, .bn-stage.viz-on .bn-ringDash, .bn-stage.viz-on .bn-halo, .bn-stage.viz-on .bn-coreDot,
-.bn-fs-map .bn-sys, .bn-fs-map .bn-ringDash, .bn-fs-map .bn-halo, .bn-fs-map .bn-coreDot{ animation-play-state:running; }
+.bn-stage.viz-on .stream, .bn-stage.viz-on .bn-gulp,
+.bn-fs-map .bn-sys, .bn-fs-map .bn-ringDash, .bn-fs-map .bn-halo, .bn-fs-map .bn-coreDot,
+.bn-fs-map .stream, .bn-fs-map .bn-gulp{ animation-play-state:running; }
 @media (prefers-reduced-motion: reduce){
-  .bn-sys,.bn-ringDash,.bn-halo,.bn-coreDot{ animation:none; }
+  .bn-sys,.bn-ringDash,.bn-halo,.bn-coreDot,.bn-links .stream,.bn-gulp{ animation:none; }
   .bn-arm{ opacity:.75; }
 }
 .bn-tagline{ position:relative; z-index:4; text-align:center; margin-top:14px; font-family:var(--serif); font-size:clamp(18px,2.2vw,24px); color:#f6efe6; } .bn-tagline em{ font-style:italic; color:#9fd8cf; }
