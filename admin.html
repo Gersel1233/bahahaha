@@ -307,7 +307,7 @@ function fillPay(rows, cur){
 // events
 $('googleBtn').onclick = async ()=>{
   if(!sb) return;
-  const { error } = await sb.auth.signInWithOAuth({ provider:'google', options:{ redirectTo: location.href } });
+  const { error } = await sb.auth.signInWithOAuth({ provider:'google', options:{ redirectTo: window.location.origin + window.location.pathname } });
   if(error) $('authmsg').textContent = error.message;
 };
 $('sendlink').onclick = async ()=>{
