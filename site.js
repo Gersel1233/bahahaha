@@ -71,7 +71,7 @@
     function apply(){ queued=false; if(!on) return;
       for(var i=0;i<N;i++){ var r=slots[i].getBoundingClientRect();
         var p=Math.min(1, Math.max(0, (110 - r.top) / (r.height*0.85)));
-        var sc=1 - p*(N-1-i)*0.05;
+        var sc=1 - p*(N-1-i)*0.03;
         cards[i].style.transform='scale('+sc.toFixed(4)+')';
       } }
     function onScroll(){ if(!queued){ queued=true; requestAnimationFrame(apply); } }
