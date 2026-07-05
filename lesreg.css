@@ -27,7 +27,7 @@
 html{ background:#030303; }
 body{ background:#000; color:#fff; font-family:'Barlow',var(--ui),sans-serif; }
 body::after{ content:none; }                     /* kill the cream composited layer */
-::selection{ background:rgba(52,165,150,.4); color:#fff; }
+::selection{ background:rgba(122,152,208,.4); color:#fff; }
 
 .fh{ font-family:'Instrument Serif',var(--serif),serif; font-style:italic; font-weight:400; }
 
@@ -77,22 +77,22 @@ body::after{ content:none; }                     /* kill the cream composited la
    COSMOS — the living backdrop that rides along the whole flow
    ============================================================ */
 #cosmos{ position:fixed; inset:0; z-index:0; overflow:hidden; pointer-events:none;
-  background:radial-gradient(130% 90% at 50% -20%, #0c1311 0%, #060807 48%, #020202 100%); }
+  background:radial-gradient(130% 90% at 50% -20%, #0b0e14 0%, #060708 48%, #020202 100%); }
 #cosmos canvas{ position:absolute; inset:0; width:100%; height:100%; }
 .crw{ position:absolute; inset:0; will-change:transform; }
 .cg{ position:absolute; border-radius:50%; filter:blur(80px); }
 .cg.g1{ width:58vw; height:58vw; left:-16vw; top:-20vw;
-  background:radial-gradient(circle, rgba(31,133,122,.22), transparent 66%); animation:cgDrift 26s ease-in-out infinite alternate; }
+  background:radial-gradient(circle, rgba(62,92,148,.24), transparent 66%); animation:cgDrift 26s ease-in-out infinite alternate; }
 .cg.g2{ width:46vw; height:46vw; right:-14vw; top:34vh;
-  background:radial-gradient(circle, rgba(168,111,125,.13), transparent 66%); animation:cgDrift 34s ease-in-out -9s infinite alternate-reverse; }
+  background:radial-gradient(circle, rgba(104,84,150,.13), transparent 66%); animation:cgDrift 34s ease-in-out -9s infinite alternate-reverse; }
 @keyframes cgDrift{ from{ transform:translate3d(0,0,0); } to{ transform:translate3d(4vw,6vh,0); } }
-.cring{ position:absolute; left:50%; top:46%; border:1px dashed rgba(127,214,201,.15); border-radius:50%;
+.cring{ position:absolute; left:50%; top:46%; border:1px dashed rgba(178,200,232,.15); border-radius:50%;
   transform:translate(-50%,-50%); }
 .cring.r1{ width:min(74vw,900px); height:min(74vw,900px); animation:crSpin 150s linear infinite; }
-.cring.r2{ width:min(112vw,1420px); height:min(112vw,1420px); border-color:rgba(127,214,201,.08); animation:crSpin 220s linear infinite reverse; }
+.cring.r2{ width:min(112vw,1420px); height:min(112vw,1420px); border-color:rgba(178,200,232,.08); animation:crSpin 220s linear infinite reverse; }
 @keyframes crSpin{ from{ transform:translate(-50%,-50%) rotate(0); } to{ transform:translate(-50%,-50%) rotate(360deg); } }
 .ctorch{ position:absolute; top:0; left:0; width:760px; height:760px; will-change:transform; opacity:.95;
-  background:radial-gradient(circle, rgba(52,165,150,.26) 0%, rgba(52,165,150,.1) 36%, transparent 68%); }
+  background:radial-gradient(circle, rgba(132,166,224,.26) 0%, rgba(132,166,224,.1) 36%, transparent 68%); }
 
 .fyon-reveal{ position:relative; z-index:1; }
 #fyon,#work,#services,#contact,#studio{ scroll-margin-top:84px; }
@@ -142,7 +142,7 @@ body::after{ content:none; }                     /* kill the cream composited la
 .glp{ display:inline-flex; align-items:center; gap:9px; border-radius:999px; padding:11px 22px;
   font-size:14.5px; font-weight:500; color:#fff;
   transition:transform .3s cubic-bezier(.2,.85,.25,1), box-shadow .3s ease; }
-.glp:hover{ transform:translateY(-2px); box-shadow:inset 0 1px 1px rgba(255,255,255,.25), 0 14px 34px -14px rgba(127,214,201,.4); }
+.glp:hover{ transform:translateY(-2px); box-shadow:inset 0 1px 1px rgba(255,255,255,.25), 0 14px 34px -14px rgba(154,182,232,.4); }
 
 /* Apple-style liquid press — a specular that follows the finger, glass that squishes */
 .glp::after, .gbtn-ghost::after{
@@ -230,9 +230,9 @@ body::after{ content:none; }                     /* kill the cream composited la
 .pj-slot:nth-child(1){ z-index:1; }
 .pj-slot:nth-child(2){ z-index:2; padding-top:110px; }
 .pj-slot:nth-child(3){ z-index:3; padding-top:134px; }
-.pj-card{ position:relative; border:2px solid #D7E2EA; border-radius:clamp(32px,4.4vw,60px);
+.pj-card{ position:relative; display:flex; flex-direction:column; border:2px solid #D7E2EA; border-radius:clamp(32px,4.4vw,60px);
   padding:clamp(16px,2.6vw,32px); transform-origin:top center; will-change:transform;
-  background:rgba(9,10,10,.97); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); }
+  background:linear-gradient(168deg,#0d0f10,#080909); }
 
 .pj-top{ display:flex; align-items:center; gap:clamp(14px,2.6vw,32px); margin-bottom:clamp(14px,2.2vw,24px); position:relative; z-index:1; }
 .pj-num{ font-family:'Kanit','Barlow',sans-serif; font-weight:900; line-height:.9; letter-spacing:-.02em;
@@ -251,7 +251,7 @@ body::after{ content:none; }                     /* kill the cream composited la
 .gbtn-ghost:hover{ background:rgba(215,226,234,.1); transform:translateY(-2px); }
 .gbtn-ghost:active{ transform:scale(.94); transition-duration:.09s; background:rgba(215,226,234,.18); }
 
-.pj-body{ display:grid; grid-template-columns:2fr 3fr; gap:clamp(10px,1.6vw,18px); position:relative; z-index:1; }
+.pj-body{ flex:1; display:grid; grid-template-columns:2fr 3fr; gap:clamp(10px,1.6vw,18px); position:relative; z-index:1; }
 .pj-body.one{ grid-template-columns:1fr; }
 .pj-colL{ display:flex; flex-direction:column; gap:clamp(10px,1.6vw,18px); }
 .pj-tile{ position:relative; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; text-align:center;
@@ -266,31 +266,32 @@ body::after{ content:none; }                     /* kill the cream composited la
   background:rgba(255,255,255,.03); box-shadow:inset 0 1px 1px rgba(255,255,255,.12), inset 0 0 0 1px rgba(255,255,255,.1); }
 .pj-cap{ position:absolute; bottom:14px; left:0; right:0; font-size:10px; font-weight:500; letter-spacing:.12em; text-transform:uppercase; color:rgba(215,226,234,.5); }
 .pj-tile.txt{ align-items:flex-start; text-align:left; justify-content:flex-start; padding:24px 26px; gap:9px; }
-.pj-tile.txt .pj-k{ font-size:10.5px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:#9fd8cf; }
+.pj-tile.txt .pj-k{ font-size:10.5px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:#A9C3E4; }
 .pj-tile.txt p{ margin:0; font-size:14px; font-weight:300; line-height:1.55; color:rgba(255,255,255,.85); }
 .pj-tile.mock{ padding:clamp(16px,2.4vw,30px); }
 .pj-tile.mock .sp-browser{ width:min(100%,360px); }
-.pj-next{ display:flex; flex-direction:column; align-items:center; gap:14px; text-align:center; padding:clamp(30px,5vw,60px) 20px;
+.pj-next{ height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px; text-align:center; padding:clamp(30px,5vw,60px) 20px;
   border:1.5px dashed rgba(255,255,255,.28); border-radius:1.25rem; }
-.pn-plus{ font-family:'Instrument Serif',serif; font-style:italic; font-size:54px; line-height:1; color:#9fd8cf; }
+.pn-plus{ font-family:'Instrument Serif',serif; font-style:italic; font-size:54px; line-height:1; color:#A9C3E4; }
 .pj-next p{ margin:0; max-width:46ch; font-size:15px; font-weight:300; line-height:1.6; color:rgba(255,255,255,.85); }
-.pn-mail{ font-size:12px; font-weight:500; letter-spacing:.12em; text-transform:uppercase; color:#9fd8cf; }
+.pn-mail{ font-size:12px; font-weight:500; letter-spacing:.12em; text-transform:uppercase; color:#A9C3E4; }
 
 /* card 01 — the flagship: the living orbital stage IS the tall tile */
 .lgf{ position:relative; height:100%; min-height:clamp(330px,40vw,590px); display:flex; align-items:flex-end;
   padding:clamp(20px,2.8vw,40px); border-radius:clamp(26px,3.4vw,48px); overflow:hidden;
-  background:radial-gradient(120% 120% at 70% 30%, rgba(31,133,122,.12), transparent 55%), rgba(255,255,255,.025);
+  background:radial-gradient(120% 120% at 70% 30%, rgba(78,108,168,.12), transparent 55%), rgba(255,255,255,.025);
   box-shadow:inset 0 1px 1px rgba(255,255,255,.09), inset 0 0 0 1px rgba(255,255,255,.08); }
 .lgf .bn-links{ position:absolute; inset:0; width:100%; height:100%; z-index:1; pointer-events:none; }
 .lgf::after{ content:""; position:absolute; inset:0; z-index:2; pointer-events:none; border-radius:inherit;
   background:linear-gradient(180deg, rgba(4,5,5,0) 34%, rgba(4,5,5,.52) 62%, rgba(4,5,5,.84) 100%); }
 .lgf-copy{ position:relative; z-index:3; width:100%; }
 .lgf-status{ display:inline-flex; align-items:center; gap:8px; font-size:11px; font-weight:500; letter-spacing:.16em; text-transform:uppercase;
-  color:#9fd8cf; padding:6px 13px; border-radius:999px; background:rgba(47,158,145,.14); box-shadow:inset 0 0 0 1px rgba(47,158,145,.35); }
-.lgf-status .led{ width:6px; height:6px; border-radius:50%; background:var(--terra); animation:led 2.2s infinite; }
+  color:#B7CCE8; padding:6px 13px; border-radius:999px; background:rgba(110,145,205,.16); box-shadow:inset 0 0 0 1px rgba(140,170,220,.35); }
+.lgf-status .led{ width:6px; height:6px; border-radius:50%; background:#8FB4E8; animation:ledx 2.2s infinite; }
+@keyframes ledx{ 0%{box-shadow:0 0 0 0 rgba(122,152,208,.5)} 70%{box-shadow:0 0 0 7px rgba(122,152,208,0)} 100%{box-shadow:0 0 0 0 rgba(122,152,208,0)} }
 .lgf-tag{ font-family:'Instrument Serif',serif; font-style:italic; font-size:clamp(21px,2.3vw,30px); line-height:1.14;
   letter-spacing:-.015em; color:#fff; margin:14px 0 18px; max-width:24ch; }
-.lgf-tag em{ font-style:italic; color:#9fd8cf; }
+.lgf-tag em{ font-style:italic; color:#C9DCF0; }
 .lgf-cta{ display:flex; align-items:center; gap:20px; flex-wrap:wrap; }
 
 /* illustrative Spiis mock — a stylised miniature, not a screenshot */
@@ -366,7 +367,7 @@ body::after{ content:none; }                     /* kill the cream composited la
 .lc-orbit i{ position:absolute; width:12px; height:12px; border-radius:4px; background:#ece4d6; opacity:.85; animation:lcBreath 4.2s ease-in-out infinite; }
 .lc-orbit .n{ top:0; left:22px; } .lc-orbit .e{ top:22px; left:44px; animation-delay:.5s; }
 .lc-orbit .s2{ top:44px; left:22px; animation-delay:1s; } .lc-orbit .w{ top:22px; left:0; animation-delay:1.5s; }
-.lc-orbit .c{ top:22px; left:22px; background:var(--terra); animation:none; }
+.lc-orbit .c{ top:22px; left:22px; background:#8FB4E8; animation:none; }
 @keyframes lcBreath{ 0%,100%{ opacity:.85; transform:scale(1); } 50%{ opacity:.45; transform:scale(.86); } }
 
 /* ============================================================
@@ -381,17 +382,18 @@ body::after{ content:none; }                     /* kill the cream composited la
 /* ============================================================
    INTRO — same choreography, recolored for the dark theme
    ============================================================ */
-#lg-intro{ background:radial-gradient(58% 48% at 50% 44%, rgba(52,165,150,.12) 0%, rgba(52,165,150,0) 60%),
-  radial-gradient(130% 90% at 50% -20%, #0c1311 0%, #060807 48%, #020202 100%); }
+#lg-intro{ background:radial-gradient(58% 48% at 50% 44%, rgba(122,152,208,.12) 0%, rgba(122,152,208,0) 60%),
+  radial-gradient(130% 90% at 50% -20%, #0b0e14 0%, #060708 48%, #020202 100%); }
 #lg-intro .lgi-blk,
 #lg-intro .lgi-orbit .o{ background:#ece4d6; }
-#lg-intro .lgi-orbit .o.core{ background:var(--teal); }
+#lg-intro .lgi-orbit .o.core{ background:#7FA6D9; }
+#lg-intro .lgi-ring{ border-color:#7FA6D9; }
 #lg-intro .lgi-front,
 #lg-intro .lgi-back,
 #lg-intro .lgi-word{ color:#f2ece0; }
 #lg-intro .lgi-skip{ color:rgba(255,255,255,.4); }
 
-/* dark scrollbar + progress line stays teal (styles.css) */
+#sprog i{ background:linear-gradient(90deg,#8FB4E8,#4A6EA8); }
 
 /* ============================================================
    REDUCED MOTION

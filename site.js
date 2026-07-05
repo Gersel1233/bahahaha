@@ -68,6 +68,12 @@
     if(prefersReduced || window.matchMedia('(max-width:820px)').matches) return;   // static on mobile
     var slots=cards.map(function(c){ return c.parentElement; });
     var N=cards.length, queued=false, on=false;
+    // equal heights — a covered card must never poke out under the one on top
+    function equalize(){ var h=0;
+      cards.forEach(function(c){ c.style.height='auto'; if(c.offsetHeight>h) h=c.offsetHeight; });
+      cards.forEach(function(c){ c.style.height=h+'px'; }); }
+    equalize();
+    window.addEventListener('load', function(){ equalize(); onScroll(); });
     // each pinned card sinks a step deeper for every card that arrives on top of it
     function apply(){ queued=false; if(!on) return;
       var vh=window.innerHeight;
@@ -82,7 +88,7 @@
     var io=new IntersectionObserver(function(es){ es.forEach(function(e){ on=e.isIntersecting; if(on) onScroll(); }); },{threshold:0});
     io.observe(document.querySelector('.pj-stack'));
     window.addEventListener('scroll', onScroll, {passive:true});
-    window.addEventListener('resize', onScroll, {passive:true});
+    window.addEventListener('resize', function(){ equalize(); onScroll(); }, {passive:true});
   })();
 
   /* ============================================================
