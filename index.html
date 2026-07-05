@@ -18,7 +18,7 @@
 <link rel="preload" as="font" type="font/woff2" href="fonts/barlow-normal-400.woff2" crossorigin />
 <link rel="preload" as="font" type="font/woff2" href="fonts/kanit-normal-900.woff2" crossorigin />
 <link rel="stylesheet" href="styles.css?v=40" />
-<link rel="stylesheet" href="lesreg.css?v=6" />
+<link rel="stylesheet" href="lesreg.css?v=7" />
 </head>
 <body>
 
@@ -341,23 +341,31 @@
       raw.split('').forEach(function(ch){ var sp=document.createElement('span'); sp.textContent=ch; sp.style.opacity=reduce?1:.2; frag.appendChild(sp); });
       abt.appendChild(frag);
       if(!reduce){
-        var chars=abt.querySelectorAll('span'), nch=chars.length, aq=false;
-        var lit=0;
+        var chars=abt.querySelectorAll('span'), nch=chars.length, aq=false, W=20;
         function updAbt(){
           aq=false;
           var r=abt.getBoundingClientRect(), vh=window.innerHeight;
-          var prog=(vh*0.8 - r.top)/(r.height + vh*0.6);
+          var prog=(vh*0.85 - r.top)/(r.height + vh*0.55);
           prog=Math.max(0,Math.min(1,prog));
-          var next=Math.round(prog*nch);
-          if(next===lit) return;
-          var a=Math.min(lit,next), b=Math.max(lit,next);
-          for(var i=a;i<b;i++){ chars[i].style.opacity = i<next ? 1 : .2; }
-          lit=next;
+          var head=prog*(nch+W);   // soft leading edge — chars fade in over a 20-char window
+          for(var i=0;i<nch;i++){
+            var o=Math.max(0,Math.min(1,(head-i)/W));
+            chars[i].style.opacity=(.2+.8*o).toFixed(3);
+          }
         }
         window.addEventListener('scroll',function(){ if(!aq){ aq=true; requestAnimationFrame(updAbt); } },{passive:true});
         updAbt();
       }
     }
+
+    /* liquid press — the specular highlight follows the pointer across the glass */
+    document.querySelectorAll('.glp,.gbtn-ghost').forEach(function(b){
+      b.addEventListener('pointermove',function(e){
+        var r=b.getBoundingClientRect();
+        b.style.setProperty('--mx',(e.clientX-r.left)+'px');
+        b.style.setProperty('--my',(e.clientY-r.top)+'px');
+      },{passive:true});
+    });
 
     var hero=document.querySelector('.ghero');
     function go(){ if(hero) hero.classList.add('go'); armBT(); }
@@ -408,6 +416,6 @@
   })();
   </script>
 
-  <script src="site.js?v=41" defer></script>
+  <script src="site.js?v=42" defer></script>
 </body>
 </html>

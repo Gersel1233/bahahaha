@@ -68,10 +68,14 @@
     if(prefersReduced || window.matchMedia('(max-width:820px)').matches) return;   // static on mobile
     var slots=cards.map(function(c){ return c.parentElement; });
     var N=cards.length, queued=false, on=false;
+    // each pinned card sinks a step deeper for every card that arrives on top of it
     function apply(){ queued=false; if(!on) return;
-      for(var i=0;i<N;i++){ var r=slots[i].getBoundingClientRect();
-        var p=Math.min(1, Math.max(0, (110 - r.top) / (r.height*0.85)));
-        var sc=1 - p*(N-1-i)*0.03;
+      var vh=window.innerHeight;
+      var arrive=slots.map(function(s,j){ if(!j) return 1;
+        var r=s.getBoundingClientRect();
+        return Math.min(1, Math.max(0, (vh - r.top) / (vh*0.92))); });
+      for(var i=0;i<N;i++){ var sc=1;
+        for(var j=i+1;j<N;j++) sc-=0.045*arrive[j];
         cards[i].style.transform='scale('+sc.toFixed(4)+')';
       } }
     function onScroll(){ if(!queued){ queued=true; requestAnimationFrame(apply); } }
