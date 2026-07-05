@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Lesreg — softwarestudie · hjemmesider, apps & systemer</title>
 <meta name="description" content="Lesreg er et uafhængigt softwarestudie. Vi bygger hjemmesider, apps, bestillingssystemer og motorerne bag — egne produkter (Fyon) og skræddersyet software til virksomheder." />
-<meta name="theme-color" content="#f4ede1" />
+<meta name="theme-color" content="#050505" />
 <meta property="og:type" content="website" />
 <meta property="og:title" content="Lesreg — uafhængigt softwarestudie" />
 <meta property="og:description" content="Vi bygger software der bare virker — hjemmesider, apps, systemer og AI-produkter. Se Fyon, vores største projekt til dato." />
@@ -13,10 +13,11 @@
 <meta name="twitter:card" content="summary_large_image" />
 <link rel="icon" type="image/svg+xml" href="favicon.svg?v=1" />
 <link rel="mask-icon" href="favicon.svg?v=1" color="#0f9b8e" />
-<link rel="preload" as="font" type="font/woff2" href="fonts/newsreader-latin-normal.woff2" crossorigin />
 <link rel="preload" as="font" type="font/woff2" href="fonts/sora-latin-600.woff2" crossorigin />
+<link rel="preload" as="font" type="font/woff2" href="fonts/instrumentserif-italic-400.woff2" crossorigin />
+<link rel="preload" as="font" type="font/woff2" href="fonts/barlow-normal-400.woff2" crossorigin />
 <link rel="stylesheet" href="styles.css?v=40" />
-<link rel="stylesheet" href="lesreg.css?v=4" />
+<link rel="stylesheet" href="lesreg.css?v=5" />
 </head>
 <body>
 
@@ -47,112 +48,85 @@
   </div>
   <script src="loader.js?v=32"></script>
 
-  <!-- ===================== NAV ===================== -->
-  <nav class="nav" data-screen-label="nav">
-    <a class="brand" href="#top">Lesreg</a>
-    <div class="navlinks">
-      <a href="#fyon">Fyon</a>
-      <a href="#work">Projekter</a>
-      <a href="#services">Det vi bygger</a>
-      <a href="#contact">Kontakt</a>
+  <!-- ===================== COSMOS — the living backdrop, fixed, rides the whole flow ===================== -->
+  <div id="cosmos" aria-hidden="true">
+    <canvas id="cstars"></canvas>
+    <div class="crw">
+      <i class="cg g1"></i><i class="cg g2"></i>
+      <i class="cring r1"></i><i class="cring r2"></i>
     </div>
-    <a class="btn" href="mailto:mgersel@lesreg.com">Start et projekt</a>
+    <i class="ctorch"></i>
+  </div>
+
+  <!-- ===================== NAV — glass circle · glass pill · white CTA ===================== -->
+  <nav class="nav" data-screen-label="nav">
+    <a class="gn-logo liquid-glass" href="#top" aria-label="Lesreg forside"><span style="position:relative;z-index:1">l</span></a>
+    <div class="gn-mid">
+      <div class="gn-links liquid-glass">
+        <a href="#fyon">Fyon</a>
+        <a href="#work">Projekter</a>
+        <a href="#services">Det vi bygger</a>
+        <a href="#contact">Kontakt</a>
+      </div>
+      <a class="gn-cta" href="mailto:mgersel@lesreg.com">Start et projekt
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg>
+      </a>
+    </div>
+    <span class="gn-spacer" aria-hidden="true"></span>
   </nav>
 
   <div class="fyon-reveal">
 
   <!-- ===================== HERO ===================== -->
-  <header id="top" class="lh-hero" data-screen-label="hero">
-    <div class="lh-field" aria-hidden="true"><i class="f1"></i><i class="f2"></i><i class="f3"></i><i class="f4"></i><i class="f5"></i></div>
-
-    <!-- x-ray layer — the spotlight reveals the engine under the surface.
-         Same DOM structure as the visible hero so the two layers align 1:1. -->
-    <div class="lh-xray" aria-hidden="true">
-      <div class="xr-grid"></div>
-      <i class="xr-torch"></i>
-      <i class="xr-ring r1"></i><i class="xr-ring r2"></i>
-      <span class="xr-note n1">LESREG · ENGINE VIEW</span>
-      <span class="xr-note n2">grid 56px · rev 4.1</span>
-      <span class="xr-note n3">+ 500 : 290</span>
-      <span class="lh-badge"><span class="lh-dot"></span>Uafhængigt softwarestudie</span>
-      <h1 class="lh-h1">
-        <span class="hl-line"><span class="hl-t">Vi bygger software</span></span>
-        <span class="hl-line"><span class="hl-t">der bare <em>virker.</em></span></span>
-      </h1>
-      <p class="lh-sub">Hjemmesider, apps, bestillingssystemer og motorerne bag — egne produkter og skræddersyet software til virksomheder, fra idé til drift.</p>
-      <div class="lh-cta">
-        <span class="btn btn-primary btn-lg">Se hvad vi bygger <span class="ar">↓</span></span>
-        <span class="lh-link">Start et projekt <span class="ar">→</span></span>
+  <header id="top" class="ghero" data-screen-label="hero">
+    <div class="gh-core">
+      <div class="gh-badge liquid-glass">
+        <span class="chip">Nyt</span>
+        <span>Fyon — early access · waitlist åben</span>
+      </div>
+      <h1 class="gh-h1" data-bt>Vi bygger software der bare virker.</h1>
+      <p class="gh-sub">Hjemmesider, apps, bestillingssystemer og motorerne bag — egne produkter og skræddersyet software til virksomheder, fra idé til drift.</p>
+      <div class="gh-cta">
+        <a class="glp liquid-glass-strong" href="#work"><span style="position:relative;z-index:1">Se hvad vi bygger</span>
+          <svg class="ic" style="position:relative;z-index:1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg>
+        </a>
+        <a class="gh-link" href="mailto:mgersel@lesreg.com">Start et projekt
+          <svg class="ic sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg>
+        </a>
+      </div>
+      <div class="gh-stats">
+        <div class="gstat liquid-glass">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 10 5.5L12 13 2 7.5 12 2Z"/><path d="m2 12.5 10 5.5 10-5.5"/><path d="m2 17 10 5.5L22 17"/></svg>
+          <div><span class="num">02</span><span class="lab">Projekter i drift — Fyon & spiis.dk</span></div>
+        </div>
+        <div class="gstat liquid-glass">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m16 18 6-6-6-6"/><path d="m8 6-6 6 6 6"/></svg>
+          <div><span class="num">100%</span><span class="lab">Designet og kodet i hånden</span></div>
+        </div>
       </div>
     </div>
-    <span class="lh-badge"><span class="lh-dot"></span>Uafhængigt softwarestudie</span>
-    <h1 class="lh-h1">
-      <span class="hl-line"><span class="hl-t">Vi bygger software</span></span>
-      <span class="hl-line"><span class="hl-t">der bare <em>virker.</em></span></span>
-    </h1>
-    <p class="lh-sub">Hjemmesider, apps, bestillingssystemer og motorerne bag — egne produkter og skræddersyet software til virksomheder, fra idé til drift.</p>
-    <div class="lh-cta">
-      <a class="btn btn-primary btn-lg" href="#work">Se hvad vi bygger <span class="ar">↓</span></a>
-      <a class="lh-link" href="mailto:mgersel@lesreg.com">Start et projekt <span class="ar">→</span></a>
+    <div class="gh-partners">
+      <span class="gh-ptag liquid-glass"><span>Fra idé til drift — alt bygget in-house</span></span>
+      <div class="gh-prow"><span>Hjemmesider</span><span>Apps</span><span>Systemer</span><span>AI</span></div>
     </div>
   </header>
 
-  <script>
-  (function(){
-    var hero=document.querySelector('.lh-hero'); if(!hero) return;
-    var done=false;
-    function go(){ if(done) return; done=true; requestAnimationFrame(function(){ hero.classList.add('go'); }); }
-    if(document.documentElement.classList.contains('fyon-loaded')){ go(); } else {
-      var t=setInterval(function(){ if(document.documentElement.classList.contains('fyon-loaded')){ clearInterval(t); go(); } }, 80);
-      setTimeout(function(){ clearInterval(t); go(); }, 9000);
-    }
-
-    /* cursor spotlight — reveals the engine layer through a soft mask.
-       Pointer steers it; without a pointer it wanders slowly on its own. */
-    var xr=hero.querySelector('.lh-xray'); if(!xr) return;
-    if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){ xr.remove(); return; }
-    var torch=xr.querySelector('.xr-torch');
-    var R=260, mx=-9999, my=-9999, sx=-9999, sy=-9999, idle=true, raf=null, t0=performance.now();
-    function setMask(x,y){
-      var m='radial-gradient(circle '+R+'px at '+x.toFixed(1)+'px '+y.toFixed(1)+'px, #000 0%, #000 40%, rgba(0,0,0,.75) 60%, rgba(0,0,0,.4) 75%, rgba(0,0,0,.12) 88%, transparent 100%)';
-      xr.style.webkitMaskImage=m; xr.style.maskImage=m;
-    }
-    function loop(now){ raf=requestAnimationFrame(loop);
-      if(idle){ var r=hero.getBoundingClientRect(), t=(now-t0)/1000;
-        mx=r.width*(.5+.34*Math.cos(t*.33)); my=r.height*(.42+.26*Math.sin(t*.45)); }
-      if(sx<-999){ sx=mx; sy=my; }
-      sx+=(mx-sx)*.1; sy+=(my-sy)*.1; setMask(sx,sy);
-      if(torch) torch.style.transform='translate3d('+(sx-360)+'px,'+(sy-360)+'px,0)';
-    }
-    function steer(cx,cy){ var r=hero.getBoundingClientRect(); mx=cx-r.left; my=cy-r.top; idle=false; }
-    hero.addEventListener('mousemove', function(e){ steer(e.clientX,e.clientY); }, {passive:true});
-    hero.addEventListener('touchmove', function(e){ if(e.touches[0]) steer(e.touches[0].clientX,e.touches[0].clientY); }, {passive:true});
-    hero.addEventListener('mouseleave', function(){ idle=true; }, {passive:true});
-    // run only while the hero is on screen
-    var vis=new IntersectionObserver(function(es){ es.forEach(function(e){
-      if(e.isIntersecting){ if(!raf) raf=requestAnimationFrame(loop); }
-      else if(raf){ cancelAnimationFrame(raf); raf=null; }
-    }); },{threshold:.05});
-    vis.observe(hero);
-  })();
-  </script>
-
-  <!-- ===================== 1 · PROJEKTER (stacked cards) ===================== -->
+  <!-- ===================== 1 · PROJEKTER (stacked glass slides) ===================== -->
   <section class="s pj" id="work" data-screen-label="projects">
     <div class="s-inner">
-      <p class="eyebrow reveal" style="color:#9fd8cf">Udvalgt arbejde</p>
-      <h2 class="pj-h reveal">Projekter</h2>
+      <p class="gk reveal">// Udvalgt arbejde</p>
+      <h2 class="gh2 bt-left" data-bt>Projekter</h2>
 
       <div class="pj-stack">
 
-        <div class="pj-slot" id="fyon"><article class="pj-card">
+        <div class="pj-slot" id="fyon"><article class="pj-card liquid-glass">
           <header class="pj-top">
             <span class="pj-num">01</span>
             <div class="pj-meta"><span class="pj-cat">Eget produkt · Early access</span><h3>Fyon</h3></div>
             <a class="gbtn-ghost" href="fyon.html">Prøv Fyon</a>
           </header>
           <div class="pj-body pj-flag">
-            <div class="lgf bn-stage iri iri-dark">
+            <div class="lgf bn-stage">
               <svg class="bn-links" viewBox="0 0 1000 580" preserveAspectRatio="xMidYMid meet" aria-hidden="true"></svg>
               <div class="lgf-copy">
                 <span class="lgf-status"><span class="led"></span>Early access · waitlist åben</span>
@@ -161,15 +135,19 @@
                   <span>Læser dig</span><span>Kender dig</span><span>Viser dig</span>
                 </div>
                 <div class="lgf-cta">
-                  <a class="btn btn-primary btn-lg" href="fyon.html">Prøv Fyon <span class="ar">→</span></a>
-                  <a class="lh-link lgf-link" href="fyon.html#partners">Tjen penge som partner <span class="ar">→</span></a>
+                  <a class="glp liquid-glass-strong" href="fyon.html"><span style="position:relative;z-index:1">Prøv Fyon</span>
+                    <svg class="ic" style="position:relative;z-index:1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg>
+                  </a>
+                  <a class="gh-link" href="fyon.html#partners">Tjen penge som partner
+                    <svg class="ic sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg>
+                  </a>
                 </div>
               </div>
             </div>
           </div>
         </article></div>
 
-        <div class="pj-slot"><article class="pj-card">
+        <div class="pj-slot"><article class="pj-card liquid-glass">
           <header class="pj-top">
             <span class="pj-num">02</span>
             <div class="pj-meta"><span class="pj-cat">Kunde · Restaurant · Live i drift</span><h3>Spiis</h3></div>
@@ -177,11 +155,11 @@
           </header>
           <div class="pj-body">
             <div class="pj-colL">
-              <div class="pj-tile tA txt">
+              <div class="pj-tile txt">
                 <span class="pj-k">Problemet</span>
                 <p>Intet overblik i køkkenet — og gæster der afbrød chefen, fordi mail og telefon ikke blev nået.</p>
               </div>
-              <div class="pj-tile tB txt">
+              <div class="pj-tile txt">
                 <span class="pj-k">Løsningen</span>
                 <p>Bestillings- og bordbooking indbygget i hjemmesiden. Alt lander i ét admin-overblik: menu, priser, arrangementer.</p>
               </div>
@@ -204,7 +182,7 @@
           </div>
         </article></div>
 
-        <div class="pj-slot"><article class="pj-card">
+        <div class="pj-slot"><article class="pj-card liquid-glass">
           <header class="pj-top">
             <span class="pj-num">03</span>
             <div class="pj-meta"><span class="pj-cat">Din virksomhed · Det næste</span><h3>Dit projekt</h3></div>
@@ -223,27 +201,61 @@
     </div>
   </section>
 
-  <!-- ===================== 2 · DET VI BYGGER (white band) ===================== -->
-  <section class="s sv" id="services" data-screen-label="services">
+  <!-- ===================== 2 · DET VI BYGGER (capabilities, glass cards) ===================== -->
+  <section class="s cap" id="services" data-screen-label="services">
     <div class="s-inner">
-      <h2 class="sv-h reveal">Det vi bygger</h2>
-      <div class="sv-list">
-        <div class="sv-item reveal"><span class="sv-num">01</span><div class="sv-txt"><h3>Hjemmesider</h3><p>Hurtige, håndbyggede og med et design man husker — ingen skabeloner, ingen genveje.</p></div></div>
-        <div class="sv-item reveal d1"><span class="sv-num">02</span><div class="sv-txt"><h3>Apps</h3><p>Fra idé til noget folk faktisk åbner igen — designet og bygget hele vejen igennem.</p></div></div>
-        <div class="sv-item reveal d2"><span class="sv-num">03</span><div class="sv-txt"><h3>Bestillings- & bookingsystemer</h3><p>Som Spiis: gæsterne bestiller selv, og du beholder det fulde overblik i ét admin-panel.</p></div></div>
-        <div class="sv-item reveal d3"><span class="sv-num">04</span><div class="sv-txt"><h3>Systemer & backends</h3><p>Motoren bag: admin-paneler, data og stabil drift — det der får resten til bare at virke.</p></div></div>
-        <div class="sv-item reveal d4"><span class="sv-num">05</span><div class="sv-txt"><h3>AI-produkter</h3><p>Som Fyon: intelligens bygget ind i selve produktet — ikke limet på bagefter.</p></div></div>
+      <p class="gk reveal">// Det vi bygger</p>
+      <h2 class="gh2 bt-left" data-bt>Håndbygget.<br />Hele vejen.</h2>
+
+      <div class="cap-grid">
+        <article class="cap-card liquid-glass reveal">
+          <div class="cap-top">
+            <span class="cap-ic liquid-glass"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 21q-.825 0-1.412-.587T3 19V5q0-.825.588-1.412T5 3h14q.825 0 1.413.588T21 5v14q0 .825-.587 1.413T19 21H5Zm1-4h12l-3.75-5-3 4L9 13l-3 4Z"/></svg></span>
+            <div class="cap-tags"><span>Design fra bunden</span><span>Ingen skabeloner</span><span>Hurtigt i drift</span><span>Responsivt</span></div>
+          </div>
+          <div class="cap-bot">
+            <h3>Hjemmesider & apps</h3>
+            <p>Hurtige, håndbyggede og med et design man husker — fra idé til noget folk faktisk åbner igen.</p>
+          </div>
+        </article>
+
+        <article class="cap-card liquid-glass reveal d1">
+          <div class="cap-top">
+            <span class="cap-ic liquid-glass"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 20h20v-4H2v4Zm2-3h2v2H4v-2ZM2 4v4h20V4H2Zm4 3H4V5h2v2Zm-4 7h20v-4H2v4Zm2-3h2v2H4v-2Z"/></svg></span>
+            <div class="cap-tags"><span>Bestilling</span><span>Bordbooking</span><span>Admin-overblik</span><span>Stabil drift</span></div>
+          </div>
+          <div class="cap-bot">
+            <h3>Systemer & bestilling</h3>
+            <p>Som Spiis: gæsterne bestiller selv, og du beholder det fulde overblik i ét admin-panel. Motoren bag, der bare virker.</p>
+          </div>
+        </article>
+
+        <article class="cap-card liquid-glass reveal d2">
+          <div class="cap-top">
+            <span class="cap-ic liquid-glass"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1Zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7Z"/></svg></span>
+            <div class="cap-tags"><span>Egen engine</span><span>Egen backend</span><span>Bygget ind</span><span>Fyon</span></div>
+          </div>
+          <div class="cap-bot">
+            <h3>AI-produkter</h3>
+            <p>Som Fyon: intelligens bygget ind i selve produktet fra første linje — ikke limet på bagefter.</p>
+          </div>
+        </article>
       </div>
     </div>
   </section>
 
   <!-- ===================== 3 · KONTAKT ===================== -->
   <section class="s" id="contact" data-screen-label="contact">
-    <div class="s-inner lh-contact">
-      <div class="lc-orbit reveal" aria-hidden="true"><i class="n"></i><i class="e"></i><i class="s2"></i><i class="w"></i><i class="c"></i></div>
-      <h2 class="h2 reveal" style="margin:0 auto 14px;max-width:14ch;">Har du et projekt?</h2>
-      <p class="lede reveal" style="margin:0 auto 34px;">Skriv — vi svarer hurtigt, og du taler direkte med den der bygger.</p>
-      <a class="btn btn-primary btn-lg reveal d1" href="mailto:mgersel@lesreg.com">mgersel@lesreg.com <span class="ar">→</span></a>
+    <div class="s-inner gcontact">
+      <div class="gc-panel liquid-glass reveal">
+        <div class="lc-orbit" aria-hidden="true"><i class="n"></i><i class="e"></i><i class="s2"></i><i class="w"></i><i class="c"></i></div>
+        <p class="gk">// Kontakt</p>
+        <h2 class="gh2" data-bt>Har du et projekt?</h2>
+        <p class="gc-sub">Skriv — vi svarer hurtigt, og du taler direkte med den der bygger.</p>
+        <a class="gn-cta big" href="mailto:mgersel@lesreg.com">mgersel@lesreg.com
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg>
+        </a>
+      </div>
     </div>
   </section>
 
@@ -261,6 +273,85 @@
     </div>
   </footer>
   </div><!-- /.fyon-reveal -->
+
+  <script>
+  /* ---- blur-text + hero entrance, gated on the intro hand-off ---- */
+  (function(){
+    var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    document.querySelectorAll('[data-bt]').forEach(function(elm){
+      var nodes=[].slice.call(elm.childNodes), i=0;
+      elm.textContent='';
+      nodes.forEach(function(n){
+        if(n.nodeType===3){
+          n.textContent.trim().split(/\s+/).forEach(function(w){
+            if(!w) return;
+            var s=document.createElement('span'); s.className='btw'; s.textContent=w;
+            s.style.setProperty('--d',(i*0.1)+'s'); i++;
+            elm.appendChild(s);
+          });
+        } else if(n.nodeName==='BR'){
+          var b=document.createElement('span'); b.className='btbr'; elm.appendChild(b);
+        }
+      });
+      elm.classList.add('bt');
+    });
+
+    function armBT(){
+      var io=new IntersectionObserver(function(es){ es.forEach(function(e){
+        if(e.isIntersecting){ e.target.classList.add('bt-go'); io.unobserve(e.target); }
+      }); },{threshold:.1});
+      document.querySelectorAll('[data-bt]').forEach(function(elm){ io.observe(elm); });
+    }
+
+    var hero=document.querySelector('.ghero');
+    function go(){ if(hero) hero.classList.add('go'); armBT(); }
+    if(reduce || document.documentElement.classList.contains('fyon-loaded')){ go(); }
+    else{
+      var t=setInterval(function(){ if(document.documentElement.classList.contains('fyon-loaded')){ clearInterval(t); go(); } },80);
+      setTimeout(function(){ clearInterval(t); go(); },9000);
+    }
+  })();
+
+  /* ---- cosmos: drifting starfield, torch light and scroll parallax.
+         Fixed behind everything, so the same living backdrop follows
+         the visitor through the whole flow. ---- */
+  (function(){
+    var c=document.getElementById('cstars'); if(!c) return;
+    var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var ctx=c.getContext('2d'), W,H, N=150, stars=[];
+    function size(){ var d=Math.min(2,window.devicePixelRatio||1); W=window.innerWidth; H=window.innerHeight;
+      c.width=W*d; c.height=H*d; ctx.setTransform(d,0,0,d,0,0); }
+    size(); window.addEventListener('resize',size);
+    for(var i=0;i<N;i++){ stars.push({ fx:Math.random(), fy:Math.random()*1.5, z:.25+Math.random()*.75,
+      r:.4+Math.random()*1.2, p:Math.random()*6.283, teal:Math.random()<.15 }); }
+    function draw(t){
+      ctx.clearRect(0,0,W,H);
+      var sy=window.scrollY||0, span=H+40;
+      for(var i=0;i<N;i++){ var s=stars[i];
+        var x=((s.fx*W + t*2.4*s.z)%(W+40)+(W+40))%(W+40)-20;
+        var y=((s.fy*H*1.5 - sy*.12*s.z)%span+span)%span-20;
+        ctx.globalAlpha=(.25+.6*s.z)*(.55+.45*Math.sin(t*.8+s.p));
+        ctx.fillStyle=s.teal?'#8fd8cc':'#e8efec';
+        ctx.beginPath(); ctx.arc(x,y,s.r*(.5+s.z*.7)+.2,0,6.283); ctx.fill();
+      }
+      ctx.globalAlpha=1;
+    }
+    var torch=document.querySelector('.ctorch'), crw=document.querySelector('.crw');
+    if(reduce){ draw(0); return; }
+    var mx=-1,my=-1,sx=W*.5,syt=H*.4,t0=performance.now();
+    window.addEventListener('pointermove',function(e){ mx=e.clientX; my=e.clientY; },{passive:true});
+    (function loop(now){ requestAnimationFrame(loop);
+      var t=(now-t0)/1000;
+      draw(t);
+      var tx=mx, ty=my;
+      if(mx<0){ tx=W*(.5+.32*Math.cos(t*.23)); ty=H*(.42+.24*Math.sin(t*.31)); }
+      sx+=(tx-sx)*.07; syt+=(ty-syt)*.07;
+      if(torch) torch.style.transform='translate3d('+(sx-360)+'px,'+(syt-360)+'px,0)';
+      if(crw) crw.style.transform='translate3d(0,'+(-(window.scrollY||0)*.05)+'px,0)';
+    })(t0);
+  })();
+  </script>
 
   <script src="site.js?v=40" defer></script>
 </body>
