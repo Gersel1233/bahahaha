@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="da">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Fyon by Lesreg — A self-improvement intelligence that knows you</title>
-<meta name="description" content="Everything else rates you and walks away. Fyon shows you your actual future self — then the intelligence that knows you builds an honest plan and adapts it as you change. By Lesreg. 18+." />
+<title>Lesreg — softwarestudie · hjemmesider, apps & systemer</title>
+<meta name="description" content="Lesreg er et uafhængigt softwarestudie. Vi bygger hjemmesider, apps, bestillingssystemer og motorerne bag — egne produkter (Fyon) og skræddersyet software til virksomheder." />
 <meta name="theme-color" content="#f4ede1" />
 <meta property="og:type" content="website" />
-<meta property="og:title" content="Fyon by Lesreg — the intelligence that knows you" />
-<meta property="og:description" content="Everything else rates you and walks away. Fyon shows you — your actual future self, and an honest plan that moves with you." />
+<meta property="og:title" content="Lesreg — uafhængigt softwarestudie" />
+<meta property="og:description" content="Vi bygger software der bare virker — hjemmesider, apps, systemer og AI-produkter. Se Fyon, vores største projekt til dato." />
 <meta property="og:image" content="https://gersel1233.github.io/bahahaha/og.jpg" />
 <meta name="twitter:card" content="summary_large_image" />
 <link rel="icon" type="image/svg+xml" href="favicon.svg?v=1" />
@@ -16,81 +16,25 @@
 <link rel="preload" as="font" type="font/woff2" href="fonts/newsreader-latin-normal.woff2" crossorigin />
 <link rel="preload" as="font" type="font/woff2" href="fonts/sora-latin-600.woff2" crossorigin />
 <link rel="stylesheet" href="styles.css?v=40" />
-<script src="image-slot.js?v=31" defer></script>
-<style id="fh-style">
-/* ===== Ported Fyon hero + scroll reveal — fully scoped under #fyon-hero so it
-   can't restyle the rest of the site. Colliding class names are prefixed fh-,
-   and every keyframe is prefixed fh (bmBreathA/B already exist for the nav logo). */
-#fyon-hero{ --terra-tint:#34a596; position:relative; isolation:isolate;
-  background:radial-gradient(70% 34% at 50% 6%, rgba(52,165,150,.12), transparent 60%); }
-
-#fyon-hero .fh-hero{ position:relative; z-index:1; min-height:84vh; max-width:1180px; margin:0 auto; padding:96px 32px 24px; text-align:center;
-  display:flex; flex-direction:column; align-items:center; justify-content:center; }
-#fyon-hero .fh-badge{ display:inline-flex; align-items:center; gap:9px; font-family:var(--mono); font-size:11.5px; font-weight:600; letter-spacing:.2em; text-transform:uppercase;
-  color:var(--terra-deep); padding:7px 15px; border-radius:999px; background:rgba(52,165,150,.1); box-shadow:inset 0 0 0 1px rgba(52,165,150,.28); margin-bottom:28px; }
-#fyon-hero .fh-badge .fh-dot{ width:7px; height:7px; border-radius:50%; background:var(--terra); animation:fhPulseDot 2.4s ease-out infinite; }
-@keyframes fhPulseDot{ 0%{ box-shadow:0 0 0 0 rgba(31,133,122,.45);} 70%{ box-shadow:0 0 0 8px rgba(31,133,122,0);} 100%{ box-shadow:0 0 0 0 rgba(31,133,122,0);} }
-
-#fyon-hero h1{ font-family:var(--serif); font-weight:400; font-size:clamp(40px,6.6vw,78px); line-height:1.04; letter-spacing:-.028em; margin:0 0 26px; color:var(--ink); }
-#fyon-hero h1 .fh-knows{ font-style:italic; background:linear-gradient(96deg,#34a596,#1f857a 42%,#2b7b86); -webkit-background-clip:text; background-clip:text; color:transparent; }
-/* line-mask reveal — each line rises out of its own clip, softly staggered */
-#fyon-hero .hl-line{ display:block; overflow:hidden; padding-bottom:.10em; margin-bottom:-.10em; }
-#fyon-hero .hl-t{ display:inline-block; transform:translateY(118%); transition:transform 1.05s cubic-bezier(.16,1,.3,1) .15s; will-change:transform; }
-#fyon-hero .hl-line:nth-child(2) .hl-t{ transition-delay:.25s; }
-#fyon-hero .hl-line:nth-child(3) .hl-t{ transition-delay:.35s; }
-#fyon-hero .fh-badge, #fyon-hero .fh-sub, #fyon-hero .fh-cta{ opacity:0; transform:translateY(12px);
-  transition:opacity .8s ease, transform .9s cubic-bezier(.16,1,.3,1); }
-#fyon-hero .fh-badge{ transition-delay:.05s; }
-#fyon-hero .fh-sub{ transition-delay:.62s; }
-#fyon-hero .fh-cta{ transition-delay:.74s; }
-#fyon-hero .fh-hero.go .hl-t{ transform:translateY(0); }
-#fyon-hero .fh-hero.go .fh-badge, #fyon-hero .fh-hero.go .fh-sub, #fyon-hero .fh-hero.go .fh-cta{ opacity:1; transform:none; }
-#fyon-hero .fh-sub{ font-size:19px; line-height:1.62; color:var(--ink-soft); max-width:600px; margin:0 auto 32px; }
-#fyon-hero .fh-sub b{ color:var(--ink); font-weight:600; }
-#fyon-hero .fh-cta{ display:flex; align-items:center; justify-content:center; gap:24px; flex-wrap:wrap; }
-#fyon-hero .fh-btn{ position:relative; overflow:hidden; border:0; border-radius:999px; padding:1.05em 1.9em; font:600 16px/1 var(--ui); color:#fff; cursor:pointer;
-  display:inline-flex; align-items:center; gap:9px;
-  background:linear-gradient(158deg,#34a596,#13635a);
-  box-shadow:inset 0 1px 1px rgba(214,245,239,.6), inset 0 0 0 1px rgba(150,222,211,.3), 0 14px 32px -12px rgba(15,90,82,.55);
-  transition:transform .3s cubic-bezier(.2,.85,.25,1), box-shadow .35s ease; }
-#fyon-hero .fh-btn .ar{ transition:transform .3s cubic-bezier(.2,.85,.25,1); }
-#fyon-hero .fh-btn:hover{ transform:translateY(-2px); box-shadow:inset 0 1px 1px rgba(214,245,239,.7), inset 0 0 0 1px rgba(150,222,211,.4), 0 16px 38px -12px rgba(15,90,82,.6), 0 0 0 6px rgba(52,165,150,.12); }
-#fyon-hero .fh-btn:hover .ar{ transform:translateX(3px); }
-#fyon-hero .fh-btn::after{ content:""; position:absolute; inset:0; border-radius:inherit; pointer-events:none;
-  background:linear-gradient(115deg, transparent 32%, rgba(255,255,255,.28) 46%, rgba(255,255,255,.5) 50%, rgba(255,255,255,.28) 54%, transparent 68%);
-  transform:translateX(-140%); transition:transform .9s cubic-bezier(.3,.7,.2,1); }
-#fyon-hero .fh-btn:hover::after{ transform:translateX(140%); }
-#fyon-hero .fh-link{ font-size:15.5px; font-weight:500; color:var(--ink); text-decoration:none; display:inline-flex; align-items:center; gap:8px; }
-#fyon-hero .fh-link .ar{ color:var(--terra); transition:transform .3s; } #fyon-hero .fh-link:hover .ar{ transform:translateX(4px); }
-
-@media (prefers-reduced-motion: reduce){
-  #fyon-hero .fh-badge .fh-dot{ animation:none; }
-  #fyon-hero .hl-t{ transform:none; transition:none; }
-  #fyon-hero .fh-badge, #fyon-hero .fh-sub, #fyon-hero .fh-cta{ opacity:1; transform:none; transition:none; }
-  #fyon-hero .fh-btn::after{ display:none; }
-}
-</style>
+<link rel="stylesheet" href="lesreg.css?v=1" />
 </head>
 <body>
 
-  <!-- reading progress — thin spruce line above everything -->
+  <!-- reading progress -->
   <div id="sprog" aria-hidden="true"><i></i></div>
 
-  <!-- ===================== CINEMATIC INTRO (Orbit) ===================== -->
+  <!-- ===================== CINEMATIC INTRO (Orbit) — the company opening ===================== -->
   <div id="lg-intro" role="status" aria-label="Lesreg">
     <div class="lgi-stage" aria-hidden="true">
-      <!-- 1 · four ink blocks rush in + collide, teal impact ring -->
       <div class="lgi-collide">
         <span class="lgi-blk n"></span><span class="lgi-blk e"></span>
         <span class="lgi-blk s"></span><span class="lgi-blk w"></span>
         <span class="lgi-ring"></span>
       </div>
-      <!-- 2 + 3 · GERSEL assembles, card-flips to LESREG; 4 · collapses -->
       <div class="lgi-word3">
         <div class="lgi-front"><span>G</span><span>E</span><span>R</span><span>S</span><span>E</span><span>L</span></div>
         <div class="lgi-back">LESREG</div>
       </div>
-      <!-- 4 · Orbit mark + wordmark lockup -->
       <div class="lgi-lockup">
         <span class="lgi-orbit">
           <span class="o n"></span><span class="o e"></span><span class="o s"></span><span class="o w"></span>
@@ -107,37 +51,34 @@
   <nav class="nav" data-screen-label="nav">
     <a class="brand" href="#top">Lesreg</a>
     <div class="navlinks">
-      <a href="#why">Why Fyon</a>
-      <a href="#what">What it does</a>
-      <a href="#intelligence">Why it works</a>
-      <a href="#partners">Partners</a>
+      <a href="#fyon">Fyon</a>
+      <a href="#work">Arbejde</a>
+      <a href="#services">Det vi bygger</a>
+      <a href="#contact">Kontakt</a>
     </div>
-    <button class="btn" data-cta="waitlist">Join waitlist</button>
+    <a class="btn" href="mailto:mgersel@lesreg.com">Start et projekt</a>
   </nav>
 
   <div class="fyon-reveal">
 
   <!-- ===================== HERO ===================== -->
-  <div id="fyon-hero">
-    <header id="top" class="fh-hero" data-screen-label="hero">
-      <span class="fh-badge"><span class="fh-dot"></span>Fyon Intelligence · by Lesreg</span>
-      <h1 id="headline">
-        <span class="hl-line"><span class="hl-t">Everything else rates you</span></span>
-        <span class="hl-line"><span class="hl-t">and walks away.</span></span>
-        <span class="hl-line"><span class="hl-t">Fyon <em class="fh-knows">shows you.</em></span></span>
-      </h1>
-      <p class="fh-sub">Upload two photos and meet your <b>actual future self</b>. Then the intelligence that knows you creates the plan, adapts it as you change, and makes sure you actually get there.</p>
-      <div class="fh-cta">
-        <button class="fh-btn" data-cta="waitlist">Try Fyon <span class="ar">→</span></button>
-        <a class="fh-link" href="#what">See how it works <span class="ar">→</span></a>
-      </div>
-    </header>
-  </div>
+  <header id="top" class="lh-hero" data-screen-label="hero">
+    <div class="lh-field" aria-hidden="true"><i class="f1"></i><i class="f2"></i><i class="f3"></i><i class="f4"></i><i class="f5"></i></div>
+    <span class="lh-badge"><span class="lh-dot"></span>Uafhængigt softwarestudie</span>
+    <h1 class="lh-h1">
+      <span class="hl-line"><span class="hl-t">Vi bygger software</span></span>
+      <span class="hl-line"><span class="hl-t">der bare <em>virker.</em></span></span>
+    </h1>
+    <p class="lh-sub">Hjemmesider, apps, bestillingssystemer og motorerne bag — egne produkter og skræddersyet software til virksomheder, fra idé til drift.</p>
+    <div class="lh-cta">
+      <a class="btn btn-primary btn-lg" href="#fyon">Se hvad vi bygger <span class="ar">↓</span></a>
+      <a class="lh-link" href="mailto:mgersel@lesreg.com">Start et projekt <span class="ar">→</span></a>
+    </div>
+  </header>
 
   <script>
   (function(){
-    // reveal the hero once the intro lifts — CSS owns the line-mask timeline
-    var hero=document.querySelector('.fh-hero'); if(!hero) return;
+    var hero=document.querySelector('.lh-hero'); if(!hero) return;
     var done=false;
     function go(){ if(done) return; done=true; requestAnimationFrame(function(){ hero.classList.add('go'); }); }
     if(document.documentElement.classList.contains('fyon-loaded')){ go(); return; }
@@ -146,464 +87,126 @@
   })();
   </script>
 
-  <!-- ===================== PROBLEM ===================== -->
-  <section class="s" id="why" data-screen-label="why-fyon">
+  <!-- ===================== 1 · FLAGSKIBET — FYON ===================== -->
+  <section class="s" id="fyon" data-screen-label="flagship">
     <div class="s-inner">
-      <p class="eyebrow reveal">Why Fyon</p>
-      <h2 class="h2" id="whyHead" style="max-width:24ch;">A general assistant answers everyone. <em>Fyon is built around one person — you.</em></h2>
-      <p class="lede" id="whySub" style="margin-bottom:50px;">You've tried them all — the looksmaxing apps, the scores, the generic (and sometimes "personalised") plans. They always fall short, and they never change as <em>you</em> change. The most capable intelligence on earth can answer almost anything… but it answers everyone, so it answers no one. What's never existed is an intelligence built entirely around <em>one person</em> — that sees your face, holds your history, and moves with you. <b>That's exactly why Fyon exists.</b></p>
+      <p class="eyebrow reveal">Vores største projekt til dato</p>
+      <h2 class="h2 reveal" style="max-width:18ch;">Ét produkt, bygget fra bunden: <em>Fyon.</em></h2>
+      <p class="lede reveal" style="margin-bottom:44px;max-width:620px;">En selvforbedrings-intelligens bygget omkring ét menneske — den læser dig, kender dig og viser dig den version, du faktisk kan nå. Eget produkt, egen engine, egen backend.</p>
 
-      <p class="wf-lead reveal">Same question. Two completely different things.</p>
-      <p class="lede reveal" style="margin-bottom:46px;max-width:640px;">Ask a general assistant how to become more attractive and confident, and you get words. Open Fyon, and it <em>sees you, knows you, and shows you</em> who you could become.</p>
-      <div class="pb-grid">
-
-        <!-- LEFT — a general assistant -->
-        <div class="pb-card left reveal">
-          <div class="pb-head">
-            <span class="pb-kicker">Asking <b>a general assistant</b></span>
-            <span class="pb-status stateless"><span class="led"></span>Stateless</span>
+      <div class="lgf bn-stage iri iri-dark reveal">
+        <svg class="bn-links" viewBox="0 0 1000 580" preserveAspectRatio="xMidYMid meet" aria-hidden="true"></svg>
+        <div class="lgf-copy">
+          <span class="lgf-status"><span class="led"></span>Early access · waitlist åben</span>
+          <h3 class="lgf-name">Fyon</h3>
+          <p class="lgf-tag">Intelligensen der kender dig — <em>og får dig derhen.</em></p>
+          <div class="lgf-chips">
+            <span>Læser dig</span><span>Kender dig</span><span>Viser dig</span>
           </div>
-          <div class="pb-chat" id="pbChat"></div>
-          <div class="pb-fails">
-            <span class="pb-fail" data-k="face">Sees the image, doesn't read your face</span>
-            <span class="pb-fail" data-k="forget">Forgets you</span>
-            <span class="pb-fail" data-k="wall">A wall of words</span>
-            <span class="pb-fail" data-k="talk">Can only talk</span>
+          <div class="lgf-cta">
+            <a class="btn btn-primary btn-lg" href="fyon.html">Prøv Fyon <span class="ar">→</span></a>
+            <a class="lh-link lgf-link" href="fyon.html#partners">Tjen penge som partner <span class="ar">→</span></a>
           </div>
-          <p class="pb-foot">Generic — true for everyone, made for no one. The thread scrolls away. Tomorrow you're on your own.</p>
         </div>
+      </div>
+    </div>
+  </section>
 
-        <!-- RIGHT — opening Fyon: reads you · knows you · shows you -->
-        <div class="pb-card right reveal d1">
-          <div class="pb-head">
-            <span class="pb-kicker">Opening <b>Fyon</b></span>
-            <span class="pb-status memory"><span class="led"></span>Knows you · 12</span>
+  <div class="odiv reveal" aria-hidden="true"><span class="ol"></span><span class="om"><i class="s1"></i><i class="s2"></i><i class="s3"></i><i class="s4"></i><i class="oc"></i></span><span class="ol r"></span></div>
+
+  <!-- ===================== 2 · ANDRE PROJEKTER ===================== -->
+  <section class="s" id="work" data-screen-label="work">
+    <div class="s-inner">
+      <p class="eyebrow reveal">Udvalgt arbejde</p>
+      <h2 class="h2 reveal" style="max-width:16ch;">Bygget for rigtige virksomheder.</h2>
+      <p class="lede reveal" style="margin-bottom:46px;max-width:620px;">Ikke mockups — systemer der kører live i drift hver dag.</p>
+
+      <div class="case glass reveal">
+        <div class="case-copy">
+          <span class="case-k">Spiis · Restaurant · <b class="live"><i></i>Live i drift</b></span>
+          <h3>Ét system i stedet for telefonen, mailen og hukommelsen.</h3>
+          <div class="case-rows">
+            <div class="crow"><span class="ck">Problemet</span><p>Køkkenet manglede overblik — hvem har bestilt hvad, og hvor meget skal der laves? Gæsterne afbrød chefen midt i travlheden, fordi mail og telefon ikke blev nået.</p></div>
+            <div class="crow"><span class="ck">Løsningen</span><p>Hjemmeside med indbygget bestillings- og bordbooking. Gæsterne bestiller selv — alt lander direkte i ét admin-overblik, hvor restauranten styrer menu, priser og arrangementer.</p></div>
+            <div class="crow"><span class="ck">Resultatet</span><p>Fuldt overblik i køkkenet, færre afbrydelser — og en menu de selv opdaterer. I daglig drift.</p></div>
           </div>
-
-          <div class="fy-panel">
-            <span class="fy-label"><span class="d"></span>It reads you</span>
-            <div class="fy-reads">
-              <div class="fy-tile face">
-                <span class="fy-tile-tag">You · now</span>
-                <svg class="cf now" viewBox="0 0 100 116" aria-hidden="true">
-                  <path class="e" pathLength="1" d="M50 8 L26 22 L20 48 L26 78 L38 98 L50 106 L62 98 L74 78 L80 48 L74 22 Z"/>
-                  <path class="e" pathLength="1" d="M30 38 L44 36 M56 36 L70 38"/>
-                  <path class="e" pathLength="1" d="M50 52 L50 64 M44 68 L50 64 L56 68"/>
-                  <path class="e" pathLength="1" d="M40 84 Q50 90 60 84"/>
-                  <path class="e" pathLength="1" d="M26 22 L38 46 L50 64 L62 46 L74 22 M38 46 L44 36 M62 46 L56 36"/>
-                  <circle class="n" cx="50" cy="8" r="2"/><circle class="n" cx="26" cy="22" r="2"/><circle class="n" cx="74" cy="22" r="2"/><circle class="n" cx="20" cy="48" r="2"/><circle class="n" cx="80" cy="48" r="2"/><circle class="n" cx="26" cy="78" r="2"/><circle class="n" cx="74" cy="78" r="2"/><circle class="n" cx="50" cy="106" r="2"/><circle class="n" cx="50" cy="64" r="2"/><circle class="n" cx="40" cy="84" r="1.7"/><circle class="n" cx="60" cy="84" r="1.7"/>
-                  <circle class="n eye" cx="38" cy="46" r="2.8"/><circle class="n eye" cx="62" cy="46" r="2.8"/>
-                </svg>
-                <span class="fy-read-state">presence read ✓</span>
-              </div>
-              <div class="fy-reads-body">
-                <p class="fy-mini">How you actually land:</p>
-                <div class="fy-chips">
-                  <span class="fy-chip">reserved</span>
-                  <span class="fy-chip">strong features</span>
-                  <span class="fy-chip">redness adds heat</span>
-                </div>
-                <p class="fy-cap">An understanding — <em>not a score.</em></p>
-              </div>
-            </div>
-          </div>
-
-          <div class="fy-panel">
-            <span class="fy-label"><span class="d"></span>It knows you</span>
-            <div class="pb-tabs fy-tabs">
-              <span class="pb-tab lit">Face</span><span class="pb-tab">Body</span><span class="pb-tab">Goals</span><span class="pb-tab">History</span>
-            </div>
-            <p class="fy-remember"><span class="fy-pill">Remembered</span> <span class="fy-fact">redness calming → azelaic acid 10%</span></p>
-          </div>
-
-          <div class="fy-panel">
-            <span class="fy-label"><span class="d"></span>It shows you</span>
-            <div class="fy-shows">
-              <div class="fy-future">
-                <div class="fy-tile sm face">
-                  <span class="fy-tile-tag">Front</span>
-                  <svg class="cf future" viewBox="0 0 100 116" aria-hidden="true">
-                    <path class="e" pathLength="1" d="M50 8 L26 22 L20 48 L26 78 L38 98 L50 106 L62 98 L74 78 L80 48 L74 22 Z"/>
-                    <path class="e" pathLength="1" d="M30 38 L44 36 M56 36 L70 38"/>
-                    <path class="e" pathLength="1" d="M50 52 L50 64 M44 68 L50 64 L56 68"/>
-                    <path class="e" pathLength="1" d="M40 84 Q50 90 60 84"/>
-                    <path class="e" pathLength="1" d="M26 22 L38 46 L50 64 L62 46 L74 22 M38 46 L44 36 M62 46 L56 36"/>
-                    <circle class="n" cx="50" cy="8" r="2"/><circle class="n" cx="26" cy="22" r="2"/><circle class="n" cx="74" cy="22" r="2"/><circle class="n" cx="20" cy="48" r="2"/><circle class="n" cx="80" cy="48" r="2"/><circle class="n" cx="26" cy="78" r="2"/><circle class="n" cx="74" cy="78" r="2"/><circle class="n" cx="50" cy="106" r="2"/><circle class="n" cx="50" cy="64" r="2"/><circle class="n" cx="40" cy="84" r="1.7"/><circle class="n" cx="60" cy="84" r="1.7"/>
-                    <circle class="n eye" cx="38" cy="46" r="2.8"/><circle class="n eye" cx="62" cy="46" r="2.8"/>
-                  </svg>
-                </div>
-                <div class="fy-tile sm face">
-                  <span class="fy-tile-tag">Side</span>
-                  <svg class="cf future" viewBox="0 0 100 116" aria-hidden="true">
-                    <path class="e" pathLength="1" d="M36 12 Q58 6 66 22 L72 38 L70 48 L80 58 L70 64 L74 72 L68 80 L72 90 L58 100 L40 102 L34 86 L32 44 Z"/>
-                    <path class="e" pathLength="1" d="M44 56 Q50 52 48 62 Q46 68 42 62"/>
-                    <path class="e" pathLength="1" d="M52 36 L66 38"/>
-                    <path class="e" pathLength="1" d="M46 60 L58 44 L70 48"/>
-                    <circle class="n" cx="36" cy="12" r="2"/><circle class="n" cx="32" cy="44" r="2"/><circle class="n" cx="34" cy="86" r="2"/><circle class="n" cx="40" cy="102" r="2"/><circle class="n" cx="58" cy="100" r="2"/><circle class="n" cx="72" cy="90" r="2"/><circle class="n" cx="74" cy="72" r="1.7"/><circle class="n" cx="80" cy="58" r="2"/><circle class="n" cx="70" cy="48" r="1.7"/><circle class="n" cx="72" cy="38" r="1.7"/><circle class="n" cx="66" cy="22" r="2"/><circle class="n" cx="45" cy="60" r="2"/>
-                    <circle class="n eye" cx="60" cy="42" r="2.8"/>
-                  </svg>
+          <a class="lh-link" href="https://spiis.dk" target="_blank" rel="noopener">Besøg spiis.dk <span class="ar">→</span></a>
+        </div>
+        <div class="case-visual" aria-hidden="true">
+          <div class="sp-browser">
+            <div class="sp-chrome"><i></i><i></i><i></i><span>spiis.dk</span></div>
+            <div class="sp-body">
+              <span class="sp-eyebrow">Frisklavet hver dag</span>
+              <span class="sp-title">Dagens ret</span>
+              <div class="sp-card">
+                <div class="sp-left"><span class="steam">)))</span>Dagens ret</div>
+                <div class="sp-right">
+                  <b>Boller i karry</b>
+                  <span>med ris og frisk salat</span>
+                  <span class="sp-btn">Bestil dagens ret</span>
                 </div>
               </div>
-              <div class="fy-shows-body">
-                <p class="fy-mini big">The version you could become.</p>
-                <p class="fy-cap"><span class="fy-lock" aria-hidden="true">⬡</span> <b>Identity-locked</b> — same geometry, your face. <em>Not a fantasy.</em></p>
+              <div class="sp-week">
+                <span class="on">Man</span><span>Tir</span><span>Ons</span><span>Tor</span><span>Fre</span>
               </div>
+              <div class="sp-order"><span class="sp-led"></span>Ny bestilling → køkken-overblik</div>
             </div>
           </div>
         </div>
       </div>
 
-      <p class="pb-closing reveal"><span class="grey">A general assistant answers your question and forgets you.</span> <span class="ink">Fyon holds your becoming.</span></p>
+      <a class="case-next reveal" href="mailto:mgersel@lesreg.com">
+        <span class="cn-plus">+</span>
+        <span><b>Din virksomhed?</b> Det næste system bygger vi sammen.</span>
+        <span class="ar">→</span>
+      </a>
     </div>
   </section>
 
-    <div class="odiv reveal" aria-hidden="true"><span class="ol"></span><span class="om"><i class="s1"></i><i class="s2"></i><i class="s3"></i><i class="s4"></i><i class="oc"></i></span><span class="ol r"></span></div>
+  <div class="odiv reveal" aria-hidden="true"><span class="ol"></span><span class="om"><i class="s1"></i><i class="s2"></i><i class="s3"></i><i class="s4"></i><i class="oc"></i></span><span class="ol r"></span></div>
 
-<!-- ===================== 2 · WHAT FYON DOES ===================== -->
-  <section class="s" id="what" data-screen-label="what-it-does">
+  <!-- ===================== 3 · DET VI BYGGER ===================== -->
+  <section class="s" id="services" data-screen-label="services">
     <div class="s-inner">
-      <p class="eyebrow reveal">What it does</p>
-      <h2 class="h2 reveal" style="max-width:16ch;">One intelligence, working on your <em>whole self.</em></h2>
-      <p class="lede reveal" style="margin-bottom:24px;">Two photos and a short conversation — that's all it takes. From there Fyon shows you the version you could reach, gets to know you, and turns that into a grounded plan it keeps building with you.</p>
+      <p class="eyebrow reveal">Det vi bygger</p>
+      <h2 class="h2 reveal" style="max-width:15ch;">Hele stakken. I hånden.</h2>
+      <p class="lede reveal" style="margin-bottom:46px;max-width:600px;">Ingen skabeloner, ingen halve løsninger — vi designer, bygger og drifter det hele selv.</p>
 
-      <!-- act 1: future self -->
-      <div class="wd-act reverse" style="margin-top:88px;">
-        <div class="wd-copy">
-          <p class="wd-kicker">An achievable you</p>
-          <h3>A version of yourself you could actually reach.</h3>
-          <p>Upload two photos. Fyon renders a realistic future self — identity-locked, visibly improved toward what you want, grounded in a real path. <em>Not fantasy.</em></p>
-          <span class="feeling">I could become this</span>
-        </div>
-        <div class="panel iri">
-          <div class="panel-tag"><span>Your future self</span><span>front · side</span></div>
-          <div class="frames">
-            <div class="frame"><image-slot id="fyon-front" shape="rounded" radius="16" placeholder="Drop future self · front"></image-slot><span class="flabel">Front · outcome aligned</span><div class="scan"></div></div>
-            <div class="frame"><image-slot id="fyon-side" shape="rounded" radius="16" placeholder="Drop future self · side"></image-slot><span class="flabel">Side · outcome aligned</span><div class="scan"></div></div>
-          </div>
-          <div class="panel-foot"><span class="lock">⬡</span> Identity-locked — features, bone structure and natural asymmetries preserved.</div>
-        </div>
+      <div class="svc-grid">
+        <div class="svc glass reveal"><span class="svc-dot"></span><h3>Hjemmesider</h3><p>Hurtige, håndbyggede og med et design man husker.</p></div>
+        <div class="svc glass reveal d1"><span class="svc-dot"></span><h3>Apps</h3><p>Fra idé til noget folk faktisk åbner igen.</p></div>
+        <div class="svc glass reveal d2"><span class="svc-dot"></span><h3>Bestillings- & bookingsystemer</h3><p>Som Spiis: gæsterne bestiller selv — du beholder overblikket.</p></div>
+        <div class="svc glass reveal d3"><span class="svc-dot"></span><h3>Systemer & backends</h3><p>Motoren bag: admin-paneler, data og stabil drift.</p></div>
+        <div class="svc glass reveal d4"><span class="svc-dot"></span><h3>AI-produkter</h3><p>Som Fyon: intelligens bygget ind i selve produktet.</p></div>
       </div>
-
-      <!-- act 2: knows you -->
-      <div class="wd-act">
-        <div class="wd-copy">
-          <p class="wd-kicker">It knows you</p>
-          <h3>And it keeps knowing.</h3>
-          <p>It reads how you're perceived, has a short, intelligent conversation to understand what you really want, and remembers. Next time it already knows who you are — and builds on everything it has learned.</p>
-          <span class="feeling">it knows me</span>
-        </div>
-        <div class="panel iri">
-          <div class="panel-tag"><span>A conversation that's remembered</span><span>persistent</span></div>
-          <div class="kw-chat" id="kwChat"></div>
-          <div class="kw-foot">Fyon remembers across sessions</div>
-        </div>
-      </div>
-
-      <!-- act 3: honest plan -->
-      <div class="wd-act reverse">
-        <div class="wd-copy">
-          <p class="wd-kicker">An honest plan</p>
-          <h3>Grounded in you — not generic advice.</h3>
-          <p>Every step is causal and specific: <em>"redness neutralised → azelaic acid 10%"</em>, localised to your country. No score that calls you a number. No false progress. What the image can't honestly show lives in your plan instead.</p>
-          <span class="feeling">it doesn't lie to me</span>
-        </div>
-        <div class="panel iri">
-          <div class="panel-tag"><span>Your plan</span><span>causal · honest</span></div>
-          <div class="honest-list">
-            <div class="hrow"><span class="hk">Causal</span><span><b>redness neutralised → azelaic acid 10%</b>, localised to you.</span></div>
-            <div class="hrow"><span class="hk">No score</span><span>It never reduces you to a number.</span></div>
-            <div class="hrow"><span class="hk">Honest</span><span>What the image can't truthfully show lives in your plan instead.</span></div>
-            <div class="hrow"><span class="hk">Direction</span><span>Your whole self-improvement, in one place that knows you.</span></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- always-adapting band -->
-      <div class="hw-adapt glass reveal" style="margin-top:88px;">
-        <div class="ha-side">
-          <span class="ha-k">Always adapting</span>
-          <h3>It makes sure you <em>actually get there.</em></h3>
-        </div>
-        <div class="ha-body">
-          <p>Ask Fyon to go deeper on anything — a step, a product, why something works. Or just tell it something shifted: your goal, your routine, your week. Whatever it is, it adapts — re-planning the whole journey, honestly, and adjusting until you arrive.</p>
-          <div class="ha-chips">
-            <span class="ha-chip">Go deeper on any step</span>
-            <span class="ha-chip">Something changed? It re-plans</span>
-            <span class="ha-chip">Adjusts the whole plan</span>
-            <span class="ha-chip">Walks the entire way</span>
-          </div>
-        </div>
-      </div>
-
-      <p class="foot-note reveal" style="text-align:center;margin-left:auto;margin-right:auto;margin-top:36px;">Built on frontier reasoning and vision models, with facial geometry and identity-preserving image generation. Strictly 18+.</p>
     </div>
   </section>
 
-    <div class="odiv reveal" aria-hidden="true"><span class="ol"></span><span class="om"><i class="s1"></i><i class="s2"></i><i class="s3"></i><i class="s4"></i><i class="oc"></i></span><span class="ol r"></span></div>
-
-<!-- ===================== 3 · WHY IT WORKS ===================== -->
-  <section class="s" id="intelligence" data-screen-label="why-it-works">
-    <div class="s-inner">
-      <div style="text-align:center; max-width:780px; margin:0 auto 56px;">
-        <p class="eyebrow reveal">Why it works</p>
-        <h2 class="h2 reveal" style="margin-left:auto;margin-right:auto;">Not a smarter chatbot. A <em>brain built to get you there.</em></h2>
-        <p class="lede reveal" style="margin:0 auto;max-width:640px;">Fyon isn't one model with a clever prompt. It's a specialized intelligence — stacked from real transformation data, presence analysis, the standards where you actually live, and a sense of what's genuinely possible for you.</p>
-      </div>
-
-      <div class="bn-stage iri iri-dark reveal">
-        <div class="bn-tag"><span>Fyon · core intelligence</span><span class="live"><span class="led"></span>4 layers active</span></div>
-        <div class="bn-wrap">
-          <svg class="bn-links" viewBox="0 0 1000 580" preserveAspectRatio="none" aria-hidden="true"></svg>
-          <div class="bn-card c1">
-            <div class="bn-st"><span class="num">Layer 01</span><span class="dot">●</span></div>
-            <h3>Trained on real becoming</h3>
-            <p>Built on guided transformation journeys — how real people actually changed — not scraped web advice.</p>
-            <span class="bn-stat"><b>1,500+</b> user training sessions</span>
-          </div>
-          <div class="bn-card c2">
-            <div class="bn-st"><span class="num">Layer 02</span><span class="dot">●</span></div>
-            <h3>Presence analysis</h3>
-            <p>Dedicated vision backends and structured datasheets read how you're genuinely perceived — not a chat squinting at a selfie.</p>
-            <span class="bn-stat"><b>Specialized</b> backends + datasheets</span>
-          </div>
-          <div class="bn-card c3">
-            <div class="bn-st"><span class="num">Layer 03</span><span class="dot">●</span></div>
-            <h3>Localized to you</h3>
-            <p>It knows the standards and norms where you live — your country, your age, your context. "Better" defined right here.</p>
-            <span class="bn-stat"><b>Your country</b> · age · context</span>
-          </div>
-          <div class="bn-card c4">
-            <div class="bn-st"><span class="num">Layer 04</span><span class="dot">●</span></div>
-            <h3>Possibility engine</h3>
-            <p>Calibrated to what's truly achievable for you — and it re-plans as your motives shift, day to day or week to week.</p>
-            <span class="bn-stat"><b>Only</b> what's real for you</span>
-          </div>
-          <div class="bn-center">
-            <div class="bn-coreLabel"><div class="bnn">your becoming</div><div class="bns">one model · always on</div></div>
-          </div>
-        </div>
-        <p class="bn-tagline">Four layers feed one intelligence — so it's <em>impossible not to move</em> toward the version of you that's actually within reach.</p>
-      </div>
-
-      <!-- mobile: tap to see the full network fullscreen -->
-      <button class="bn-fs-btn" id="bnFsOpen" type="button"><span class="ic">⤢</span> Tap to view the full map</button>
-      <div class="bn-fs" id="bnFs" hidden role="dialog" aria-modal="true" aria-label="Fyon core intelligence">
-        <div class="bn-fs-bar">
-          <span class="bn-fs-ttl">Fyon · core intelligence</span>
-          <button class="bn-fs-x" id="bnFsClose" type="button" aria-label="Close">×</button>
-        </div>
-        <div class="bn-fs-map" id="bnFsMap"></div>
-        <div class="bn-fs-legend">
-          <span><i style="background:#2f9e91"></i>Trained on real becoming</span>
-          <span><i style="background:#c2914a"></i>Presence analysis</span>
-          <span><i style="background:#5e8d6e"></i>Localized to you</span>
-          <span><i style="background:#a86f7d"></i>Possibility engine</span>
-        </div>
-        <p class="bn-fs-cap">Four layers feed one intelligence.</p>
-      </div>
-
-      <!-- trust: built on honesty, not judgment -->
-      <div style="text-align:center; max-width:720px; margin:104px auto 0;">
-        <h2 class="h2 reveal" style="margin-left:auto;margin-right:auto;font-size:clamp(30px,4vw,48px);">Built on honesty, <em>not judgment.</em></h2>
-        <p class="lede reveal" style="margin:0 auto;">The non-negotiable rules underneath everything — what makes Fyon trustworthy with something as personal as your face.</p>
-      </div>
-      <div class="wf-story" style="margin-top:44px;">
-        <div class="wf-step glass reveal">
-          <span class="wf-k"><span class="wf-dot"></span>It never lies</span>
-          <h3>No score, no false progress</h3>
-          <p>No verdict number, no "done" when nothing moved. If it sees no change, it says so — warmly, but honestly.</p>
-        </div>
-        <div class="wf-step glass reveal d1">
-          <span class="wf-k"><span class="wf-dot"></span>Grounded in you</span>
-          <h3>Never generic advice</h3>
-          <p>Every step is rooted in what Fyon knows about exactly you — your face, context and limits. Not true-for-everyone tips.</p>
-        </div>
-        <div class="wf-step glass reveal d2">
-          <span class="wf-k"><span class="wf-dot"></span>One source of truth</span>
-          <h3>Nothing ever contradicts</h3>
-          <p>Your image, plan and journey all come from one understanding of you — so they can never disagree.</p>
-        </div>
-        <div class="wf-step glass reveal d3">
-          <span class="wf-k"><span class="wf-dot"></span>Identity-locked</span>
-          <h3>Your face, preserved · 18+</h3>
-          <p>Bone structure and natural asymmetry untouched, eyes pixel-locked. The AI-rendered version of a real face never runs on a minor.</p>
-        </div>
-      </div>
-      <p class="verdict reveal"><span class="grey">Rating apps score you and walk away.</span> <span class="ink">Fyon stays — specialized, honest, and built so you</span> <em>can't help but get there.</em></p>
-    </div>
-  </section>
-
-    <div class="odiv reveal" aria-hidden="true"><span class="ol"></span><span class="om"><i class="s1"></i><i class="s2"></i><i class="s3"></i><i class="s4"></i><i class="oc"></i></span><span class="ol r"></span></div>
-
-<!-- ===================== 4 · MAKE MONEY WITH FYON ===================== -->
-  <section class="s" id="partners" data-screen-label="partners">
-    <div class="s-inner">
-      <p class="eyebrow reveal">Partner program</p>
-      <h2 class="h2 reveal" style="max-width:16ch;">Make money with Fyon.</h2>
-      <p class="lede reveal" style="margin-bottom:44px;max-width:640px;">Recommend Fyon and take a share of every payment your referrals make — every month they stay, not just the first. Free to join, paid out through Stripe, tracked to the cent.</p>
-
-      <div class="pt-panel iri iri-dark reveal">
-        <div>
-          <p class="pk">How it works</p>
-          <h3>Recurring — <em>not a one-time bounty.</em></h3>
-          <div class="pt-facts">
-            <div class="pt-fact"><b>15–30%</b><span>of every payment — your rate climbs across nine tiers as your base grows</span></div>
-            <div class="pt-fact"><b>Every month</b><span>for as long as your referrals stay — income compounds instead of resetting</span></div>
-            <div class="pt-fact"><b>Stripe payouts</b><span>withdraw to your bank; every click, sale and payout visible to the cent</span></div>
-          </div>
-          <div class="pt-cta">
-            <button class="btn btn-primary btn-lg">Become a partner</button>
-            <a class="link-arrow" href="#">Already a partner? Sign in <span class="ar">→</span></a>
-          </div>
-        </div>
-        <div class="pt-chart reveal">
-          <div class="pt-chart-head">
-            <span class="lbl">Your recurring payout</span>
-            <span class="amt">$1,840<span class="mo">/mo</span></span>
-          </div>
-          <svg class="pt-area" viewBox="0 0 320 140" preserveAspectRatio="none" aria-hidden="true">
-            <defs><linearGradient id="ptg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2f9e91" stop-opacity="0.45"></stop><stop offset="1" stop-color="#2f9e91" stop-opacity="0"></stop></linearGradient></defs>
-            <g class="pt-grid"><line x1="0" y1="35" x2="320" y2="35"></line><line x1="0" y1="70" x2="320" y2="70"></line><line x1="0" y1="105" x2="320" y2="105"></line></g>
-            <path class="pt-fill" d="M0,120 L29,114 L58,107 L87,99 L116,90 L145,80 L175,70 L204,59 L233,47 L262,36 L291,25 L318,16 L318,140 L0,140 Z" fill="url(#ptg)"></path>
-            <path class="pt-stroke" d="M0,120 L29,114 L58,107 L87,99 L116,90 L145,80 L175,70 L204,59 L233,47 L262,36 L291,25 L318,16"></path>
-            <circle class="pt-dot-glow" cx="318" cy="16" r="11"></circle>
-            <circle class="pt-dot" cx="318" cy="16" r="4.5"></circle>
-          </svg>
-          <div class="pt-chart-foot"><span>Month 1</span><span>Illustrative · referrals that stay</span><span>Month 12</span></div>
-        </div>
-      </div>
-
-      <p class="pt-note reveal">Free to join · no audience minimum · your link and 20%-off code are live in minutes.</p>
+  <!-- ===================== 4 · KONTAKT ===================== -->
+  <section class="s" id="contact" data-screen-label="contact">
+    <div class="s-inner lh-contact">
+      <div class="lc-orbit reveal" aria-hidden="true"><i class="n"></i><i class="e"></i><i class="s2"></i><i class="w"></i><i class="c"></i></div>
+      <h2 class="h2 reveal" style="margin:0 auto 14px;max-width:14ch;">Har du et projekt?</h2>
+      <p class="lede reveal" style="margin:0 auto 34px;">Skriv — vi svarer hurtigt, og du taler direkte med den der bygger.</p>
+      <a class="btn btn-primary btn-lg reveal d1" href="mailto:mgersel@lesreg.com">mgersel@lesreg.com <span class="ar">→</span></a>
     </div>
   </section>
 
   <!-- ===================== FOOTER ===================== -->
   <footer class="footer">
     <div class="footer-inner">
-      <a class="brand" href="#top"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 32 32"><defs><linearGradient id="lgMark2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2f9e91"/><stop offset="1" stop-color="#166b62"/></linearGradient></defs><rect x="1" y="1" width="30" height="30" rx="9" fill="url(#lgMark2)"/><path class="bm-chev bm-chev-1" d="M8.5 16.5 L16 10 L23.5 16.5" fill="none" stroke="#f7ece0" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><path class="bm-chev bm-chev-2" d="M8.5 22.5 L16 16 L23.5 22.5" fill="none" stroke="#f7ece0" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/></svg></span>Lesreg</a>
+      <a class="brand" href="#top"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 32 32"><defs><linearGradient id="lgMark2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2f9e91"/><stop offset="1" stop-color="#166b62"/></linearGradient></defs><rect x="1" y="1" width="30" height="30" rx="9" fill="url(#lgMark2)"/><path d="M8.5 16.5 L16 10 L23.5 16.5" fill="none" stroke="#f7ece0" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M8.5 22.5 L16 16 L23.5 22.5" fill="none" stroke="#f7ece0" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/></svg></span>Lesreg</a>
       <div class="links">
-        <a href="#why">Why Fyon</a>
-        <a href="#what">What it does</a>
-        <a href="#intelligence">Why it works</a>
-        <a href="#partners">Partners</a>
+        <a href="fyon.html">Fyon</a>
+        <a href="https://spiis.dk" target="_blank" rel="noopener">Spiis</a>
+        <a href="fyon.html#partners">Partnere</a>
+        <a href="mailto:mgersel@lesreg.com">Kontakt</a>
       </div>
-      <span class="copy">© 2026 Lesreg · Fyon is a product of Lesreg · 18+</span>
+      <span class="copy">© 2026 Lesreg</span>
     </div>
   </footer>
   </div><!-- /.fyon-reveal -->
 
-  <!-- ===================== WAITLIST MODAL ===================== -->
-  <div id="wl-modal" class="wl-modal hidden" role="dialog" aria-modal="true" aria-label="Join the waitlist">
-    <div class="wl-backdrop" data-wl-close></div>
-    <div class="wl-card glass" role="document">
-      <button class="wl-x" type="button" data-wl-close aria-label="Close">×</button>
-      <p class="eyebrow">Early access</p>
-      <h3 class="wl-h">Join the Fyon waitlist</h3>
-      <p class="wl-sub">We're opening access in waves. Leave your details and we'll email you when it's your turn.</p>
-      <form id="wl-form" novalidate>
-        <label class="wl-l">Name
-          <input name="name" type="text" autocomplete="name" placeholder="Your name" />
-        </label>
-        <label class="wl-l">Email
-          <input name="email" type="email" required autocomplete="email" placeholder="you@email.com" />
-        </label>
-        <label class="wl-l">What do you want Fyon for? <span class="wl-opt">optional</span>
-          <textarea name="use_case" rows="3" placeholder="e.g. skincare, confidence, training, dating…"></textarea>
-        </label>
-        <button class="btn btn-primary btn-lg" type="submit" id="wl-submit" style="width:100%">Join waitlist</button>
-        <p id="wl-msg" class="wl-msg" role="status"></p>
-      </form>
-    </div>
-  </div>
-
   <script src="site.js?v=39" defer></script>
-
-  <!-- CTA wiring — referral capture + waitlist/early-access + partner links.
-       The product app isn't live yet, so the product CTAs DO NOT touch Stripe.
-       They join the waitlist now; once PRODUCT_APP_URL is set they redirect to
-       the app with ?ref=CODE. partner.html / affiliate backend are untouched. -->
-  <script>
-  (function(){
-    /* ---- CONFIG ---- */
-    // Set this when the Fyon product app is live, e.g. "https://app.fyon.ai".
-    // While empty, the product CTAs open the WAITLIST modal (no Stripe, no redirect).
-    var PRODUCT_APP_URL = "";          // ← leave empty until the product app is ready
-    var PARTNER         = "partner.html?v=7";
-    var SUPABASE_URL    = "https://vvwevqhdwumnethujxhy.supabase.co";
-    var SUPABASE_ANON   = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ2d2V2cWhkd3VtbmV0aHVqeGh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyMDg0ODYsImV4cCI6MjA5Njc4NDQ4Nn0.G60xcGM0DwDBYX2j48iYgb_y8SuXYxdNNiExQlDzarU";
-
-    /* referral capture (?ref=CODE) — kept in a 60-day cookie AND localStorage for later */
-    var rq=new URLSearchParams(location.search).get('ref');
-    if(rq){ var c=rq.toUpperCase().slice(0,24);
-      document.cookie='fyon_ref='+c+';max-age='+(60*60*24*60)+';path=/;samesite=lax';
-      try{ localStorage.setItem('fyon_ref',c); }catch(e){} }
-    function getRef(){ return (document.cookie.match(/fyon_ref=([^;]+)/)||[])[1] || (function(){try{return localStorage.getItem('fyon_ref')||''}catch(e){return ''}})(); }
-
-    /* ---- waitlist modal ---- */
-    var modal=document.getElementById('wl-modal');
-    function openModal(){ if(!modal) return; modal.classList.remove('hidden'); document.body.style.overflow='hidden';
-      var f=modal.querySelector('input[name=email]'); if(f) setTimeout(function(){f.focus();},60); }
-    function closeModal(){ if(!modal) return; modal.classList.add('hidden'); document.body.style.overflow=''; }
-
-    // Product CTA: redirect to the app (with ?ref) once it's live; otherwise open the waitlist.
-    function productCta(){
-      var ref=getRef();
-      if(PRODUCT_APP_URL){
-        location.href = PRODUCT_APP_URL + (ref ? (PRODUCT_APP_URL.indexOf('?')>=0?'&':'?')+'ref='+encodeURIComponent(ref) : '');
-        return;
-      }
-      openModal();
-    }
-
-    // Waitlist writes go through the secure join-waitlist Edge Function (service
-    // role server-side). The browser only ever holds the public anon key.
-    var WAITLIST_FN = SUPABASE_URL + "/functions/v1/join-waitlist";
-
-    async function submitWaitlist(e){
-      e.preventDefault();
-      var form=e.target, btn=document.getElementById('wl-submit'), msg=document.getElementById('wl-msg');
-      var name=(form.name.value||'').trim(), email=(form.email.value||'').trim(), use_case=(form.use_case.value||'').trim();
-      if(!email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){ msg.className='wl-msg err'; msg.textContent='Please enter a valid email.'; return; }
-      var old=btn.innerHTML; btn.disabled=true; msg.textContent=''; msg.className='wl-msg';
-      btn.innerHTML='<span class="orbit-spin dark" style="--size:18px;margin-right:9px" aria-hidden="true"><i class="os-core"></i><i class="os-sat n"></i><i class="os-sat e"></i><i class="os-sat s"></i><i class="os-sat w"></i></span>Joining…';
-      try{
-        var res=await fetch(WAITLIST_FN,{
-          method:'POST',
-          headers:{ 'content-type':'application/json', 'authorization':'Bearer '+SUPABASE_ANON, 'apikey':SUPABASE_ANON },
-          body:JSON.stringify({ name:name||null, email:email, use_case:use_case||null, referral_code:getRef()||null })
-        });
-        var data={}; try{ data=await res.json(); }catch(_){}
-        if(res.ok && data.ok){
-          msg.className='wl-msg ok'; msg.textContent="You're on the list — we'll email you when Fyon opens.";
-          form.reset();
-        } else if(res.status===429){
-          msg.className='wl-msg err'; msg.textContent='Too many tries — give it a minute and retry.';
-        } else { throw new Error((data&&data.error)||('HTTP '+res.status)); }
-      }catch(err){ msg.className='wl-msg err'; msg.textContent='Could not join right now: '+(err.message||err); }
-      btn.disabled=false; btn.innerHTML=old;
-    }
-
-    document.addEventListener('DOMContentLoaded',function(){
-      // product CTAs (Join waitlist / Get early access) -> modal (or app when live)
-      [].slice.call(document.querySelectorAll('[data-cta="waitlist"]')).forEach(function(b){
-        b.addEventListener('click',function(e){ e.preventDefault(); productCta(); });
-      });
-      // partner CTAs -> partner.html (unchanged)
-      [].slice.call(document.querySelectorAll('button, a.link-arrow')).forEach(function(b){
-        var t=(b.textContent||'').toLowerCase();
-        if(t.indexOf('become a partner')>=0 || t.indexOf('already a partner')>=0){
-          if(b.tagName==='A'){ b.setAttribute('href',PARTNER); }
-          else b.addEventListener('click',function(){ location.href=PARTNER; });
-        }
-      });
-      // modal close + submit
-      if(modal){
-        [].slice.call(modal.querySelectorAll('[data-wl-close]')).forEach(function(x){ x.addEventListener('click',closeModal); });
-        document.addEventListener('keydown',function(e){ if(e.key==='Escape') closeModal(); });
-        var form=document.getElementById('wl-form'); if(form) form.addEventListener('submit',submitWaitlist);
-      }
-    });
-  })();
-  </script>
 </body>
 </html>
