@@ -16,7 +16,7 @@
 <link rel="preload" as="font" type="font/woff2" href="fonts/newsreader-latin-normal.woff2" crossorigin />
 <link rel="preload" as="font" type="font/woff2" href="fonts/sora-latin-600.woff2" crossorigin />
 <link rel="stylesheet" href="styles.css?v=40" />
-<link rel="stylesheet" href="lesreg.css?v=1" />
+<link rel="stylesheet" href="lesreg.css?v=2" />
 </head>
 <body>
 
@@ -64,6 +64,27 @@
   <!-- ===================== HERO ===================== -->
   <header id="top" class="lh-hero" data-screen-label="hero">
     <div class="lh-field" aria-hidden="true"><i class="f1"></i><i class="f2"></i><i class="f3"></i><i class="f4"></i><i class="f5"></i></div>
+
+    <!-- x-ray layer — the spotlight reveals the engine under the surface.
+         Same DOM structure as the visible hero so the two layers align 1:1. -->
+    <div class="lh-xray" aria-hidden="true">
+      <div class="xr-grid"></div>
+      <i class="xr-torch"></i>
+      <i class="xr-ring r1"></i><i class="xr-ring r2"></i>
+      <span class="xr-note n1">LESREG · ENGINE VIEW</span>
+      <span class="xr-note n2">grid 56px · rev 4.1</span>
+      <span class="xr-note n3">+ 500 : 290</span>
+      <span class="lh-badge"><span class="lh-dot"></span>Uafhængigt softwarestudie</span>
+      <h1 class="lh-h1">
+        <span class="hl-line"><span class="hl-t">Vi bygger software</span></span>
+        <span class="hl-line"><span class="hl-t">der bare <em>virker.</em></span></span>
+      </h1>
+      <p class="lh-sub">Hjemmesider, apps, bestillingssystemer og motorerne bag — egne produkter og skræddersyet software til virksomheder, fra idé til drift.</p>
+      <div class="lh-cta">
+        <span class="btn btn-primary btn-lg">Se hvad vi bygger <span class="ar">↓</span></span>
+        <span class="lh-link">Start et projekt <span class="ar">→</span></span>
+      </div>
+    </div>
     <span class="lh-badge"><span class="lh-dot"></span>Uafhængigt softwarestudie</span>
     <h1 class="lh-h1">
       <span class="hl-line"><span class="hl-t">Vi bygger software</span></span>
@@ -81,9 +102,38 @@
     var hero=document.querySelector('.lh-hero'); if(!hero) return;
     var done=false;
     function go(){ if(done) return; done=true; requestAnimationFrame(function(){ hero.classList.add('go'); }); }
-    if(document.documentElement.classList.contains('fyon-loaded')){ go(); return; }
-    var t=setInterval(function(){ if(document.documentElement.classList.contains('fyon-loaded')){ clearInterval(t); go(); } }, 80);
-    setTimeout(function(){ clearInterval(t); go(); }, 9000);
+    if(document.documentElement.classList.contains('fyon-loaded')){ go(); } else {
+      var t=setInterval(function(){ if(document.documentElement.classList.contains('fyon-loaded')){ clearInterval(t); go(); } }, 80);
+      setTimeout(function(){ clearInterval(t); go(); }, 9000);
+    }
+
+    /* cursor spotlight — reveals the engine layer through a soft mask.
+       Pointer steers it; without a pointer it wanders slowly on its own. */
+    var xr=hero.querySelector('.lh-xray'); if(!xr) return;
+    if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){ xr.remove(); return; }
+    var torch=xr.querySelector('.xr-torch');
+    var R=260, mx=-9999, my=-9999, sx=-9999, sy=-9999, idle=true, raf=null, t0=performance.now();
+    function setMask(x,y){
+      var m='radial-gradient(circle '+R+'px at '+x.toFixed(1)+'px '+y.toFixed(1)+'px, #000 0%, #000 40%, rgba(0,0,0,.75) 60%, rgba(0,0,0,.4) 75%, rgba(0,0,0,.12) 88%, transparent 100%)';
+      xr.style.webkitMaskImage=m; xr.style.maskImage=m;
+    }
+    function loop(now){ raf=requestAnimationFrame(loop);
+      if(idle){ var r=hero.getBoundingClientRect(), t=(now-t0)/1000;
+        mx=r.width*(.5+.34*Math.cos(t*.33)); my=r.height*(.42+.26*Math.sin(t*.45)); }
+      if(sx<-999){ sx=mx; sy=my; }
+      sx+=(mx-sx)*.1; sy+=(my-sy)*.1; setMask(sx,sy);
+      if(torch) torch.style.transform='translate3d('+(sx-360)+'px,'+(sy-360)+'px,0)';
+    }
+    function steer(cx,cy){ var r=hero.getBoundingClientRect(); mx=cx-r.left; my=cy-r.top; idle=false; }
+    hero.addEventListener('mousemove', function(e){ steer(e.clientX,e.clientY); }, {passive:true});
+    hero.addEventListener('touchmove', function(e){ if(e.touches[0]) steer(e.touches[0].clientX,e.touches[0].clientY); }, {passive:true});
+    hero.addEventListener('mouseleave', function(){ idle=true; }, {passive:true});
+    // run only while the hero is on screen
+    var vis=new IntersectionObserver(function(es){ es.forEach(function(e){
+      if(e.isIntersecting){ if(!raf) raf=requestAnimationFrame(loop); }
+      else if(raf){ cancelAnimationFrame(raf); raf=null; }
+    }); },{threshold:.05});
+    vis.observe(hero);
   })();
   </script>
 

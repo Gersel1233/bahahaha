@@ -141,3 +141,49 @@
   .lh-hero .hl-t{ transform:none; transition:none; }
   .lh-badge,.lh-sub,.lh-cta{ opacity:1; transform:none; transition:none; }
 }
+
+/* ============================================================
+   X-RAY SPOTLIGHT — the engine under the surface
+   Same layout as the hero (flex column, same padding) so the
+   blueprint text sits exactly on top of the real text. The JS
+   moves the mask; before JS runs the mask hides it entirely.
+   ============================================================ */
+.lh-hero{ min-height:100vh; min-height:100dvh; }
+.lh-xray{ position:absolute; inset:0; z-index:2; pointer-events:none; background:#14110d;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;
+  padding:120px 32px 40px;
+  -webkit-mask-image:radial-gradient(circle 260px at -9999px -9999px, #000 0%, transparent 100%);
+  mask-image:radial-gradient(circle 260px at -9999px -9999px, #000 0%, transparent 100%); }
+
+/* blueprint grid + faint frame */
+.xr-grid{ position:absolute; inset:0;
+  background:
+    repeating-linear-gradient(0deg,  rgba(52,165,150,.15) 0 1px, transparent 1px 56px),
+    repeating-linear-gradient(90deg, rgba(52,165,150,.15) 0 1px, transparent 1px 56px),
+    radial-gradient(90% 70% at 50% 40%, rgba(52,165,150,.10), transparent 70%); }
+/* the torch — a soft teal glow that rides with the spotlight centre */
+.xr-torch{ position:absolute; top:0; left:0; width:720px; height:720px; will-change:transform;
+  background:radial-gradient(circle, rgba(52,165,150,.34) 0%, rgba(52,165,150,.14) 34%, transparent 68%); }
+.xr-ring{ position:absolute; border:1px dashed rgba(52,165,150,.5); border-radius:50%; }
+.xr-ring.r1{ width:520px; height:520px; top:50%; left:50%; transform:translate(-50%,-54%); }
+.xr-ring.r2{ width:820px; height:820px; top:50%; left:50%; transform:translate(-50%,-54%); border-color:rgba(52,165,150,.28); }
+.xr-note{ position:absolute; font-family:var(--mono); font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:rgba(127,214,201,.85); }
+.xr-note.n1{ top:96px; left:34px; }
+.xr-note.n2{ bottom:26px; right:34px; }
+.xr-note.n3{ top:50%; left:50%; transform:translate(150px,-190px); color:rgba(127,214,201,.4); }
+
+/* wireframe restyle — colors/strokes only, metrics untouched (alignment!) */
+.lh-xray .lh-badge{ background:transparent; box-shadow:none; outline:1px dashed rgba(52,165,150,.55); outline-offset:-1px; color:#7fd6c9; }
+.lh-xray .lh-dot{ background:#7fd6c9; animation:none; box-shadow:none; }
+.lh-xray .lh-h1{ color:transparent; -webkit-text-stroke:1.5px rgba(107,201,188,.95); }
+.lh-xray .lh-h1 em{ background:none; -webkit-background-clip:border-box; background-clip:border-box;
+  color:transparent; -webkit-text-stroke:1.5px #9fe3d8; }
+.lh-xray .lh-sub{ color:rgba(159,216,207,.55); }
+.lh-xray .lh-sub b{ color:rgba(159,216,207,.85); }
+.lh-xray .btn-primary{ background:transparent; box-shadow:none; text-shadow:none; color:#7fd6c9;
+  outline:1.5px dashed rgba(52,165,150,.7); outline-offset:-1.5px; }
+.lh-xray .btn-primary::after{ display:none; }
+.lh-xray .lh-link{ color:rgba(159,216,207,.8); }
+.lh-xray .lh-link .ar, .lh-xray .btn-primary .ar{ color:#7fd6c9; }
+
+@media (prefers-reduced-motion: reduce){ .lh-xray{ display:none; } }
