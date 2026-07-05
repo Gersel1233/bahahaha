@@ -16,7 +16,7 @@
 <link rel="preload" as="font" type="font/woff2" href="fonts/newsreader-latin-normal.woff2" crossorigin />
 <link rel="preload" as="font" type="font/woff2" href="fonts/sora-latin-600.woff2" crossorigin />
 <link rel="stylesheet" href="styles.css?v=40" />
-<link rel="stylesheet" href="lesreg.css?v=2" />
+<link rel="stylesheet" href="lesreg.css?v=3" />
 </head>
 <body>
 
@@ -52,7 +52,7 @@
     <a class="brand" href="#top">Lesreg</a>
     <div class="navlinks">
       <a href="#fyon">Fyon</a>
-      <a href="#work">Arbejde</a>
+      <a href="#work">Projekter</a>
       <a href="#services">Det vi bygger</a>
       <a href="#contact">Kontakt</a>
     </div>
@@ -162,72 +162,110 @@
     </div>
   </section>
 
-  <div class="odiv reveal" aria-hidden="true"><span class="ol"></span><span class="om"><i class="s1"></i><i class="s2"></i><i class="s3"></i><i class="s4"></i><i class="oc"></i></span><span class="ol r"></span></div>
-
-  <!-- ===================== 2 · ANDRE PROJEKTER ===================== -->
-  <section class="s" id="work" data-screen-label="work">
+  <!-- ===================== 2 · PROJEKTER (stacked cards) ===================== -->
+  <section class="s pj" id="work" data-screen-label="projects">
     <div class="s-inner">
-      <p class="eyebrow reveal">Udvalgt arbejde</p>
-      <h2 class="h2 reveal" style="max-width:16ch;">Bygget for rigtige virksomheder.</h2>
-      <p class="lede reveal" style="margin-bottom:46px;max-width:620px;">Ikke mockups — systemer der kører live i drift hver dag.</p>
+      <p class="eyebrow reveal" style="color:#9fd8cf">Udvalgt arbejde</p>
+      <h2 class="pj-h reveal">Projekter</h2>
 
-      <div class="case glass reveal">
-        <div class="case-copy">
-          <span class="case-k">Spiis · Restaurant · <b class="live"><i></i>Live i drift</b></span>
-          <h3>Ét system i stedet for telefonen, mailen og hukommelsen.</h3>
-          <div class="case-rows">
-            <div class="crow"><span class="ck">Problemet</span><p>Køkkenet manglede overblik — hvem har bestilt hvad, og hvor meget skal der laves? Gæsterne afbrød chefen midt i travlheden, fordi mail og telefon ikke blev nået.</p></div>
-            <div class="crow"><span class="ck">Løsningen</span><p>Hjemmeside med indbygget bestillings- og bordbooking. Gæsterne bestiller selv — alt lander direkte i ét admin-overblik, hvor restauranten styrer menu, priser og arrangementer.</p></div>
-            <div class="crow"><span class="ck">Resultatet</span><p>Fuldt overblik i køkkenet, færre afbrydelser — og en menu de selv opdaterer. I daglig drift.</p></div>
+      <div class="pj-stack">
+
+        <div class="pj-slot"><article class="pj-card">
+          <header class="pj-top">
+            <span class="pj-num">01</span>
+            <div class="pj-meta"><span class="pj-cat">Eget produkt · Early access</span><h3>Fyon</h3></div>
+            <a class="gbtn-ghost" href="fyon.html">Prøv Fyon</a>
+          </header>
+          <div class="pj-body">
+            <div class="pj-colL">
+              <div class="pj-tile tA">
+                <svg class="cf future" viewBox="0 0 100 116" aria-hidden="true">
+                  <path class="e" pathLength="1" d="M50 8 L26 22 L20 48 L26 78 L38 98 L50 106 L62 98 L74 78 L80 48 L74 22 Z"/>
+                  <path class="e" pathLength="1" d="M30 38 L44 36 M56 36 L70 38"/>
+                  <path class="e" pathLength="1" d="M50 52 L50 64 M44 68 L50 64 L56 68"/>
+                  <path class="e" pathLength="1" d="M40 84 Q50 90 60 84"/>
+                  <path class="e" pathLength="1" d="M26 22 L38 46 L50 64 L62 46 L74 22 M38 46 L44 36 M62 46 L56 36"/>
+                  <circle class="n" cx="50" cy="8" r="2"/><circle class="n" cx="26" cy="22" r="2"/><circle class="n" cx="74" cy="22" r="2"/><circle class="n" cx="20" cy="48" r="2"/><circle class="n" cx="80" cy="48" r="2"/><circle class="n" cx="26" cy="78" r="2"/><circle class="n" cx="74" cy="78" r="2"/><circle class="n" cx="50" cy="106" r="2"/><circle class="n" cx="50" cy="64" r="2"/>
+                  <circle class="n eye" cx="38" cy="46" r="2.8"/><circle class="n eye" cx="62" cy="46" r="2.8"/>
+                </svg>
+                <span class="pj-cap">Dit fremtidige selv — identity-locked</span>
+              </div>
+              <div class="pj-tile tB">
+                <span class="pj-chip">Læser dig</span><span class="pj-chip">Kender dig</span><span class="pj-chip">Viser dig</span>
+                <span class="pj-cap">Én intelligens · bygget omkring ét menneske</span>
+              </div>
+            </div>
+            <div class="pj-colR"><div class="pj-tile tall">
+              <span class="pj-orbit"><i class="n"></i><i class="e"></i><i class="s2"></i><i class="w"></i><i class="c"></i></span>
+              <span class="pj-cap">Egen engine · egen backend · 18+</span>
+            </div></div>
           </div>
-          <a class="lh-link" href="https://spiis.dk" target="_blank" rel="noopener">Besøg spiis.dk <span class="ar">→</span></a>
-        </div>
-        <div class="case-visual" aria-hidden="true">
-          <div class="sp-browser">
-            <div class="sp-chrome"><i></i><i></i><i></i><span>spiis.dk</span></div>
-            <div class="sp-body">
-              <span class="sp-eyebrow">Frisklavet hver dag</span>
-              <span class="sp-title">Dagens ret</span>
-              <div class="sp-card">
-                <div class="sp-left"><span class="steam">)))</span>Dagens ret</div>
-                <div class="sp-right">
-                  <b>Boller i karry</b>
-                  <span>med ris og frisk salat</span>
-                  <span class="sp-btn">Bestil dagens ret</span>
+        </article></div>
+
+        <div class="pj-slot"><article class="pj-card">
+          <header class="pj-top">
+            <span class="pj-num">02</span>
+            <div class="pj-meta"><span class="pj-cat">Kunde · Restaurant · Live i drift</span><h3>Spiis</h3></div>
+            <a class="gbtn-ghost" href="https://spiis.dk" target="_blank" rel="noopener">Besøg spiis.dk</a>
+          </header>
+          <div class="pj-body">
+            <div class="pj-colL">
+              <div class="pj-tile tA txt">
+                <span class="pj-k">Problemet</span>
+                <p>Intet overblik i køkkenet — og gæster der afbrød chefen, fordi mail og telefon ikke blev nået.</p>
+              </div>
+              <div class="pj-tile tB txt">
+                <span class="pj-k">Løsningen</span>
+                <p>Bestillings- og bordbooking indbygget i hjemmesiden. Alt lander i ét admin-overblik: menu, priser, arrangementer.</p>
+              </div>
+            </div>
+            <div class="pj-colR"><div class="pj-tile tall mock">
+              <div class="sp-browser">
+                <div class="sp-chrome"><i></i><i></i><i></i><span>spiis.dk</span></div>
+                <div class="sp-body">
+                  <span class="sp-eyebrow">Frisklavet hver dag</span>
+                  <span class="sp-title">Dagens ret</span>
+                  <div class="sp-card">
+                    <div class="sp-left"><span class="steam">)))</span>Dagens ret</div>
+                    <div class="sp-right"><b>Boller i karry</b><span>med ris og frisk salat</span><span class="sp-btn">Bestil dagens ret</span></div>
+                  </div>
+                  <div class="sp-week"><span class="on">Man</span><span>Tir</span><span>Ons</span><span>Tor</span><span>Fre</span></div>
+                  <div class="sp-order"><span class="sp-led"></span>Ny bestilling → køkken-overblik</div>
                 </div>
               </div>
-              <div class="sp-week">
-                <span class="on">Man</span><span>Tir</span><span>Ons</span><span>Tor</span><span>Fre</span>
-              </div>
-              <div class="sp-order"><span class="sp-led"></span>Ny bestilling → køkken-overblik</div>
+            </div></div>
+          </div>
+        </article></div>
+
+        <div class="pj-slot"><article class="pj-card">
+          <header class="pj-top">
+            <span class="pj-num">03</span>
+            <div class="pj-meta"><span class="pj-cat">Din virksomhed · Det næste</span><h3>Dit projekt</h3></div>
+            <a class="gbtn-ghost" href="mailto:mgersel@lesreg.com">Skriv til os</a>
+          </header>
+          <div class="pj-body">
+            <div class="pj-next">
+              <span class="pn-plus">+</span>
+              <p>Hjemmeside, app eller system — det næste vi bygger, bygger vi sammen. Du taler direkte med den der koder.</p>
+              <span class="pn-mail">mgersel@lesreg.com</span>
             </div>
           </div>
-        </div>
-      </div>
+        </article></div>
 
-      <a class="case-next reveal" href="mailto:mgersel@lesreg.com">
-        <span class="cn-plus">+</span>
-        <span><b>Din virksomhed?</b> Det næste system bygger vi sammen.</span>
-        <span class="ar">→</span>
-      </a>
+      </div>
     </div>
   </section>
 
-  <div class="odiv reveal" aria-hidden="true"><span class="ol"></span><span class="om"><i class="s1"></i><i class="s2"></i><i class="s3"></i><i class="s4"></i><i class="oc"></i></span><span class="ol r"></span></div>
-
-  <!-- ===================== 3 · DET VI BYGGER ===================== -->
-  <section class="s" id="services" data-screen-label="services">
+  <!-- ===================== 3 · DET VI BYGGER (white band) ===================== -->
+  <section class="s sv" id="services" data-screen-label="services">
     <div class="s-inner">
-      <p class="eyebrow reveal">Det vi bygger</p>
-      <h2 class="h2 reveal" style="max-width:15ch;">Hele stakken. I hånden.</h2>
-      <p class="lede reveal" style="margin-bottom:46px;max-width:600px;">Ingen skabeloner, ingen halve løsninger — vi designer, bygger og drifter det hele selv.</p>
-
-      <div class="svc-grid">
-        <div class="svc glass reveal"><span class="svc-dot"></span><h3>Hjemmesider</h3><p>Hurtige, håndbyggede og med et design man husker.</p></div>
-        <div class="svc glass reveal d1"><span class="svc-dot"></span><h3>Apps</h3><p>Fra idé til noget folk faktisk åbner igen.</p></div>
-        <div class="svc glass reveal d2"><span class="svc-dot"></span><h3>Bestillings- & bookingsystemer</h3><p>Som Spiis: gæsterne bestiller selv — du beholder overblikket.</p></div>
-        <div class="svc glass reveal d3"><span class="svc-dot"></span><h3>Systemer & backends</h3><p>Motoren bag: admin-paneler, data og stabil drift.</p></div>
-        <div class="svc glass reveal d4"><span class="svc-dot"></span><h3>AI-produkter</h3><p>Som Fyon: intelligens bygget ind i selve produktet.</p></div>
+      <h2 class="sv-h reveal">Det vi bygger</h2>
+      <div class="sv-list">
+        <div class="sv-item reveal"><span class="sv-num">01</span><div class="sv-txt"><h3>Hjemmesider</h3><p>Hurtige, håndbyggede og med et design man husker — ingen skabeloner, ingen genveje.</p></div></div>
+        <div class="sv-item reveal d1"><span class="sv-num">02</span><div class="sv-txt"><h3>Apps</h3><p>Fra idé til noget folk faktisk åbner igen — designet og bygget hele vejen igennem.</p></div></div>
+        <div class="sv-item reveal d2"><span class="sv-num">03</span><div class="sv-txt"><h3>Bestillings- & bookingsystemer</h3><p>Som Spiis: gæsterne bestiller selv, og du beholder det fulde overblik i ét admin-panel.</p></div></div>
+        <div class="sv-item reveal d3"><span class="sv-num">04</span><div class="sv-txt"><h3>Systemer & backends</h3><p>Motoren bag: admin-paneler, data og stabil drift — det der får resten til bare at virke.</p></div></div>
+        <div class="sv-item reveal d4"><span class="sv-num">05</span><div class="sv-txt"><h3>AI-produkter</h3><p>Som Fyon: intelligens bygget ind i selve produktet — ikke limet på bagefter.</p></div></div>
       </div>
     </div>
   </section>
@@ -257,6 +295,6 @@
   </footer>
   </div><!-- /.fyon-reveal -->
 
-  <script src="site.js?v=39" defer></script>
+  <script src="site.js?v=40" defer></script>
 </body>
 </html>

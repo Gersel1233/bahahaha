@@ -59,6 +59,29 @@
   })();
 
   /* ============================================================
+     PROJECT STACK — sticky cards scale down as the next one arrives
+     ============================================================ */
+  (function stack(){
+    var cards=[].slice.call(document.querySelectorAll('.pj-card')); if(!cards.length) return;
+    // the constellation faces inside the cards render in their final state here
+    [].slice.call(document.querySelectorAll('.pj-card .cf')).forEach(function(f){ f.classList.add('in'); });
+    if(prefersReduced || window.matchMedia('(max-width:820px)').matches) return;   // static on mobile
+    var slots=cards.map(function(c){ return c.parentElement; });
+    var N=cards.length, queued=false, on=false;
+    function apply(){ queued=false; if(!on) return;
+      for(var i=0;i<N;i++){ var r=slots[i].getBoundingClientRect();
+        var p=Math.min(1, Math.max(0, (110 - r.top) / (r.height*0.85)));
+        var sc=1 - p*(N-1-i)*0.05;
+        cards[i].style.transform='scale('+sc.toFixed(4)+')';
+      } }
+    function onScroll(){ if(!queued){ queued=true; requestAnimationFrame(apply); } }
+    var io=new IntersectionObserver(function(es){ es.forEach(function(e){ on=e.isIntersecting; if(on) onScroll(); }); },{threshold:0});
+    io.observe(document.querySelector('.pj-stack'));
+    window.addEventListener('scroll', onScroll, {passive:true});
+    window.addEventListener('resize', onScroll, {passive:true});
+  })();
+
+  /* ============================================================
      BRAIN — 4-lobe neural network, activation cycle
      ============================================================ */
   (function brain(){
