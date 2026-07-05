@@ -16,7 +16,7 @@
 <link rel="preload" as="font" type="font/woff2" href="fonts/newsreader-latin-normal.woff2" crossorigin />
 <link rel="preload" as="font" type="font/woff2" href="fonts/sora-latin-600.woff2" crossorigin />
 <link rel="stylesheet" href="styles.css?v=40" />
-<link rel="stylesheet" href="lesreg.css?v=3" />
+<link rel="stylesheet" href="lesreg.css?v=4" />
 </head>
 <body>
 
@@ -92,7 +92,7 @@
     </h1>
     <p class="lh-sub">Hjemmesider, apps, bestillingssystemer og motorerne bag — egne produkter og skræddersyet software til virksomheder, fra idé til drift.</p>
     <div class="lh-cta">
-      <a class="btn btn-primary btn-lg" href="#fyon">Se hvad vi bygger <span class="ar">↓</span></a>
+      <a class="btn btn-primary btn-lg" href="#work">Se hvad vi bygger <span class="ar">↓</span></a>
       <a class="lh-link" href="mailto:mgersel@lesreg.com">Start et projekt <span class="ar">→</span></a>
     </div>
   </header>
@@ -137,32 +137,7 @@
   })();
   </script>
 
-  <!-- ===================== 1 · FLAGSKIBET — FYON ===================== -->
-  <section class="s" id="fyon" data-screen-label="flagship">
-    <div class="s-inner">
-      <p class="eyebrow reveal">Vores største projekt til dato</p>
-      <h2 class="h2 reveal" style="max-width:18ch;">Ét produkt, bygget fra bunden: <em>Fyon.</em></h2>
-      <p class="lede reveal" style="margin-bottom:44px;max-width:620px;">En selvforbedrings-intelligens bygget omkring ét menneske — den læser dig, kender dig og viser dig den version, du faktisk kan nå. Eget produkt, egen engine, egen backend.</p>
-
-      <div class="lgf bn-stage iri iri-dark reveal">
-        <svg class="bn-links" viewBox="0 0 1000 580" preserveAspectRatio="xMidYMid meet" aria-hidden="true"></svg>
-        <div class="lgf-copy">
-          <span class="lgf-status"><span class="led"></span>Early access · waitlist åben</span>
-          <h3 class="lgf-name">Fyon</h3>
-          <p class="lgf-tag">Intelligensen der kender dig — <em>og får dig derhen.</em></p>
-          <div class="lgf-chips">
-            <span>Læser dig</span><span>Kender dig</span><span>Viser dig</span>
-          </div>
-          <div class="lgf-cta">
-            <a class="btn btn-primary btn-lg" href="fyon.html">Prøv Fyon <span class="ar">→</span></a>
-            <a class="lh-link lgf-link" href="fyon.html#partners">Tjen penge som partner <span class="ar">→</span></a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===================== 2 · PROJEKTER (stacked cards) ===================== -->
+  <!-- ===================== 1 · PROJEKTER (stacked cards) ===================== -->
   <section class="s pj" id="work" data-screen-label="projects">
     <div class="s-inner">
       <p class="eyebrow reveal" style="color:#9fd8cf">Udvalgt arbejde</p>
@@ -170,35 +145,27 @@
 
       <div class="pj-stack">
 
-        <div class="pj-slot"><article class="pj-card">
+        <div class="pj-slot" id="fyon"><article class="pj-card">
           <header class="pj-top">
             <span class="pj-num">01</span>
             <div class="pj-meta"><span class="pj-cat">Eget produkt · Early access</span><h3>Fyon</h3></div>
             <a class="gbtn-ghost" href="fyon.html">Prøv Fyon</a>
           </header>
-          <div class="pj-body">
-            <div class="pj-colL">
-              <div class="pj-tile tA">
-                <svg class="cf future" viewBox="0 0 100 116" aria-hidden="true">
-                  <path class="e" pathLength="1" d="M50 8 L26 22 L20 48 L26 78 L38 98 L50 106 L62 98 L74 78 L80 48 L74 22 Z"/>
-                  <path class="e" pathLength="1" d="M30 38 L44 36 M56 36 L70 38"/>
-                  <path class="e" pathLength="1" d="M50 52 L50 64 M44 68 L50 64 L56 68"/>
-                  <path class="e" pathLength="1" d="M40 84 Q50 90 60 84"/>
-                  <path class="e" pathLength="1" d="M26 22 L38 46 L50 64 L62 46 L74 22 M38 46 L44 36 M62 46 L56 36"/>
-                  <circle class="n" cx="50" cy="8" r="2"/><circle class="n" cx="26" cy="22" r="2"/><circle class="n" cx="74" cy="22" r="2"/><circle class="n" cx="20" cy="48" r="2"/><circle class="n" cx="80" cy="48" r="2"/><circle class="n" cx="26" cy="78" r="2"/><circle class="n" cx="74" cy="78" r="2"/><circle class="n" cx="50" cy="106" r="2"/><circle class="n" cx="50" cy="64" r="2"/>
-                  <circle class="n eye" cx="38" cy="46" r="2.8"/><circle class="n eye" cx="62" cy="46" r="2.8"/>
-                </svg>
-                <span class="pj-cap">Dit fremtidige selv — identity-locked</span>
-              </div>
-              <div class="pj-tile tB">
-                <span class="pj-chip">Læser dig</span><span class="pj-chip">Kender dig</span><span class="pj-chip">Viser dig</span>
-                <span class="pj-cap">Én intelligens · bygget omkring ét menneske</span>
+          <div class="pj-body pj-flag">
+            <div class="lgf bn-stage iri iri-dark">
+              <svg class="bn-links" viewBox="0 0 1000 580" preserveAspectRatio="xMidYMid meet" aria-hidden="true"></svg>
+              <div class="lgf-copy">
+                <span class="lgf-status"><span class="led"></span>Early access · waitlist åben</span>
+                <p class="lgf-tag">Intelligensen der kender dig — <em>og får dig derhen.</em></p>
+                <div class="lgf-chips">
+                  <span>Læser dig</span><span>Kender dig</span><span>Viser dig</span>
+                </div>
+                <div class="lgf-cta">
+                  <a class="btn btn-primary btn-lg" href="fyon.html">Prøv Fyon <span class="ar">→</span></a>
+                  <a class="lh-link lgf-link" href="fyon.html#partners">Tjen penge som partner <span class="ar">→</span></a>
+                </div>
               </div>
             </div>
-            <div class="pj-colR"><div class="pj-tile tall">
-              <span class="pj-orbit"><i class="n"></i><i class="e"></i><i class="s2"></i><i class="w"></i><i class="c"></i></span>
-              <span class="pj-cap">Egen engine · egen backend · 18+</span>
-            </div></div>
           </div>
         </article></div>
 
@@ -256,7 +223,7 @@
     </div>
   </section>
 
-  <!-- ===================== 3 · DET VI BYGGER (white band) ===================== -->
+  <!-- ===================== 2 · DET VI BYGGER (white band) ===================== -->
   <section class="s sv" id="services" data-screen-label="services">
     <div class="s-inner">
       <h2 class="sv-h reveal">Det vi bygger</h2>
@@ -270,7 +237,7 @@
     </div>
   </section>
 
-  <!-- ===================== 4 · KONTAKT ===================== -->
+  <!-- ===================== 3 · KONTAKT ===================== -->
   <section class="s" id="contact" data-screen-label="contact">
     <div class="s-inner lh-contact">
       <div class="lc-orbit reveal" aria-hidden="true"><i class="n"></i><i class="e"></i><i class="s2"></i><i class="w"></i><i class="c"></i></div>
