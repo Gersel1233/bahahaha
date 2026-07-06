@@ -126,6 +126,13 @@ body::after{ content:none; }                     /* kill the cream composited la
 .ic{ width:20px; height:20px; flex:none; }
 .ic.sm{ width:15px; height:15px; }
 
+/* the Lesreg orbit mark — four satellites, teal core (pure CSS) */
+.orbm{ position:relative; display:inline-block; width:var(--s,22px); height:var(--s,22px); flex:none; z-index:1; }
+.orbm i{ position:absolute; width:23%; height:23%; border-radius:26%; background:#e6dfd2; }
+.orbm .n{ top:0; left:38.5%; } .orbm .e{ top:38.5%; left:77%; }
+.orbm .s2{ top:77%; left:38.5%; } .orbm .w{ top:38.5%; left:0; }
+.orbm .c{ top:38.5%; left:38.5%; background:#2f9e91; }
+
 /* ============================================================
    HERO — badge · blur-word headline · CTAs · stats · marquee row
    ============================================================ */
