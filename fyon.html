@@ -16,7 +16,7 @@
 <link rel="preload" as="font" type="font/woff2" href="fonts/newsreader-latin-normal.woff2" crossorigin />
 <link rel="preload" as="font" type="font/woff2" href="fonts/sora-latin-600.woff2" crossorigin />
 <link rel="stylesheet" href="styles.css?v=40" />
-<link rel="stylesheet" href="fyon.css?v=1" />
+<link rel="stylesheet" href="fyon.css?v=2" />
 <script src="image-slot.js?v=31" defer></script>
 <style id="fh-style">
 /* ===== Ported Fyon hero + scroll reveal — fully scoped under #fyon-hero so it
@@ -101,7 +101,7 @@
       <h1 id="headline" data-bt>Everything else rates you and walks away. Fyon <em class="fh-knows">shows you.</em></h1>
       <p class="fh-sub">Upload two photos and meet your <b>actual future self</b>. Then the intelligence that knows you creates the plan, adapts it as you change, and makes sure you actually get there.</p>
       <div class="fh-cta">
-        <button class="fh-btn" data-cta="waitlist">Try Fyon <span class="ar">→</span></button>
+        <span class="mag" data-magnet="120,6"><button class="fh-btn" data-cta="waitlist">Try Fyon <span class="ar">→</span></button></span>
         <a class="fh-link" href="#what">See how it works <span class="ar">→</span></a>
       </div>
     </header>
@@ -529,6 +529,31 @@
       if(reduce || document.documentElement.classList.contains('fyon-loaded')){ goH(); }
       else{ var t=setInterval(function(){ if(document.documentElement.classList.contains('fyon-loaded')){ clearInterval(t); goH(); } },80);
         setTimeout(function(){ clearInterval(t); goH(); },9000); }
+    }
+
+    /* magnet — elements lean gently toward the pointer, spring back on exit */
+    if(!reduce && window.matchMedia('(hover:hover)').matches){
+      var mags=[].slice.call(document.querySelectorAll('[data-magnet]'));
+      document.querySelectorAll('.wd-act .panel').forEach(function(p){ p.setAttribute('data-magnet','90,26'); mags.push(p); });
+      if(mags.length){
+        var mq2=false, mx2=0, my2=0;
+        window.addEventListener('pointermove',function(e){ mx2=e.clientX; my2=e.clientY;
+          if(!mq2){ mq2=true; requestAnimationFrame(function(){ mq2=false;
+            mags.forEach(function(el){
+              var cfg=(el.getAttribute('data-magnet')||'100,10').split(','), pad=+cfg[0], k=+cfg[1];
+              var r=el.getBoundingClientRect();
+              if(mx2>r.left-pad && mx2<r.right+pad && my2>r.top-pad && my2<r.bottom+pad){
+                var dx=(mx2-(r.left+r.width/2))/k, dy=(my2-(r.top+r.height/2))/k;
+                el.style.transition='transform .3s ease-out';
+                el.style.transform='translate3d('+dx.toFixed(1)+'px,'+dy.toFixed(1)+'px,0)';
+              } else if(el.style.transform && el.style.transform!=='translate3d(0px, 0px, 0)'){
+                el.style.transition='transform .6s ease-in-out';
+                el.style.transform='translate3d(0px, 0px, 0)';
+              }
+            });
+          }); }
+        },{passive:true});
+      }
     }
 
     /* scroll-lit statements — a soft leading edge sweeps through the characters */
