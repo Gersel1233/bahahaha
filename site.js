@@ -86,7 +86,7 @@
       } }
     function onScroll(){ if(!queued){ queued=true; requestAnimationFrame(apply); } }
     var io=new IntersectionObserver(function(es){ es.forEach(function(e){ on=e.isIntersecting; if(on) onScroll(); }); },{threshold:0});
-    io.observe(document.querySelector('.pj-stack'));
+    io.observe(slots[0].parentElement);
     window.addEventListener('scroll', onScroll, {passive:true});
     window.addEventListener('resize', function(){ equalize(); onScroll(); }, {passive:true});
   })();

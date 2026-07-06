@@ -16,6 +16,7 @@
 <link rel="preload" as="font" type="font/woff2" href="fonts/newsreader-latin-normal.woff2" crossorigin />
 <link rel="preload" as="font" type="font/woff2" href="fonts/sora-latin-600.woff2" crossorigin />
 <link rel="stylesheet" href="styles.css?v=40" />
+<link rel="stylesheet" href="fyon.css?v=1" />
 <script src="image-slot.js?v=31" defer></script>
 <style id="fh-style">
 /* ===== Ported Fyon hero + scroll reveal — fully scoped under #fyon-hero so it
@@ -97,11 +98,7 @@
   <div id="fyon-hero">
     <header id="top" class="fh-hero" data-screen-label="hero">
       <span class="fh-badge"><span class="fh-dot"></span>Fyon Intelligence · by Lesreg</span>
-      <h1 id="headline">
-        <span class="hl-line"><span class="hl-t">Everything else rates you</span></span>
-        <span class="hl-line"><span class="hl-t">and walks away.</span></span>
-        <span class="hl-line"><span class="hl-t">Fyon <em class="fh-knows">shows you.</em></span></span>
-      </h1>
+      <h1 id="headline" data-bt>Everything else rates you and walks away. Fyon <em class="fh-knows">shows you.</em></h1>
       <p class="fh-sub">Upload two photos and meet your <b>actual future self</b>. Then the intelligence that knows you creates the plan, adapts it as you change, and makes sure you actually get there.</p>
       <div class="fh-cta">
         <button class="fh-btn" data-cta="waitlist">Try Fyon <span class="ar">→</span></button>
@@ -229,7 +226,7 @@
         </div>
       </div>
 
-      <p class="pb-closing reveal"><span class="grey">A general assistant answers your question and forgets you.</span> <span class="ink">Fyon holds your becoming.</span></p>
+      <p class="pb-closing lit"><span class="grey">A general assistant answers your question and forgets you.</span> <span class="ink">Fyon holds your becoming.</span></p>
     </div>
   </section>
 
@@ -242,8 +239,12 @@
       <h2 class="h2 reveal" style="max-width:16ch;">One intelligence, working on your <em>whole self.</em></h2>
       <p class="lede reveal" style="margin-bottom:24px;">Two photos and a short conversation — that's all it takes. From there Fyon shows you the version you could reach, gets to know you, and turns that into a grounded plan it keeps building with you.</p>
 
+      <!-- the three acts — stacked slides that pin until the next arrives -->
+      <div class="fw-stack">
+
       <!-- act 1: future self -->
-      <div class="wd-act reverse" style="margin-top:88px;">
+      <div class="pj-slot fw1"><article class="pj-card fw"><span class="fw-num">Act 01</span>
+      <div class="wd-act reverse">
         <div class="wd-copy">
           <p class="wd-kicker">An achievable you</p>
           <h3>A version of yourself you could actually reach.</h3>
@@ -259,8 +260,10 @@
           <div class="panel-foot"><span class="lock">⬡</span> Identity-locked — features, bone structure and natural asymmetries preserved.</div>
         </div>
       </div>
+      </article></div>
 
       <!-- act 2: knows you -->
+      <div class="pj-slot fw2"><article class="pj-card fw"><span class="fw-num">Act 02</span>
       <div class="wd-act">
         <div class="wd-copy">
           <p class="wd-kicker">It knows you</p>
@@ -274,8 +277,10 @@
           <div class="kw-foot">Fyon remembers across sessions</div>
         </div>
       </div>
+      </article></div>
 
       <!-- act 3: honest plan -->
+      <div class="pj-slot fw3"><article class="pj-card fw"><span class="fw-num">Act 03</span>
       <div class="wd-act reverse">
         <div class="wd-copy">
           <p class="wd-kicker">An honest plan</p>
@@ -293,6 +298,9 @@
           </div>
         </div>
       </div>
+      </article></div>
+
+      </div><!-- /.fw-stack -->
 
       <!-- always-adapting band -->
       <div class="hw-adapt glass reveal" style="margin-top:88px;">
@@ -405,7 +413,7 @@
           <p>Bone structure and natural asymmetry untouched, eyes pixel-locked. The AI-rendered version of a real face never runs on a minor.</p>
         </div>
       </div>
-      <p class="verdict reveal"><span class="grey">Rating apps score you and walk away.</span> <span class="ink">Fyon stays — specialized, honest, and built so you</span> <em>can't help but get there.</em></p>
+      <p class="verdict lit"><span class="grey">Rating apps score you and walk away.</span> <span class="ink">Fyon stays — specialized, honest, and built so you</span> <em>can't help but get there.</em></p>
     </div>
   </section>
 
@@ -492,7 +500,70 @@
     </div>
   </div>
 
-  <script src="site.js?v=43" defer></script>
+  <script>
+  /* ---- premium motion: word-blur hero + scroll-lit statements ---- */
+  (function(){
+    var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    /* word split — recursive, so <em> keeps its styling */
+    function splitWords(el){
+      var i=0;
+      (function walk(node){
+        [].slice.call(node.childNodes).forEach(function(n){
+          if(n.nodeType===3){
+            var frag=document.createDocumentFragment();
+            n.textContent.split(/\s+/).forEach(function(w){
+              if(!w) return;
+              var s=document.createElement('span'); s.className='btw'; s.textContent=w;
+              s.style.setProperty('--d',(i*0.1)+'s'); i++; frag.appendChild(s);
+            });
+            node.replaceChild(frag,n);
+          } else if(n.nodeType===1){ walk(n); }
+        });
+      })(el);
+      el.classList.add('bt');
+    }
+    var h=document.getElementById('headline');
+    if(h){ splitWords(h);
+      var goH=function(){ requestAnimationFrame(function(){ h.classList.add('bt-go'); }); };
+      if(reduce || document.documentElement.classList.contains('fyon-loaded')){ goH(); }
+      else{ var t=setInterval(function(){ if(document.documentElement.classList.contains('fyon-loaded')){ clearInterval(t); goH(); } },80);
+        setTimeout(function(){ clearInterval(t); goH(); },9000); }
+    }
+
+    /* scroll-lit statements — a soft leading edge sweeps through the characters */
+    [].slice.call(document.querySelectorAll('.lit')).forEach(function(p){
+      var chars=[];
+      (function walk(node){
+        [].slice.call(node.childNodes).forEach(function(n){
+          if(n.nodeType===3){
+            var frag=document.createDocumentFragment();
+            n.textContent.split('').forEach(function(ch){
+              var s=document.createElement('span'); s.textContent=ch;
+              s.style.opacity=reduce?1:.18; chars.push(s); frag.appendChild(s);
+            });
+            node.replaceChild(frag,n);
+          } else if(n.nodeType===1){ walk(n); }
+        });
+      })(p);
+      if(reduce) return;
+      var W=20, q=false;
+      function upd(){ q=false;
+        var r=p.getBoundingClientRect(), vh=window.innerHeight;
+        var prog=Math.max(0,Math.min(1,(vh*0.88 - r.top)/(r.height + vh*0.5)));
+        var head=prog*(chars.length+W);
+        for(var i=0;i<chars.length;i++){
+          var o=Math.max(0,Math.min(1,(head-i)/W));
+          chars[i].style.opacity=(.18+.82*o).toFixed(3);
+        }
+      }
+      window.addEventListener('scroll',function(){ if(!q){ q=true; requestAnimationFrame(upd); } },{passive:true});
+      upd();
+    });
+  })();
+  </script>
+
+  <script src="site.js?v=44" defer></script>
 
   <!-- CTA wiring — referral capture + waitlist/early-access + partner links.
        The product app isn't live yet, so the product CTAs DO NOT touch Stripe.
