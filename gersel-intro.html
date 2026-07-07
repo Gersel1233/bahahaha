@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Lesreg · GERSEL → LESREG Orbit intro (standalone)</title>
+
+<!-- The wordmark uses Sora 600. On lesreg.com it's self-hosted
+     (fonts/sora-latin-600.woff2); for a quick drop-in you can use Google Fonts: -->
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600&display=swap" rel="stylesheet" />
+
+<style>
+/* ============================================================
+   GERSEL → LESREG "ORBIT" INTRO — standalone, no dependencies.
+   Copy everything between the ==== markers into any project.
+
+   Timeline (7.3s total, CSS owns every beat):
+     0.10s  four ink blocks rush in along the axes and collide
+     0.72s  a teal ring shockwaves out from the impact
+     1.25s  G-E-R-S-E-L letters rise in, one by one
+     3.50s  GERSEL card-flips (scaleX) into LESREG
+     5.00s  the word collapses to a point…
+     5.32s  …and becomes the Orbit mark (core + 4 satellites)
+     5.95s  the "Lesreg" wordmark settles under it
+     7.30s  splash lifts and cross-fades onto the page
+
+   Behaviour (the small controller script at the bottom):
+     · click / Esc / Space / Enter / scroll / touch skips (fast fade)
+     · prefers-reduced-motion skips straight to the page
+     · html gets .intro-done when finished — reveal your page off that
+     · wrap your page in <div class="gi-reveal"> for the soft rise-in
+
+   Theming: colors live in the :root vars below. The default is the
+   cream Lesreg paper; add data-theme="dark" on <html> for the dark
+   graphite variant used on lesreg.com's front page.
+   ============================================================ */
+
+/* ==== GERSEL→LESREG ORBIT INTRO · START ===================== */
+:root{
+  --gi-font:'Sora', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --gi-mono:ui-monospace, 'SF Mono', Menlo, monospace;
+  --gi-ink:#211d18;            /* blocks, letters, satellites, wordmark */
+  --gi-teal:#0f9b8e;           /* ring + orbit core                      */
+  --gi-faint:rgba(33,29,24,.45);
+  --gi-bg:
+    radial-gradient(58% 48% at 50% 44%, rgba(15,155,142,.10) 0%, rgba(15,155,142,0) 60%),
+    radial-gradient(120% 80% at 50% -8%, #f7e6d3 0%, rgba(247,230,211,0) 46%),
+    linear-gradient(172deg, #f4ede1 0%, #ece3d4 58%, #e6dccb 100%);
+}
+html[data-theme="dark"]{
+  --gi-ink:#ece4d6;
+  --gi-teal:#7FA6D9;           /* lesreg.com front page uses the steel-blue core */
+  --gi-faint:rgba(255,255,255,.4);
+  --gi-bg:
+    radial-gradient(58% 48% at 50% 44%, rgba(122,152,208,.12) 0%, rgba(122,152,208,0) 60%),
+    radial-gradient(130% 90% at 50% -20%, #0b0e14 0%, #060708 48%, #020202 100%);
+}
+
+#lg-intro{ position:fixed; inset:0; z-index:9999; display:grid; place-items:center; overflow:hidden; text-align:center;
+  background:var(--gi-bg);
+  transition:opacity .5s cubic-bezier(.4,0,.2,1), visibility .5s, transform .5s cubic-bezier(.4,0,.2,1); }
+/* ENDING — splash lifts slightly and fades; the page fades in underneath */
+html.intro-done #lg-intro{ opacity:0; visibility:hidden; pointer-events:none; transform:translateY(-2.2%) scale(1.015); }
+html.gi-rush #lg-intro{ transition-duration:.3s; }      /* user skipped — snap it   */
+html.gi-instant #lg-intro{ display:none; }              /* reduced-motion           */
+
+.lgi-stage{ position:relative; display:grid; place-items:center; perspective:1100px; }
+.lgi-collide,.lgi-word3,.lgi-lockup{ grid-area:1/1; }
+
+/* 1 · four ink blocks rush in along the axes and collide ----------------- */
+.lgi-collide{ display:grid; place-items:center; }
+.lgi-blk{ grid-area:1/1; width:30px; height:30px; border-radius:10px; background:var(--gi-ink); opacity:0; will-change:transform,opacity; }
+.lgi-blk.n{ animation:lgiRushV   1.05s cubic-bezier(.55,0,.85,.3) .10s both; }
+.lgi-blk.s{ animation:lgiRushVd  1.05s cubic-bezier(.55,0,.85,.3) .10s both; }
+.lgi-blk.e{ animation:lgiRushH   1.05s cubic-bezier(.55,0,.85,.3) .10s both; }
+.lgi-blk.w{ animation:lgiRushHd  1.05s cubic-bezier(.55,0,.85,.3) .10s both; }
+@keyframes lgiRushV { 0%{transform:translateY(-58vh) scale(1);opacity:0} 10%{opacity:1} 60%{transform:translateY(0) scale(1.28,.7)} 72%{transform:translateY(0) scale(1)} 88%{opacity:1} 100%{transform:scale(.4);opacity:0} }
+@keyframes lgiRushVd{ 0%{transform:translateY(58vh) scale(1);opacity:0}  10%{opacity:1} 60%{transform:translateY(0) scale(1.28,.7)} 72%{transform:translateY(0) scale(1)} 88%{opacity:1} 100%{transform:scale(.4);opacity:0} }
+@keyframes lgiRushH { 0%{transform:translateX(58vw) scale(1);opacity:0}  10%{opacity:1} 60%{transform:translateX(0) scale(.7,1.28)} 72%{transform:translateX(0) scale(1)} 88%{opacity:1} 100%{transform:scale(.4);opacity:0} }
+@keyframes lgiRushHd{ 0%{transform:translateX(-58vw) scale(1);opacity:0} 10%{opacity:1} 60%{transform:translateX(0) scale(.7,1.28)} 72%{transform:translateX(0) scale(1)} 88%{opacity:1} 100%{transform:scale(.4);opacity:0} }
+.lgi-ring{ grid-area:1/1; width:34px; height:34px; border-radius:50%; border:2.5px solid var(--gi-teal); opacity:0; animation:lgiRing .9s cubic-bezier(.2,.7,.3,1) .72s both; }
+@keyframes lgiRing{ 0%{transform:scale(.2);opacity:0} 16%{opacity:.85} 100%{transform:scale(3);opacity:0} }
+
+/* 2 + 3 · GERSEL assembles, then card-flips (scaleX) to LESREG ----------- */
+.lgi-word3{ display:grid; place-items:center; transform-style:preserve-3d; animation:lgiCollapse .7s cubic-bezier(.6,.04,.32,1) 5.0s both; }
+@keyframes lgiCollapse{ 0%{transform:scale(1);opacity:1} 100%{transform:scale(.14);opacity:0} }
+.lgi-front,.lgi-back{ grid-area:1/1; font-family:var(--gi-font); font-weight:600; font-size:clamp(58px,12.5vw,124px); line-height:1; letter-spacing:-.045em; color:var(--gi-ink); }
+.lgi-front{ display:flex; transform-origin:center; animation:lgiFlipOut .3s cubic-bezier(.6,0,.9,.4) 3.5s both; }
+.lgi-front span{ display:inline-block; opacity:0; transform:translateY(26px) rotateX(-88deg); will-change:transform,opacity; }
+.lgi-front span:nth-child(1){ animation:lgiLetter .6s cubic-bezier(.2,.8,.2,1) 1.25s both; }
+.lgi-front span:nth-child(2){ animation:lgiLetter .6s cubic-bezier(.2,.8,.2,1) 1.33s both; }
+.lgi-front span:nth-child(3){ animation:lgiLetter .6s cubic-bezier(.2,.8,.2,1) 1.41s both; }
+.lgi-front span:nth-child(4){ animation:lgiLetter .6s cubic-bezier(.2,.8,.2,1) 1.49s both; }
+.lgi-front span:nth-child(5){ animation:lgiLetter .6s cubic-bezier(.2,.8,.2,1) 1.57s both; }
+.lgi-front span:nth-child(6){ animation:lgiLetter .6s cubic-bezier(.2,.8,.2,1) 1.65s both; }
+@keyframes lgiLetter{ 0%{opacity:0;transform:translateY(26px) rotateX(-88deg)} 65%{opacity:1;transform:translateY(-3px) rotateX(7deg)} 100%{opacity:1;transform:none} }
+@keyframes lgiFlipOut{ 0%{transform:scaleX(1)} 100%{transform:scaleX(0);opacity:0} }
+.lgi-back{ transform-origin:center; opacity:0; transform:scaleX(0); animation:lgiFlipIn .34s cubic-bezier(.2,.9,.3,1.2) 3.78s both; }
+@keyframes lgiFlipIn{ 0%{transform:scaleX(0);opacity:0} 1%{opacity:1} 72%{transform:scaleX(1.05);opacity:1} 100%{transform:scaleX(1);opacity:1} }
+
+/* 4 · the Orbit mark + "Lesreg" wordmark lockup ------------------------- */
+.lgi-lockup{ display:flex; flex-direction:column; align-items:center; gap:26px; }
+.lgi-orbit{ position:relative; width:120px; height:120px; }
+.lgi-orbit .o{ position:absolute; width:26px; height:26px; border-radius:9px; background:var(--gi-ink); opacity:0; transform-origin:center; }
+.lgi-orbit .o.core{ top:47px; left:47px; background:var(--gi-teal); animation:lgiCore .5s cubic-bezier(.34,1.56,.64,1) 5.32s both; }
+.lgi-orbit .o.n{ top:12px;  left:47px; animation:lgiSatN .62s cubic-bezier(.34,1.56,.64,1) 5.40s both; }
+.lgi-orbit .o.e{ top:47px;  left:82px; animation:lgiSatE .62s cubic-bezier(.34,1.56,.64,1) 5.46s both; }
+.lgi-orbit .o.s{ top:82px;  left:47px; animation:lgiSatS .62s cubic-bezier(.34,1.56,.64,1) 5.52s both; }
+.lgi-orbit .o.w{ top:47px;  left:12px; animation:lgiSatW .62s cubic-bezier(.34,1.56,.64,1) 5.58s both; }
+@keyframes lgiCore{ 0%{transform:scale(0);opacity:0} 100%{transform:scale(1);opacity:1} }
+@keyframes lgiSatN{ 0%{transform:translateY(35px) scale(0);opacity:0} 55%{opacity:1} 100%{transform:translateY(0) scale(1);opacity:1} }
+@keyframes lgiSatS{ 0%{transform:translateY(-35px) scale(0);opacity:0} 55%{opacity:1} 100%{transform:translateY(0) scale(1);opacity:1} }
+@keyframes lgiSatE{ 0%{transform:translateX(-35px) scale(0);opacity:0} 55%{opacity:1} 100%{transform:translateX(0) scale(1);opacity:1} }
+@keyframes lgiSatW{ 0%{transform:translateX(35px) scale(0);opacity:0} 55%{opacity:1} 100%{transform:translateX(0) scale(1);opacity:1} }
+.lgi-word{ font-family:var(--gi-font); font-weight:600; font-size:clamp(26px,5vw,40px); letter-spacing:-.02em; color:var(--gi-ink);
+  opacity:0; animation:lgiWordIn .6s cubic-bezier(.2,.8,.2,1) 5.95s both; }
+@keyframes lgiWordIn{ 0%{opacity:0;transform:translateY(10px)} 100%{opacity:1;transform:none} }
+
+.lgi-skip{ position:absolute; bottom:30px; left:50%; transform:translateX(-50%); font-family:var(--gi-mono); font-size:10px; letter-spacing:.22em; text-transform:uppercase;
+  color:var(--gi-faint); opacity:0; animation:lgiWordIn .8s ease 1.0s both; }
+
+/* page reveal — wrap your content in .gi-reveal for the soft rise-in */
+.gi-reveal{ opacity:0; transform:translateY(14px); transition:opacity 1s ease .05s, transform 1.1s cubic-bezier(.2,.8,.2,1) .05s; }
+html.intro-done .gi-reveal{ opacity:1; transform:none; }
+@media (prefers-reduced-motion: reduce){
+  #lg-intro{ display:none; }
+  .gi-reveal{ opacity:1; transform:none; transition:none; }
+}
+/* ==== GERSEL→LESREG ORBIT INTRO · END ======================= */
+
+/* ------- demo page chrome (not part of the component) ------- */
+body{ margin:0; font-family:var(--gi-font); background:#f4ede1; color:#211d18; }
+.demo{ min-height:100vh; display:grid; place-items:center; text-align:center; padding:40px; }
+.demo p{ max-width:52ch; line-height:1.6; color:rgba(33,29,24,.7); }
+</style>
+</head>
+<body>
+
+  <!-- ==== INTRO MARKUP · copy this block ==== -->
+  <div id="lg-intro" role="status" aria-label="Lesreg">
+    <div class="lgi-stage" aria-hidden="true">
+      <div class="lgi-collide">
+        <span class="lgi-blk n"></span><span class="lgi-blk e"></span>
+        <span class="lgi-blk s"></span><span class="lgi-blk w"></span>
+        <span class="lgi-ring"></span>
+      </div>
+      <div class="lgi-word3">
+        <div class="lgi-front"><span>G</span><span>E</span><span>R</span><span>S</span><span>E</span><span>L</span></div>
+        <div class="lgi-back">LESREG</div>
+      </div>
+      <div class="lgi-lockup">
+        <span class="lgi-orbit">
+          <span class="o n"></span><span class="o e"></span><span class="o s"></span><span class="o w"></span>
+          <span class="o core"></span>
+        </span>
+        <span class="lgi-word">Lesreg</span>
+      </div>
+    </div>
+    <span class="lgi-skip">tap to skip</span>
+  </div>
+
+  <!-- ==== CONTROLLER · copy this script (or load it as a file) ====
+       Decides WHEN to reveal; the CSS owns the animation timeline.
+       Click / Esc / Space / Enter / scroll / touch skips with a fast fade.
+       Reduced-motion goes straight to the page. -->
+  <script>
+  (function(){
+    var html = document.documentElement;
+    var intro = document.getElementById('lg-intro');
+    if(!intro){ html.classList.add('intro-done'); return; }
+
+    if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+      html.classList.add('gi-instant', 'intro-done');
+      if(intro.parentNode) intro.remove();
+      return;
+    }
+
+    var done = false;
+    var SEQ = 7300;                       // full Orbit sequence length (ms)
+    var start = performance.now();
+
+    function finish(rush){
+      if(done) return; done = true;
+      if(rush) html.classList.add('gi-rush');
+      html.classList.add('intro-done');
+      setTimeout(function(){ if(intro && intro.parentNode) intro.remove(); }, rush ? 380 : 620);
+    }
+
+    // reveal once the sequence has played AND fonts are settled —
+    // but never wait on full window.load (it blocks on stray subresources)
+    function schedule(){
+      var fontsP = (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve();
+      Promise.race([ fontsP, new Promise(function(r){ setTimeout(r, 1200); }) ]).then(function(){
+        var wait = Math.max(0, SEQ - (performance.now() - start));
+        setTimeout(function(){ finish(false); }, wait);
+      });
+    }
+    if(document.readyState === 'loading'){
+      document.addEventListener('DOMContentLoaded', schedule, { once:true });
+    } else { schedule(); }
+    setTimeout(function(){ finish(false); }, 10000);    // hard safety net — never hang
+
+    function skip(){ finish(true); }
+    intro.addEventListener('click', skip);
+    window.addEventListener('keydown', function(e){ if(e.key==='Escape'||e.key===' '||e.key==='Enter') skip(); });
+    window.addEventListener('wheel', skip, { passive:true, once:true });
+    window.addEventListener('touchmove', skip, { passive:true, once:true });
+  })();
+  </script>
+
+  <!-- ------- demo page underneath (not part of the component) ------- -->
+  <div class="gi-reveal">
+    <div class="demo">
+      <div>
+        <h1>Your page fades in here.</h1>
+        <p>Wrap your real content in <code>&lt;div class="gi-reveal"&gt;</code>.
+           The intro plays for 7.3&nbsp;s — click, scroll or press Esc/Space/Enter to skip.
+           Add <code>data-theme="dark"</code> on <code>&lt;html&gt;</code> for the dark graphite variant.</p>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
