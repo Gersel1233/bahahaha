@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Lesreg · Brand kit — logo, type & logo animation (standalone)</title>
+
+<!-- Demo loads the faces from Google Fonts. In production, self-host them
+     like lesreg.com does (fonts/*.woff2 — see the @font-face template below). -->
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600&family=Instrument+Serif:ital@0;1&family=Barlow:wght@300;400;500;600&family=Kanit:wght@900&display=swap" rel="stylesheet" />
+
+<style>
+/* ============================================================
+   LESREG BRAND KIT — standalone, no dependencies.
+   Copy everything between the ==== markers into any project.
+
+   Contents:
+     1 · TOKENS       colors + the four typefaces and their roles
+     2 · LOGO         the Orbit mark (pure CSS, scales via --s) + lockup
+     3 · ANIMATIONS   assembly (the intro pop-in) · idle breathing · spinner
+
+   Self-hosting fonts (what lesreg.com does):
+     @font-face{ font-family:'Sora'; font-weight:600; font-display:swap;
+       src:url('fonts/sora-latin-600.woff2') format('woff2'); }
+     …same pattern for Instrument Serif (400 + italic), Barlow (300–600),
+     Kanit (900). All are free Google Fonts.
+   ============================================================ */
+
+/* ==== LESREG BRAND · START ================================== */
+
+/* ---- 1 · TOKENS -------------------------------------------- */
+:root{
+  /* color */
+  --lz-ink:#211d18;              /* mark + text on light            */
+  --lz-cream:#ece4d6;            /* mark + text on dark             */
+  --lz-teal:#0f9b8e;             /* the core — the brand color      */
+  --lz-steel:#7FA6D9;            /* optional core on the dark site  */
+
+  /* type — four faces, four jobs */
+  --lz-wordmark:'Sora', -apple-system, sans-serif;              /* 600 · the name          */
+  --lz-display:'Instrument Serif', Georgia, serif;              /* 400 italic · headlines  */
+  --lz-body:'Barlow', -apple-system, sans-serif;                /* 300–600 · everything    */
+  --lz-giant:'Kanit', 'Barlow', sans-serif;                     /* 900 · giant section titles */
+}
+
+/* the wordmark — always Sora 600, tight */
+.lz-wordmark{ font-family:var(--lz-wordmark); font-weight:600; letter-spacing:-.02em; color:var(--lz-ink); }
+
+/* display headline — Instrument Serif, always italic, tight leading */
+.lz-display{ font-family:var(--lz-display); font-style:italic; font-weight:400;
+  line-height:.92; letter-spacing:-.042em; color:var(--lz-ink); }
+
+/* giant section title — Kanit 900 uppercase with the steel gradient */
+.lz-giant{ font-family:var(--lz-giant); font-weight:900; text-transform:uppercase;
+  line-height:.95; letter-spacing:-.02em;
+  background:linear-gradient(180deg,#646973 0%,#BBCCD7 100%);
+  -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; color:transparent; }
+
+/* ---- 2 · LOGO — the Orbit mark ------------------------------
+   Four satellites around a teal core. Pure CSS, crisp at any
+   size: set --s (default 22px). Use .on-dark for cream satellites. */
+.orbm{ position:relative; display:inline-block; width:var(--s,22px); height:var(--s,22px); flex:none; }
+.orbm i{ position:absolute; width:23%; height:23%; border-radius:26%; background:var(--lz-ink); }
+.orbm.on-dark i{ background:var(--lz-cream); }
+.orbm .n{ top:0; left:38.5%; }   .orbm .e{ top:38.5%; left:77%; }
+.orbm .s2{ top:77%; left:38.5%; } .orbm .w{ top:38.5%; left:0; }
+.orbm .c{ top:38.5%; left:38.5%; background:var(--lz-teal); }
+
+/* the lockup — mark + wordmark side by side */
+.lz-lockup{ display:inline-flex; align-items:center; gap:.45em; }
+.lz-lockup .lz-wordmark{ font-size:calc(var(--s,22px) * 1.15); line-height:1; }
+
+/* ---- 3 · ANIMATIONS ----------------------------------------- */
+
+/* a · ASSEMBLY — the intro pop-in: core lands, satellites fly home.
+      Add .play to run it (remove + re-add to replay). */
+.orbm.assemble .c{  transform:scale(0); opacity:0; }
+.orbm.assemble .n,.orbm.assemble .e,.orbm.assemble .s2,.orbm.assemble .w{ opacity:0; }
+.orbm.assemble.play .c{  animation:lzCore .5s cubic-bezier(.34,1.56,.64,1) .05s both; }
+.orbm.assemble.play .n{  animation:lzSatN .62s cubic-bezier(.34,1.56,.64,1) .13s both; }
+.orbm.assemble.play .e{  animation:lzSatE .62s cubic-bezier(.34,1.56,.64,1) .19s both; }
+.orbm.assemble.play .s2{ animation:lzSatS .62s cubic-bezier(.34,1.56,.64,1) .25s both; }
+.orbm.assemble.play .w{  animation:lzSatW .62s cubic-bezier(.34,1.56,.64,1) .31s both; }
+@keyframes lzCore{ 0%{transform:scale(0);opacity:0} 100%{transform:scale(1);opacity:1} }
+@keyframes lzSatN{ 0%{transform:translateY(135%) scale(0);opacity:0}  55%{opacity:1} 100%{transform:translateY(0) scale(1);opacity:1} }
+@keyframes lzSatS{ 0%{transform:translateY(-135%) scale(0);opacity:0} 55%{opacity:1} 100%{transform:translateY(0) scale(1);opacity:1} }
+@keyframes lzSatE{ 0%{transform:translateX(-135%) scale(0);opacity:0} 55%{opacity:1} 100%{transform:translateX(0) scale(1);opacity:1} }
+@keyframes lzSatW{ 0%{transform:translateX(135%) scale(0);opacity:0}  55%{opacity:1} 100%{transform:translateX(0) scale(1);opacity:1} }
+
+/* b · IDLE — the mark breathes; satellites pulse in turn (footer/contact use) */
+.orbm.breathe i{ animation:lzBreath 4.2s ease-in-out infinite; }
+.orbm.breathe .e{ animation-delay:.5s; } .orbm.breathe .s2{ animation-delay:1s; }
+.orbm.breathe .w{ animation-delay:1.5s; } .orbm.breathe .c{ animation:none; }
+@keyframes lzBreath{ 0%,100%{ opacity:1; transform:scale(1); } 50%{ opacity:.45; transform:scale(.86); } }
+
+/* c · SPINNER — loading state: satellites light up around the core */
+.orbm.spin .n,.orbm.spin .e,.orbm.spin .s2,.orbm.spin .w{ opacity:.25; animation:lzSpin 1.5s ease-in-out infinite; }
+.orbm.spin .n{ animation-delay:0s; } .orbm.spin .e{ animation-delay:.375s; }
+.orbm.spin .s2{ animation-delay:.75s; } .orbm.spin .w{ animation-delay:1.125s; }
+@keyframes lzSpin{ 0%{ opacity:1; transform:scale(1.15); } 30%,100%{ opacity:.25; transform:scale(.8); } }
+
+@media (prefers-reduced-motion: reduce){
+  .orbm.assemble .c,.orbm.assemble i{ opacity:1; transform:none; animation:none !important; }
+  .orbm.breathe i,.orbm.spin i{ animation:none; opacity:1; }
+}
+/* ==== LESREG BRAND · END ==================================== */
+
+/* ------- demo page chrome (not part of the kit) ------- */
+body{ margin:0; font-family:var(--lz-body); background:#f4ede1; color:#211d18; }
+section{ padding:56px 32px; max-width:960px; margin:0 auto; }
+section.dark{ max-width:none; background:linear-gradient(168deg,#0d0f10,#080909); color:#fff; }
+section.dark > div{ max-width:896px; margin:0 auto; }
+.lbl{ display:block; font:600 11px/1 var(--lz-body); letter-spacing:.22em; text-transform:uppercase; color:#9a9082; margin-bottom:22px; }
+section.dark .lbl{ color:rgba(255,255,255,.5); }
+.row{ display:flex; align-items:center; gap:44px; flex-wrap:wrap; }
+.spec{ margin:0 0 26px; }
+.spec small{ display:block; font:500 11px/1.6 var(--lz-body); color:#9a9082; margin-top:6px; }
+button.replay{ font:600 13px/1 var(--lz-body); padding:10px 20px; border-radius:999px; border:1.5px solid rgba(33,29,24,.3);
+  background:transparent; color:#211d18; cursor:pointer; }
+textarea.svgcode{ width:100%; height:150px; font:12px/1.5 ui-monospace,Menlo,monospace; border:1px solid rgba(33,29,24,.2);
+  border-radius:12px; padding:14px; background:#fffdf9; color:#211d18; resize:vertical; }
+</style>
+</head>
+<body>
+
+  <!-- ===================== TYPE ===================== -->
+  <section>
+    <span class="lbl">1 · Typografi — fire skrifter, fire jobs</span>
+    <p class="spec"><span class="lz-wordmark" style="font-size:40px">Lesreg</span>
+      <small>WORDMARK — Sora 600 · letter-spacing −.02em. Kun til navnet.</small></p>
+    <p class="spec"><span class="lz-display" style="font-size:clamp(34px,6vw,58px)">Vi bygger software der bare virker.</span>
+      <small>DISPLAY — Instrument Serif 400, altid italic · line-height .92 · letter-spacing −.042em. Heroer og store overskrifter.</small></p>
+    <p class="spec"><span class="lz-giant" style="font-size:clamp(44px,9vw,96px)">Projekter</span>
+      <small>GIANT — Kanit 900 uppercase med stål-gradienten (#646973 → #BBCCD7). Kæmpe sektionstitler.</small></p>
+    <p class="spec" style="font-weight:300;font-size:17px;line-height:1.6;max-width:56ch;">Barlow er brødteksten — 300 til lange afsnit, 400–500 til UI, 600 til knapper. Den holder sig ude af vejen, så serif- og gradient-typerne kan tale.
+      <small>BODY — Barlow 300–600.</small></p>
+  </section>
+
+  <!-- ===================== LOGO ===================== -->
+  <section>
+    <span class="lbl">2 · Logoet — Orbit-mærket (ren CSS, sæt --s)</span>
+    <div class="row">
+      <span class="orbm" style="--s:64px" aria-label="Lesreg"><i class="n"></i><i class="e"></i><i class="s2"></i><i class="w"></i><i class="c"></i></span>
+      <span class="orbm" style="--s:36px"><i class="n"></i><i class="e"></i><i class="s2"></i><i class="w"></i><i class="c"></i></span>
+      <span class="orbm" style="--s:20px"><i class="n"></i><i class="e"></i><i class="s2"></i><i class="w"></i><i class="c"></i></span>
+      <span class="lz-lockup" style="--s:30px">
+        <span class="orbm" style="--s:30px"><i class="n"></i><i class="e"></i><i class="s2"></i><i class="w"></i><i class="c"></i></span>
+        <span class="lz-wordmark">Lesreg</span>
+      </span>
+    </div>
+    <p style="font-size:14px;color:#9a9082;max-width:60ch;">Samme geometri overalt: satellit = 23% af mærket, hjørneradius 26%, kernen er altid teal (#0f9b8e). På den mørke forside bruges stål-kernen (#7FA6D9) — sæt <code>.orbm .c{ background:var(--lz-steel) }</code>.</p>
+
+    <span class="lbl" style="margin-top:34px">SVG-udgave — til mails, dokumenter, app-ikoner</span>
+    <textarea class="svgcode" readonly>&lt;svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100"&gt;
+  &lt;!-- Lesreg Orbit mark · satellites: #211d18 on light / #ece4d6 on dark · core: #0f9b8e --&gt;
+  &lt;rect x="38.5" y="0"    width="23" height="23" rx="6" fill="#211d18"/&gt;
+  &lt;rect x="77"   y="38.5" width="23" height="23" rx="6" fill="#211d18"/&gt;
+  &lt;rect x="38.5" y="77"   width="23" height="23" rx="6" fill="#211d18"/&gt;
+  &lt;rect x="0"    y="38.5" width="23" height="23" rx="6" fill="#211d18"/&gt;
+  &lt;rect x="38.5" y="38.5" width="23" height="23" rx="6" fill="#0f9b8e"/&gt;
+&lt;/svg&gt;</textarea>
+  </section>
+
+  <!-- ===================== ANIMATIONS ===================== -->
+  <section class="dark"><div>
+    <span class="lbl">3 · Logo-animationer</span>
+    <div class="row" style="gap:64px">
+      <div style="text-align:center">
+        <span class="orbm on-dark assemble play" id="asm" style="--s:64px"><i class="n"></i><i class="e"></i><i class="s2"></i><i class="w"></i><i class="c"></i></span>
+        <p style="font-size:12px;color:rgba(255,255,255,.55);margin:14px 0 10px">ASSEMBLY — kernen lander,<br/>satellitterne flyver hjem</p>
+        <button class="replay" style="border-color:rgba(255,255,255,.35);color:#fff" onclick="var m=document.getElementById('asm');m.classList.remove('play');void m.offsetWidth;m.classList.add('play');">Afspil igen</button>
+      </div>
+      <div style="text-align:center">
+        <span class="orbm on-dark breathe" style="--s:64px"><i class="n"></i><i class="e"></i><i class="s2"></i><i class="w"></i><i class="c"></i></span>
+        <p style="font-size:12px;color:rgba(255,255,255,.55);margin:14px 0">IDLE — mærket ånder<br/>(footer, kontakt, tomme states)</p>
+      </div>
+      <div style="text-align:center">
+        <span class="orbm on-dark spin" style="--s:64px"><i class="n"></i><i class="e"></i><i class="s2"></i><i class="w"></i><i class="c"></i></span>
+        <p style="font-size:12px;color:rgba(255,255,255,.55);margin:14px 0">SPINNER — loading<br/>(knapper, ventetilstande)</p>
+      </div>
+    </div>
+    <p style="font-size:13px;color:rgba(255,255,255,.45);max-width:64ch;">Den fulde GERSEL→LESREG side-intro ligger i sin egen fil: <b>gersel-intro.html</b>. Assembly-animationen her er samme koreografi som introens sidste beat, pakket som genanvendelig komponent — brug den fx når en app-skærm åbner.</p>
+  </div></section>
+
+</body>
+</html>
