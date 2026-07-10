@@ -74,25 +74,31 @@ body::after{ content:none; }                     /* kill the cream composited la
 }
 
 /* ============================================================
-   COSMOS — the living backdrop that rides along the whole flow
+   STUDIO — the backdrop: near-black graphite, a faint engineering
+   grid, calm light washes and film grain. The cursor is a studio
+   light that LIGHTS UP the grid lines where it lands.
    ============================================================ */
 #cosmos{ position:fixed; inset:0; z-index:0; overflow:hidden; pointer-events:none;
-  background:radial-gradient(130% 90% at 50% -20%, #0b0e14 0%, #060708 48%, #020202 100%); }
-#cosmos canvas{ position:absolute; inset:0; width:100%; height:100%; }
-.crw{ position:absolute; inset:0; will-change:transform; }
-.cg{ position:absolute; border-radius:50%; filter:blur(80px); }
-.cg.g1{ width:58vw; height:58vw; left:-16vw; top:-20vw;
-  background:radial-gradient(circle, rgba(62,92,148,.24), transparent 66%); animation:cgDrift 26s ease-in-out infinite alternate; }
-.cg.g2{ width:46vw; height:46vw; right:-14vw; top:34vh;
-  background:radial-gradient(circle, rgba(104,84,150,.13), transparent 66%); animation:cgDrift 34s ease-in-out -9s infinite alternate-reverse; }
-@keyframes cgDrift{ from{ transform:translate3d(0,0,0); } to{ transform:translate3d(4vw,6vh,0); } }
-.cring{ position:absolute; left:50%; top:46%; border:1px dashed rgba(178,200,232,.15); border-radius:50%;
-  transform:translate(-50%,-50%); }
-.cring.r1{ width:min(74vw,900px); height:min(74vw,900px); animation:crSpin 150s linear infinite; }
-.cring.r2{ width:min(112vw,1420px); height:min(112vw,1420px); border-color:rgba(178,200,232,.08); animation:crSpin 220s linear infinite reverse; }
-@keyframes crSpin{ from{ transform:translate(-50%,-50%) rotate(0); } to{ transform:translate(-50%,-50%) rotate(360deg); } }
-.ctorch{ position:absolute; top:0; left:0; width:760px; height:760px; will-change:transform; opacity:.95;
-  background:radial-gradient(circle, rgba(132,166,224,.26) 0%, rgba(132,166,224,.1) 36%, transparent 68%); }
+  background:radial-gradient(120% 80% at 50% -10%, #101315 0%, #0a0c0d 45%, #050606 100%); }
+.cg-wash{ position:absolute; inset:0;
+  background:
+    radial-gradient(60% 44% at 74% 4%, rgba(154,182,220,.075), transparent 70%),
+    radial-gradient(50% 40% at 10% 82%, rgba(154,182,220,.045), transparent 70%); }
+.cgrid{ position:absolute; inset:-90px; will-change:transform;
+  background-image:
+    linear-gradient(rgba(215,226,234,.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(215,226,234,.05) 1px, transparent 1px);
+  background-size:72px 72px; }
+.cgrid.lit{ background-image:
+    linear-gradient(rgba(199,216,236,.26) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(199,216,236,.26) 1px, transparent 1px);
+  -webkit-mask-image:radial-gradient(circle 340px at -9999px -9999px, #000 0%, rgba(0,0,0,.45) 55%, transparent 100%);
+  mask-image:radial-gradient(circle 340px at -9999px -9999px, #000 0%, rgba(0,0,0,.45) 55%, transparent 100%); }
+.ctorch{ position:absolute; top:0; left:0; width:760px; height:760px; will-change:transform; opacity:.9;
+  background:radial-gradient(circle, rgba(178,198,228,.15) 0%, rgba(178,198,228,.055) 36%, transparent 68%); }
+.cnoise{ position:absolute; inset:0; opacity:.045;
+  background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="240" height="240"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/></filter><rect width="100%" height="100%" filter="url(%23n)"/></svg>');
+  background-size:240px 240px; }
 
 .fyon-reveal{ position:relative; z-index:1; }
 #fyon,#work,#services,#contact,#studio{ scroll-margin-top:84px; }

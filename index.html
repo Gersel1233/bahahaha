@@ -18,7 +18,7 @@
 <link rel="preload" as="font" type="font/woff2" href="fonts/barlow-normal-400.woff2" crossorigin />
 <link rel="preload" as="font" type="font/woff2" href="fonts/kanit-normal-900.woff2" crossorigin />
 <link rel="stylesheet" href="styles.css?v=40" />
-<link rel="stylesheet" href="lesreg.css?v=10" />
+<link rel="stylesheet" href="lesreg.css?v=11" />
 </head>
 <body>
 
@@ -49,14 +49,13 @@
   </div>
   <script src="loader.js?v=32"></script>
 
-  <!-- ===================== COSMOS — the living backdrop, fixed, rides the whole flow ===================== -->
+  <!-- ===================== STUDIO — fixed backdrop: graphite, grid, light, grain ===================== -->
   <div id="cosmos" aria-hidden="true">
-    <canvas id="cstars"></canvas>
-    <div class="crw">
-      <i class="cg g1"></i><i class="cg g2"></i>
-      <i class="cring r1"></i><i class="cring r2"></i>
-    </div>
+    <div class="cg-wash"></div>
+    <div class="cgrid" id="cgridBase"></div>
+    <div class="cgrid lit" id="cgridLit"></div>
     <i class="ctorch"></i>
+    <div class="cnoise"></div>
   </div>
 
   <!-- ===================== NAV — glass circle · glass pill · white CTA ===================== -->
@@ -370,42 +369,33 @@
     }
   })();
 
-  /* ---- cosmos: drifting starfield, torch light and scroll parallax.
-         Fixed behind everything, so the same living backdrop follows
-         the visitor through the whole flow. ---- */
+  /* ---- studio backdrop: the cursor is a studio light. It carries a soft
+         glow AND lights up the engineering grid where it lands. The grid
+         drifts gently with the scroll so the room has depth. ---- */
   (function(){
-    var c=document.getElementById('cstars'); if(!c) return;
+    var lit=document.getElementById('cgridLit'), base=document.getElementById('cgridBase'),
+        torch=document.querySelector('.ctorch');
+    if(!lit) return;
     var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    var ctx=c.getContext('2d'), W,H, N=150, stars=[];
-    function size(){ var d=Math.min(2,window.devicePixelRatio||1); W=window.innerWidth; H=window.innerHeight;
-      c.width=W*d; c.height=H*d; ctx.setTransform(d,0,0,d,0,0); }
-    size(); window.addEventListener('resize',size);
-    for(var i=0;i<N;i++){ stars.push({ fx:Math.random(), fy:Math.random()*1.5, z:.25+Math.random()*.75,
-      r:.4+Math.random()*1.2, p:Math.random()*6.283, teal:Math.random()<.15 }); }
-    function draw(t){
-      ctx.clearRect(0,0,W,H);
-      var sy=window.scrollY||0, span=H+40;
-      for(var i=0;i<N;i++){ var s=stars[i];
-        var x=((s.fx*W + t*2.4*s.z)%(W+40)+(W+40))%(W+40)-20;
-        var y=((s.fy*H*1.5 - sy*.12*s.z)%span+span)%span-20;
-        ctx.globalAlpha=(.25+.6*s.z)*(.55+.45*Math.sin(t*.8+s.p));
-        ctx.fillStyle=s.teal?'#8fd8cc':'#e8efec';
-        ctx.beginPath(); ctx.arc(x,y,s.r*(.5+s.z*.7)+.2,0,6.283); ctx.fill();
-      }
-      ctx.globalAlpha=1;
-    }
-    var torch=document.querySelector('.ctorch'), crw=document.querySelector('.crw');
-    if(reduce){ draw(0); return; }
-    var mx=-1,my=-1,sx=W*.5,syt=H*.4,t0=performance.now();
+    if(reduce){ if(torch) torch.remove(); lit.remove(); return; }
+    var W=window.innerWidth, H=window.innerHeight;
+    window.addEventListener('resize',function(){ W=window.innerWidth; H=window.innerHeight; },{passive:true});
+    var mx=-1,my=-1,sx=W*.5,sy=H*.4,t0=performance.now();
     window.addEventListener('pointermove',function(e){ mx=e.clientX; my=e.clientY; },{passive:true});
+    function setMask(x,y){
+      var m='radial-gradient(circle 340px at '+x.toFixed(1)+'px '+y.toFixed(1)+'px, #000 0%, rgba(0,0,0,.45) 55%, transparent 100%)';
+      lit.style.webkitMaskImage=m; lit.style.maskImage=m;
+    }
     (function loop(now){ requestAnimationFrame(loop);
       var t=(now-t0)/1000;
-      draw(t);
       var tx=mx, ty=my;
-      if(mx<0){ tx=W*(.5+.32*Math.cos(t*.23)); ty=H*(.42+.24*Math.sin(t*.31)); }
-      sx+=(tx-sx)*.07; syt+=(ty-syt)*.07;
-      if(torch) torch.style.transform='translate3d('+(sx-380)+'px,'+(syt-380)+'px,0)';
-      if(crw) crw.style.transform='translate3d(0,'+(-(window.scrollY||0)*.05)+'px,0)';
+      if(mx<0){ tx=W*(.5+.32*Math.cos(t*.23)); ty=H*(.42+.24*Math.sin(t*.31)); }   // idle wander
+      sx+=(tx-sx)*.08; sy+=(ty-sy)*.08;
+      var py=-(window.scrollY||0)*.06;                       // grid depth on scroll
+      var gt='translate3d(0,'+py.toFixed(1)+'px,0)';
+      if(base) base.style.transform=gt; lit.style.transform=gt;
+      setMask(sx, sy-py);                                    // mask lives inside the shifted grid
+      if(torch) torch.style.transform='translate3d('+(sx-380)+'px,'+(sy-380)+'px,0)';
     })(t0);
   })();
   </script>
