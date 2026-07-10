@@ -84,6 +84,26 @@ body::after{ content:none; }                     /* kill the cream composited la
   background:
     radial-gradient(60% 44% at 74% 4%, rgba(52,165,150,.08), transparent 70%),
     radial-gradient(50% 40% at 10% 82%, rgba(194,145,74,.05), transparent 70%); }
+
+/* the aurora — one large, slow colour field in the Fyon palette.
+   Rich in the hero, dimmed by JS as the visitor scrolls into the work. */
+.caur{ position:absolute; inset:0; filter:blur(90px) saturate(1.12); will-change:opacity; }
+.caur i{ position:absolute; border-radius:50%; will-change:transform; }
+.caur .a1{ width:74vw; height:52vw; left:8vw; top:-20vw;
+  background:radial-gradient(closest-side, rgba(47,158,145,.4), rgba(47,158,145,0) 72%);
+  animation:aurA 46s ease-in-out infinite alternate; }
+.caur .a2{ width:52vw; height:44vw; right:-16vw; top:-6vw;
+  background:radial-gradient(closest-side, rgba(194,145,74,.26), rgba(194,145,74,0) 72%);
+  animation:aurB 58s ease-in-out -14s infinite alternate; }
+.caur .a3{ width:56vw; height:46vw; left:-20vw; top:16vh;
+  background:radial-gradient(closest-side, rgba(168,111,125,.2), rgba(168,111,125,0) 72%);
+  animation:aurB 66s ease-in-out -30s infinite alternate-reverse; }
+.caur .a4{ width:44vw; height:38vw; left:30vw; top:34vh;
+  background:radial-gradient(closest-side, rgba(94,141,110,.17), rgba(94,141,110,0) 72%);
+  animation:aurA 72s ease-in-out -40s infinite alternate-reverse; }
+@keyframes aurA{ from{ transform:translate3d(0,0,0) scale(1); } to{ transform:translate3d(9vw,7vh,0) scale(1.16); } }
+@keyframes aurB{ from{ transform:translate3d(0,0,0) scale(1.08); } to{ transform:translate3d(-8vw,9vh,0) scale(.94); } }
+
 .cgrid{ position:absolute; inset:-90px; will-change:transform;
   background-image:
     linear-gradient(rgba(244,237,225,.05) 1px, transparent 1px),
@@ -421,6 +441,6 @@ body::after{ content:none; }                     /* kill the cream composited la
 @media (prefers-reduced-motion: reduce){
   .gh-badge,.gh-sub,.gh-cta,.gh-stats,.gh-partners{ opacity:1; filter:none; transform:none; animation:none !important; }
   .bt .btw{ opacity:1; filter:none; transform:none; animation:none !important; }
-  .cg,.cring,.lc-orbit i,.sp-left .steam,.sp-led,.lgf-status .led{ animation:none; }
+  .caur i,.lc-orbit i,.sp-left .steam,.sp-led,.lgf-status .led{ animation:none; }
   .ctorch{ display:none; }
 }

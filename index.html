@@ -18,7 +18,7 @@
 <link rel="preload" as="font" type="font/woff2" href="fonts/barlow-normal-400.woff2" crossorigin />
 <link rel="preload" as="font" type="font/woff2" href="fonts/kanit-normal-900.woff2" crossorigin />
 <link rel="stylesheet" href="styles.css?v=40" />
-<link rel="stylesheet" href="lesreg.css?v=12" />
+<link rel="stylesheet" href="lesreg.css?v=13" />
 </head>
 <body>
 
@@ -52,6 +52,7 @@
   <!-- ===================== STUDIO — fixed backdrop: graphite, grid, light, grain ===================== -->
   <div id="cosmos" aria-hidden="true">
     <div class="cg-wash"></div>
+    <div class="caur" id="caur"><i class="a1"></i><i class="a2"></i><i class="a3"></i><i class="a4"></i></div>
     <div class="cgrid" id="cgridBase"></div>
     <div class="cgrid lit" id="cgridLit"></div>
     <i class="ctorch"></i>
@@ -374,7 +375,7 @@
          drifts gently with the scroll so the room has depth. ---- */
   (function(){
     var lit=document.getElementById('cgridLit'), base=document.getElementById('cgridBase'),
-        torch=document.querySelector('.ctorch');
+        torch=document.querySelector('.ctorch'), aur=document.getElementById('caur');
     if(!lit) return;
     var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if(reduce){ if(torch) torch.remove(); lit.remove(); return; }
@@ -396,6 +397,7 @@
       if(base) base.style.transform=gt; lit.style.transform=gt;
       setMask(sx, sy-py);                                    // mask lives inside the shifted grid
       if(torch) torch.style.transform='translate3d('+(sx-380)+'px,'+(sy-380)+'px,0)';
+      if(aur) aur.style.opacity=(1-Math.min(.6,(window.scrollY||0)/(H*1.6))).toFixed(3);   // aurora calms into the work
     })(t0);
   })();
   </script>
