@@ -195,6 +195,15 @@ Deno.serve(async (req) => {
         const p = await partnerByCode(referral_code);
         if (p) ref = await ensureReferral(p.id, cust, null);
       }
+      // [race fix — proven live 2026-07-10] invoice.paid can be PROCESSED before the concurrent
+      // checkout.session.completed handler has finished creating the referral (it arrives first
+      // but writes slower) -> the FIRST invoice minted nothing. Wait briefly and re-check before
+      // giving up, so the first commission never needs a manual replay again.
+      if (!ref && cust) {
+        await new Promise((r) => setTimeout(r, 6000));
+        ref = await referralByCustomer(cust);
+        if (ref) console.log("[stripe-webhook] race-retry resolved referral for", cust);
+      }
       partner_found = !!ref;
       console.log("[stripe-webhook] invoice.paid", JSON.stringify({ invoice: o.id, customer: cust, amount, billing_reason: o.billing_reason }));
       if (!ref) note = "no referral for customer (no code found on invoice)";
@@ -230,6 +239,17 @@ Deno.serve(async (req) => {
           }
         }
         note = `refund on charge ${chargeId}: ${reversed} reversed, ${clawbacks} clawback(s) flagged`;
+      }
+    } else if (event.type === "customer.subscription.deleted") {
+      // [churn honesty] the subscriber left -> flip their referral so the partner dashboard's
+      // "active subscribers" count is true and churn is visible (was: referrals stayed 'active'
+      // forever). Recurring commissions naturally stop with the invoices.
+      const cust = typeof o.customer === "string" ? o.customer : o.customer?.id;
+      if (cust) {
+        await sb.from("referrals").update({ status: "canceled" }).eq("stripe_customer_id", cust);
+        note = "referral(s) marked canceled for " + cust;
+      } else {
+        note = "subscription.deleted without customer";
       }
     } else if (event.type === "account.updated") {
       await sb.from("partners").update({ payout_enabled: !!(o.charges_enabled && o.payouts_enabled) }).eq("stripe_account_id", o.id);

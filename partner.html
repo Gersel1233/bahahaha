@@ -337,8 +337,8 @@
       <div class="card"><div class="muted small">💚 Available</div><div class="stat" style="color:var(--emerald)" id="sAvail">$0.00</div>
         <div class="row" style="justify-content:space-between;align-items:center"><span class="muted small" id="withdrawHint">Ready to withdraw</span><button class="lg ghost sm hidden" id="withdraw"><span class="lbl">Withdraw</span></button></div></div>
       <div class="card"><div class="muted small">📈 Monthly</div><div class="stat" style="color:var(--ink)" id="sMonth">$0.00</div><div class="muted small">Recurring commission</div></div>
-      <div class="card"><div class="muted small">❖ Lifetime</div><div class="stat" style="color:var(--clay)" id="sLife">$0.00</div><div class="muted small">Total earned</div></div>
-      <div class="card"><div class="muted small">👥 Referrals</div><div class="stat" style="color:var(--ink)" id="sRef">0</div><div class="muted small"><span id="sRefA">0</span> active subscribers</div></div>
+      <div class="card"><div class="muted small">❖ Lifetime</div><div class="stat" style="color:var(--clay)" id="sLife">$0.00</div><div class="muted small" id="sLifeNote">Total earned</div></div>
+      <div class="card"><div class="muted small">👥 Referrals</div><div class="stat" style="color:var(--ink)" id="sRef">0</div><div class="muted small"><span id="sRefA">0</span> active<span id="sRefC"></span></div></div>
     </div>
 
     <div class="grid2" style="margin-top:16px;align-items:start">
@@ -545,6 +545,11 @@ else {
     $('tierBar').style.width = nxt ? Math.min(100,rev/nxt[2]*100)+'%' : '100%';
     $('sAvail').textContent=usd(avail); $('sMonth').textContent=usd(month); $('sLife').textContent=usd(life);
     $('sRef').textContent=refs.length; $('sRefA').textContent=refs.filter(r=>r.status==='active').length;
+    // [churn honesty] money never just "disappears": refunds show as reversed, leavers as canceled.
+    { const rv = comms.filter(c=>c.status==='reversed').reduce((s,c)=>s+(c.commission_cents||0),0);
+      $('sLifeNote').textContent = rv>0 ? `Total earned · ${usd(rv)} reversed (refunds)` : 'Total earned';
+      const cx = refs.filter(r=>r.status==='canceled').length;
+      $('sRefC').textContent = cx>0 ? ` · ${cx} canceled` : ''; }
     // Withdraw button: VISIBLE whenever payouts are enabled and there's a balance.
     // It is ENABLED only once the balance clears the minimum — below that it stays
     // visible but disabled so the partner can see exactly why they can't click it.
