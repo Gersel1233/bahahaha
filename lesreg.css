@@ -114,8 +114,12 @@ body::after{ content:none; }
   font-size:clamp(3.1rem,9vw,7.4rem); line-height:.95; letter-spacing:-.02em; color:var(--ax-ink); }
 .lp-h em{ font-style:italic; background:linear-gradient(96deg,#34a596,#1f857a 42%,#2b7b86);
   -webkit-background-clip:text; background-clip:text; color:transparent; }
-.lp-sub{ margin:0 0 clamp(26px,4vw,38px); font-size:clamp(15px,1.7vw,17.5px); font-weight:400;
-  line-height:1.55; color:var(--ax-soft); max-width:44ch; }
+.lp-sub{ margin:0 0 10px; font-size:clamp(15.5px,1.8vw,18.5px); font-weight:400;
+  line-height:1.55; color:var(--ax-soft); max-width:46ch; }
+.lp-tags{ margin:0 0 clamp(26px,4vw,38px); font-family:var(--mono,monospace); font-size:11.5px; font-weight:600;
+  letter-spacing:.18em; text-transform:uppercase; color:var(--ax-spruce); white-space:nowrap; }
+.lp-note{ margin:18px 0 0; font-family:'Instrument Serif',serif; font-style:italic;
+  font-size:clamp(14.5px,1.5vw,16.5px); color:var(--ax-faint); }
 
 /* entrance — the tile springs in, then each chevron draws itself and rises */
 .fmk.assemble{ opacity:0; transform:scale(.5) rotate(-6deg); }
@@ -169,8 +173,18 @@ body::after{ content:none; }
 .abtn.ink:hover{ transform:translateY(-2px) scale(1.02);
   box-shadow:inset 0 1px 1px rgba(255,255,255,.26), inset 0 0 0 1px rgba(255,255,255,.12),
     0 14px 30px -10px rgba(31,27,22,.5), 0 0 0 6px rgba(31,27,22,.08); }
+.abtn.glass{ color:var(--ax-ink);
+  background:rgba(255,255,255,.42);
+  box-shadow:inset 0 1px 1px rgba(255,255,255,.95), inset 0 0 0 1px rgba(255,255,255,.4),
+    0 6px 18px -8px rgba(70,45,25,.4); }
+.abtn.glass:hover{ transform:translateY(-2px) scale(1.02);
+  box-shadow:inset 0 1px 1px rgba(255,255,255,1), inset 0 0 0 1px rgba(255,255,255,.5),
+    0 12px 26px -8px rgba(70,45,25,.45); }
+.abtn.big{ padding:15px 30px; font-size:16px; }
 .abtn:active{ transform:scale(.94); transition-duration:.09s;
   box-shadow:inset 0 2px 8px rgba(0,0,0,.35); }
+.abtn.glass:active{ box-shadow:inset 0 2px 8px rgba(70,45,25,.22); }
+.mag{ display:inline-block; will-change:transform; }
 .alink{ display:inline-flex; align-items:center; gap:7px; font-size:14.5px; font-weight:500; color:var(--ax-ink); }
 .alink .ic{ width:14px; height:14px; color:var(--ax-spruce); transition:transform .3s cubic-bezier(.2,.85,.25,1); }
 .alink:hover .ic{ transform:translateX(3px); }
@@ -180,19 +194,30 @@ body::after{ content:none; }
    ============================================================ */
 .arows .s-inner{ padding-top:clamp(24px,3vw,44px); padding-bottom:clamp(40px,6vw,80px); }
 .arh{ margin:0 0 8px; font-family:'Instrument Serif',serif; font-style:italic; font-weight:400;
-  font-size:clamp(1.9rem,3.6vw,2.8rem); color:var(--ax-ink); }
-.kd-card{ margin-top:clamp(20px,3vw,34px); display:grid; grid-template-columns:5fr 4fr; gap:clamp(24px,4vw,56px);
+  font-size:clamp(2rem,4vw,3.1rem); color:var(--ax-ink); }
+.ar-sub{ margin:0; font-size:clamp(15px,1.7vw,17.5px); line-height:1.55; color:var(--ax-soft); max-width:52ch; }
+.kd-card{ margin-top:clamp(24px,3.4vw,40px); display:grid; grid-template-columns:5fr 4fr; gap:clamp(24px,4vw,56px);
   align-items:center; border-radius:clamp(22px,2.8vw,34px); padding:clamp(24px,3.6vw,52px);
   background:var(--ax-card); border:1px solid rgba(31,27,22,.1);
   transition:transform .4s cubic-bezier(.2,.85,.25,1), box-shadow .4s ease; }
 .kd-card:hover{ transform:translateY(-3px); box-shadow:0 30px 64px -36px rgba(70,45,25,.4); }
-.pj-cat{ display:inline-block; margin-bottom:14px; font-size:11.5px; font-weight:600; letter-spacing:.14em;
-  text-transform:uppercase; color:var(--ax-spruce); }
-.kd-copy h3{ margin:0 0 14px; font-family:'Instrument Serif',serif; font-style:italic; font-weight:400;
-  font-size:clamp(2.2rem,4.4vw,3.4rem); line-height:1; letter-spacing:-.02em; color:var(--ax-ink); }
-.kd-copy p{ margin:0 0 14px; font-size:15px; font-weight:400; line-height:1.62; color:var(--ax-soft); max-width:52ch; }
-.kd-copy p b{ font-weight:600; color:var(--ax-ink); }
-.kd-copy .ac-cta{ margin-top:22px; }
+.kd-head{ display:flex; align-items:center; gap:16px; flex-wrap:wrap; margin-bottom:6px; }
+.kd-head h3{ margin:0; font-family:'Instrument Serif',serif; font-style:italic; font-weight:400;
+  font-size:clamp(2.3rem,4.4vw,3.4rem); line-height:1; letter-spacing:-.02em; color:var(--ax-ink); }
+.kd-live{ display:inline-flex; align-items:center; gap:7px; padding:6px 13px; border-radius:999px;
+  background:rgba(31,133,122,.1); box-shadow:inset 0 0 0 1px rgba(31,133,122,.25);
+  font-size:12px; font-weight:600; color:var(--ax-spruce); white-space:nowrap; }
+.kd-live i{ width:7px; height:7px; border-radius:50%; background:var(--ax-spruce);
+  animation:kdLed 2.2s ease-in-out infinite; }
+@keyframes kdLed{ 0%,100%{ opacity:1; box-shadow:0 0 0 0 rgba(31,133,122,.35); } 50%{ opacity:.5; box-shadow:0 0 0 5px rgba(31,133,122,0); } }
+.kd-tag{ margin:0 0 clamp(18px,2.4vw,26px); font-size:14px; font-weight:500; color:var(--ax-faint); }
+.kd-rows{ display:flex; flex-direction:column; gap:clamp(14px,1.8vw,18px); }
+.krow{ display:flex; gap:18px; align-items:flex-start; }
+.krow .kk{ flex:none; width:86px; padding-top:3px; font-family:var(--mono,monospace); font-size:11px;
+  font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--ax-spruce); }
+.krow p{ margin:0; font-size:15.5px; line-height:1.62; color:var(--ax-soft); max-width:50ch; }
+.kd-copy .ac-cta{ margin-top:clamp(22px,3vw,30px); }
+@media(max-width:560px){ .krow{ flex-direction:column; gap:5px; } .krow .kk{ width:auto; padding-top:0; } }
 
 /* the Spiis mock — a living miniature of spiis.dk, in THEIR warm palette
    (burnt orange · warm cream · brown ink — not Lesreg green) */
@@ -247,10 +272,22 @@ body::after{ content:none; }
 .abts .s-inner{ text-align:center; display:flex; flex-direction:column; align-items:center;
   padding-top:clamp(50px,8vw,110px); padding-bottom:clamp(60px,9vw,130px); }
 .gk{ margin:0 0 18px; font-size:13px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:var(--ax-spruce); }
-.abt{ margin:0 0 clamp(34px,5vw,54px); max-width:680px; font-family:'Instrument Serif',serif; font-weight:400;
+.abt{ margin:0 0 clamp(28px,4vw,42px); max-width:720px; font-family:'Instrument Serif',serif; font-weight:400;
   font-size:clamp(1.5rem,3.2vw,2.3rem); line-height:1.35; letter-spacing:-.01em; color:var(--ax-ink); }
 .abt span{ transition:opacity .18s linear; }
-.gn-cta.big{ font-size:15px; padding:13px 24px; }
+.gc-chips{ display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-bottom:clamp(28px,4vw,40px); }
+.gc-chips span{ padding:9px 18px; border-radius:999px; font-size:13.5px; font-weight:500; color:var(--ax-ink);
+  background:rgba(255,255,255,.4);
+  -webkit-backdrop-filter:blur(10px) saturate(160%); backdrop-filter:blur(10px) saturate(160%);
+  box-shadow:inset 0 1px 1px rgba(255,255,255,.9), inset 0 0 0 1px rgba(255,255,255,.38),
+    0 5px 14px -7px rgba(70,45,25,.35);
+  transition:transform .3s cubic-bezier(.2,.85,.25,1), box-shadow .3s ease; }
+.gc-chips span:hover{ transform:translateY(-2px);
+  box-shadow:inset 0 1px 1px rgba(255,255,255,1), inset 0 0 0 1px rgba(255,255,255,.5),
+    0 9px 20px -8px rgba(70,45,25,.4); }
+.alink.quiet{ margin-top:18px; font-family:var(--mono,monospace); font-size:13px; font-weight:500;
+  color:var(--ax-faint); transition:color .25s ease; }
+.alink.quiet:hover{ color:var(--ax-spruce); }
 
 /* ============================================================
    FOOTER — quiet
@@ -263,6 +300,18 @@ body::after{ content:none; }
 
 /* intro keeps its original cream look from styles.css — no overrides */
 
+/* ---------- speed: below-the-fold sections render lazily ---------- */
+.arows{ content-visibility:auto; contain-intrinsic-size:auto 760px; }
+.abts{ content-visibility:auto; contain-intrinsic-size:auto 620px; }
+.footer{ content-visibility:auto; contain-intrinsic-size:auto 140px; }
+
+/* ---------- small screens: CTAs stack full-width, mock leads ---------- */
+@media(max-width:560px){
+  .ac-cta.center{ flex-direction:column; align-items:stretch; width:100%; max-width:340px; gap:12px; }
+  .ac-cta.center .mag{ display:block; }
+  .ac-cta.center .abtn{ width:100%; justify-content:center; }
+}
+
 @media (prefers-reduced-motion: reduce){
   .kh .khl i{ transform:none; transition:none; }
   .kmeta{ opacity:1; transform:none; transition:none; }
@@ -272,5 +321,5 @@ body::after{ content:none; }
   .fmk .fm-chev{ animation:none !important; }
   .fmk.assemble.play{ animation:none; }
   .abtn::after,.gn-cta::after{ display:none; }
-  .sp-led,.sp-left .steam{ animation:none; }
+  .sp-led,.sp-left .steam,.kd-live i{ animation:none; }
 }
