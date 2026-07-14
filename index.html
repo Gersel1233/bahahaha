@@ -18,7 +18,7 @@
 <link rel="preload" as="font" type="font/woff2" href="fonts/barlow-normal-400.woff2" crossorigin />
 <link rel="preload" as="font" type="font/woff2" href="fonts/kanit-normal-900.woff2" crossorigin />
 <link rel="stylesheet" href="styles.css?v=40" />
-<link rel="stylesheet" href="lesreg.css?v=19" />
+<link rel="stylesheet" href="lesreg.css?v=20" />
 </head>
 <body>
 
@@ -93,11 +93,11 @@
             </div>
           </div>
           <div class="kman" id="kman" aria-hidden="true">
-            <p class="kml lead">Fyon isn&rsquo;t another self-improvement or looksmax app.</p>
-            <p class="kml">It&rsquo;s built on <em>you</em> — and only you.</p>
-            <p class="kml">The pictures aren&rsquo;t fantasy. They&rsquo;re you — <em>identity-locked</em>.</p>
-            <p class="kml">The plan isn&rsquo;t generic. It&rsquo;s your path, re-planned as life happens.</p>
-            <p class="kml">And the intelligence makes sure <em>you get there</em>.</p>
+            <p class="kml lead">Fyon isn&rsquo;t another looksmax app.</p>
+            <p class="kml">It&rsquo;s built around one person — <em>you</em>.</p>
+            <p class="kml">The image isn&rsquo;t fantasy. It&rsquo;s you, <em>identity-locked</em> — the version you can actually reach.</p>
+            <p class="kml">The plan isn&rsquo;t generic. It&rsquo;s yours — and when something doesn&rsquo;t work, Fyon rebuilds it <em>around you</em>, not the other way around.</p>
+            <p class="kml">It adapts as you change. And it stays — <em>until you get there</em>.</p>
           </div>
         </div>
         <div class="kx-cta" id="kxcta">
@@ -248,12 +248,16 @@
           phw.style.transform='translateX('+(-Math.min(230,window.innerWidth*.17)*sh).toFixed(1)+'px)';
           phw.style.opacity='1';
         }
+        var KT=[[.58,.645],[.655,.715],[.725,.795],[.805,.885],[.895,.95]];
+        var c=ramp(p,.92,.99), active=-1;
+        for(var i=0;i<kml.length;i++){ if(ramp(p,KT[i][0],KT[i][1])>.05) active=i; }
         for(var i=0;i<kml.length;i++){
-          var a=.6+i*.062, o=ramp(p,a,a+.055);
-          kml[i].style.opacity=o.toFixed(3);
-          kml[i].style.transform='translateY('+(16*(1-o)).toFixed(1)+'px)';
+          var o=ramp(p,KT[i][0],KT[i][1]), eo=1-Math.pow(1-o,2);
+          var dim=(i<active)?.62:1; dim+= (1-dim)*c;          // spotlight: past lines rest, all return for the finale
+          kml[i].style.opacity=(eo*dim).toFixed(3);
+          kml[i].style.transform='translateY('+(22*(1-eo)).toFixed(1)+'px)';
+          kml[i].style.filter='blur('+(7*(1-eo)).toFixed(2)+'px)';
         }
-        var c=ramp(p,.92,.99);
         kx.style.opacity=c.toFixed(3);
         kx.style.transform='translateY('+(14*(1-c)).toFixed(1)+'px)';
         kx.style.pointerEvents=c>.5?'':'none';
