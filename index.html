@@ -18,7 +18,7 @@
 <link rel="preload" as="font" type="font/woff2" href="fonts/barlow-normal-400.woff2" crossorigin />
 <link rel="preload" as="font" type="font/woff2" href="fonts/kanit-normal-900.woff2" crossorigin />
 <link rel="stylesheet" href="styles.css?v=40" />
-<link rel="stylesheet" href="lesreg.css?v=20" />
+<link rel="stylesheet" href="lesreg.css?v=21" />
 </head>
 <body>
 
@@ -64,76 +64,36 @@
 
   <div class="fyon-reveal">
 
-  <!-- ===================== HERO — the motion graphic: statement → Lesregs nyeste produktion → the phone ===================== -->
-  <div class="ktrack" id="ktrack">
-    <header id="top" class="khero kstick" data-screen-label="hero">
+  <!-- ===================== HERO — the statement (Koto) ===================== -->
+  <header id="top" class="khero" data-screen-label="hero">
+    <h1 class="kh">
+      <span class="khl"><i>Vi bygger</i></span>
+      <span class="khl"><i>intelligente</i></span>
+      <span class="khl"><i>produkter<span class="em">.</span></i></span>
+    </h1>
+    <div class="kmeta">
+      <span><b>Lesreg</b> — digitalt produkthus</span>
+      <span>Det første produkt hedder <b>Fyon</b></span>
+      <span class="kscroll">Scroll</span>
+    </div>
+  </header>
 
-      <!-- act 1 · the statement -->
-      <div class="kact k1" id="kact1">
-        <h1 class="kh">
-          <span class="khl"><i>Vi bygger</i></span>
-          <span class="khl"><i>intelligente</i></span>
-          <span class="khl"><i>produkter<span class="em">.</span></i></span>
-        </h1>
-      </div>
-
-      <!-- act 2 · the newest production -->
-      <div class="kact k2" id="kact2" aria-hidden="true">
-        <p class="kx-k">Lesregs nyeste produktion</p>
-        <div class="kduo">
-          <div class="ph3d-wrap" id="phwrap">
-            <div class="ph3d" id="ph3d">
-              <div class="ph-body"></div>
-              <div class="ph-screen">
-                <div class="ph-fallback" aria-hidden="true"><span class="orbm" style="--s:40px"><i class="n"></i><i class="e"></i><i class="s2"></i><i class="w"></i><i class="c"></i></span><span class="ph-fname">Fyon</span></div>
-                <video class="ph-vid" src="media/fyon-flow.mp4" autoplay muted loop playsinline preload="auto" aria-label="Fyon-appen"></video>
-              </div>
-              <span class="ph-notch"></span>
-              <div class="ph-glare"></div>
-            </div>
-          </div>
-          <div class="kman" id="kman" aria-hidden="true">
-            <p class="kml lead">Fyon isn&rsquo;t another looksmax app.</p>
-            <p class="kml">It&rsquo;s built around one person — <em>you</em>.</p>
-            <p class="kml">The image isn&rsquo;t fantasy. It&rsquo;s you, <em>identity-locked</em> — the version you can actually reach.</p>
-            <p class="kml">The plan isn&rsquo;t generic. It&rsquo;s yours — and when something doesn&rsquo;t work, Fyon rebuilds it <em>around you</em>, not the other way around.</p>
-            <p class="kml">It adapts as you change. And it stays — <em>until you get there</em>.</p>
-          </div>
-        </div>
-        <div class="kx-cta" id="kxcta">
-          <a class="abtn spruce" href="fyon.html">Prøv Fyon
-            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg>
-          </a>
-          <a class="alink" href="fyon.html">Læs om Fyon
-            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg>
-          </a>
-        </div>
-      </div>
-
-      <div class="kmeta">
-        <span><b>Lesreg</b> — digitalt produkthus</span>
-        <span>Det første produkt hedder <b>Fyon</b></span>
-        <span class="kscroll">Scroll</span>
-      </div>
-    </header>
-  </div>
-
-  <!-- ===================== FYON — the hook ===================== -->
-  <section class="s fhook" id="fyon" data-screen-label="fyon-hook">
+  <!-- ===================== LATEST PRODUCTION — the door to Fyon ===================== -->
+  <section class="s lpro" id="fyon" data-screen-label="latest">
     <div class="s-inner">
-      <p class="gk reveal">Fyon</p>
-      <p class="abt litx">Everything else rates you and walks away. Fyon shows you — and gets you there.</p>
-      <div class="ac-cta center reveal">
-        <a class="abtn spruce" href="fyon.html">Prøv Fyon
-          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg>
-        </a>
-        <a class="alink" href="fyon.html">Læs om Fyon
-          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg>
-        </a>
-        <a class="alink" href="fyon.html#partners">Tjen 30% løbende
-          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg>
-        </a>
-      </div>
+      <a class="lp-card reveal" href="fyon.html" aria-label="Oplev Fyon">
+        <div class="lp-stage bn-stage" aria-hidden="true">
+          <svg class="bn-links" viewBox="0 0 1000 580" preserveAspectRatio="xMidYMid slice"></svg>
+        </div>
+        <div class="lp-copy">
+          <span class="ac-k">Lesregs nyeste produktion</span>
+          <h2>Fyon<span class="em">.</span></h2>
+          <p>Intelligensen der kender dig — og får dig derhen. Early access · 18+.</p>
+          <span class="lp-go">Oplev Fyon
+            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg>
+          </span>
+        </div>
+      </a>
     </div>
   </section>
 
@@ -220,52 +180,6 @@
       updAbt();
     });
 
-    /* the hero motion graphic — scroll drives statement → phone */
-    var track=document.getElementById('ktrack'), act1=document.getElementById('kact1'),
-        act2=document.getElementById('kact2'), ph=document.getElementById('ph3d'), kx=document.getElementById('kxcta'),
-        phw=document.getElementById('phwrap'), kml=[].slice.call(document.querySelectorAll('.kml'));
-    if(track && !reduce){
-      var kq=false;
-      function ramp(p,a,b){ return Math.max(0,Math.min(1,(p-a)/(b-a))); }
-      function kUpd(){
-        kq=false;
-        var vh=window.innerHeight, mob=window.innerWidth<=820;
-        var p=Math.max(0,Math.min(1,(window.scrollY - track.offsetTop) / (track.offsetHeight - vh)));
-        var out=ramp(p,.03,.2);
-        act1.style.opacity=(1-out).toFixed(3);
-        act1.style.transform='translateY('+(-12*out).toFixed(2)+'vh) scale('+(1-.06*out).toFixed(4)+')';
-        act1.style.visibility=out>=1?'hidden':'visible';
-        var oin=ramp(p,.18,.3);
-        act2.style.opacity=oin.toFixed(3);
-        act2.style.visibility=oin<=0?'hidden':'visible';
-        var q=ramp(p,.2,.52), e=1-Math.pow(1-q,3);          // easeOutCubic — the phone arrives
-        ph.style.transform='rotateY('+(-96*(1-e)).toFixed(2)+'deg) rotateX('+(-9*(1-e)).toFixed(2)+'deg) scale('+(.86+.14*e).toFixed(4)+')';
-        var sh=ramp(p,.56,.68);                              // then it makes room for the words
-        if(mob){
-          phw.style.transform='translateY('+(-16*sh).toFixed(2)+'vh) scale('+(1-.42*sh).toFixed(4)+')';
-          phw.style.opacity=(1-.8*sh).toFixed(3);
-        } else {
-          phw.style.transform='translateX('+(-Math.min(230,window.innerWidth*.17)*sh).toFixed(1)+'px)';
-          phw.style.opacity='1';
-        }
-        var KT=[[.58,.645],[.655,.715],[.725,.795],[.805,.885],[.895,.95]];
-        var c=ramp(p,.92,.99), active=-1;
-        for(var i=0;i<kml.length;i++){ if(ramp(p,KT[i][0],KT[i][1])>.05) active=i; }
-        for(var i=0;i<kml.length;i++){
-          var o=ramp(p,KT[i][0],KT[i][1]), eo=1-Math.pow(1-o,2);
-          var dim=(i<active)?.62:1; dim+= (1-dim)*c;          // spotlight: past lines rest, all return for the finale
-          kml[i].style.opacity=(eo*dim).toFixed(3);
-          kml[i].style.transform='translateY('+(22*(1-eo)).toFixed(1)+'px)';
-          kml[i].style.filter='blur('+(7*(1-eo)).toFixed(2)+'px)';
-        }
-        kx.style.opacity=c.toFixed(3);
-        kx.style.transform='translateY('+(14*(1-c)).toFixed(1)+'px)';
-        kx.style.pointerEvents=c>.5?'':'none';
-      }
-      window.addEventListener('scroll',function(){ if(!kq){ kq=true; requestAnimationFrame(kUpd); } },{passive:true});
-      window.addEventListener('resize',function(){ if(!kq){ kq=true; requestAnimationFrame(kUpd); } },{passive:true});
-      kUpd();
-    }
   })();
   </script>
 

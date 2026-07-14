@@ -16,7 +16,7 @@
 <link rel="preload" as="font" type="font/woff2" href="fonts/newsreader-latin-normal.woff2" crossorigin />
 <link rel="preload" as="font" type="font/woff2" href="fonts/sora-latin-600.woff2" crossorigin />
 <link rel="stylesheet" href="styles.css?v=40" />
-<link rel="stylesheet" href="fyon.css?v=2" />
+<link rel="stylesheet" href="fyon.css?v=3" />
 <script src="image-slot.js?v=31" defer></script>
 <style id="fh-style">
 /* ===== Ported Fyon hero + scroll reveal — fully scoped under #fyon-hero so it
@@ -118,6 +118,37 @@
     setTimeout(function(){ clearInterval(t); go(); }, 9000);
   })();
   </script>
+
+  <!-- ===================== THE FLOW — scroll-driven film: the phone, then the manifesto ===================== -->
+  <div class="ktrack" id="ktrack">
+    <section class="kstick" aria-label="The Fyon flow">
+      <p class="kx-k">The flow · early access</p>
+      <div class="kduo">
+        <div class="ph3d-wrap" id="phwrap">
+          <div class="ph3d" id="ph3d">
+            <div class="ph-body"></div>
+            <div class="ph-screen">
+              <div class="ph-fallback" aria-hidden="true"><span class="ph-fname">Fyon</span></div>
+              <video class="ph-vid" src="media/fyon-flow.mp4" autoplay muted loop playsinline preload="auto" aria-label="The Fyon app"></video>
+            </div>
+            <span class="ph-notch"></span>
+            <div class="ph-glare"></div>
+          </div>
+        </div>
+        <div class="kman" id="kman" aria-hidden="true">
+          <p class="kml lead">Fyon isn&rsquo;t another looksmax app.</p>
+          <p class="kml">It&rsquo;s built around one person — <em>you</em>.</p>
+          <p class="kml">The image isn&rsquo;t fantasy. It&rsquo;s you, <em>identity-locked</em> — the version you can actually reach.</p>
+          <p class="kml">The plan isn&rsquo;t generic. It&rsquo;s yours — and when something doesn&rsquo;t work, Fyon rebuilds it <em>around you</em>, not the other way around.</p>
+          <p class="kml">It adapts as you change. And it stays — <em>until you get there</em>.</p>
+        </div>
+      </div>
+      <div class="kx-cta" id="kxcta">
+        <button class="btn btn-primary btn-lg" data-cta="waitlist">Try Fyon <span class="ar">→</span></button>
+        <a class="fy-flowlink" href="#why">See why it works <span class="ar">→</span></a>
+      </div>
+    </section>
+  </div>
 
   <!-- ===================== PROBLEM ===================== -->
   <section class="s" id="why" data-screen-label="why-fyon">
@@ -554,6 +585,46 @@
           }); }
         },{passive:true});
       }
+    }
+
+    /* the flow film — scroll rotates the phone in, then the manifesto speaks */
+    var track=document.getElementById('ktrack'), ph=document.getElementById('ph3d'),
+        phw=document.getElementById('phwrap'), kx=document.getElementById('kxcta'),
+        kml=[].slice.call(document.querySelectorAll('.kml'));
+    if(track && !reduce){
+      var kq=false;
+      function ramp(p,a,b){ return Math.max(0,Math.min(1,(p-a)/(b-a))); }
+      function kUpd(){
+        kq=false;
+        var vh=window.innerHeight, mob=window.innerWidth<=820;
+        var p=Math.max(0,Math.min(1,(window.scrollY - track.offsetTop) / (track.offsetHeight - vh)));
+        var q=ramp(p,.05,.44), e=1-Math.pow(1-q,3);
+        ph.style.transform='rotateY('+(-96*(1-e)).toFixed(2)+'deg) rotateX('+(-9*(1-e)).toFixed(2)+'deg) scale('+(.86+.14*e).toFixed(4)+')';
+        var sh=ramp(p,.48,.6);
+        if(mob){
+          phw.style.transform='translateY('+(-16*sh).toFixed(2)+'vh) scale('+(1-.42*sh).toFixed(4)+')';
+          phw.style.opacity=(1-.8*sh).toFixed(3);
+        } else {
+          phw.style.transform='translateX('+(-Math.min(230,window.innerWidth*.17)*sh).toFixed(1)+'px)';
+          phw.style.opacity='1';
+        }
+        var KT=[[.5,.565],[.575,.635],[.645,.715],[.725,.805],[.815,.875]];
+        var c=ramp(p,.9,.975), active=-1;
+        for(var i=0;i<kml.length;i++){ if(ramp(p,KT[i][0],KT[i][1])>.05) active=i; }
+        for(var i=0;i<kml.length;i++){
+          var o=ramp(p,KT[i][0],KT[i][1]), eo=1-Math.pow(1-o,2);
+          var dim=(i<active)?.62:1; dim+=(1-dim)*c;
+          kml[i].style.opacity=(eo*dim).toFixed(3);
+          kml[i].style.transform='translateY('+(22*(1-eo)).toFixed(1)+'px)';
+          kml[i].style.filter='blur('+(7*(1-eo)).toFixed(2)+'px)';
+        }
+        kx.style.opacity=c.toFixed(3);
+        kx.style.transform='translateY('+(14*(1-c)).toFixed(1)+'px)';
+        kx.style.pointerEvents=c>.5?'':'none';
+      }
+      window.addEventListener('scroll',function(){ if(!kq){ kq=true; requestAnimationFrame(kUpd); } },{passive:true});
+      window.addEventListener('resize',function(){ if(!kq){ kq=true; requestAnimationFrame(kUpd); } },{passive:true});
+      kUpd();
     }
 
     /* scroll-lit statements — a soft leading edge sweeps through the characters */
