@@ -18,7 +18,7 @@
 <link rel="preload" as="font" type="font/woff2" href="fonts/barlow-normal-400.woff2" crossorigin />
 <link rel="preload" as="font" type="font/woff2" href="fonts/kanit-normal-900.woff2" crossorigin />
 <link rel="stylesheet" href="styles.css?v=40" />
-<link rel="stylesheet" href="lesreg.css?v=15" />
+<link rel="stylesheet" href="lesreg.css?v=16" />
 </head>
 <body>
 
@@ -49,162 +49,92 @@
   </div>
   <script src="loader.js?v=32"></script>
 
-  <!-- ===================== STUDIO — fixed backdrop: graphite, grid, light, grain ===================== -->
-  <div id="cosmos" aria-hidden="true">
-    <div class="cg-wash"></div>
-    <div class="caur" id="caur"><i class="a1"></i><i class="a2"></i><i class="a3"></i><i class="a4"></i></div>
-    <div class="cgrid" id="cgridBase"></div>
-    <div class="cgrid lit" id="cgridLit"></div>
-    <i class="ctorch"></i>
-    <div class="cnoise"></div>
-  </div>
-
-  <!-- ===================== NAV — glass circle · glass pill · white CTA ===================== -->
+  <!-- ===================== NAV — lockup · links · one CTA ===================== -->
   <nav class="nav" data-screen-label="nav">
-    <a class="gn-logo liquid-glass" href="#top" aria-label="Lesreg forside"><span class="orbm" aria-hidden="true"><i class="n"></i><i class="e"></i><i class="s2"></i><i class="w"></i><i class="c"></i></span></a>
-    <div class="gn-mid">
-      <div class="gn-links liquid-glass">
-        <a href="#fyon">Fyon</a>
-        <a href="#kunder">Kunder</a>
-        <a href="#contact">Kontakt</a>
-      </div>
-      <a class="gn-cta" href="mailto:mgersel@lesreg.com">Start et projekt
-        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg>
-      </a>
+    <a class="brand-l" href="#top"><span class="orbm" aria-hidden="true"><i class="n"></i><i class="e"></i><i class="s2"></i><i class="w"></i><i class="c"></i></span>Lesreg</a>
+    <div class="gn-links">
+      <a href="#fyon">Fyon</a>
+      <a href="#kunder">Kunder</a>
+      <a href="#contact">Kontakt</a>
     </div>
-    <span class="gn-spacer" aria-hidden="true"></span>
+    <a class="gn-cta" href="fyon.html">Prøv Fyon
+      <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg>
+    </a>
   </nav>
 
   <div class="fyon-reveal">
 
-  <!-- ===================== HERO ===================== -->
-  <header id="top" class="ghero" data-screen-label="hero">
-    <div class="gh-core">
-      <a class="gh-badge liquid-glass" href="#fyon">
-        <span class="chip">Nyt</span>
-        <span>Fyon — early access · waitlist åben</span>
-      </a>
-      <h1 class="gh-h1" data-bt>Vi bygger intelligente produkter.</h1>
-      <p class="gh-sub">Lesreg er et produkthus — vi designer, bygger og drifter selv. Det første hedder Fyon.</p>
-      <div class="gh-cta">
-        <a class="glp liquid-glass-strong" href="#fyon"><span style="position:relative;z-index:1">Mød Fyon</span>
-          <svg class="ic" style="position:relative;z-index:1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg>
-        </a>
-        <a class="gh-link" href="mailto:mgersel@lesreg.com">Start et projekt
-          <svg class="ic sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg>
-        </a>
-      </div>
-      <div class="gh-stats">
-        <div class="gstat liquid-glass">
-          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 10 5.5L12 13 2 7.5 12 2Z"/><path d="m2 12.5 10 5.5 10-5.5"/><path d="m2 17 10 5.5L22 17"/></svg>
-          <div><span class="num">01</span><span class="lab">Flagskib i drift — Fyon · early access</span></div>
-        </div>
-        <div class="gstat liquid-glass">
-          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m16 18 6-6-6-6"/><path d="m8 6-6 6 6 6"/></svg>
-          <div><span class="num">100%</span><span class="lab">Designet og kodet i hånden</span></div>
-        </div>
-      </div>
-    </div>
-    <div class="gh-partners">
-      <span class="gh-ptag liquid-glass"><span>Ét hus — fra idé til drift</span></span>
-      <div class="gh-prow"><span>Design</span><span>Engineering</span><span>Intelligens</span><span>Drift</span></div>
+  <!-- ===================== HERO — the statement (Koto) ===================== -->
+  <header id="top" class="khero" data-screen-label="hero">
+    <h1 class="kh">
+      <span class="khl"><i>Vi bygger</i></span>
+      <span class="khl"><i>intelligente</i></span>
+      <span class="khl"><i>produkter<span class="em">.</span></i></span>
+    </h1>
+    <div class="kmeta">
+      <span><b>Lesreg</b> — digitalt produkthus</span>
+      <span>Det første produkt hedder <b>Fyon</b></span>
+      <span class="kscroll">Scroll</span>
     </div>
   </header>
 
-  <!-- ===================== 1 · FYON — hovedbegivenheden ===================== -->
-  <section class="s fyx" id="fyon" data-screen-label="fyon">
+  <!-- ===================== FYON + PROJEKT — the two doors ===================== -->
+  <section class="s acards" id="fyon" data-screen-label="cards">
     <div class="s-inner">
-      <p class="gk reveal" style="text-align:center">// Flagskibet</p>
-      <h2 class="ghx reveal">Fyon</h2>
-      <p class="fyx-tag reveal">Intelligensen der kender dig — <em>og får dig derhen.</em></p>
-
-      <div class="lgf bn-stage reveal">
-        <svg class="bn-links" viewBox="0 0 1000 580" preserveAspectRatio="xMidYMid meet" aria-hidden="true"></svg>
-        <div class="lgf-copy">
-          <span class="lgf-status"><span class="led"></span>Early access · waitlist åben</span>
-          <div class="pj-chips" style="justify-content:flex-start;padding:0;margin:16px 0 20px">
-            <span>Læser dig</span><span>Kender dig</span><span>Viser dig</span>
+      <div class="ac-grid">
+        <article class="ac-card reveal">
+          <div class="ac-stage bn-stage" aria-hidden="true">
+            <svg class="bn-links" viewBox="0 0 1000 580" preserveAspectRatio="xMidYMid slice"></svg>
           </div>
-          <div class="lgf-cta">
-            <a class="glp liquid-glass-strong" href="fyon.html"><span style="position:relative;z-index:1">Prøv Fyon</span>
-              <svg class="ic" style="position:relative;z-index:1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg>
+          <span class="ac-k">Flagskibet · Early access</span>
+          <h2>Mød Fyon</h2>
+          <p>Intelligensen der kender dig — og får dig derhen. Bygget på frontier reasoning- og vision-modeller, formet om ét menneske. 18+.</p>
+          <div class="ac-cta">
+            <a class="abtn spruce" href="fyon.html">Prøv Fyon
+              <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg>
             </a>
-            <a class="gbtn-ghost sm" href="fyon.html">Læs om Fyon</a>
-            <a class="gbtn-ghost sm" href="fyon.html#partners">Tjen 30% løbende</a>
+            <a class="alink" href="fyon.html">Læs om Fyon
+              <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg>
+            </a>
           </div>
-        </div>
-      </div>
+        </article>
 
-      <div class="fyx-spec reveal">
-        <div><i>Engine</i><b>Frontier reasoning- &amp; vision-modeller</b></div>
-        <div><i>Intelligens</i><b>Formet om ét menneske</b></div>
-        <div><i>Adgang</i><b>Early access · 18+</b></div>
+        <article class="ac-card reveal d1">
+          <div class="ac-ghost" aria-hidden="true"><span class="orbm" style="--s:44px"><i class="n"></i><i class="e"></i><i class="s2"></i><i class="w"></i><i class="c"></i></span></div>
+          <span class="ac-k">For virksomheder</span>
+          <h2>Start et projekt</h2>
+          <p>Hjemmesider, bestillings- og bookingsystemer, apps. Bevist i drift hos Spiis — og du taler direkte med den der bygger.</p>
+          <div class="ac-cta">
+            <a class="abtn ink" href="mailto:mgersel@lesreg.com">Skriv til os
+              <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg>
+            </a>
+            <a class="alink" href="https://spiis.dk" target="_blank" rel="noopener">Se spiis.dk
+              <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg>
+            </a>
+          </div>
+        </article>
       </div>
     </div>
   </section>
 
-  <!-- ===================== 2 · KUNDER — bevis, tydeligt sekundært ===================== -->
-  <section class="s kd" id="kunder" data-screen-label="clients">
+  <!-- ===================== INDEX — the short list ===================== -->
+  <section class="s arows" id="kunder" data-screen-label="index">
     <div class="s-inner">
-      <p class="gk reveal">// Vi bygger også for kunder</p>
-      <h2 class="gh2 reveal" style="font-size:clamp(2.4rem,5.5vw,4rem)">Bevist i drift.</h2>
-
-      <div class="kd-card reveal">
-        <div class="kd-copy">
-          <span class="pj-cat">Kunde · Restaurant · Live i drift</span>
-          <h3>Spiis</h3>
-          <p>Intet overblik i køkkenet, og gæster der afbrød chefen. Vi byggede bestillings- og bordbooking direkte ind i hjemmesiden — alt lander i ét admin-overblik: menu, priser, arrangementer.</p>
-          <a class="gbtn-ghost sm" href="https://spiis.dk" target="_blank" rel="noopener">Besøg spiis.dk</a>
-        </div>
-        <div class="kd-mock">
-          <div class="sp-browser">
-            <div class="sp-chrome"><i></i><i></i><i></i><span>spiis.dk</span></div>
-            <div class="sp-body">
-              <span class="sp-eyebrow">Frisklavet hver dag</span>
-              <span class="sp-title">Dagens ret</span>
-              <div class="sp-card">
-                <div class="sp-left"><span class="steam">)))</span>Dagens ret</div>
-                <div class="sp-right"><b>Boller i karry</b><span>med ris og frisk salat</span><span class="sp-btn">Bestil dagens ret</span></div>
-              </div>
-              <div class="sp-week"><span class="on">Man</span><span>Tir</span><span>Ons</span><span>Tor</span><span>Fre</span></div>
-              <div class="sp-order"><span class="sp-led"></span>Ny bestilling → køkken-overblik</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="kd-caps reveal d1">
-        <div><h4>Hjemmesider &amp; apps</h4><p>Håndbyggede, hurtige, med et design man husker.</p></div>
-        <div><h4>Systemer &amp; bestilling</h4><p>Bestilling, booking og admin-overblik der bare kører.</p></div>
-        <div><h4>AI-produkter</h4><p>Intelligens bygget ind i produktet — ikke limet på.</p></div>
-      </div>
+      <h2 class="arh reveal">Fra huset</h2>
+      <a class="arow reveal" href="fyon.html"><span class="ar-k">Produkt</span><span class="ar-t">Fyon — early access · waitlist åben</span><span class="ar-a">→</span></a>
+      <a class="arow reveal d1" href="https://spiis.dk" target="_blank" rel="noopener"><span class="ar-k">Kunde</span><span class="ar-t">Spiis — bestillings- og bookingsystem, live i drift</span><span class="ar-a">→</span></a>
+      <a class="arow reveal d2" href="fyon.html#partners"><span class="ar-k">Partner</span><span class="ar-t">Tjen 30% løbende — anbefal Fyon</span><span class="ar-a">→</span></a>
     </div>
   </section>
 
-  <!-- ===================== 3 · STUDIET / START ET PROJEKT — rolig bureau-dør ===================== -->
-  <section class="s abts" id="studio" data-screen-label="studio">
+  <!-- ===================== STUDIET / KONTAKT ===================== -->
+  <section class="s abts" id="contact" data-screen-label="contact">
     <div class="s-inner">
-      <p class="gk reveal" style="text-align:center">// Start et projekt</p>
-      <h2 class="ghx reveal" style="font-size:clamp(2.6rem,8vw,110px)">Studiet</h2>
-      <p class="abt">Lesreg er et lille studie med ét princip: det vi sender fra os, skal bare virke. Vi designer, koder og drifter alt selv — fra første streg til stabil drift. Lad os bygge noget uforglemmeligt sammen!</p>
+      <p class="gk reveal">Studiet</p>
+      <p class="abt">Lesreg er et lille studie med ét princip: det vi sender fra os, skal bare virke. Vi designer, koder og drifter alt selv — fra første streg til stabil drift.</p>
       <a class="gn-cta big" href="mailto:mgersel@lesreg.com">Start et projekt
         <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg>
       </a>
-    </div>
-  </section>
-
-  <!-- ===================== 3 · KONTAKT ===================== -->
-  <section class="s" id="contact" data-screen-label="contact">
-    <div class="s-inner gcontact">
-      <div class="gc-panel liquid-glass reveal">
-        <div class="lc-orbit" aria-hidden="true"><i class="n"></i><i class="e"></i><i class="s2"></i><i class="w"></i><i class="c"></i></div>
-        <p class="gk">// Kontakt</p>
-        <h2 class="gh2" data-bt>Har du et projekt?</h2>
-        <p class="gc-sub">Skriv — vi svarer hurtigt, og du taler direkte med den der bygger.</p>
-        <a class="gn-cta big" href="mailto:mgersel@lesreg.com">mgersel@lesreg.com
-          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg>
-        </a>
-      </div>
     </div>
   </section>
 
@@ -224,107 +154,36 @@
   </div><!-- /.fyon-reveal -->
 
   <script>
-  /* ---- blur-text + hero entrance, gated on the intro hand-off ---- */
   (function(){
     var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    document.querySelectorAll('[data-bt]').forEach(function(elm){
-      var nodes=[].slice.call(elm.childNodes), i=0;
-      elm.textContent='';
-      nodes.forEach(function(n){
-        if(n.nodeType===3){
-          n.textContent.trim().split(/\s+/).forEach(function(w){
-            if(!w) return;
-            var s=document.createElement('span'); s.className='btw'; s.textContent=w;
-            s.style.setProperty('--d',(i*0.1)+'s'); i++;
-            elm.appendChild(s);
-          });
-        } else if(n.nodeName==='BR'){
-          var b=document.createElement('span'); b.className='btbr'; elm.appendChild(b);
-        }
-      });
-      elm.classList.add('bt');
-    });
+    /* hero lines rise once the intro lifts */
+    var hero=document.querySelector('.khero');
+    function go(){ if(hero) requestAnimationFrame(function(){ hero.classList.add('go'); }); }
+    if(reduce || document.documentElement.classList.contains('fyon-loaded')){ go(); }
+    else{ var t=setInterval(function(){ if(document.documentElement.classList.contains('fyon-loaded')){ clearInterval(t); go(); } },80);
+      setTimeout(function(){ clearInterval(t); go(); },9000); }
 
-    function armBT(){
-      var io=new IntersectionObserver(function(es){ es.forEach(function(e){
-        if(e.isIntersecting){ e.target.classList.add('bt-go'); io.unobserve(e.target); }
-      }); },{threshold:.1});
-      document.querySelectorAll('[data-bt]').forEach(function(elm){ io.observe(elm); });
-    }
-
-    /* scroll-lit statement — characters light up as the paragraph passes through the viewport */
+    /* the statement lights up character by character with the scroll */
     var abt=document.querySelector('.abt');
     if(abt){
       var raw=abt.textContent; abt.textContent='';
       var frag=document.createDocumentFragment();
-      raw.split('').forEach(function(ch){ var sp=document.createElement('span'); sp.textContent=ch; sp.style.opacity=reduce?1:.2; frag.appendChild(sp); });
+      raw.split('').forEach(function(ch){ var sp=document.createElement('span'); sp.textContent=ch; sp.style.opacity=reduce?1:.16; frag.appendChild(sp); });
       abt.appendChild(frag);
       if(!reduce){
         var chars=abt.querySelectorAll('span'), nch=chars.length, aq=false, W=20;
         function updAbt(){
           aq=false;
           var r=abt.getBoundingClientRect(), vh=window.innerHeight;
-          var prog=(vh*0.85 - r.top)/(r.height + vh*0.55);
-          prog=Math.max(0,Math.min(1,prog));
-          var head=prog*(nch+W);   // soft leading edge — chars fade in over a 20-char window
-          for(var i=0;i<nch;i++){
-            var o=Math.max(0,Math.min(1,(head-i)/W));
-            chars[i].style.opacity=(.2+.8*o).toFixed(3);
-          }
+          var prog=Math.max(0,Math.min(1,(vh*0.85 - r.top)/(r.height + vh*0.55)));
+          var head=prog*(nch+W);
+          for(var i=0;i<nch;i++){ var o=Math.max(0,Math.min(1,(head-i)/W)); chars[i].style.opacity=(.16+.84*o).toFixed(3); }
         }
         window.addEventListener('scroll',function(){ if(!aq){ aq=true; requestAnimationFrame(updAbt); } },{passive:true});
         updAbt();
       }
     }
-
-    /* liquid press — the specular highlight follows the pointer across the glass */
-    document.querySelectorAll('.glp,.gbtn-ghost').forEach(function(b){
-      b.addEventListener('pointermove',function(e){
-        var r=b.getBoundingClientRect();
-        b.style.setProperty('--mx',(e.clientX-r.left)+'px');
-        b.style.setProperty('--my',(e.clientY-r.top)+'px');
-      },{passive:true});
-    });
-
-    var hero=document.querySelector('.ghero');
-    function go(){ if(hero) hero.classList.add('go'); armBT(); }
-    if(reduce || document.documentElement.classList.contains('fyon-loaded')){ go(); }
-    else{
-      var t=setInterval(function(){ if(document.documentElement.classList.contains('fyon-loaded')){ clearInterval(t); go(); } },80);
-      setTimeout(function(){ clearInterval(t); go(); },9000);
-    }
-  })();
-
-  /* ---- studio backdrop: the cursor is a studio light. It carries a soft
-         glow AND lights up the engineering grid where it lands. The grid
-         drifts gently with the scroll so the room has depth. ---- */
-  (function(){
-    var lit=document.getElementById('cgridLit'), base=document.getElementById('cgridBase'),
-        torch=document.querySelector('.ctorch'), aur=document.getElementById('caur');
-    if(!lit) return;
-    var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if(reduce){ if(torch) torch.remove(); lit.remove(); return; }
-    var W=window.innerWidth, H=window.innerHeight;
-    window.addEventListener('resize',function(){ W=window.innerWidth; H=window.innerHeight; },{passive:true});
-    var mx=-1,my=-1,sx=W*.5,sy=H*.4,t0=performance.now();
-    window.addEventListener('pointermove',function(e){ mx=e.clientX; my=e.clientY; },{passive:true});
-    function setMask(x,y){
-      var m='radial-gradient(circle 340px at '+x.toFixed(1)+'px '+y.toFixed(1)+'px, #000 0%, rgba(0,0,0,.45) 55%, transparent 100%)';
-      lit.style.webkitMaskImage=m; lit.style.maskImage=m;
-    }
-    (function loop(now){ requestAnimationFrame(loop);
-      var t=(now-t0)/1000;
-      var tx=mx, ty=my;
-      if(mx<0){ tx=W*(.5+.32*Math.cos(t*.23)); ty=H*(.42+.24*Math.sin(t*.31)); }   // idle wander
-      sx+=(tx-sx)*.08; sy+=(ty-sy)*.08;
-      var py=-(window.scrollY||0)*.06;                       // grid depth on scroll
-      var gt='translate3d(0,'+py.toFixed(1)+'px,0)';
-      if(base) base.style.transform=gt; lit.style.transform=gt;
-      setMask(sx, sy-py);                                    // mask lives inside the shifted grid
-      if(torch) torch.style.transform='translate3d('+(sx-380)+'px,'+(sy-380)+'px,0)';
-      if(aur) aur.style.opacity=(1-Math.min(.6,(window.scrollY||0)/(H*1.6))).toFixed(3);   // aurora calms into the work
-    })(t0);
   })();
   </script>
 
