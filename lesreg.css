@@ -63,11 +63,20 @@ body::after{ content:none; }
 .orbm .c{ top:38.5%; left:38.5%; background:var(--ax-spruce); opacity:1; }
 
 /* ============================================================
-   HERO — Koto: the statement IS the section
+   HERO — the motion graphic. A 320vh track pins the stage;
+   the scroll plays: statement → "Lesregs nyeste produktion"
+   → the 3D phone rotates in and lands with Fyon on screen.
    ============================================================ */
-.khero{ min-height:100vh; min-height:100dvh; display:flex; flex-direction:column; justify-content:flex-end;
+.ktrack{ height:320vh; position:relative; }
+.kstick{ position:sticky; top:0; height:100vh; height:100dvh; overflow:hidden; }
+.khero{ display:flex; flex-direction:column; justify-content:flex-end;
   padding:110px clamp(18px,4vw,48px) clamp(26px,4vh,44px); }
-.kh{ margin:0 0 auto; padding-top:clamp(20px,6vh,60px); font-family:'Kanit','Barlow',sans-serif; font-weight:900;
+
+/* act 1 · the statement */
+.kact{ position:absolute; inset:110px clamp(18px,4vw,48px) 96px; display:flex; flex-direction:column; will-change:transform,opacity; }
+.kact.k1{ justify-content:flex-start; padding-top:clamp(20px,6vh,60px); }
+.kact.k2{ align-items:center; justify-content:center; text-align:center; opacity:0; visibility:hidden; }
+.kh{ margin:0; font-family:'Kanit','Barlow',sans-serif; font-weight:900;
   text-transform:uppercase; color:var(--ax-ink);
   font-size:clamp(3.4rem,12.5vw,12.5rem); line-height:.92; letter-spacing:-.028em; }
 .kh .khl{ display:block; overflow:hidden; padding-bottom:.06em; margin-bottom:-.06em; }
@@ -76,13 +85,49 @@ body::after{ content:none; }
 .kh .khl:nth-child(3) i{ transition-delay:.34s; }
 .khero.go .khl i{ transform:translateY(0); }
 .kh .em{ color:var(--ax-spruce); }
-.kmeta{ display:flex; align-items:flex-end; justify-content:space-between; gap:18px; flex-wrap:wrap;
+.kmeta{ position:relative; z-index:2; display:flex; align-items:flex-end; justify-content:space-between; gap:18px; flex-wrap:wrap;
   border-top:1px solid var(--ax-line); padding-top:18px;
   font-size:14px; font-weight:500; color:var(--ax-soft);
   opacity:0; transform:translateY(10px); transition:opacity .8s ease .7s, transform .9s cubic-bezier(.16,1,.3,1) .7s; }
 .khero.go .kmeta{ opacity:1; transform:none; }
 .kmeta b{ font-weight:600; color:var(--ax-ink); }
 .kscroll{ font-size:12.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--ax-faint); }
+
+/* act 2 · the newest production — the 3D phone */
+.kx-k{ margin:0 0 clamp(14px,2.4vh,24px); font-size:13px; font-weight:600; letter-spacing:.18em; text-transform:uppercase; color:var(--ax-spruce); }
+.ph3d-wrap{ perspective:1500px; }
+.ph3d{ position:relative; width:min(280px,58vw); aspect-ratio:9/19; transform-style:preserve-3d;
+  transform:rotateY(-96deg) rotateX(-9deg) scale(.86); will-change:transform; }
+.ph-body{ position:absolute; inset:0; border-radius:clamp(30px,9vw,42px);
+  background:linear-gradient(155deg,#33333a,#17171b 60%,#0e0e11);
+  box-shadow:inset 0 0 0 3px #43434c, inset 0 0 0 6px #202026,
+    0 70px 130px -55px rgba(31,27,22,.6), 0 24px 50px -30px rgba(31,27,22,.4); }
+.ph-screen{ position:absolute; inset:9px; border-radius:clamp(24px,7.4vw,34px); overflow:hidden;
+  background:radial-gradient(130% 100% at 50% 20%, rgba(31,133,122,.16), transparent 60%),
+    linear-gradient(168deg,#15110d,#0b0806); }
+.ph-screen .bn-links{ position:absolute; inset:0; width:100%; height:100%; }
+.ph-ui{ position:absolute; left:0; right:0; bottom:0; z-index:2; display:flex; flex-direction:column; align-items:center; gap:7px;
+  padding:0 18px 24px; background:linear-gradient(180deg, rgba(6,5,4,0), rgba(6,5,4,.72) 70%); padding-top:44px; }
+.ph-name{ font-family:'Instrument Serif',serif; font-style:italic; font-size:34px; line-height:1; color:#f6efe6; }
+.ph-tag{ font-size:11.5px; font-weight:400; color:rgba(244,237,225,.75); }
+.ph-pill{ margin-top:5px; font-size:9.5px; font-weight:600; letter-spacing:.16em; text-transform:uppercase; color:#9fd8cf;
+  padding:5px 11px; border-radius:999px; background:rgba(47,158,145,.16); box-shadow:inset 0 0 0 1px rgba(47,158,145,.4); }
+.ph-notch{ position:absolute; top:16px; left:50%; transform:translateX(-50%); width:26%; height:9px; border-radius:999px; background:#0a0a0c; z-index:3; }
+.ph-glare{ position:absolute; inset:0; border-radius:inherit; pointer-events:none; z-index:4;
+  background:linear-gradient(115deg, transparent 42%, rgba(255,255,255,.09) 50%, transparent 58%); }
+.kx-cta{ margin-top:clamp(16px,3vh,28px); display:flex; align-items:center; gap:22px; flex-wrap:wrap; justify-content:center;
+  opacity:0; pointer-events:none; will-change:transform,opacity; }
+
+@media(max-height:700px){ .ph3d{ width:min(220px,52vw); } .ph-name{ font-size:27px; } }
+
+@media (prefers-reduced-motion: reduce){
+  .ktrack{ height:auto; }
+  .kstick{ position:relative; height:auto; overflow:visible; }
+  .kact{ position:relative; inset:auto; padding:40px 0; }
+  .kact.k2{ opacity:1; visibility:visible; }
+  .ph3d{ transform:none; }
+  .kx-cta{ opacity:1; pointer-events:auto; }
+}
 
 /* ============================================================
    CARDS — the Anthropic pair: Fyon · Start et projekt

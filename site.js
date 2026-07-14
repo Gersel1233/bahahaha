@@ -94,8 +94,7 @@
   /* ============================================================
      BRAIN — 4-lobe neural network, activation cycle
      ============================================================ */
-  (function brain(){
-    var svg=document.querySelector('.bn-links'); if(!svg) return;
+  function brainBuild(svg){
     var ACCENT={ q1:'#2f9e91', q2:'#c2914a', q3:'#5e8d6e', q4:'#a86f7d' };   // spruce · amber · sage · plum
     var CX=500, CY=290, D2R=Math.PI/180;
     function pt(a,r){ return { x:+(CX+Math.cos(a*D2R)*r).toFixed(1), y:+(CY+Math.sin(a*D2R)*r).toFixed(1) }; }
@@ -145,7 +144,8 @@
 
     // phones see the same system inline — square crop centred on the core
     var mq=window.matchMedia('(max-width:920px)');
-    function fitViewBox(){ svg.setAttribute('viewBox', mq.matches ? '265 55 470 470' : '0 0 1000 580'); }
+    var forceCrop=svg.hasAttribute('data-crop');
+    function fitViewBox(){ svg.setAttribute('viewBox', (forceCrop || mq.matches) ? '265 55 470 470' : '0 0 1000 580'); }
     fitViewBox();
     if(mq.addEventListener) mq.addEventListener('change', fitViewBox);
 
@@ -154,7 +154,7 @@
       armGroups[A.key].classList.toggle('on',on); armGroups[A.key].classList.toggle('dim',!on);
       if(cards[j]) cards[j].classList.toggle('active',on); }); }
     if(!prefersReduced){
-      var idx=0, timer=null, stage=document.querySelector('.bn-stage');
+      var idx=0, timer=null, stage=svg.closest('.bn-stage');
       setActive(0);
       var bo=new IntersectionObserver(function(es){ es.forEach(function(e){
         if(e.isIntersecting){ if(stage) stage.classList.add('viz-on'); if(!timer) timer=setInterval(function(){ idx=(idx+1)%4; setActive(idx); },5200); }
@@ -162,7 +162,8 @@
       }); },{threshold:.12});
       if(stage) bo.observe(stage);
     } else { cards.forEach(function(c){ if(c) c.classList.add('active'); }); }
-  })();
+  }
+  [].slice.call(document.querySelectorAll('.bn-links')).forEach(brainBuild);
 
   /* ============================================================
      MOBILE — tap to view the brain network fullscreen

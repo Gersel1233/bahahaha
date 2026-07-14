@@ -18,7 +18,7 @@
 <link rel="preload" as="font" type="font/woff2" href="fonts/barlow-normal-400.woff2" crossorigin />
 <link rel="preload" as="font" type="font/woff2" href="fonts/kanit-normal-900.woff2" crossorigin />
 <link rel="stylesheet" href="styles.css?v=40" />
-<link rel="stylesheet" href="lesreg.css?v=16" />
+<link rel="stylesheet" href="lesreg.css?v=17" />
 </head>
 <body>
 
@@ -64,19 +64,54 @@
 
   <div class="fyon-reveal">
 
-  <!-- ===================== HERO — the statement (Koto) ===================== -->
-  <header id="top" class="khero" data-screen-label="hero">
-    <h1 class="kh">
-      <span class="khl"><i>Vi bygger</i></span>
-      <span class="khl"><i>intelligente</i></span>
-      <span class="khl"><i>produkter<span class="em">.</span></i></span>
-    </h1>
-    <div class="kmeta">
-      <span><b>Lesreg</b> — digitalt produkthus</span>
-      <span>Det første produkt hedder <b>Fyon</b></span>
-      <span class="kscroll">Scroll</span>
-    </div>
-  </header>
+  <!-- ===================== HERO — the motion graphic: statement → Lesregs nyeste produktion → the phone ===================== -->
+  <div class="ktrack" id="ktrack">
+    <header id="top" class="khero kstick" data-screen-label="hero">
+
+      <!-- act 1 · the statement -->
+      <div class="kact k1" id="kact1">
+        <h1 class="kh">
+          <span class="khl"><i>Vi bygger</i></span>
+          <span class="khl"><i>intelligente</i></span>
+          <span class="khl"><i>produkter<span class="em">.</span></i></span>
+        </h1>
+      </div>
+
+      <!-- act 2 · the newest production -->
+      <div class="kact k2" id="kact2" aria-hidden="true">
+        <p class="kx-k">Lesregs nyeste produktion</p>
+        <div class="ph3d-wrap">
+          <div class="ph3d" id="ph3d">
+            <div class="ph-body"></div>
+            <div class="ph-screen bn-stage">
+              <svg class="bn-links" data-crop viewBox="265 55 470 470" preserveAspectRatio="xMidYMid slice" aria-hidden="true"></svg>
+              <div class="ph-ui">
+                <span class="ph-name">Fyon</span>
+                <span class="ph-tag">Intelligensen der kender dig</span>
+                <span class="ph-pill">Early access</span>
+              </div>
+            </div>
+            <span class="ph-notch"></span>
+            <div class="ph-glare"></div>
+          </div>
+        </div>
+        <div class="kx-cta" id="kxcta">
+          <a class="abtn spruce" href="fyon.html">Prøv Fyon
+            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg>
+          </a>
+          <a class="alink" href="fyon.html">Læs om Fyon
+            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="kmeta">
+        <span><b>Lesreg</b> — digitalt produkthus</span>
+        <span>Det første produkt hedder <b>Fyon</b></span>
+        <span class="kscroll">Scroll</span>
+      </div>
+    </header>
+  </div>
 
   <!-- ===================== FYON + PROJEKT — the two doors ===================== -->
   <section class="s acards" id="fyon" data-screen-label="cards">
@@ -184,9 +219,38 @@
         updAbt();
       }
     }
+
+    /* the hero motion graphic — scroll drives statement → phone */
+    var track=document.getElementById('ktrack'), act1=document.getElementById('kact1'),
+        act2=document.getElementById('kact2'), ph=document.getElementById('ph3d'), kx=document.getElementById('kxcta');
+    if(track && !reduce){
+      var kq=false;
+      function ramp(p,a,b){ return Math.max(0,Math.min(1,(p-a)/(b-a))); }
+      function kUpd(){
+        kq=false;
+        var vh=window.innerHeight;
+        var p=Math.max(0,Math.min(1,(window.scrollY - track.offsetTop) / (track.offsetHeight - vh)));
+        var out=ramp(p,.04,.3);
+        act1.style.opacity=(1-out).toFixed(3);
+        act1.style.transform='translateY('+(-12*out).toFixed(2)+'vh) scale('+(1-.06*out).toFixed(4)+')';
+        act1.style.visibility=out>=1?'hidden':'visible';
+        var oin=ramp(p,.26,.44);
+        act2.style.opacity=oin.toFixed(3);
+        act2.style.visibility=oin<=0?'hidden':'visible';
+        var q=ramp(p,.3,.8), e=1-Math.pow(1-q,3);           // easeOutCubic
+        ph.style.transform='rotateY('+(-96*(1-e)).toFixed(2)+'deg) rotateX('+(-9*(1-e)).toFixed(2)+'deg) scale('+(.86+.14*e).toFixed(4)+')';
+        var c=ramp(p,.78,.94);
+        kx.style.opacity=c.toFixed(3);
+        kx.style.transform='translateY('+(14*(1-c)).toFixed(1)+'px)';
+        kx.style.pointerEvents=c>.5?'':'none';
+      }
+      window.addEventListener('scroll',function(){ if(!kq){ kq=true; requestAnimationFrame(kUpd); } },{passive:true});
+      window.addEventListener('resize',function(){ if(!kq){ kq=true; requestAnimationFrame(kUpd); } },{passive:true});
+      kUpd();
+    }
   })();
   </script>
 
-  <script src="site.js?v=44" defer></script>
+  <script src="site.js?v=45" defer></script>
 </body>
 </html>
