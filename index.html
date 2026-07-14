@@ -18,7 +18,7 @@
 <link rel="preload" as="font" type="font/woff2" href="fonts/barlow-normal-400.woff2" crossorigin />
 <link rel="preload" as="font" type="font/woff2" href="fonts/kanit-normal-900.woff2" crossorigin />
 <link rel="stylesheet" href="styles.css?v=40" />
-<link rel="stylesheet" href="lesreg.css?v=18" />
+<link rel="stylesheet" href="lesreg.css?v=19" />
 </head>
 <body>
 
@@ -80,15 +80,24 @@
       <!-- act 2 · the newest production -->
       <div class="kact k2" id="kact2" aria-hidden="true">
         <p class="kx-k">Lesregs nyeste produktion</p>
-        <div class="ph3d-wrap">
-          <div class="ph3d" id="ph3d">
-            <div class="ph-body"></div>
-            <div class="ph-screen">
-              <div class="ph-fallback" aria-hidden="true"><span class="orbm" style="--s:40px"><i class="n"></i><i class="e"></i><i class="s2"></i><i class="w"></i><i class="c"></i></span><span class="ph-fname">Fyon</span></div>
-              <video class="ph-vid" src="media/fyon-app.mp4" autoplay muted loop playsinline preload="auto" aria-label="Fyon-appen"></video>
+        <div class="kduo">
+          <div class="ph3d-wrap" id="phwrap">
+            <div class="ph3d" id="ph3d">
+              <div class="ph-body"></div>
+              <div class="ph-screen">
+                <div class="ph-fallback" aria-hidden="true"><span class="orbm" style="--s:40px"><i class="n"></i><i class="e"></i><i class="s2"></i><i class="w"></i><i class="c"></i></span><span class="ph-fname">Fyon</span></div>
+                <video class="ph-vid" src="media/fyon-flow.mp4" autoplay muted loop playsinline preload="auto" aria-label="Fyon-appen"></video>
+              </div>
+              <span class="ph-notch"></span>
+              <div class="ph-glare"></div>
             </div>
-            <span class="ph-notch"></span>
-            <div class="ph-glare"></div>
+          </div>
+          <div class="kman" id="kman" aria-hidden="true">
+            <p class="kml lead">Fyon isn&rsquo;t another self-improvement or looksmax app.</p>
+            <p class="kml">It&rsquo;s built on <em>you</em> — and only you.</p>
+            <p class="kml">The pictures aren&rsquo;t fantasy. They&rsquo;re you — <em>identity-locked</em>.</p>
+            <p class="kml">The plan isn&rsquo;t generic. It&rsquo;s your path, re-planned as life happens.</p>
+            <p class="kml">And the intelligence makes sure <em>you get there</em>.</p>
           </div>
         </div>
         <div class="kx-cta" id="kxcta">
@@ -109,29 +118,33 @@
     </header>
   </div>
 
-  <!-- ===================== FYON + PROJEKT — the two doors ===================== -->
-  <section class="s acards" id="fyon" data-screen-label="cards">
+  <!-- ===================== FYON — the hook ===================== -->
+  <section class="s fhook" id="fyon" data-screen-label="fyon-hook">
     <div class="s-inner">
-      <div class="ac-grid">
-        <article class="ac-card reveal">
-          <div class="ac-stage bn-stage" aria-hidden="true">
-            <svg class="bn-links" viewBox="0 0 1000 580" preserveAspectRatio="xMidYMid slice"></svg>
-          </div>
-          <span class="ac-k">Flagskibet · Early access</span>
-          <h2>Mød Fyon</h2>
-          <p>Intelligensen der kender dig — og får dig derhen. Bygget på frontier reasoning- og vision-modeller, formet om ét menneske. 18+.</p>
-          <div class="ac-cta">
-            <a class="abtn spruce" href="fyon.html">Prøv Fyon
-              <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg>
-            </a>
-            <a class="alink" href="fyon.html">Læs om Fyon
-              <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg>
-            </a>
-          </div>
-        </article>
+      <p class="gk reveal">Fyon</p>
+      <p class="abt litx">Everything else rates you and walks away. Fyon shows you — and gets you there.</p>
+      <div class="ac-cta center reveal">
+        <a class="abtn spruce" href="fyon.html">Prøv Fyon
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg>
+        </a>
+        <a class="alink" href="fyon.html">Læs om Fyon
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg>
+        </a>
+        <a class="alink" href="fyon.html#partners">Tjen 30% løbende
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
 
-        <article class="ac-card reveal d1">
-          <div class="ac-ghost" aria-hidden="true"><span class="orbm" style="--s:44px"><i class="n"></i><i class="e"></i><i class="s2"></i><i class="w"></i><i class="c"></i></span></div>
+  <!-- ===================== INDEX — the short list ===================== -->
+  <section class="s arows" id="kunder" data-screen-label="index">
+    <div class="s-inner">
+      <h2 class="arh reveal">Vi bygger og hjælper også andre.</h2>
+
+      <article class="ac-card kd-lead reveal">
+        <div class="ac-ghost" aria-hidden="true"><span class="orbm" style="--s:44px"><i class="n"></i><i class="e"></i><i class="s2"></i><i class="w"></i><i class="c"></i></span></div>
+        <div class="kd-copy2">
           <span class="ac-k">For virksomheder</span>
           <h2>Start et projekt</h2>
           <p>Hjemmesider, bestillings- og bookingsystemer, apps. Bevist i drift hos Spiis — og du taler direkte med den der bygger.</p>
@@ -143,15 +156,8 @@
               <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg>
             </a>
           </div>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===================== INDEX — the short list ===================== -->
-  <section class="s arows" id="kunder" data-screen-label="index">
-    <div class="s-inner">
-      <h2 class="arh reveal">Fra huset</h2>
+        </div>
+      </article>
       <a class="arow reveal" href="fyon.html"><span class="ar-k">Produkt</span><span class="ar-t">Fyon — early access · waitlist åben</span><span class="ar-a">→</span></a>
       <a class="arow reveal d1" href="https://spiis.dk" target="_blank" rel="noopener"><span class="ar-k">Kunde</span><span class="ar-t">Spiis — bestillings- og bookingsystem, live i drift</span><span class="ar-a">→</span></a>
       <a class="arow reveal d2" href="fyon.html#partners"><span class="ar-k">Partner</span><span class="ar-t">Tjen 30% løbende — anbefal Fyon</span><span class="ar-a">→</span></a>
@@ -162,7 +168,7 @@
   <section class="s abts" id="contact" data-screen-label="contact">
     <div class="s-inner">
       <p class="gk reveal">Studiet</p>
-      <p class="abt">Lesreg er et lille studie med ét princip: det vi sender fra os, skal bare virke. Vi designer, koder og drifter alt selv — fra første streg til stabil drift.</p>
+      <p class="abt litx">Lesreg er et lille studie med ét princip: det vi sender fra os, skal bare virke. Vi designer, koder og drifter alt selv — fra første streg til stabil drift.</p>
       <a class="gn-cta big" href="mailto:mgersel@lesreg.com">Start et projekt
         <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg>
       </a>
@@ -195,47 +201,59 @@
     else{ var t=setInterval(function(){ if(document.documentElement.classList.contains('fyon-loaded')){ clearInterval(t); go(); } },80);
       setTimeout(function(){ clearInterval(t); go(); },9000); }
 
-    /* the statement lights up character by character with the scroll */
-    var abt=document.querySelector('.abt');
-    if(abt){
+    /* statements light up character by character with the scroll */
+    [].slice.call(document.querySelectorAll('.litx')).forEach(function(abt){
       var raw=abt.textContent; abt.textContent='';
       var frag=document.createDocumentFragment();
       raw.split('').forEach(function(ch){ var sp=document.createElement('span'); sp.textContent=ch; sp.style.opacity=reduce?1:.16; frag.appendChild(sp); });
       abt.appendChild(frag);
-      if(!reduce){
-        var chars=abt.querySelectorAll('span'), nch=chars.length, aq=false, W=20;
-        function updAbt(){
-          aq=false;
-          var r=abt.getBoundingClientRect(), vh=window.innerHeight;
-          var prog=Math.max(0,Math.min(1,(vh*0.85 - r.top)/(r.height + vh*0.55)));
-          var head=prog*(nch+W);
-          for(var i=0;i<nch;i++){ var o=Math.max(0,Math.min(1,(head-i)/W)); chars[i].style.opacity=(.16+.84*o).toFixed(3); }
-        }
-        window.addEventListener('scroll',function(){ if(!aq){ aq=true; requestAnimationFrame(updAbt); } },{passive:true});
-        updAbt();
+      if(reduce) return;
+      var chars=abt.querySelectorAll('span'), nch=chars.length, aq=false, W=20;
+      function updAbt(){
+        aq=false;
+        var r=abt.getBoundingClientRect(), vh=window.innerHeight;
+        var prog=Math.max(0,Math.min(1,(vh*0.85 - r.top)/(r.height + vh*0.55)));
+        var head=prog*(nch+W);
+        for(var i=0;i<nch;i++){ var o=Math.max(0,Math.min(1,(head-i)/W)); chars[i].style.opacity=(.16+.84*o).toFixed(3); }
       }
-    }
+      window.addEventListener('scroll',function(){ if(!aq){ aq=true; requestAnimationFrame(updAbt); } },{passive:true});
+      updAbt();
+    });
 
     /* the hero motion graphic — scroll drives statement → phone */
     var track=document.getElementById('ktrack'), act1=document.getElementById('kact1'),
-        act2=document.getElementById('kact2'), ph=document.getElementById('ph3d'), kx=document.getElementById('kxcta');
+        act2=document.getElementById('kact2'), ph=document.getElementById('ph3d'), kx=document.getElementById('kxcta'),
+        phw=document.getElementById('phwrap'), kml=[].slice.call(document.querySelectorAll('.kml'));
     if(track && !reduce){
       var kq=false;
       function ramp(p,a,b){ return Math.max(0,Math.min(1,(p-a)/(b-a))); }
       function kUpd(){
         kq=false;
-        var vh=window.innerHeight;
+        var vh=window.innerHeight, mob=window.innerWidth<=820;
         var p=Math.max(0,Math.min(1,(window.scrollY - track.offsetTop) / (track.offsetHeight - vh)));
-        var out=ramp(p,.04,.3);
+        var out=ramp(p,.03,.2);
         act1.style.opacity=(1-out).toFixed(3);
         act1.style.transform='translateY('+(-12*out).toFixed(2)+'vh) scale('+(1-.06*out).toFixed(4)+')';
         act1.style.visibility=out>=1?'hidden':'visible';
-        var oin=ramp(p,.26,.44);
+        var oin=ramp(p,.18,.3);
         act2.style.opacity=oin.toFixed(3);
         act2.style.visibility=oin<=0?'hidden':'visible';
-        var q=ramp(p,.3,.8), e=1-Math.pow(1-q,3);           // easeOutCubic
+        var q=ramp(p,.2,.52), e=1-Math.pow(1-q,3);          // easeOutCubic — the phone arrives
         ph.style.transform='rotateY('+(-96*(1-e)).toFixed(2)+'deg) rotateX('+(-9*(1-e)).toFixed(2)+'deg) scale('+(.86+.14*e).toFixed(4)+')';
-        var c=ramp(p,.78,.94);
+        var sh=ramp(p,.56,.68);                              // then it makes room for the words
+        if(mob){
+          phw.style.transform='translateY('+(-16*sh).toFixed(2)+'vh) scale('+(1-.42*sh).toFixed(4)+')';
+          phw.style.opacity=(1-.8*sh).toFixed(3);
+        } else {
+          phw.style.transform='translateX('+(-Math.min(230,window.innerWidth*.17)*sh).toFixed(1)+'px)';
+          phw.style.opacity='1';
+        }
+        for(var i=0;i<kml.length;i++){
+          var a=.6+i*.062, o=ramp(p,a,a+.055);
+          kml[i].style.opacity=o.toFixed(3);
+          kml[i].style.transform='translateY('+(16*(1-o)).toFixed(1)+'px)';
+        }
+        var c=ramp(p,.92,.99);
         kx.style.opacity=c.toFixed(3);
         kx.style.transform='translateY('+(14*(1-c)).toFixed(1)+'px)';
         kx.style.pointerEvents=c>.5?'':'none';
