@@ -91,9 +91,47 @@
   .kx-cta{ opacity:1; pointer-events:auto; }
 }
 
-/* ---------- magnet wrapper ---------- */
-.mag{ display:inline-block; will-change:transform; }
-.wd-act .panel{ will-change:transform; }
+/* ---------- the difference: everything else vs Fyon ---------- */
+.wdiff{ margin:0 0 clamp(40px,5vw,60px); display:grid; grid-template-columns:1fr 1fr; gap:clamp(16px,2.4vw,26px); }
+.wd-col{ border-radius:22px; padding:clamp(24px,3vw,38px); }
+.wd-col.hype{ background:rgba(33,29,24,.035); box-shadow:inset 0 0 0 1px rgba(33,29,24,.08); }
+.wd-col.fyon{ position:relative; isolation:isolate; overflow:hidden;
+  background:rgba(255,255,255,.16);
+  -webkit-backdrop-filter:blur(11px) saturate(170%); backdrop-filter:blur(11px) saturate(170%);
+  box-shadow:inset 0 1px 1px rgba(255,255,255,.9), inset 0 0 0 1px rgba(31,133,122,.3),
+    0 18px 44px -28px rgba(15,90,82,.4), 0 2px 6px -3px rgba(70,45,25,.2); }
+.wd-col.fyon::before{ content:""; position:absolute; inset:0; border-radius:inherit; z-index:0; pointer-events:none;
+  background:radial-gradient(260px circle at 26% 0%, rgba(52,165,150,.16), transparent 62%); }
+.wd-col > *{ position:relative; z-index:1; }
+.wd-k{ display:inline-flex; align-items:center; gap:9px; margin-bottom:18px;
+  font-family:var(--mono); font-size:11.5px; font-weight:700; letter-spacing:.16em; text-transform:uppercase; }
+.wd-col.hype .wd-k{ color:var(--ink-faint); }
+.wd-col.fyon .wd-k{ color:var(--terra-deep); }
+.wd-x,.wd-c{ display:grid; place-items:center; width:20px; height:20px; border-radius:50%; font-size:12px; font-weight:700; }
+.wd-x{ background:rgba(33,29,24,.08); color:var(--ink-faint); }
+.wd-c{ background:linear-gradient(158deg,#34a596,#13635a); color:#fff; box-shadow:0 4px 12px -5px rgba(15,90,82,.5); }
+.wd-col ul{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:14px; }
+.wd-col li{ position:relative; padding-left:22px; font-size:15.5px; line-height:1.5; }
+.wd-col li::before{ content:""; position:absolute; left:4px; top:9px; width:6px; height:6px; border-radius:50%; }
+.wd-col.hype li{ color:var(--ink-soft); } .wd-col.hype li::before{ background:var(--ink-faint); opacity:.5; }
+.wd-col.fyon li{ color:var(--ink); } .wd-col.fyon li::before{ background:var(--terra); }
+.wd-col li em{ font-style:italic; color:var(--terra); }
+@media(max-width:720px){ .wdiff{ grid-template-columns:1fr; } }
+
+/* ---------- daily band: not a trial, a life ---------- */
+.daily-band{ width:100%; margin:clamp(60px,8vw,104px) 0 0; border-radius:24px; padding:clamp(26px,3.4vw,44px);
+  display:grid; grid-template-columns:minmax(200px,.86fr) 1.14fr; gap:clamp(20px,3vw,46px); align-items:center; text-align:left; }
+.db-k{ display:inline-flex; align-items:center; gap:8px; font-family:var(--mono); font-size:11px; font-weight:700;
+  letter-spacing:.18em; text-transform:uppercase; color:var(--terra); }
+.db-dot{ width:7px; height:7px; border-radius:50%; background:var(--terra); box-shadow:0 0 0 4px rgba(31,133,122,.14); }
+.db-side h3{ font-family:var(--serif); font-weight:500; font-size:clamp(25px,3.2vw,40px); line-height:1.05;
+  letter-spacing:-.01em; margin:12px 0 0; color:var(--ink); }
+.db-side h3 em{ font-style:italic; color:var(--terra); }
+.db-body p{ font-size:16px; line-height:1.64; color:var(--ink-soft); margin:0 0 18px; }
+.db-chips{ display:flex; flex-wrap:wrap; gap:9px; }
+.db-chip{ font-family:var(--mono); font-size:11px; letter-spacing:.02em; color:var(--terra-deep);
+  padding:7px 13px; border-radius:999px; background:rgba(31,133,122,.09); box-shadow:inset 0 0 0 1px rgba(31,133,122,.22); }
+@media(max-width:760px){ .daily-band{ grid-template-columns:1fr; gap:16px; } }
 
 /* ---------- scroll-lit statements ---------- */
 .lit span{ transition:opacity .18s linear; }
