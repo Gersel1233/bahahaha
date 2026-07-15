@@ -16,7 +16,7 @@
 <link rel="preload" as="font" type="font/woff2" href="fonts/newsreader-latin-normal.woff2" crossorigin />
 <link rel="preload" as="font" type="font/woff2" href="fonts/sora-latin-600.woff2" crossorigin />
 <link rel="stylesheet" href="styles.css?v=40" />
-<link rel="stylesheet" href="fyon.css?v=11" />
+<link rel="stylesheet" href="fyon.css?v=12" />
 <script src="image-slot.js?v=31" defer></script>
 <style id="fh-style">
 /* ===== Ported Fyon hero + scroll reveal — fully scoped under #fyon-hero so it
@@ -317,9 +317,9 @@
   </div><!-- /.fyon-reveal -->
 
   <!-- persistent mobile CTA — most of our traffic is phones -->
-  <a class="fab-partner" id="fabPartner" href="#partners" aria-label="Become a partner">
-    Become a partner
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+  <a class="fab-partner" id="fabPartner" href="#partners" aria-label="Earn money with Fyon">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M15.5 8.5H10a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 17.5v-11"/></svg>
+    Earn money
   </a>
 
   <!-- ===================== WAITLIST MODAL ===================== -->
@@ -525,7 +525,7 @@
       // partner CTAs -> partner.html (unchanged)
       [].slice.call(document.querySelectorAll('button, a.link-arrow, a.fab-partner')).forEach(function(b){
         var t=(b.textContent||'').toLowerCase();
-        if(t.indexOf('become a partner')>=0 || t.indexOf('already a partner')>=0){
+        if(t.indexOf('become a partner')>=0 || t.indexOf('already a partner')>=0 || t.indexOf('earn money')>=0){
           if(b.tagName==='A'){ b.setAttribute('href',PARTNER); }
           else b.addEventListener('click',function(){ location.href=PARTNER; });
         }
