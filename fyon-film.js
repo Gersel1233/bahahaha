@@ -102,7 +102,7 @@
   const memRings=[120,164,208,252].map(r=>el('circle',{cx:CX,cy:CY,r:r,fill:'none',stroke:COL.terra,'stroke-width':'1.4',opacity:'0'}));
   memRings.forEach(r=>world.appendChild(r));
   const memDots=[];
-  memRings.forEach((ring,ri)=>{ const rr=120+ri*44; const n=3+ri; for(let k=0;k<n;k++){ const a=(k/n)*Math.PI*2 - Math.PI/2 + ri*0.5; const d=el('circle',{cx:CX+Math.cos(a)*rr,cy:CY+Math.sin(a)*rr,r:'6',fill:COL.deep,opacity:'0'}); d.dataset.ri=ri; world.appendChild(d); memDots.push(d);} });
+  memRings.forEach((ring,ri)=>{ const rr=120+ri*44; const n=3+ri; for(let k=0;k<n;k++){ const a=(k/n)*Math.PI*2 - Math.PI/2 + ri*0.5; const d=el('circle',{cx:CX+Math.cos(a)*rr,cy:CY+Math.sin(a)*rr,r:'6',fill:COL.deep,opacity:'0'}); d.dataset.ri=ri; d.dataset.a=a; d.dataset.rr=rr; world.appendChild(d); memDots.push(d);} });
 
   // ===== BEAT 5: create a project + merge it into the journey =====
   const RAIL_Y=CY+162;
@@ -311,17 +311,22 @@
     world.setAttribute('transform',`translate(${(640-cam.fx*cam.s).toFixed(1)} ${(360-cam.fy*cam.s+settle).toFixed(1)}) scale(${cam.s.toFixed(4)})`);
     if(veil) veil.style.opacity = 0;                 // start on warm paper (no dark entry)
 
-    // ambient — washes drift, orbits breathe, motes circle (all loop seamlessly)
+    // the chat window drives several things: the core's rise, and how much the
+    // ambient layer steps aside so nothing crosses the bubbles
+    const chatRaise=eio(Math.min(seg(p,.355,.39),1-seg(p,.515,.555)));
+
+    // ambient — washes drift, orbits breathe, motes circle (all loop seamlessly);
+    // during the chat the rings and motes bow out so the bubbles sit on clean paper
     washes.forEach((w,i)=>{
       w.n.setAttribute('cx',(w.x+16*Math.sin(TAU*(p+i*0.33))).toFixed(1));
       w.n.setAttribute('cy',(w.y+11*Math.cos(TAU*(p+i*0.21))).toFixed(1));
     });
-    orbits.forEach((c,i)=>{ c.setAttribute('opacity',(0.05+0.02*Math.sin(TAU*(p+i*0.3))).toFixed(3)); });
+    orbits.forEach((c,i)=>{ c.setAttribute('opacity',((0.05+0.02*Math.sin(TAU*(p+i*0.3)))*(1-chatRaise)).toFixed(3)); });
     parts.forEach(pt=>{
       const a=pt.a0+pt.dir*TAU*pt.spd*p;
       pt.n.setAttribute('cx',(CX+Math.cos(a)*pt.r).toFixed(1));
       pt.n.setAttribute('cy',(CY+Math.sin(a)*pt.r*0.72).toFixed(1));
-      pt.n.setAttribute('opacity',(pt.base*(0.55+0.45*Math.sin(TAU*3*p+pt.ph))).toFixed(3));
+      pt.n.setAttribute('opacity',(pt.base*(0.55+0.45*Math.sin(TAU*3*p+pt.ph))*(1-0.7*chatRaise)).toFixed(3));
     });
 
     // BEAT 1–3 : face ring is born, then scanned, then understood
@@ -360,13 +365,13 @@
     // BEAT 4 : the locked core — pops in with a soft spring, then rises for the chat
     const coreInRaw=seg(p,.28,.36), coreIn=eo(coreInRaw);
     const pulse=1+0.06*Math.sin(clamp(seg(p,.33,.45),0,1)*Math.PI);
-    const chatRaise=eio(Math.min(seg(p,.36,.40),1-seg(p,.505,.55)));
     coreG.setAttribute('opacity', clamp(coreIn,0,1).toFixed(3));
-    // during the chat the core stays PRESENT — it only steps back a fifth,
-    // and its rise arcs slightly past the mark before settling (real motion)
+    // during the chat the core stays PRESENT — it only steps back a fifth, and
+    // rises fully clear of the bubbles BEFORE the first one appears; the rise
+    // arcs slightly past the mark before settling (real motion)
     const cs=(coreInRaw>0?lerp(0.8,1,eoBack(coreInRaw)):0.8)*pulse*(1-0.22*chatRaise);
-    const riseArc=12*Math.sin(Math.PI*clamp(seg(p,.365,.45),0,1));
-    const dyC=-(118*chatRaise+riseArc);
+    const riseArc=12*Math.sin(Math.PI*clamp(seg(p,.36,.43),0,1));
+    const dyC=-(146*chatRaise+riseArc);
     coreG.setAttribute('transform',`translate(0 ${dyC.toFixed(1)}) translate(${CX} ${CY}) scale(${cs.toFixed(3)}) translate(${-CX} ${-CY})`);
     // core glyph: lock by default, breathing Fyon chevron during the chat & the payoff
     const glyphOn=eo(seg(p,.34,.40));
@@ -389,17 +394,18 @@
 
     // BEAT 5 : the chat — Fyon understands and adapts, then dissolves cleanly
     // (a gentle fade + rise while the camera holds still — no scale-smear)
-    const chatOut=eo(seg(p,.505,.55));
+    const chatOut=eo(seg(p,.515,.555));
     chat.setAttribute('opacity',(1-chatOut).toFixed(3));
     chat.setAttribute('transform',`translate(0 ${(-16*chatOut).toFixed(1)})`);
-    // bubbles slide up into place as they appear (motion-graphic entrance)
-    const uIn=eo(seg(p,.37,.41)), fIn=eo(seg(p,.435,.475));
+    // bubbles slide up into place AFTER the core has risen clear; the reply
+    // finishes typing at .50 and holds fully readable before the exit at .505
+    const uIn=eo(seg(p,.385,.42)), fIn=eo(seg(p,.435,.462));
     uB.setAttribute('opacity', uIn.toFixed(3));
     uB.setAttribute('transform',`translate(0 ${((1-uIn)*22).toFixed(1)})`);
     fB.setAttribute('opacity', fIn.toFixed(3));
     fB.setAttribute('transform',`translate(0 ${((1-fIn)*22).toFixed(1)})`);
-    typeInto([uL1,uL2],userLines,seg(p,.375,.43)*userTotal);
-    typeInto([fL1,fL2,fL3],fyonLines,seg(p,.45,.515)*fyonTotal);
+    typeInto([uL1,uL2],userLines,seg(p,.39,.432)*userTotal);
+    typeInto([fL1,fL2,fL3],fyonLines,seg(p,.445,.498)*fyonTotal);
 
     // BEAT 6 : the project builds and merges into the journey
     const railIn=eo(seg(p,.52,.57));
@@ -437,12 +443,32 @@
     railFill.setAttribute('opacity',(eo(seg(p,.57,.61))*(1-railOut)).toFixed(3));
     railFill.setAttribute('stroke-dashoffset',(railLen*(1-eio(seg(p,.58,.68)))).toFixed(1));
 
-    // BEAT 7 : memory compounds, in context
+    // BEAT 7 : memory compounds, in context — rings bloom open, dots pop in
+    // with a spring and drift gently along their rings while the beat lives
     const memOut=seg(p,.82,.88);
-    memRings.forEach((r,i)=>{ r.setAttribute('opacity',(eo(seg(p,.71+i*0.03,.80))*(1-memOut)*0.5).toFixed(3)); });
-    memDots.forEach(d=>{ const ri=+d.dataset.ri; d.setAttribute('opacity',(eo(seg(p,.72+ri*0.03,.81))*(1-memOut)).toFixed(3)); });
+    const memRot=0.55*seg(p,.70,.88);
+    memRings.forEach((r,i)=>{
+      const t=eo(seg(p,.71+i*0.03,.80));
+      r.setAttribute('opacity',(t*(1-memOut)*0.5).toFixed(3));
+      r.setAttribute('transform',`translate(${CX} ${CY}) scale(${(0.85+0.15*t).toFixed(3)}) translate(${-CX} ${-CY})`);
+    });
+    memDots.forEach(d=>{
+      const ri=+d.dataset.ri;
+      const raw=seg(p,.72+ri*0.03,.79+ri*0.03);
+      const bloom=0.85+0.15*eo(seg(p,.71+ri*0.03,.80));
+      const a=+d.dataset.a+memRot*(ri%2?1:-1);
+      const rr=+d.dataset.rr*bloom;
+      d.setAttribute('cx',(CX+Math.cos(a)*rr).toFixed(1));
+      d.setAttribute('cy',(CY+Math.sin(a)*rr).toFixed(1));
+      d.setAttribute('r',(6*(raw>0?eoBack(raw):0)).toFixed(2));
+      d.setAttribute('opacity',(eo(raw)*(1-memOut)).toFixed(3));
+    });
     memEy.setAttribute('opacity',(eo(seg(p,.71,.75))*(1-memOut)).toFixed(3));
-    memNotes.forEach((g,i)=>{ g.setAttribute('opacity',(eo(seg(p,.73+i*0.035,.80))*(1-memOut)).toFixed(3)); });
+    memNotes.forEach((g,i)=>{
+      const t=eo(seg(p,.73+i*0.035,.80));
+      g.setAttribute('opacity',(t*(1-memOut)).toFixed(3));
+      g.setAttribute('transform',`translate(${((1-t)*18).toFixed(1)} 0)`);
+    });
 
     // BEAT 8 : full architecture + payoff
     archNodes.forEach((g,i)=>{
