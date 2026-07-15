@@ -1,9 +1,9 @@
 /* ============================================================
-   FYON INTELLIGENCE FILM — pinned, scroll-scrubbed SVG.
+   FYON INTELLIGENCE FILM — self-playing 16:9 SVG film.
    Ported from the Claude-design embed; adapted to Lesreg/Fyon:
-   self-hosted fonts (no CDN), the site's spruce palette, and a
-   paper backdrop that matches the page. Scrubs off the parent
-   page scroll on desktop; autoplays once in view on mobile.
+   self-hosted fonts (no CDN), the site's spruce palette, warm
+   paper backdrop. Autoplays + loops while on screen; a cinematic
+   camera punches in per beat, time-remapped for a soft finish.
    ============================================================ */
 (function(){
   "use strict";
@@ -21,17 +21,15 @@
   const lerp=(a,b,t)=>a+(b-a)*t;
   const eio=t=>t<0.5?4*t*t*t:(t-1)*(2*t-2)*(2*t-2)+1;       // soft settle (shared language)
   const eo =t=>1-Math.pow(1-t,3);
-  const eoBack=t=>{const c1=1.70158,c3=c1+1;return 1+c3*Math.pow(t-1,3)+c1*Math.pow(t-1,2);}; // snappy (beat 5 only)
   // trapezoid opacity inside a normalized local [0,1]
   const trap=(t,inA=0.16,outA=0.86)=>Math.min(seg(t,0,inA), 1-seg(t,outA,1));
 
   const el=(tag,attrs)=>{const n=document.createElementNS(SVGNS,tag);for(const k in attrs)n.setAttribute(k,attrs[k]);return n;};
   function setText(n,s){ if(n.textContent!==s) n.textContent=s; }
 
+  // ---------- build scene graph ----------
   const stage=document.getElementById('stage');
   if(!stage) return;
-
-  // ---------- build scene graph ----------
   const svg=el('svg',{viewBox:'0 0 1280 720',preserveAspectRatio:'xMidYMid meet'});
   stage.appendChild(svg);
 
@@ -45,9 +43,11 @@
   glossGrad.appendChild(el('stop',{offset:'0%','stop-color':'#ffffff','stop-opacity':'.55'}));
   glossGrad.appendChild(el('stop',{offset:'100%','stop-color':'#ffffff','stop-opacity':'0'}));
   defs.appendChild(glossGrad);
-  const shadow=el('filter',{id:'coreShadow',x:'-60%',y:'-60%',width:'220%',height:'220%'});
-  shadow.appendChild(el('feDropShadow',{dx:'0',dy:'26',stdDeviation:'26','flood-color':'#0d3d34','flood-opacity':'.5'}));
-  defs.appendChild(shadow);
+  const shGrad=el('radialGradient',{id:'coreSh',cx:'50%',cy:'50%',r:'50%'});
+  shGrad.appendChild(el('stop',{offset:'0%','stop-color':'#0d3d34','stop-opacity':'.5'}));
+  shGrad.appendChild(el('stop',{offset:'62%','stop-color':'#0d3d34','stop-opacity':'.2'}));
+  shGrad.appendChild(el('stop',{offset:'100%','stop-color':'#0d3d34','stop-opacity':'0'}));
+  defs.appendChild(shGrad);
 
   const world=el('g',{}); svg.appendChild(world);
 
@@ -178,8 +178,9 @@
 
   // ---- the CORE (hero, depth-lit) — drawn on top of connectors, born late ----
   const coreG=el('g',{opacity:'0'});
-  const coreGlow=el('circle',{cx:CX,cy:CY,r:82,fill:COL.tint,opacity:'0',filter:'blur(1px)'});
-  const coreBody=el('circle',{cx:CX,cy:CY,r:82,fill:'url(#coreGrad)',filter:'url(#coreShadow)'});
+  const coreShadowEl=el('ellipse',{cx:CX,cy:CY+72,rx:104,ry:40,fill:'url(#coreSh)'});
+  const coreGlow=el('circle',{cx:CX,cy:CY,r:82,fill:COL.tint,opacity:'0'});
+  const coreBody=el('circle',{cx:CX,cy:CY,r:82,fill:'url(#coreGrad)'});
   const coreGloss=el('ellipse',{cx:CX-22,cy:CY-30,rx:40,ry:26,fill:'url(#gloss)'});
   const lockG=el('g',{transform:`translate(${CX-14} ${CY-16})`,fill:'none',stroke:COL.paper,'stroke-width':'2','stroke-linecap':'round','stroke-linejoin':'round',opacity:'0'});
   lockG.appendChild(el('rect',{x:2,y:12,width:24,height:17,rx:4}));
@@ -192,7 +193,7 @@
   const chev2=el('path',{d:'M7 24 L16 16 L25 24',opacity:'0.5'});
   chevInner.appendChild(chev2);
   chevG.appendChild(chevInner);
-  coreG.appendChild(coreGlow); coreG.appendChild(coreBody); coreG.appendChild(coreGloss); coreG.appendChild(lockG); coreG.appendChild(chevG);
+  coreG.appendChild(coreShadowEl); coreG.appendChild(coreGlow); coreG.appendChild(coreBody); coreG.appendChild(coreGloss); coreG.appendChild(lockG); coreG.appendChild(chevG);
   world.appendChild(coreG);
 
   // ---- labels ----
@@ -227,11 +228,40 @@
     {r:[.82,1.001], main:'No matter what — every project becomes one journey to your potential.', payoff:true},
   ];
 
+  // ---------- cinematic camera (zoom / punch-in per beat) ----------
+  const camKeys=[
+    [0.00,1.03,640,360],
+    [0.09,1.13,640,356],
+    [0.18,1.10,640,360],
+    [0.26,1.20,640,360],
+    [0.37,1.08,614,338],
+    [0.50,1.11,640,360],
+    [0.585,1.21,700,474],
+    [0.66,1.13,690,462],
+    [0.70,1.02,640,360],
+    [0.84,1.0,640,360],
+    [1.00,1.06,640,360],
+  ];
+  function camAt(p){
+    for(let i=0;i<camKeys.length-1;i++){ const a=camKeys[i],b=camKeys[i+1];
+      if(p<=b[0]){ const t=eio(seg(p,a[0],b[0])); return {s:lerp(a[1],b[1],t),fx:lerp(a[2],b[2],t),fy:lerp(a[3],b[3],t)}; } }
+    const l=camKeys[camKeys.length-1]; return {s:l[1],fx:l[2],fy:l[3]};
+  }
+
+  // time-remap: fast open → slow chat & journey → easy finish (smooth at every seam)
+  const REMAP=[[0,0],[0.16,0.09],[0.34,0.36],[0.58,0.52],[0.80,0.70],[0.88,0.82],[1,1]];
+  function warp(u){
+    for(let i=0;i<REMAP.length-1;i++){ const a=REMAP[i],b=REMAP[i+1];
+      if(u<=b[0]){ const t=eio(seg(u,a[0],b[0])); return lerp(a[1],b[1],t); } }
+    return 1;
+  }
+
   // ---------- the single render(progress) ----------
   function render(p){
     p=clamp(p,0,1);
-    world.setAttribute('transform',`translate(0 ${18*eio(seg(p,.94,1))})`);
-    if(veil) veil.style.opacity = (1-eo(seg(p,0,.09)))*0.9;
+    const cam=camAt(p); const settle=18*eio(seg(p,.94,1));
+    world.setAttribute('transform',`translate(${(640-cam.fx*cam.s).toFixed(1)} ${(360-cam.fy*cam.s+settle).toFixed(1)}) scale(${cam.s.toFixed(4)})`);
+    if(veil) veil.style.opacity = 0;                 // start on warm paper (no dark entry)
 
     // BEAT 1–3 : face ring is born, then scanned, then understood
     const born=eo(seg(p,.015,.09));
@@ -349,42 +379,29 @@
     else labelSub.setAttribute('opacity','0');
   }
 
-  // ---------- drivers (kept separate from render) ----------
-  const film=document.querySelector('.film');
+  // ---------- driver : self-playing clock, only while on screen ----------
+  const film=document.getElementById('film');
   if(!film) return;
   const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const mobile=matchMedia('(max-width:768px)').matches || matchMedia('(pointer:coarse)').matches;
+  const DURATION=16;                       // seconds
+  const HOLD=2.2;                          // hold the payoff before looping
 
-  function setScrollHeight(){ film.style.height = mobile? '100vh' : '300vh'; }
+  let raf=0, t0=null, playing=false;
+  function frame(ts){
+    if(t0==null) t0=ts;
+    const e=((ts-t0)/1000)%(DURATION+HOLD);
+    render(warp(clamp(e/DURATION,0,1)));    // fast open, slow middle, easy finish, then hold+loop
+    raf=requestAnimationFrame(frame);
+  }
+  function play(){ if(playing) return; playing=true; t0=null; raf=requestAnimationFrame(frame); }
+  function stop(){ playing=false; cancelAnimationFrame(raf); }
 
   if(reduce){
-    film.style.height='100vh'; render(1);
-  } else if(mobile){
-    film.style.height='100vh';
-    let raf=0,start=0,playing=false;
-    const DUR=22000;
-    function tick(ts){ if(!start)start=ts; const p=clamp((ts-start)/DUR,0,1); render(p); if(p<1&&playing) raf=requestAnimationFrame(tick); }
-    const io=new IntersectionObserver((es)=>{es.forEach(e=>{
-      if(e.isIntersecting&&!playing){ playing=true; start=0; raf=requestAnimationFrame(tick); }
-      else if(!e.isIntersecting){ playing=false; cancelAnimationFrame(raf); }
-    });},{threshold:0.25});
-    io.observe(film); render(0);
+    render(1);
   } else {
-    setScrollHeight();
-    let needs=true, last=-1;
-    function loop(){
-      if(needs){
-        const rect=film.getBoundingClientRect();
-        const range=film.offsetHeight-window.innerHeight;
-        const p=clamp((-rect.top)/range,0,1);
-        if(p!==last){ render(p); last=p; }
-        needs=false;
-      }
-      requestAnimationFrame(loop);
-    }
-    addEventListener('scroll',()=>{needs=true;},{passive:true});
-    addEventListener('resize',()=>{setScrollHeight();needs=true;},{passive:true});
-    requestAnimationFrame(loop);
     render(0);
+    // only animate while the film is on screen
+    const io=new IntersectionObserver((es)=>{es.forEach(en=>{ en.isIntersecting?play():stop(); });},{threshold:0.15});
+    io.observe(film);
   }
 })();

@@ -92,20 +92,25 @@
 }
 
 /* ============================================================
-   THE INTELLIGENCE FILM — pinned, scroll-scrubbed SVG (replaces
-   the old "what it does" acts). Paper backdrop matches the page;
-   the dark entry veil hands off cleanly, then fades to paper.
+   THE INTELLIGENCE FILM — self-playing 16:9, beside the story.
+   Autoplays + loops while on screen (JS); paper backdrop matches
+   the page, framed like a soft product still.
    ============================================================ */
-.film{ position:relative; }
-.film .sticky{ position:sticky; top:0; height:100vh; overflow:hidden;
-  background:linear-gradient(172deg,#f4ede1 0%, #ece3d4 58%, #e9e0d0 100%); }
+.wf-grid{ display:grid; grid-template-columns:0.82fr 1.18fr; gap:clamp(28px,4vw,64px); align-items:center; }
+.wf-side{ min-width:0; }
+.wf-side .lede{ margin-top:20px; }
+.wf-film{ min-width:0; }
+.film{ position:relative; width:100%; aspect-ratio:16/9; overflow:hidden; border-radius:clamp(16px,1.6vw,22px);
+  background:linear-gradient(168deg,#f4ede1 0%, #ece3d4 60%, #e9e0d0 100%);
+  box-shadow:inset 0 0 0 1px rgba(31,27,22,.08), 0 30px 64px -34px rgba(70,45,25,.42); }
 .film .entry-veil{ position:absolute; inset:0; pointer-events:none;
-  background:radial-gradient(90% 120% at 50% -10%, #16130f, #100e0c 70%); }
+  background:linear-gradient(168deg,#f4ede1 0%, #ece3d4 60%, #e9e0d0 100%); }
 .film .stage{ position:absolute; inset:0; }
 .film .stage svg{ width:100%; height:100%; display:block; }
-.film-foot{ padding:clamp(30px,5vw,58px) clamp(18px,4vw,48px) 0; }
-.film-foot .foot-note{ max-width:680px; }
-@media (prefers-reduced-motion: reduce){ .film{ height:auto !important; } }
+@media(max-width:900px){
+  .wf-grid{ grid-template-columns:1fr; }
+  .wf-side{ order:-1; }
+}
 
 /* ---------- the difference: everything else vs Fyon ---------- */
 .wdiff{ margin:0 0 clamp(40px,5vw,60px); display:grid; grid-template-columns:1fr 1fr; gap:clamp(16px,2.4vw,26px); }
