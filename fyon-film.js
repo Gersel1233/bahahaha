@@ -48,8 +48,32 @@
   shGrad.appendChild(el('stop',{offset:'62%','stop-color':'#0d3d34','stop-opacity':'.2'}));
   shGrad.appendChild(el('stop',{offset:'100%','stop-color':'#0d3d34','stop-opacity':'0'}));
   defs.appendChild(shGrad);
+  // heavy blur for the ambient light washes
+  const soften=el('filter',{id:'soften',x:'-80%',y:'-80%',width:'260%',height:'260%'});
+  soften.appendChild(el('feGaussianBlur',{stdDeviation:'34'}));
+  defs.appendChild(soften);
+  // the scan beam fades at its ends
+  const scanGrad=el('linearGradient',{id:'scanGrad',x1:'0',y1:'0',x2:'1',y2:'0'});
+  [['0%','0'],['18%','.9'],['50%','1'],['82%','.9'],['100%','0']].forEach(([o,a])=>scanGrad.appendChild(el('stop',{offset:o,'stop-color':'#34a596','stop-opacity':a})));
+  defs.appendChild(scanGrad);
 
   const world=el('g',{}); svg.appendChild(world);
+
+  // ---------- ambient atmosphere — the film breathes even between beats ----------
+  const TAU=Math.PI*2;
+  const amb=el('g',{}); world.appendChild(amb);
+  // soft drifting light washes (spruce · amber · deep teal)
+  const washes=[[CX-230,CY-130,190,'#34a596',.10],[CX+260,CY+150,230,'#c2914a',.06],[CX+60,CY-240,150,'#2b7b86',.08]]
+    .map(([x,y,r,c,o])=>{ const w=el('circle',{cx:x,cy:y,r:r,fill:c,opacity:o,filter:'url(#soften)'}); amb.appendChild(w); return {n:w,x,y}; });
+  // faint concentric orbits around the story's centre
+  const orbits=[176,248,326].map(r=>{ const c=el('circle',{cx:CX,cy:CY,r:r,fill:'none',stroke:COL.terra,'stroke-width':'1',opacity:'0'}); amb.appendChild(c); return c; });
+  // slow constellation of drifting motes (deterministic, loops seamlessly)
+  const parts=[];
+  for(let i=0;i<22;i++){
+    const r=150+((i*67)%210), a0=i*2.399, sz=1.5+((i*13)%17)/9, dir=i%2?1:-1, spd=1+(i%3);
+    const d=el('circle',{r:sz.toFixed(1),fill:i%3?COL.terra:COL.deep,opacity:'0'}); amb.appendChild(d);
+    parts.push({n:d,r,a0,dir,spd,base:.10+((i*29)%14)/100,ph:(i*47)%10});
+  }
 
   // face ring (the object is born here)
   const faceRing=el('ellipse',{cx:CX,cy:CY,rx:92,ry:116,fill:'none',stroke:COL.terra,'stroke-width':'1.6',opacity:'0'});
@@ -61,8 +85,10 @@
   const geoNet=el('path',{d:`M${CX-46} ${CY-38} L${CX+46} ${CY-38} L${CX+38} ${CY+34} L${CX-38} ${CY+34} Z M${CX} ${CY-72} L${CX} ${CY+54}`,fill:'none',stroke:COL.terra,'stroke-width':'1',opacity:'0'});
   world.appendChild(geoNet);
 
-  // scan line (beat 2)
-  const scan=el('line',{x1:CX-96,y1:CY,x2:CX+96,y2:CY,stroke:COL.tint,'stroke-width':'2.4','stroke-linecap':'round',opacity:'0'});
+  // scan line (beat 2) — a soft beam with a wide glow underneath
+  const scanGlow=el('line',{x1:CX-96,y1:CY,x2:CX+96,y2:CY,stroke:COL.tint,'stroke-width':'11','stroke-linecap':'round',opacity:'0'});
+  world.appendChild(scanGlow);
+  const scan=el('line',{x1:CX-96,y1:CY,x2:CX+96,y2:CY,stroke:'url(#scanGrad)','stroke-width':'2.6','stroke-linecap':'round',opacity:'0'});
   world.appendChild(scan);
 
   // sufficiency ring (beat 3)
@@ -175,11 +201,21 @@
     const ln=el('line',{x1,y1,x2,y2,stroke:COL.terra,'stroke-width':'2.2','stroke-linecap':'round',opacity:'0','stroke-dasharray':len,'stroke-dashoffset':len});
     ln.dataset.len=len; world.insertBefore(ln, archNodes[0]); return ln;
   });
+  // energy pulses that travel along the drawn connectors
+  const archFlow=archDef.map((d,i)=>{
+    const src=archLines[i];
+    const ln=el('line',{x1:src.getAttribute('x1'),y1:src.getAttribute('y1'),x2:src.getAttribute('x2'),y2:src.getAttribute('y2'),
+      stroke:COL.tint,'stroke-width':'2.6','stroke-linecap':'round','stroke-dasharray':'5 29',opacity:'0'});
+    world.insertBefore(ln, archNodes[0]); return ln;
+  });
 
   // ---- the CORE (hero, depth-lit) — drawn on top of connectors, born late ----
   const coreG=el('g',{opacity:'0'});
   const coreShadowEl=el('ellipse',{cx:CX,cy:CY+72,rx:104,ry:40,fill:'url(#coreSh)'});
   const coreGlow=el('circle',{cx:CX,cy:CY,r:82,fill:COL.tint,opacity:'0'});
+  // two counter-rotating dashed halos — the core visibly *works*
+  const halo=el('circle',{cx:CX,cy:CY,r:104,fill:'none',stroke:COL.tint,'stroke-width':'1.6','stroke-dasharray':'3 16','stroke-linecap':'round',opacity:'0'});
+  const haloB=el('circle',{cx:CX,cy:CY,r:126,fill:'none',stroke:COL.terra,'stroke-width':'1','stroke-dasharray':'2 22','stroke-linecap':'round',opacity:'0'});
   const coreBody=el('circle',{cx:CX,cy:CY,r:82,fill:'url(#coreGrad)'});
   const coreGloss=el('ellipse',{cx:CX-22,cy:CY-30,rx:40,ry:26,fill:'url(#gloss)'});
   const lockG=el('g',{transform:`translate(${CX-14} ${CY-16})`,fill:'none',stroke:COL.paper,'stroke-width':'2','stroke-linecap':'round','stroke-linejoin':'round',opacity:'0'});
@@ -193,12 +229,13 @@
   const chev2=el('path',{d:'M7 24 L16 16 L25 24',opacity:'0.5'});
   chevInner.appendChild(chev2);
   chevG.appendChild(chevInner);
-  coreG.appendChild(coreShadowEl); coreG.appendChild(coreGlow); coreG.appendChild(coreBody); coreG.appendChild(coreGloss); coreG.appendChild(lockG); coreG.appendChild(chevG);
+  coreG.appendChild(coreShadowEl); coreG.appendChild(coreGlow); coreG.appendChild(halo); coreG.appendChild(haloB);
+  coreG.appendChild(coreBody); coreG.appendChild(coreGloss); coreG.appendChild(lockG); coreG.appendChild(chevG);
   world.appendChild(coreG);
 
-  // ---- labels ----
-  const labelMain=el('text',{x:CX,y:612,'text-anchor':'middle','font-family':SERIF,'font-size':'36',fill:COL.ink,opacity:'0'});
-  const labelSub=el('text',{x:CX,y:650,'text-anchor':'middle','font-family':MONO,'font-size':'16','letter-spacing':'3',fill:COL.soft,opacity:'0'});
+  // ---- labels — larger serif with a soft rise as they appear ----
+  const labelMain=el('text',{x:CX,y:612,'text-anchor':'middle','font-family':SERIF,'font-size':'40',fill:COL.ink,opacity:'0'});
+  const labelSub=el('text',{x:CX,y:652,'text-anchor':'middle','font-family':MONO,'font-size':'15','letter-spacing':'4',fill:COL.soft,opacity:'0'});
   svg.appendChild(labelMain); svg.appendChild(labelSub);
   // ---- contextual memory (compounding) ----
   const memEy=el('text',{x:CX,y:86,'text-anchor':'middle','font-family':MONO,'font-size':'12','letter-spacing':'3',fill:COL.terra,opacity:'0'}); memEy.textContent='IT REMEMBERS — IN CONTEXT';
@@ -264,6 +301,19 @@
     world.setAttribute('transform',`translate(${(640-cam.fx*cam.s).toFixed(1)} ${(360-cam.fy*cam.s+settle).toFixed(1)}) scale(${cam.s.toFixed(4)})`);
     if(veil) veil.style.opacity = 0;                 // start on warm paper (no dark entry)
 
+    // ambient — washes drift, orbits breathe, motes circle (all loop seamlessly)
+    washes.forEach((w,i)=>{
+      w.n.setAttribute('cx',(w.x+16*Math.sin(TAU*(p+i*0.33))).toFixed(1));
+      w.n.setAttribute('cy',(w.y+11*Math.cos(TAU*(p+i*0.21))).toFixed(1));
+    });
+    orbits.forEach((c,i)=>{ c.setAttribute('opacity',(0.05+0.02*Math.sin(TAU*(p+i*0.3))).toFixed(3)); });
+    parts.forEach(pt=>{
+      const a=pt.a0+pt.dir*TAU*pt.spd*p;
+      pt.n.setAttribute('cx',(CX+Math.cos(a)*pt.r).toFixed(1));
+      pt.n.setAttribute('cy',(CY+Math.sin(a)*pt.r*0.72).toFixed(1));
+      pt.n.setAttribute('opacity',(pt.base*(0.55+0.45*Math.sin(TAU*3*p+pt.ph))).toFixed(3));
+    });
+
     // BEAT 1–3 : face ring is born, then scanned, then understood
     const born=eo(seg(p,.015,.09));
     const collapse=eio(seg(p,.27,.35));           // face tightens into core
@@ -281,11 +331,15 @@
     geoNet.setAttribute('opacity', (seg(p,.12,.18)*(1-seg(p,.28,.35))*0.7).toFixed(3));
 
     const b2=seg(p,.10,.18);
-    scan.setAttribute('opacity', trap(b2,.14,.86).toFixed(3));
+    const scanOp=trap(b2,.14,.86);
+    scan.setAttribute('opacity', scanOp.toFixed(3));
+    scanGlow.setAttribute('opacity',(scanOp*0.22).toFixed(3));
     const sy=lerp(CY-116,CY+116,eio(b2));
-    scan.setAttribute('y1',sy.toFixed(1)); scan.setAttribute('y2',sy.toFixed(1));
     const sw=Math.sqrt(Math.max(0.001,1-Math.pow((sy-CY)/116,2)))*92;
-    scan.setAttribute('x1',(CX-sw).toFixed(1)); scan.setAttribute('x2',(CX+sw).toFixed(1));
+    [scan,scanGlow].forEach(n=>{
+      n.setAttribute('y1',sy.toFixed(1)); n.setAttribute('y2',sy.toFixed(1));
+      n.setAttribute('x1',(CX-sw).toFixed(1)); n.setAttribute('x2',(CX+sw).toFixed(1));
+    });
 
     const b3=seg(p,.18,.26);
     const sufVis=eo(seg(p,.19,.23))*(1-seg(p,.28,.35));
@@ -313,6 +367,11 @@
     chev2.setAttribute('opacity', (0.4+0.22*(0.5+0.5*Math.sin(p*130))).toFixed(3));
     coreGlow.setAttribute('opacity', (Math.sin(clamp(seg(p,.31,.45),0,1)*Math.PI)*0.5).toFixed(3));
     coreGlow.setAttribute('r', (82*pulse+16).toFixed(1));
+    // halos counter-rotate as long as the core lives (whole turns → seamless loop)
+    halo.setAttribute('opacity',(coreIn*0.55).toFixed(3));
+    halo.setAttribute('transform',`rotate(${(p*720).toFixed(1)} ${CX} ${CY})`);
+    haloB.setAttribute('opacity',(coreIn*0.32).toFixed(3));
+    haloB.setAttribute('transform',`rotate(${(-p*360).toFixed(1)} ${CX} ${CY})`);
 
     // BEAT 5 : the chat — Fyon understands and adapts, then dissolves cleanly
     // (a gentle fade + rise while the camera holds still — no scale-smear)
@@ -369,15 +428,22 @@
       g.setAttribute('transform',`translate(${d.x} ${d.y}) scale(${lerp(0.85,1,t).toFixed(3)})`);
     });
     archLines.forEach(ln=>{ const t=eio(seg(p,.86,.99)); ln.setAttribute('opacity',(t*0.6).toFixed(3)); ln.setAttribute('stroke-dashoffset',(ln.dataset.len*(1-t)).toFixed(1)); });
+    // energy pulses travel inward/outward along the finished connectors
+    archFlow.forEach(ln=>{
+      const t=eio(seg(p,.88,.97));
+      ln.setAttribute('opacity',(t*0.85).toFixed(3));
+      ln.setAttribute('stroke-dashoffset',(-p*340).toFixed(1));
+    });
 
-    // labels
+    // labels — fade with a soft rise
     let cur=LAB.find(L=>p>=L.r[0]&&p<L.r[1])||LAB[LAB.length-1];
     const local=seg(p,cur.r[0],cur.r[1]);
     const op = cur.payoff ? eo(seg(local,0,.22)) : trap(local,.18,.82);
     setText(labelMain,cur.main);
     labelMain.setAttribute('opacity',(cur.main?op:0).toFixed(3));
-    labelMain.setAttribute('font-size', cur.payoff?'32':'34');
+    labelMain.setAttribute('font-size', cur.payoff?'34':'38');
     labelMain.setAttribute('y', cur.payoff?'664':'612');
+    labelMain.setAttribute('transform',`translate(0 ${((1-op)*12).toFixed(1)})`);
     if(cur.sub){ setText(labelSub,cur.sub); labelSub.setAttribute('opacity',op.toFixed(3)); }
     else labelSub.setAttribute('opacity','0');
   }
