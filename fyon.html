@@ -16,7 +16,7 @@
 <link rel="preload" as="font" type="font/woff2" href="fonts/newsreader-latin-normal.woff2" crossorigin />
 <link rel="preload" as="font" type="font/woff2" href="fonts/sora-latin-600.woff2" crossorigin />
 <link rel="stylesheet" href="styles.css?v=40" />
-<link rel="stylesheet" href="fyon.css?v=14" />
+<link rel="stylesheet" href="fyon.css?v=15" />
 <script src="image-slot.js?v=31" defer></script>
 <style id="fh-style">
 /* ===== Ported Fyon hero + scroll reveal — fully scoped under #fyon-hero so it
@@ -417,8 +417,10 @@
           phw.style.transform='translateX('+(-Math.min(230,window.innerWidth*.17)*sh).toFixed(1)+'px)';
           phw.style.opacity='1';
         }
-        var KT=[[.5,.565],[.575,.635],[.645,.715],[.725,.805],[.815,.875]];
-        var c=ramp(p,.9,.975), active=-1;
+        // manifesto reveals line by line, finishing by .82; then the CTAs rise
+        // in over .84–.91 and HOLD, fully lit and tappable, through to the end
+        var KT=[[.48,.55],[.55,.62],[.62,.69],[.69,.76],[.76,.83]];
+        var c=ramp(p,.84,.91), active=-1;
         for(var i=0;i<kml.length;i++){ if(ramp(p,KT[i][0],KT[i][1])>.05) active=i; }
         for(var i=0;i<kml.length;i++){
           var o=ramp(p,KT[i][0],KT[i][1]), eo=1-Math.pow(1-o,2);
@@ -429,7 +431,7 @@
         }
         kx.style.opacity=c.toFixed(3);
         kx.style.transform='translateY('+(14*(1-c)).toFixed(1)+'px)';
-        kx.style.pointerEvents=c>.5?'':'none';
+        kx.style.pointerEvents=c>.4?'auto':'none';
       }
       window.addEventListener('scroll',function(){ if(!kq){ kq=true; requestAnimationFrame(kUpd); } },{passive:true});
       window.addEventListener('resize',function(){ if(!kq){ kq=true; requestAnimationFrame(kUpd); } },{passive:true});
