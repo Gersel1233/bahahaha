@@ -248,8 +248,9 @@
     const l=camKeys[camKeys.length-1]; return {s:l[1],fx:l[2],fy:l[3]};
   }
 
-  // time-remap: fast open → slow chat & journey → easy finish (smooth at every seam)
-  const REMAP=[[0,0],[0.16,0.09],[0.34,0.36],[0.58,0.52],[0.80,0.70],[0.88,0.82],[1,1]];
+  // time-remap: quick face-scan open → linger on the chat and the project
+  // merging onto the line → easy finish (smooth at every seam)
+  const REMAP=[[0,0],[0.20,0.36],[0.48,0.52],[0.80,0.70],[0.88,0.82],[1,1]];
   function warp(u){
     for(let i=0;i<REMAP.length-1;i++){ const a=REMAP[i],b=REMAP[i+1];
       if(u<=b[0]){ const t=eio(seg(u,a[0],b[0])); return lerp(a[1],b[1],t); } }
