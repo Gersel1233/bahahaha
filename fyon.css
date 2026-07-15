@@ -91,6 +91,22 @@
   .kx-cta{ opacity:1; pointer-events:auto; }
 }
 
+/* ============================================================
+   THE INTELLIGENCE FILM — pinned, scroll-scrubbed SVG (replaces
+   the old "what it does" acts). Paper backdrop matches the page;
+   the dark entry veil hands off cleanly, then fades to paper.
+   ============================================================ */
+.film{ position:relative; }
+.film .sticky{ position:sticky; top:0; height:100vh; overflow:hidden;
+  background:linear-gradient(172deg,#f4ede1 0%, #ece3d4 58%, #e9e0d0 100%); }
+.film .entry-veil{ position:absolute; inset:0; pointer-events:none;
+  background:radial-gradient(90% 120% at 50% -10%, #16130f, #100e0c 70%); }
+.film .stage{ position:absolute; inset:0; }
+.film .stage svg{ width:100%; height:100%; display:block; }
+.film-foot{ padding:clamp(30px,5vw,58px) clamp(18px,4vw,48px) 0; }
+.film-foot .foot-note{ max-width:680px; }
+@media (prefers-reduced-motion: reduce){ .film{ height:auto !important; } }
+
 /* ---------- the difference: everything else vs Fyon ---------- */
 .wdiff{ margin:0 0 clamp(40px,5vw,60px); display:grid; grid-template-columns:1fr 1fr; gap:clamp(16px,2.4vw,26px); }
 .wd-col{ border-radius:22px; padding:clamp(24px,3vw,38px); }
