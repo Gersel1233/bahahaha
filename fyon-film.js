@@ -272,21 +272,21 @@
   // ---------- cinematic camera — hold · move · hold ----------
   // the camera only travels BETWEEN beats; during anything readable it parks.
   const camKeys=[
-    [0.000,1.06,640,362],  // open, slightly tight on the face
-    [0.060,1.06,640,362],  //   hold — the ring is born
-    [0.120,1.10,640,358],  // ease in for the scan
-    [0.200,1.10,640,358],  //   hold — scan + understanding read
-    [0.270,1.14,640,360],  // push as the face tightens into the core
-    [0.335,1.14,640,360],  //   hold — newborn core + ripples
-    [0.385,1.07,634,380],  // settle back to frame the chat
-    [0.545,1.07,634,380],  //   hold — the whole chat, incl. its clean exit
-    [0.615,1.12,660,442],  // glide down to the journey rail
-    [0.700,1.12,660,442],  //   hold — merge, today → potential
-    [0.750,1.03,640,364],  // open up for memory
-    [0.825,1.03,640,364],  //   hold — memory notes
+    [0.000,1.07,640,362],  // open, slightly tight on the face
+    [0.060,1.07,640,362],  //   hold — the ring is born
+    [0.120,1.12,640,356],  // ease in for the scan
+    [0.200,1.12,640,356],  //   hold — scan + understanding read
+    [0.270,1.16,640,360],  // push as the face tightens into the core
+    [0.335,1.16,640,360],  //   hold — newborn core + ripples
+    [0.385,1.10,636,342],  // stay CLOSE for the chat — the core keeps its presence
+    [0.545,1.10,636,342],  //   hold — the whole chat, incl. its clean exit
+    [0.615,1.13,658,446],  // glide down to the journey rail
+    [0.700,1.13,658,446],  //   hold — merge, today → potential
+    [0.750,1.04,640,362],  // open up for memory
+    [0.825,1.04,640,362],  //   hold — memory notes
     [0.870,1.00,640,360],  // widest for the full architecture
     [0.960,1.00,640,360],  //   hold — payoff
-    [1.000,1.02,640,360],  // a final breath in
+    [1.000,1.03,640,360],  // a final breath in
   ];
   function camAt(p){
     for(let i=0;i<camKeys.length-1;i++){ const a=camKeys[i],b=camKeys[i+1];
@@ -362,8 +362,11 @@
     const pulse=1+0.06*Math.sin(clamp(seg(p,.33,.45),0,1)*Math.PI);
     const chatRaise=eio(Math.min(seg(p,.36,.40),1-seg(p,.505,.55)));
     coreG.setAttribute('opacity', clamp(coreIn,0,1).toFixed(3));
-    const cs=(coreInRaw>0?lerp(0.8,1,eoBack(coreInRaw)):0.8)*pulse*(1-0.42*chatRaise);
-    const dyC=-150*chatRaise;
+    // during the chat the core stays PRESENT — it only steps back a fifth,
+    // and its rise arcs slightly past the mark before settling (real motion)
+    const cs=(coreInRaw>0?lerp(0.8,1,eoBack(coreInRaw)):0.8)*pulse*(1-0.22*chatRaise);
+    const riseArc=12*Math.sin(Math.PI*clamp(seg(p,.365,.45),0,1));
+    const dyC=-(118*chatRaise+riseArc);
     coreG.setAttribute('transform',`translate(0 ${dyC.toFixed(1)}) translate(${CX} ${CY}) scale(${cs.toFixed(3)}) translate(${-CX} ${-CY})`);
     // core glyph: lock by default, breathing Fyon chevron during the chat & the payoff
     const glyphOn=eo(seg(p,.34,.40));
