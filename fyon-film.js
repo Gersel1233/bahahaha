@@ -269,18 +269,24 @@
     {r:[.82,1.001], main:'No matter what — every project becomes one journey to your potential.', payoff:true},
   ];
 
-  // ---------- cinematic camera — gentle, purposeful punch-ins (eased) ----------
+  // ---------- cinematic camera — hold · move · hold ----------
+  // the camera only travels BETWEEN beats; during anything readable it parks.
   const camKeys=[
-    [0.00,1.05,640,360],
-    [0.14,1.10,640,356],
-    [0.28,1.11,640,362],
-    [0.40,1.06,632,384],   // frame the chat, softly
-    [0.55,1.06,632,384],   // hold still through the chat's clean exit
-    [0.63,1.11,662,448],   // then a soft push toward the line + project
-    [0.70,1.08,656,440],
-    [0.76,1.03,640,366],   // pull back to centre
-    [0.88,1.02,640,360],
-    [1.00,1.05,640,360],
+    [0.000,1.06,640,362],  // open, slightly tight on the face
+    [0.060,1.06,640,362],  //   hold — the ring is born
+    [0.120,1.10,640,358],  // ease in for the scan
+    [0.200,1.10,640,358],  //   hold — scan + understanding read
+    [0.270,1.14,640,360],  // push as the face tightens into the core
+    [0.335,1.14,640,360],  //   hold — newborn core + ripples
+    [0.385,1.07,634,380],  // settle back to frame the chat
+    [0.545,1.07,634,380],  //   hold — the whole chat, incl. its clean exit
+    [0.615,1.12,660,442],  // glide down to the journey rail
+    [0.700,1.12,660,442],  //   hold — merge, today → potential
+    [0.750,1.03,640,364],  // open up for memory
+    [0.825,1.03,640,364],  //   hold — memory notes
+    [0.870,1.00,640,360],  // widest for the full architecture
+    [0.960,1.00,640,360],  //   hold — payoff
+    [1.000,1.02,640,360],  // a final breath in
   ];
   function camAt(p){
     for(let i=0;i<camKeys.length-1;i++){ const a=camKeys[i],b=camKeys[i+1];
@@ -288,10 +294,10 @@
     const l=camKeys[camKeys.length-1]; return {s:l[1],fx:l[2],fy:l[3]};
   }
 
-  // time-remap: near-uniform, readable pacing. Linear interpolation between
-  // control points (NO easing) so the clock never pulses at a seam — the
-  // reading beats (chat, merge) just get a hair more time than the open.
-  const REMAP=[[0,0],[0.33,0.36],[0.50,0.52],[0.69,0.70],[0.83,0.82],[1,1]];
+  // time-remap (linear segments — the clock never pulses at a seam).
+  // Budget per beat, of an 18s take: open 4.2s · chat 5.6s · journey 3.6s ·
+  // memory 2.3s · architecture + payoff 2.3s.
+  const REMAP=[[0,0],[0.233,0.36],[0.544,0.52],[0.744,0.70],[0.872,0.82],[1,1]];
   function warp(u){
     for(let i=0;i<REMAP.length-1;i++){ const a=REMAP[i],b=REMAP[i+1];
       if(u<=b[0]){ return lerp(a[1],b[1],seg(u,a[0],b[0])); } }
@@ -351,12 +357,12 @@
     sufFill.setAttribute('opacity',sufVis.toFixed(3));
     sufFill.setAttribute('stroke-dashoffset',(sufC*(1-eio(b3))).toFixed(1));
 
-    // BEAT 4 : the locked core (holds, then rises for the chat)
-    const coreIn=eo(seg(p,.28,.36));
-    const pulse=1+0.07*Math.sin(clamp(seg(p,.33,.45),0,1)*Math.PI);
+    // BEAT 4 : the locked core — pops in with a soft spring, then rises for the chat
+    const coreInRaw=seg(p,.28,.36), coreIn=eo(coreInRaw);
+    const pulse=1+0.06*Math.sin(clamp(seg(p,.33,.45),0,1)*Math.PI);
     const chatRaise=eio(Math.min(seg(p,.36,.40),1-seg(p,.505,.55)));
     coreG.setAttribute('opacity', clamp(coreIn,0,1).toFixed(3));
-    const cs=lerp(0.86,1,coreIn)*pulse*(1-0.42*chatRaise);
+    const cs=(coreInRaw>0?lerp(0.8,1,eoBack(coreInRaw)):0.8)*pulse*(1-0.42*chatRaise);
     const dyC=-150*chatRaise;
     coreG.setAttribute('transform',`translate(0 ${dyC.toFixed(1)}) translate(${CX} ${CY}) scale(${cs.toFixed(3)}) translate(${-CX} ${-CY})`);
     // core glyph: lock by default, breathing Fyon chevron during the chat & the payoff
@@ -467,8 +473,8 @@
   const film=document.getElementById('film');
   if(!film) return;
   const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const DURATION=17;                       // seconds — even, readable, not slow
-  const HOLD=2.2;                          // hold the payoff before looping
+  const DURATION=18;                       // seconds — budgeted per beat via REMAP
+  const HOLD=2.4;                          // hold the payoff before looping
 
   let raf=0, t0=null, playing=false;
   function frame(ts){
