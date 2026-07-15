@@ -16,7 +16,7 @@
 <link rel="preload" as="font" type="font/woff2" href="fonts/newsreader-latin-normal.woff2" crossorigin />
 <link rel="preload" as="font" type="font/woff2" href="fonts/sora-latin-600.woff2" crossorigin />
 <link rel="stylesheet" href="styles.css?v=40" />
-<link rel="stylesheet" href="fyon.css?v=12" />
+<link rel="stylesheet" href="fyon.css?v=13" />
 <script src="image-slot.js?v=31" defer></script>
 <style id="fh-style">
 /* ===== Ported Fyon hero + scroll reveal — fully scoped under #fyon-hero so it
@@ -390,11 +390,14 @@
         var p=Math.max(0,Math.min(1,(window.scrollY - track.offsetTop) / (track.offsetHeight - vh)));
         var q=ramp(p,.05,.44), e=1-Math.pow(1-q,3);
         ph.style.transform='rotateY('+(-96*(1-e)).toFixed(2)+'deg) rotateX('+(-9*(1-e)).toFixed(2)+'deg) scale('+(.86+.14*e).toFixed(4)+')';
-        var sh=ramp(p,.48,.6);
         if(mob){
-          phw.style.transform='translateY('+(-16*sh).toFixed(2)+'vh) scale('+(1-.42*sh).toFixed(4)+')';
-          phw.style.opacity=(1-.8*sh).toFixed(3);
+          // the phone lifts away and fades FULLY out before the manifesto speaks,
+          // so nothing ghosts behind the text
+          var msh=ramp(p,.4,.5);
+          phw.style.transform='translateY('+(-22*msh).toFixed(2)+'vh) scale('+(1-.5*msh).toFixed(4)+')';
+          phw.style.opacity=(1-msh).toFixed(3);
         } else {
+          var sh=ramp(p,.48,.6);
           phw.style.transform='translateX('+(-Math.min(230,window.innerWidth*.17)*sh).toFixed(1)+'px)';
           phw.style.opacity='1';
         }
