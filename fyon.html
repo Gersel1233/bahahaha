@@ -16,7 +16,7 @@
 <link rel="preload" as="font" type="font/woff2" href="fonts/newsreader-latin-normal.woff2" crossorigin />
 <link rel="preload" as="font" type="font/woff2" href="fonts/sora-latin-600.woff2" crossorigin />
 <link rel="stylesheet" href="styles.css?v=40" />
-<link rel="stylesheet" href="fyon.css?v=10" />
+<link rel="stylesheet" href="fyon.css?v=11" />
 <script src="image-slot.js?v=31" defer></script>
 <style id="fh-style">
 /* ===== Ported Fyon hero + scroll reveal — fully scoped under #fyon-hero so it
@@ -187,11 +187,12 @@
 
 <!-- ===================== 2 · WHAT FYON DOES — the intelligence film beside the story ===================== -->
   <section class="s" id="what" data-screen-label="what-it-does">
-    <div class="s-inner">
-      <div class="wf-head">
+    <div class="s-inner wf-grid">
+      <div class="wf-side">
         <p class="eyebrow reveal">How it works</p>
-        <h2 class="h2 reveal" style="margin-left:auto;margin-right:auto;">One intelligence — trained to reach <em>your potential.</em></h2>
-        <p class="lede reveal" style="margin-left:auto;margin-right:auto;">Two photos and a short conversation. Fyon reads how you&rsquo;re perceived, learns who you&rsquo;re becoming, and folds every new goal into <em>one journey</em> — without overlap.</p>
+        <h2 class="h2 reveal">One intelligence — trained to reach <em>your potential.</em></h2>
+        <p class="lede reveal">Two photos and a short conversation. Fyon reads how you&rsquo;re perceived, learns who you&rsquo;re becoming, and folds every new goal into <em>one journey</em> — without overlap. It plans from today toward your potential, adapts when things change, and remembers everything, in context.</p>
+        <p class="foot-note reveal" style="margin-top:26px;">Built on frontier reasoning and vision models, with facial geometry and identity-preserving image generation. Strictly 18+.</p>
       </div>
       <div class="wf-film reveal d1">
         <div class="film" id="film" role="img" aria-label="Animated: Fyon reads a face, understands it, and turns every goal into one journey toward your potential.">
@@ -199,7 +200,6 @@
           <div class="stage" id="stage"></div>
         </div>
       </div>
-      <p class="foot-note reveal" style="text-align:center;margin:clamp(18px,3vw,30px) auto 0;">Built on frontier reasoning and vision models, with facial geometry and identity-preserving image generation. Strictly 18+.</p>
     </div>
   </section>
 
@@ -449,7 +449,7 @@
   })();
   </script>
 
-  <script src="fyon-film.js?v=5" defer></script>
+  <script src="fyon-film.js?v=6" defer></script>
   <script src="site.js?v=45" defer></script>
 
   <!-- CTA wiring — referral capture + waitlist/early-access + partner links.

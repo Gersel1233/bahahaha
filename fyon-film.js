@@ -21,6 +21,7 @@
   const lerp=(a,b,t)=>a+(b-a)*t;
   const eio=t=>t<0.5?4*t*t*t:(t-1)*(2*t-2)*(2*t-2)+1;       // soft settle (shared language)
   const eo =t=>1-Math.pow(1-t,3);
+  const eoBack=t=>{const c1=1.70158,c3=c1+1;return 1+c3*Math.pow(t-1,3)+c1*Math.pow(t-1,2);}; // spring overshoot
   // trapezoid opacity inside a normalized local [0,1]
   const trap=(t,inA=0.16,outA=0.86)=>Math.min(seg(t,0,inA), 1-seg(t,outA,1));
 
@@ -213,9 +214,6 @@
   const coreG=el('g',{opacity:'0'});
   const coreShadowEl=el('ellipse',{cx:CX,cy:CY+72,rx:104,ry:40,fill:'url(#coreSh)'});
   const coreGlow=el('circle',{cx:CX,cy:CY,r:82,fill:COL.tint,opacity:'0'});
-  // two counter-rotating dashed halos — the core visibly *works*
-  const halo=el('circle',{cx:CX,cy:CY,r:104,fill:'none',stroke:COL.tint,'stroke-width':'1.6','stroke-dasharray':'3 16','stroke-linecap':'round',opacity:'0'});
-  const haloB=el('circle',{cx:CX,cy:CY,r:126,fill:'none',stroke:COL.terra,'stroke-width':'1','stroke-dasharray':'2 22','stroke-linecap':'round',opacity:'0'});
   const coreBody=el('circle',{cx:CX,cy:CY,r:82,fill:'url(#coreGrad)'});
   const coreGloss=el('ellipse',{cx:CX-22,cy:CY-30,rx:40,ry:26,fill:'url(#gloss)'});
   const lockG=el('g',{transform:`translate(${CX-14} ${CY-16})`,fill:'none',stroke:COL.paper,'stroke-width':'2','stroke-linecap':'round','stroke-linejoin':'round',opacity:'0'});
@@ -229,9 +227,15 @@
   const chev2=el('path',{d:'M7 24 L16 16 L25 24',opacity:'0.5'});
   chevInner.appendChild(chev2);
   chevG.appendChild(chevInner);
-  coreG.appendChild(coreShadowEl); coreG.appendChild(coreGlow); coreG.appendChild(halo); coreG.appendChild(haloB);
+  coreG.appendChild(coreShadowEl); coreG.appendChild(coreGlow);
   coreG.appendChild(coreBody); coreG.appendChild(coreGloss); coreG.appendChild(lockG); coreG.appendChild(chevG);
   world.appendChild(coreG);
+  // one-shot ripples — motion-graphic accents when the core is born and when
+  // the new project lands on the journey
+  const rippleA=el('circle',{cx:CX,cy:CY,r:82,fill:'none',stroke:COL.terra,'stroke-width':'2',opacity:'0'});
+  const rippleB=el('circle',{cx:CX,cy:CY,r:82,fill:'none',stroke:COL.tint,'stroke-width':'1.4',opacity:'0'});
+  const rippleM=el('circle',{cx:CX+34,cy:CY+162,r:10,fill:'none',stroke:COL.terra,'stroke-width':'1.8',opacity:'0'});
+  world.insertBefore(rippleA,coreG); world.insertBefore(rippleB,coreG); world.appendChild(rippleM);
 
   // ---- labels — larger serif with a soft rise as they appear ----
   const labelMain=el('text',{x:CX,y:612,'text-anchor':'middle','font-family':SERIF,'font-size':'40',fill:COL.ink,opacity:'0'});
@@ -367,19 +371,24 @@
     chev2.setAttribute('opacity', (0.4+0.22*(0.5+0.5*Math.sin(p*130))).toFixed(3));
     coreGlow.setAttribute('opacity', (Math.sin(clamp(seg(p,.31,.45),0,1)*Math.PI)*0.5).toFixed(3));
     coreGlow.setAttribute('r', (82*pulse+16).toFixed(1));
-    // halos counter-rotate as long as the core lives (whole turns → seamless loop)
-    halo.setAttribute('opacity',(coreIn*0.55).toFixed(3));
-    halo.setAttribute('transform',`rotate(${(p*720).toFixed(1)} ${CX} ${CY})`);
-    haloB.setAttribute('opacity',(coreIn*0.32).toFixed(3));
-    haloB.setAttribute('transform',`rotate(${(-p*360).toFixed(1)} ${CX} ${CY})`);
+    // birth ripples — two rings expand out of the newborn core, then vanish
+    const rA=seg(p,.315,.42), rB=seg(p,.345,.45);
+    rippleA.setAttribute('r',(82+eo(rA)*130).toFixed(1));
+    rippleA.setAttribute('opacity',(rA>0&&rA<1 ? (1-rA)*0.5 : 0).toFixed(3));
+    rippleB.setAttribute('r',(82+eo(rB)*170).toFixed(1));
+    rippleB.setAttribute('opacity',(rB>0&&rB<1 ? (1-rB)*0.35 : 0).toFixed(3));
 
     // BEAT 5 : the chat — Fyon understands and adapts, then dissolves cleanly
     // (a gentle fade + rise while the camera holds still — no scale-smear)
     const chatOut=eo(seg(p,.505,.55));
     chat.setAttribute('opacity',(1-chatOut).toFixed(3));
     chat.setAttribute('transform',`translate(0 ${(-16*chatOut).toFixed(1)})`);
-    uB.setAttribute('opacity', eo(seg(p,.37,.40)).toFixed(3));
-    fB.setAttribute('opacity', eo(seg(p,.435,.465)).toFixed(3));
+    // bubbles slide up into place as they appear (motion-graphic entrance)
+    const uIn=eo(seg(p,.37,.41)), fIn=eo(seg(p,.435,.475));
+    uB.setAttribute('opacity', uIn.toFixed(3));
+    uB.setAttribute('transform',`translate(0 ${((1-uIn)*22).toFixed(1)})`);
+    fB.setAttribute('opacity', fIn.toFixed(3));
+    fB.setAttribute('transform',`translate(0 ${((1-fIn)*22).toFixed(1)})`);
     typeInto([uL1,uL2],userLines,seg(p,.375,.43)*userTotal);
     typeInto([fL1,fL2,fL3],fyonLines,seg(p,.45,.515)*fyonTotal);
 
@@ -387,9 +396,12 @@
     const railIn=eo(seg(p,.52,.57));
     const railOut=seg(p,.70,.76);
     rail.setAttribute('opacity',(railIn*(1-railOut)*0.9).toFixed(3));
-    const exIn=eo(seg(p,.53,.59));
-    existA.setAttribute('opacity',(exIn*(1-railOut)).toFixed(3)); existA.setAttribute('transform',`translate(${existX.a} ${RAIL_Y})`);
-    existB.setAttribute('opacity',(exIn*(1-railOut)).toFixed(3)); existB.setAttribute('transform',`translate(${existX.b} ${RAIL_Y})`);
+    // the settled chips pop in with a spring overshoot, staggered
+    const exRawA=seg(p,.53,.585), exRawB=seg(p,.545,.60);
+    existA.setAttribute('opacity',(eo(exRawA)*(1-railOut)).toFixed(3));
+    existA.setAttribute('transform',`translate(${existX.a} ${RAIL_Y}) scale(${(exRawA>0?eoBack(exRawA):0).toFixed(3)})`);
+    existB.setAttribute('opacity',(eo(exRawB)*(1-railOut)).toFixed(3));
+    existB.setAttribute('transform',`translate(${existX.b} ${RAIL_Y}) scale(${(exRawB>0?eoBack(exRawB):0).toFixed(3)})`);
     journeyCap.setAttribute('opacity',(eo(seg(p,.55,.62))*(1-railOut)*0.9).toFixed(3));
     today.g.setAttribute('opacity',(eo(seg(p,.54,.60))*(1-railOut)).toFixed(3)); today.g.setAttribute('transform',`translate(${todayX} ${RAIL_Y})`);
     potential.g.setAttribute('opacity',(eo(seg(p,.56,.62))*(1-railOut)).toFixed(3)); potential.g.setAttribute('transform',`translate(${potentialX} ${RAIL_Y})`);
@@ -406,10 +418,13 @@
     const fscale=lerp(lerp(0.25,1,form),0.34,merge);
     projCard.setAttribute('opacity',(eo(seg(p,.53,.58))*(1-eo(seg(p,.60,.64)))*(1-railOut)).toFixed(3));
     projCard.setAttribute('transform',`translate(${fx.toFixed(1)} ${fy.toFixed(1)}) scale(${fscale.toFixed(3)})`);
-    const mIn=eo(seg(p,.60,.66));
-    const mPulse=1+0.12*Math.sin(clamp(seg(p,.61,.69),0,1)*Math.PI);
+    const mRaw=seg(p,.60,.66), mIn=eo(mRaw);
     mergedNode.setAttribute('opacity',(mIn*(1-railOut)).toFixed(3));
-    mergedNode.setAttribute('transform',`translate(${mergeX} ${RAIL_Y}) scale(${(mIn*mPulse).toFixed(3)})`);
+    mergedNode.setAttribute('transform',`translate(${mergeX} ${RAIL_Y}) scale(${(mRaw>0?eoBack(mRaw):0).toFixed(3)})`);
+    // landing ripple — a ring expands from the merge point as the node docks
+    const mr=seg(p,.615,.71);
+    rippleM.setAttribute('r',(12+eo(mr)*74).toFixed(1));
+    rippleM.setAttribute('opacity',(mr>0&&mr<1 ? (1-mr)*0.55*(1-railOut) : 0).toFixed(3));
     railFill.setAttribute('opacity',(eo(seg(p,.57,.61))*(1-railOut)).toFixed(3));
     railFill.setAttribute('stroke-dashoffset',(railLen*(1-eio(seg(p,.58,.68)))).toFixed(1));
 
@@ -422,10 +437,10 @@
 
     // BEAT 8 : full architecture + payoff
     archNodes.forEach((g,i)=>{
-      const t=eo(seg(p,.835+i*0.02,.95));
-      g.setAttribute('opacity',t.toFixed(3));
+      const raw=seg(p,.835+i*0.02,.93+i*0.012);
+      g.setAttribute('opacity',eo(raw).toFixed(3));
       const d=archDef[i];
-      g.setAttribute('transform',`translate(${d.x} ${d.y}) scale(${lerp(0.85,1,t).toFixed(3)})`);
+      g.setAttribute('transform',`translate(${d.x} ${d.y}) scale(${(raw>0?lerp(0.7,1,eoBack(raw)):0.7).toFixed(3)})`);
     });
     archLines.forEach(ln=>{ const t=eio(seg(p,.86,.99)); ln.setAttribute('opacity',(t*0.6).toFixed(3)); ln.setAttribute('stroke-dashoffset',(ln.dataset.len*(1-t)).toFixed(1)); });
     // energy pulses travel inward/outward along the finished connectors
