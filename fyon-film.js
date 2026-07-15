@@ -228,19 +228,18 @@
     {r:[.82,1.001], main:'No matter what — every project becomes one journey to your potential.', payoff:true},
   ];
 
-  // ---------- cinematic camera (zoom / punch-in per beat) ----------
+  // ---------- cinematic camera — gentle, purposeful punch-ins (eased) ----------
   const camKeys=[
-    [0.00,1.03,640,360],
-    [0.09,1.13,640,356],
-    [0.18,1.10,640,360],
-    [0.26,1.20,640,360],
-    [0.37,1.08,614,338],
-    [0.50,1.11,640,360],
-    [0.585,1.21,700,474],
-    [0.66,1.13,690,462],
-    [0.70,1.02,640,360],
-    [0.84,1.0,640,360],
-    [1.00,1.06,640,360],
+    [0.00,1.05,640,360],
+    [0.14,1.10,640,356],
+    [0.28,1.11,640,362],
+    [0.40,1.06,632,384],   // frame the chat, softly
+    [0.55,1.06,632,384],   // hold still through the chat's clean exit
+    [0.63,1.11,662,448],   // then a soft push toward the line + project
+    [0.70,1.08,656,440],
+    [0.76,1.03,640,366],   // pull back to centre
+    [0.88,1.02,640,360],
+    [1.00,1.05,640,360],
   ];
   function camAt(p){
     for(let i=0;i<camKeys.length-1;i++){ const a=camKeys[i],b=camKeys[i+1];
@@ -248,12 +247,13 @@
     const l=camKeys[camKeys.length-1]; return {s:l[1],fx:l[2],fy:l[3]};
   }
 
-  // time-remap: quick face-scan open → linger on the chat and the project
-  // merging onto the line → easy finish (smooth at every seam)
-  const REMAP=[[0,0],[0.20,0.36],[0.48,0.52],[0.80,0.70],[0.88,0.82],[1,1]];
+  // time-remap: near-uniform, readable pacing. Linear interpolation between
+  // control points (NO easing) so the clock never pulses at a seam — the
+  // reading beats (chat, merge) just get a hair more time than the open.
+  const REMAP=[[0,0],[0.33,0.36],[0.50,0.52],[0.69,0.70],[0.83,0.82],[1,1]];
   function warp(u){
     for(let i=0;i<REMAP.length-1;i++){ const a=REMAP[i],b=REMAP[i+1];
-      if(u<=b[0]){ const t=eio(seg(u,a[0],b[0])); return lerp(a[1],b[1],t); } }
+      if(u<=b[0]){ return lerp(a[1],b[1],seg(u,a[0],b[0])); } }
     return 1;
   }
 
@@ -296,7 +296,7 @@
     // BEAT 4 : the locked core (holds, then rises for the chat)
     const coreIn=eo(seg(p,.28,.36));
     const pulse=1+0.07*Math.sin(clamp(seg(p,.33,.45),0,1)*Math.PI);
-    const chatRaise=eio(Math.min(seg(p,.36,.40),1-seg(p,.50,.54)));
+    const chatRaise=eio(Math.min(seg(p,.36,.40),1-seg(p,.505,.55)));
     coreG.setAttribute('opacity', clamp(coreIn,0,1).toFixed(3));
     const cs=lerp(0.86,1,coreIn)*pulse*(1-0.42*chatRaise);
     const dyC=-150*chatRaise;
@@ -314,9 +314,11 @@
     coreGlow.setAttribute('opacity', (Math.sin(clamp(seg(p,.31,.45),0,1)*Math.PI)*0.5).toFixed(3));
     coreGlow.setAttribute('r', (82*pulse+16).toFixed(1));
 
-    // BEAT 5 : the chat — Fyon understands and adapts
-    const chatOut=seg(p,.50,.54);
+    // BEAT 5 : the chat — Fyon understands and adapts, then dissolves cleanly
+    // (a gentle fade + rise while the camera holds still — no scale-smear)
+    const chatOut=eo(seg(p,.505,.55));
     chat.setAttribute('opacity',(1-chatOut).toFixed(3));
+    chat.setAttribute('transform',`translate(0 ${(-16*chatOut).toFixed(1)})`);
     uB.setAttribute('opacity', eo(seg(p,.37,.40)).toFixed(3));
     fB.setAttribute('opacity', eo(seg(p,.435,.465)).toFixed(3));
     typeInto([uL1,uL2],userLines,seg(p,.375,.43)*userTotal);
@@ -384,7 +386,7 @@
   const film=document.getElementById('film');
   if(!film) return;
   const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const DURATION=16;                       // seconds
+  const DURATION=17;                       // seconds — even, readable, not slow
   const HOLD=2.2;                          // hold the payoff before looping
 
   let raf=0, t0=null, playing=false;

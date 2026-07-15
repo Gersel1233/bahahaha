@@ -111,6 +111,30 @@
   .wf-side{ order:-1; }
 }
 
+/* ---------- persistent mobile CTA (phone-first) ---------- */
+.fab-partner{ display:none; }
+@media(max-width:760px){
+  .fab-partner{ position:fixed; z-index:95; left:50%; bottom:calc(16px + env(safe-area-inset-bottom,0px));
+    transform:translateX(-50%); display:inline-flex; align-items:center; gap:8px;
+    padding:14px 24px; border-radius:999px; font-size:15px; font-weight:600; color:#fff; white-space:nowrap;
+    background:linear-gradient(158deg,#34a596,#13635a);
+    -webkit-backdrop-filter:blur(8px) saturate(160%); backdrop-filter:blur(8px) saturate(160%);
+    box-shadow:inset 0 1px 1px rgba(214,245,239,.6), inset 0 0 0 1px rgba(150,222,211,.28),
+      0 16px 34px -12px rgba(15,90,82,.62);
+    opacity:0; transform:translate(-50%,16px); pointer-events:none;
+    animation:fabIn .5s cubic-bezier(.2,.85,.25,1) .6s forwards;
+    transition:opacity .35s ease, transform .35s cubic-bezier(.2,.85,.25,1); }
+  .fab-partner svg{ width:16px; height:16px; transition:transform .3s cubic-bezier(.2,.85,.25,1); }
+  .fab-partner:active{ transform:translate(-50%,0) scale(.95); transition-duration:.1s; }
+  .fab-partner:active svg{ transform:translateX(3px); }
+  /* hide it when the partner section itself is on screen — the real CTA is right there */
+  .fab-partner.hide{ opacity:0 !important; transform:translate(-50%,18px) !important; pointer-events:none !important; }
+  @keyframes fabIn{ to{ opacity:1; transform:translate(-50%,0); pointer-events:auto; } }
+}
+@media(max-width:760px) and (prefers-reduced-motion: reduce){
+  .fab-partner{ animation:none; opacity:1; transform:translate(-50%,0); pointer-events:auto; }
+}
+
 /* ---------- the difference: everything else vs Fyon ---------- */
 .wdiff{ margin:0 0 clamp(40px,5vw,60px); display:grid; grid-template-columns:1fr 1fr; gap:clamp(16px,2.4vw,26px); }
 .wd-col{ border-radius:22px; padding:clamp(24px,3vw,38px); }
