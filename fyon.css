@@ -5,6 +5,53 @@
    Loaded only by fyon.html, after styles.css.
    ============================================================ */
 
+/* ============================================================
+   LESREG ORBIT MARK — the real company logo (nav + footer)
+   ============================================================ */
+.lesmark{ display:inline-block; width:22px; height:22px; flex:none; }
+.lesmark svg{ width:100%; height:100%; display:block; }
+.lesmark .lm-s{ fill:var(--ink); opacity:.9; }
+.lesmark .lm-c{ fill:var(--terra); }
+.lesmark.lg{ width:26px; height:26px; }
+/* satellites breathe in turn — quiet, alive */
+.lesmark .lm-s{ transform-box:fill-box; transform-origin:center; animation:lmBreath 4.4s ease-in-out infinite; }
+.lesmark .lm-s:nth-of-type(2){ animation-delay:.5s; }
+.lesmark .lm-s:nth-of-type(3){ animation-delay:1s; }
+.lesmark .lm-s:nth-of-type(4){ animation-delay:1.5s; }
+@keyframes lmBreath{ 0%,100%{ opacity:.9; transform:scale(1); } 50%{ opacity:.45; transform:scale(.84); } }
+.brand:hover .lesmark{ transform:translateY(-1px); }
+@media (prefers-reduced-motion: reduce){ .lesmark .lm-s{ animation:none; } }
+
+/* ============================================================
+   FOOTER — a proper company footer, not a generic strip
+   ============================================================ */
+.footer{ position:relative; z-index:1; margin-top:clamp(20px,4vw,60px);
+  border-top:1px solid rgba(33,29,24,.1); background:linear-gradient(180deg, rgba(233,224,208,0), rgba(233,224,208,.5));
+  content-visibility:auto; contain-intrinsic-size:auto 260px; }
+.footer-inner{ max-width:var(--maxw,1080px); margin:0 auto; padding:clamp(44px,6vw,72px) clamp(20px,4vw,40px) clamp(30px,3vw,44px);
+  display:flex; justify-content:space-between; gap:clamp(32px,5vw,72px); flex-wrap:wrap; }
+.foot-brand{ max-width:340px; }
+.footer .foot-lockup{ font-family:var(--serif); font-weight:500; font-size:22px; display:inline-flex; align-items:center; gap:11px; color:var(--ink); }
+.foot-tag{ margin:16px 0 0; font-size:14.5px; line-height:1.6; color:var(--ink-soft); }
+.foot-tag b{ color:var(--ink); font-weight:600; }
+.foot-cols{ display:flex; gap:clamp(40px,6vw,76px); flex-wrap:wrap; }
+.foot-col{ display:flex; flex-direction:column; gap:12px; }
+.foot-h{ font-family:var(--mono); font-size:11px; font-weight:700; letter-spacing:.18em; text-transform:uppercase;
+  color:var(--terra); margin-bottom:3px; }
+.foot-col a{ font-size:14.5px; color:var(--ink-soft); width:max-content;
+  transition:color .2s ease, transform .2s cubic-bezier(.2,.85,.25,1); }
+.foot-col a:hover{ color:var(--ink); transform:translateX(3px); }
+.foot-base{ max-width:var(--maxw,1080px); margin:0 auto; padding:18px clamp(20px,4vw,40px) clamp(30px,4vw,44px);
+  border-top:1px solid rgba(33,29,24,.08); display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap; }
+.foot-copy,.foot-legal{ font-size:12.5px; color:var(--ink-faint); letter-spacing:.01em; }
+.foot-legal{ font-family:var(--mono); letter-spacing:.06em; }
+@media(max-width:680px){
+  .footer-inner{ flex-direction:column; gap:34px; }
+  .foot-brand{ max-width:none; }
+  .foot-cols{ gap:44px; }
+  .foot-base{ flex-direction:column; align-items:flex-start; gap:8px; }
+}
+
 /* ---------- blur-text: word-by-word hero reveal ---------- */
 .bt{ display:flex; flex-wrap:wrap; justify-content:center; row-gap:.06em; }
 .bt em{ display:contents; }
