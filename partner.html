@@ -212,6 +212,58 @@
   @media(max-width:560px){.how3{grid-template-columns:1fr}}
   .how3 .s{position:relative;padding:18px 16px;border-radius:16px;background:rgba(255,255,255,.4);border:1px solid rgba(255,255,255,.55)}
 
+  /* ---- Dashboard / Playbook tab switch ---- */
+  .tabs{display:inline-flex;gap:4px;padding:5px;border-radius:14px;background:rgba(255,255,255,.5);border:1px solid var(--line)}
+  .tab{font:inherit;font-size:14px;font-weight:600;color:var(--mut);background:none;border:none;cursor:pointer;padding:8px 20px;border-radius:10px;transition:background .2s,color .2s}
+  .tab:hover{color:var(--ink)}
+  .tab.on{background:var(--clay);color:#fff}
+
+  /* ---- Playbook (how to earn) — house palette, flat ---- */
+  #tab-playbook > .card{margin-top:16px}
+  .pb-hero{background:var(--clay-d);color:#fff;border:none}
+  .pb-hero .eyebrow{color:#bfe3dd}
+  .pb-hero h2{font-family:var(--serif);font-weight:500;font-size:clamp(24px,4vw,34px);letter-spacing:-.02em;line-height:1.1;margin:0}
+  .pb-hero p{color:#dcece9;max-width:640px;margin-top:10px;line-height:1.6}
+  .pb-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media(max-width:640px){.pb-grid{grid-template-columns:1fr}}
+  .pb-tile{padding:16px;border-radius:14px;background:rgba(255,255,255,.5);border:1px solid var(--line)}
+  .pb-tile b{font-family:var(--serif);font-weight:500;font-size:24px;color:var(--clay-d);letter-spacing:-.01em}
+  .pb-tile p{font-size:13.5px;color:var(--mut);line-height:1.5;margin-top:4px}
+  .pb-table{width:100%;border-collapse:collapse;margin-top:16px;font-size:14px;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  .pb-table th{text-align:left;font-weight:600;color:var(--mut);background:rgba(31,133,122,.06);padding:10px 14px;font-size:12.5px}
+  .pb-table td{padding:11px 14px;border-top:1px solid var(--line)}
+  .pb-table td.amt{color:var(--clay-d);font-weight:700}
+  .pb-note{font-size:12.5px;color:var(--mut2);margin-top:10px;line-height:1.5}
+  .beats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px}
+  @media(max-width:640px){.beats{grid-template-columns:1fr}}
+  .beat{padding:16px;border-radius:14px;background:rgba(255,255,255,.5);border:1px solid var(--line)}
+  .beat .num{width:26px;height:26px;border-radius:50%;background:var(--clay);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700}
+  .beat b{display:block;margin-top:10px;font-size:14.5px}
+  .beat p{font-size:13px;color:var(--mut);margin-top:4px;line-height:1.5}
+  .hooks{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media(max-width:640px){.hooks{grid-template-columns:1fr}}
+  .hook{padding:16px;border-radius:14px;background:rgba(255,255,255,.5);border:1px solid var(--line)}
+  .hook q{display:block;quotes:none;font-family:var(--serif);font-size:16px;color:var(--ink);line-height:1.4}
+  .hook p{font-size:12px;color:var(--mut2);margin-top:8px;line-height:1.5}
+  .rules{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:640px){.rules{grid-template-columns:1fr}}
+  .rule{padding:16px 18px;border-radius:14px}
+  .rule.do{background:rgba(31,133,122,.06);border:1px solid rgba(31,133,122,.25)}
+  .rule.dont{background:rgba(255,255,255,.5);border:1px solid var(--line)}
+  .rule h4{font-size:12px;letter-spacing:.12em;text-transform:uppercase;font-family:var(--sans);margin-bottom:10px}
+  .rule.do h4{color:var(--clay-d)}.rule.dont h4{color:var(--mut)}
+  .rule ul{margin:0;padding:0}
+  .rule li{list-style:none;display:flex;gap:9px;font-size:14px;color:var(--ink2);padding:5px 0;line-height:1.45}
+  .rule .mk{flex:none;font-weight:700}
+  .rule.do .mk{color:var(--clay)}.rule.dont .mk{color:var(--mut2)}
+  .pb-steps{display:grid;gap:10px;margin-top:4px}
+  .pb-step{display:flex;gap:14px;align-items:flex-start;padding:14px 16px;border-radius:14px;background:rgba(255,255,255,.5);border:1px solid var(--line)}
+  .pb-step .num{flex:none;width:28px;height:28px;border-radius:50%;background:var(--clay);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700}
+  .pb-step b{font-size:15px}
+  .pb-step .txt p{font-size:13.5px;color:var(--mut);margin-top:2px;line-height:1.5}
+  .pb-step .jump{flex:none;margin-left:auto;align-self:center;font:inherit;font-size:12.5px;color:var(--clay-d);font-weight:600;background:none;border:1px solid rgba(31,133,122,.3);border-radius:9px;padding:6px 11px;cursor:pointer}
+  .pb-step .jump:hover{background:rgba(31,133,122,.08)}
+
   footer.site-footer{position:relative;z-index:2;border-top:1px solid var(--line);margin-top:60px;padding:34px 22px 50px}
   footer.site-footer .in{max-width:920px;margin:0 auto;display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px;align-items:center}
   footer.site-footer .links{display:flex;gap:22px;font-size:13.5px;color:var(--mut)}
@@ -301,10 +353,20 @@
       <h1>Recommend Fyon.<br><span class="accent">Get paid every month.</span></h1>
       <p class="lead">Your audience gets <b>20% off</b> — you earn <b><span id="heroRate">15</span>% of every payment, every month</b>, for as long as they stay.</p>
       <div class="row" style="justify-content:center;margin-top:28px">
-        <button class="lg primary" onclick="document.getElementById('dashTop').scrollIntoView({behavior:'smooth',block:'start'})"><span class="lbl">Get your link →</span></button>
-        <button class="lg ghost" onclick="document.getElementById('howbox').scrollIntoView({behavior:'smooth',block:'center'})"><span class="lbl"><span class="play">▶</span> How it works</span></button>
+        <button class="lg primary" onclick="pbGo('dashTop')"><span class="lbl">Get your link →</span></button>
+        <button class="lg ghost" onclick="pbGo('howbox','center')"><span class="lbl"><span class="play">▶</span> How it works</span></button>
       </div>
     </section>
+
+    <!-- Dashboard / Playbook switch -->
+    <div class="row" style="justify-content:center;margin-top:6px">
+      <div class="tabs" role="tablist" aria-label="Partner sections">
+        <button class="tab on" id="tabDash" role="tab" aria-selected="true">Dashboard</button>
+        <button class="tab" id="tabPlay" role="tab" aria-selected="false">Playbook</button>
+      </div>
+    </div>
+
+    <div id="tab-dashboard">
 
     <!-- welcome + Stripe -->
     <div id="dashTop" class="hgrid">
@@ -393,6 +455,96 @@
       <label class="row small" style="justify-content:space-between;margin-top:14px;align-items:center">Show me on the leaderboard
         <input type="checkbox" id="showLb" style="width:auto" /></label>
     </div>
+    </div><!-- /#tab-dashboard -->
+
+    <section id="tab-playbook" class="hidden">
+
+      <div class="card pb-hero" style="margin-top:8px">
+        <div class="eyebrow">Your playbook</div>
+        <h2>Turn your link into recurring income</h2>
+        <p>You already have your link and code. Here's exactly what you earn, what to post, and the rules that keep you safe — everything a producing partner does.</p>
+      </div>
+
+      <!-- 1 · what you earn -->
+      <div class="card">
+        <h3 style="font-size:20px;margin-bottom:4px">What you earn</h3>
+        <p class="muted small" style="margin-bottom:14px">Real recurring income — not a one-off bounty.</p>
+        <div class="pb-grid">
+          <div class="pb-tile"><b>15%</b><p>of every payment — the first month and every month they stay subscribed.</p></div>
+          <div class="pb-tile"><b>20% off</b><p>for your audience's first month with your code. An easy reason to click.</p></div>
+          <div class="pb-tile"><b>15% → 30%</b><p>your rate climbs with volume — you earn more on every active subscriber.</p></div>
+          <div class="pb-tile"><b>~$3.55/mo</b><p>per active subscriber at the 15% starter rate (Fyon Pro is $23.69/mo).</p></div>
+        </div>
+        <table class="pb-table">
+          <thead><tr><th>Active members</th><th>You earn / month</th><th>You earn / year</th></tr></thead>
+          <tbody>
+            <tr><td>10</td><td class="amt">$35.50</td><td>$426</td></tr>
+            <tr><td>25</td><td class="amt">$88.75</td><td>$1,065</td></tr>
+            <tr><td>50</td><td class="amt">$177.50</td><td>$2,130</td></tr>
+            <tr><td>100</td><td class="amt">$355.00</td><td>$4,260</td></tr>
+          </tbody>
+        </table>
+        <p class="pb-note">At the 15% starter rate — climb toward 30% and these roughly double. Paid via Stripe Connect: 30-day hold, then withdraw anytime.</p>
+      </div>
+
+      <!-- 2 · what to post -->
+      <div class="card">
+        <h3 style="font-size:20px;margin-bottom:4px">What to post</h3>
+        <p class="muted small" style="margin-bottom:12px">Fyon's reveal sells itself — you just react to it.</p>
+        <p class="small" style="color:var(--mut);line-height:1.6;max-width:640px">The reveal shows someone's realistic future self from 2 photos. That transformation is your hook. Every good video follows the same three beats:</p>
+        <div class="beats">
+          <div class="beat"><div class="num">1</div><b>Hook — first 3 seconds</b><p>Stop the scroll before they swipe. Tease the reveal, don't explain it.</p></div>
+          <div class="beat"><div class="num">2</div><b>Your reaction</b><p>Film your genuine, unscripted reaction to your OWN reveal. Your face sells it, not a pitch.</p></div>
+          <div class="beat"><div class="num">3</div><b>Call to action</b><p>“Link in bio — 20% off with my code.”</p></div>
+        </div>
+        <p class="small" style="font-weight:600;margin:20px 0 10px">4 hooks that stop the scroll</p>
+        <div class="hooks">
+          <div class="hook"><q>“I uploaded 2 photos and this is me in 3 years…”</q><p>→ cut to your reveal → your honest reaction → “link in bio, 20% off with my code”</p></div>
+          <div class="hook"><q>“This is who I become if I keep going — and who I become if I don't.”</q><p>→ cut to your reveal → your honest reaction → “link in bio, 20% off with my code”</p></div>
+          <div class="hook"><q>“I wasn't ready to meet my future self.”</q><p>→ cut to your reveal → your honest reaction → “link in bio, 20% off with my code”</p></div>
+          <div class="hook"><q>“POV: you finally see the version of you you keep promising you'll become.”</q><p>→ cut to your reveal → your honest reaction → “link in bio, 20% off with my code”</p></div>
+        </div>
+      </div>
+
+      <!-- 3 · the rules -->
+      <div class="card">
+        <h3 style="font-size:20px;margin-bottom:4px">The rules</h3>
+        <p class="muted small" style="margin-bottom:14px">Keep it honest — it protects you, your audience, and the brand.</p>
+        <div class="rules">
+          <div class="rule do">
+            <h4>Always</h4>
+            <ul>
+              <li><span class="mk">✓</span><span>Use your own link and code.</span></li>
+              <li><span class="mk">✓</span><span>Disclose the partnership — #ad.</span></li>
+              <li><span class="mk">✓</span><span>Frame it as “become who you envisioned” — realistic, effort required.</span></li>
+              <li><span class="mk">✓</span><span>18+ audiences only.</span></li>
+            </ul>
+          </div>
+          <div class="rule dont">
+            <h4>Never</h4>
+            <ul>
+              <li><span class="mk">✕</span><span>No income or results guarantees.</span></li>
+              <li><span class="mk">✕</span><span>No medical or surgical claims.</span></li>
+              <li><span class="mk">✕</span><span>No fake or edited results.</span></li>
+              <li><span class="mk">✕</span><span>No minors — ever.</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4 · get started -->
+      <div class="card">
+        <h3 style="font-size:20px;margin-bottom:4px">Get started</h3>
+        <p class="muted small" style="margin-bottom:14px">Four steps to your first payout.</p>
+        <div class="pb-steps">
+          <div class="pb-step"><div class="num">1</div><div class="txt"><b>Connect Stripe</b><p>So you can get paid — 30-day hold, then withdraw anytime. Use the Connect Stripe card on your dashboard.</p></div></div>
+          <div class="pb-step"><div class="num">2</div><div class="txt"><b>Grab your link + code</b><p>Copy them from your dashboard and drop them in your bio.</p></div><button class="jump" id="pbGrab">Dashboard →</button></div>
+          <div class="pb-step"><div class="num">3</div><div class="txt"><b>Post your first reveal</b><p>Use one of the hooks above — react to your own future self.</p></div></div>
+          <div class="pb-step"><div class="num">4</div><div class="txt"><b>Track earnings</b><p>Watch referrals and commission grow on your dashboard.</p></div><button class="jump" id="pbTrack">Dashboard →</button></div>
+        </div>
+      </div>
+
+    </section>
   </div>
 </div>
 
@@ -627,6 +779,24 @@ else {
   $('signout').onclick = async ()=>{ if(sb) await sb.auth.signOut(); location.reload(); };
   $('copyLink').onclick = ()=>{ navigator.clipboard.writeText($('link').textContent); toast('Link copied'); };
   $('copyCode').onclick = ()=>{ if(partner){ navigator.clipboard.writeText(partner.code); toast('Coupon copied'); } };
+
+  // Dashboard ⇄ Playbook tab switch — pure UI, reuses the house show() helper. No data/money logic.
+  {
+    const setSection = (play)=>{
+      show('tab-dashboard', !play); show('tab-playbook', play);
+      const td=$('tabDash'), tp=$('tabPlay');
+      if(td){ td.classList.toggle('on', !play); td.setAttribute('aria-selected', String(!play)); }
+      if(tp){ tp.classList.toggle('on', play); tp.setAttribute('aria-selected', String(play)); }
+      window.scrollTo({ top:0, behavior:'smooth' });
+    };
+    // hero CTAs jump into the Dashboard tab first, then scroll to the target card
+    window.pbGo = (id, block)=>{ setSection(false); const t=$(id); if(t) setTimeout(()=>t.scrollIntoView({behavior:'smooth', block: block||'start'}),80); };
+    { const b=$('tabDash'); if(b) b.onclick=()=>setSection(false); }
+    { const b=$('tabPlay'); if(b) b.onclick=()=>setSection(true); }
+    const toDash=()=>{ setSection(false); const t=$('dashTop'); if(t) setTimeout(()=>t.scrollIntoView({behavior:'smooth',block:'start'}),80); };
+    { const b=$('pbGrab');  if(b) b.onclick=toDash; }
+    { const b=$('pbTrack'); if(b) b.onclick=toDash; }
+  }
   $('showLb').onchange = async (e)=>{ if(partner) await sb.from('partners').update({show_on_leaderboard:e.target.checked}).eq('id',partner.id); };
   $('promoChannel').onchange = async (e)=>{ if(partner) await sb.from('partners').update({promo_channel:e.target.value}).eq('id',partner.id); };
   $('connect').onclick = async ()=>{
