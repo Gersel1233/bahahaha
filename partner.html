@@ -133,6 +133,19 @@
   .notice{margin:20px auto;max-width:760px;border:1px solid var(--line);background:#fff;border-radius:18px;padding:22px}
   .mono{font-family:ui-monospace,Menlo,monospace}
   input,select{font-family:inherit;font-size:15px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;width:100%;background:#fff}
+
+  /* ---- partner application + review states ---- */
+  .apply-field{margin-bottom:16px}
+  .apply-field > label{display:block;font-size:13.5px;font-weight:600;margin-bottom:7px}
+  .accept{display:flex;gap:10px;align-items:flex-start;font-size:14px;color:var(--ink2);cursor:pointer;margin-top:6px;line-height:1.45}
+  .accept input{width:auto;margin-top:2px;flex:none}
+  .state-card{max-width:600px;margin:26px auto 0;text-align:center;padding:34px 28px}
+  .state-card .state-ic{font-size:32px;margin-bottom:8px}
+  .state-card h2{font-family:var(--serif);font-weight:500;font-size:clamp(22px,3.6vw,30px);letter-spacing:-.02em}
+  .state-card p{max-width:470px;margin:12px auto 0;line-height:1.6}
+  .pend-item{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0;border-top:1px solid var(--line);flex-wrap:wrap}
+  .pend-item:first-child{border-top:none}
+  .pend-actions{display:flex;gap:8px;flex-wrap:wrap}
   .row{display:flex;gap:12px;flex-wrap:wrap}
   .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}@media(max-width:680px){.grid2{grid-template-columns:1fr}}
   .stat{font-family:var(--serif);font-size:40px;font-weight:500;letter-spacing:-.02em;margin:6px 0 2px}
@@ -345,6 +358,75 @@
     </div>
   </section>
 
+  <!-- APPLICATION (logged in, no partner row yet) -->
+  <section id="apply" class="hidden">
+    <div class="phero" style="padding-bottom:6px">
+      <div class="eyebrow">Fyon Partners</div>
+      <h1 style="font-size:clamp(28px,4.6vw,44px)">Apply to become a partner</h1>
+      <p class="lead">We hand-review every partner so Fyon is represented well. Tell us where you create — you'll get your link and 20%-off code the moment you're approved.</p>
+    </div>
+    <div class="card" style="max-width:640px;margin:8px auto 0">
+      <div class="apply-field">
+        <label for="apPlatform">Which platform will you promote Fyon on?</label>
+        <select id="apPlatform">
+          <option value="">Select…</option>
+          <option>TikTok</option><option>Instagram</option><option>YouTube</option><option>Other</option>
+        </select>
+      </div>
+      <div class="apply-field">
+        <label for="apContent">What do you create?</label>
+        <input id="apContent" type="text" placeholder="e.g. fitness, beauty, lifestyle, self-improvement…" />
+      </div>
+      <div class="apply-field">
+        <label for="apHandle">Your username / handle on that platform</label>
+        <input id="apHandle" type="text" placeholder="@yourhandle" />
+      </div>
+
+      <div class="apply-field">
+        <label>Partner guidelines</label>
+        <p class="muted small" style="margin:-2px 0 10px">These keep you and Fyon safe — you'll follow them in every post.</p>
+        <div class="rules">
+          <div class="rule do"><h4>Always</h4><ul>
+            <li><span class="mk">✓</span><span>Use your own link and code.</span></li>
+            <li><span class="mk">✓</span><span>Disclose the partnership — #ad.</span></li>
+            <li><span class="mk">✓</span><span>Frame it as “become who you envisioned” — realistic, effort required.</span></li>
+            <li><span class="mk">✓</span><span>18+ audiences only.</span></li>
+          </ul></div>
+          <div class="rule dont"><h4>Never</h4><ul>
+            <li><span class="mk">✕</span><span>No income or results guarantees.</span></li>
+            <li><span class="mk">✕</span><span>No medical or surgical claims.</span></li>
+            <li><span class="mk">✕</span><span>No fake or edited results.</span></li>
+            <li><span class="mk">✕</span><span>No minors — ever.</span></li>
+          </ul></div>
+        </div>
+      </div>
+
+      <label class="accept"><input type="checkbox" id="apAccept" /> <span>I have read and accept the Fyon partner guidelines.</span></label>
+
+      <div style="margin-top:16px"><button class="lg primary" id="apSubmit" disabled><span class="lbl">Submit application</span></button></div>
+      <p id="apMsg" class="small muted" style="margin-top:12px"></p>
+    </div>
+  </section>
+
+  <!-- UNDER REVIEW (status = pending) -->
+  <section id="pending" class="hidden">
+    <div class="card state-card">
+      <div class="state-ic" aria-hidden="true">🕓</div>
+      <h2>Your application is under review</h2>
+      <p class="muted">Thanks for applying to the Fyon partner program. We personally review every partner to keep the community on-brand — you'll be notified the moment you're approved, and your link and 20%-off code will appear right here.</p>
+      <p class="muted small" id="pendMeta" style="margin-top:14px"></p>
+    </div>
+  </section>
+
+  <!-- NOT APPROVED (status = rejected) -->
+  <section id="rejected" class="hidden">
+    <div class="card state-card">
+      <div class="state-ic" aria-hidden="true">—</div>
+      <h2>Application not approved</h2>
+      <p class="muted">Thanks for your interest in the Fyon partner program. We're not able to approve your application at this time. If you think this was a mistake, reply to your sign-up email and we'll take another look.</p>
+    </div>
+  </section>
+
   <!-- DASHBOARD (logged in) -->
   <div id="dash" class="hidden">
 
@@ -447,6 +529,12 @@
         <div><div class="muted small">Pending commissions</div><div class="stat" id="aPending" style="font-size:26px;color:var(--mut)">—</div></div>
         <div><div class="muted small">Available commissions</div><div class="stat" id="aAvail" style="font-size:26px;color:var(--emerald)">—</div></div>
         <div><div class="muted small">Total paid out</div><div class="stat" id="aPaid" style="font-size:26px;color:var(--clay)">—</div></div>
+      </div>
+
+      <!-- pending partner applications — the vetting queue (owner approves/rejects here) -->
+      <div id="pendingWrap" class="hidden" style="margin-top:16px;border-top:1px solid var(--line);padding-top:14px">
+        <h4 style="font-size:15px;font-family:var(--sans);font-weight:700;margin-bottom:8px">Pending applications <span id="pendCount" class="pill" style="background:rgba(31,133,122,.12);color:var(--clay-d)">0</span></h4>
+        <div id="pendingList" class="muted small">None right now.</div>
       </div>
     </div>
 
@@ -628,7 +716,7 @@ else {
       const { data, error } = await sb.auth.getSession();
       if (error) throw error;
       const session = data?.session;
-      if (!session){ show('dash',false); show('acctWrap',false); show('auth',true); return; }
+      if (!session){ showState(null); show('acctWrap',false); show('auth',true); return; }
       show('auth',false);
       const email = session.user.email || "";
       $('who').textContent = email;
@@ -640,12 +728,29 @@ else {
         const wn=$('welcomeName'); if(wn) wn.textContent = nm;
       }
       show('acctWrap',true);
-      await ensurePartner(session.user);
-      if (!partner){ showError("Couldn't load your partner profile."); return; }
+
+      partner = await loadPartner(session.user);   // SELECT only — login no longer auto-enrolls
+
+      // Route by application status. A partner only gets the live dashboard
+      // (link / code / earnings) once an OWNER has approved them.
+      if (!partner){ showState('apply'); return; }
+      if (partner.status && partner.status !== 'approved'){
+        showState(partner.status === 'rejected' ? 'rejected' : 'pending');
+        if (partner.status !== 'rejected'){ const pm=$('pendMeta'); if(pm) pm.textContent = pendingSummary(partner); }
+        return;
+      }
+
+      // approved → the dashboard exactly as before
+      showState('dash');
       await syncConnectIfReturning(session);
-      show('dash',true);          // ← show the shell FIRST; a later query error can't blank it now
       await render();
-      loadAdmin(session);         // admin-only launch-checks card (403 -> stays hidden)
+      // Register the 20%-off coupon code in Stripe once the code is live, so the CODE
+      // path gives 20% off too (not just the link). Idempotent — create-promo no-ops if
+      // already done; uses the partner's own token (create-promo itself is unchanged).
+      if (partner.code && !partner.stripe_promo_code_id){
+        fetch(`${FN}/create-promo`,{method:'POST',headers:{'Authorization':'Bearer '+(session.access_token||'')}}).catch(()=>{});
+      }
+      loadAdmin(session);         // admin-only launch-checks + pending queue (403 -> stays hidden)
     } catch(e){ showError("Dashboard failed to load: "+(e.message||e)); }
     finally{ booting = false; }
   }
@@ -663,25 +768,61 @@ else {
       $('aAvail').textContent = usd(d.commissions.available_cents);
       $('aPaid').textContent = usd(d.paid_out_cents);
       { const m=$('adminMode'); if(m) m.style.display = d.test_mode ? '' : 'none'; }
+      renderPending(d.pending_partners || [], session);
       show('adminCard',true);
     }catch(e){ show('adminCard',false); }
   }
 
-  async function ensurePartner(user){
+  // ---- owner: pending-application queue (approve/reject via service-role fn) ----
+  const escHtml = s => String(s==null?'':s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  function profileUrl(platform, handle){
+    const h=(handle||'').replace(/^@+/,''); if(!h) return '';
+    const p=(platform||'').toLowerCase();
+    if(p.includes('tiktok'))    return 'https://www.tiktok.com/@'+encodeURIComponent(h);
+    if(p.includes('instagram')) return 'https://www.instagram.com/'+encodeURIComponent(h);
+    if(p.includes('youtube'))   return 'https://www.youtube.com/@'+encodeURIComponent(h);
+    return '';
+  }
+  function renderPending(list, session){
+    const box=$('pendingList'), cnt=$('pendCount'); show('pendingWrap', true);
+    if(cnt) cnt.textContent = String(list.length);
+    if(!box) return;
+    if(!list.length){ box.innerHTML = 'None right now.'; return; }
+    box.innerHTML = list.map(p=>{
+      const url=profileUrl(p.promo_channel,p.handle), h=escHtml(p.handle||'—');
+      const prof = url ? `<a href="${escHtml(url)}" target="_blank" rel="noopener" style="color:var(--clay-d);font-weight:600">${h} ↗</a>` : h;
+      const meta = escHtml(p.promo_channel||'—')+' · '+escHtml(p.content_type||'—');
+      return `<div class="pend-item"><div class="pend-info"><div><b>${prof}</b></div><div class="muted small">${meta}</div></div>`
+        + `<div class="pend-actions"><button class="lg primary sm pend-ok" data-id="${escHtml(p.id)}"><span class="lbl">Approve</span></button>`
+        + `<button class="lg ghost sm pend-no" data-id="${escHtml(p.id)}"><span class="lbl">Reject</span></button></div></div>`;
+    }).join('');
+    box.querySelectorAll('.pend-ok').forEach(b=> b.onclick=()=>reviewPartner(b.getAttribute('data-id'),'approve',session));
+    box.querySelectorAll('.pend-no').forEach(b=> b.onclick=()=>reviewPartner(b.getAttribute('data-id'),'reject',session));
+  }
+  async function reviewPartner(id, action, session){
+    try{
+      const r = await fetch(`${FN}/partner-review`,{method:'POST',headers:{'Authorization':'Bearer '+(session?.access_token||''),'content-type':'application/json'},body:JSON.stringify({partner_id:id,action})});
+      const d = await r.json().catch(()=>({}));
+      if(!r.ok || !d.ok){ toast(d.error||('Review failed (HTTP '+r.status+')')); return; }
+      toast(action==='approve' ? 'Partner approved ✓' : 'Application rejected');
+      loadAdmin(session);   // refresh the queue
+    }catch(e){ toast('Review failed: '+(e.message||e)); }
+  }
+
+  // Read the caller's partner row (SELECT only). Creation now happens ONLY when
+  // they submit the application form — logging in no longer auto-enrolls anyone.
+  async function loadPartner(user){
     const sel = await sb.from('partners').select('*').eq('user_id', user.id).maybeSingle();
-    if (sel.error) showError("partners read: "+sel.error.message);
-    if (sel.data){ partner = sel.data; return; }
-    const code = Array.from({length:10},()=>"ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"[Math.floor(Math.random()*36)]).join('');
-    const ins = await sb.from('partners').insert({ user_id:user.id, code, coupon_code:code }).select().maybeSingle();
-    if (ins.data){
-      partner = ins.data;
-      fetch(`${FN}/create-promo`,{method:'POST',headers:{'Authorization':'Bearer '+SUPABASE_ANON_KEY}}).catch(()=>{});
-      return;
-    }
-    // race or RLS: re-select
-    const re = await sb.from('partners').select('*').eq('user_id', user.id).maybeSingle();
-    partner = re.data || null;
-    if (!partner && ins.error) showError("Enroll failed: "+ins.error.message);
+    if (sel.error){ showError("partners read: "+sel.error.message); return null; }
+    return sel.data || null;
+  }
+
+  // show exactly one logged-in state; hide the others
+  function showState(name){ ['apply','pending','rejected','dash'].forEach(id => show(id, id===name)); }
+
+  function pendingSummary(p){
+    const bits = [p.promo_channel, p.content_type, p.handle].filter(Boolean);
+    return bits.length ? ('You applied as: ' + bits.join(' · ')) : '';
   }
 
   async function render(){
@@ -767,6 +908,35 @@ else {
   }
 
   // events (guarded)
+  // ---- partner application (vetting gate: no code/link until an owner approves) ----
+  { const acc=$('apAccept'), btn=$('apSubmit'); if(acc && btn) acc.onchange = ()=>{ btn.disabled = !acc.checked; }; }
+  { const btn=$('apSubmit'); if(btn) btn.onclick = async ()=>{
+    if(!sb) return;
+    const acc=$('apAccept'); if(!acc || !acc.checked) return;
+    const msg=$('apMsg'); if(msg) msg.textContent='';
+    const platform=(($('apPlatform')&&$('apPlatform').value)||'').trim();
+    const content =(($('apContent') &&$('apContent').value) ||'').trim();
+    const handle  =(($('apHandle')  &&$('apHandle').value)  ||'').trim().replace(/^@+/,'');
+    if(!platform){ if(msg) msg.textContent='Please choose a platform.'; return; }
+    if(!handle){ if(msg) msg.textContent='Please add your @handle.'; return; }
+    const { data:sd } = await sb.auth.getSession(); const user=sd?.session?.user; if(!user) return;
+    btn.disabled=true; const lbl=btn.querySelector('.lbl'); const old=lbl?lbl.textContent:''; if(lbl) lbl.textContent='Submitting…';
+    // NO code at apply time — the owner assigns it on approval (partner-review), so a
+    // pending applicant has no usable code and cannot refer or earn before approval.
+    const ins = await sb.from('partners').insert({
+      user_id:user.id,
+      promo_channel:platform, content_type:content||null, handle:'@'+handle,
+      guidelines_accepted_at:new Date().toISOString()
+      // code + status intentionally omitted → code stays null, status DB-defaults to 'pending'
+    }).select().maybeSingle();
+    if(ins.data){ partner=ins.data; showState('pending'); const pm=$('pendMeta'); if(pm) pm.textContent=pendingSummary(partner); window.scrollTo({top:0,behavior:'smooth'}); return; }
+    // race / RLS fallback — re-read then re-route
+    const re = await sb.from('partners').select('*').eq('user_id',user.id).maybeSingle();
+    if(re.data){ partner=re.data; boot(); return; }
+    if(lbl) lbl.textContent=old; btn.disabled=false;
+    if(msg) msg.textContent='Could not submit: '+((ins.error&&ins.error.message)||'please try again.');
+  }; }
+
   { const g=$('googleBtn'); if(g) g.onclick = async ()=>{
     if(!sb) return;
     captureRef(); // persist ?ref before we leave for Google

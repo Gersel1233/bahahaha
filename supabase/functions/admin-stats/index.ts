@@ -62,7 +62,7 @@ Deno.serve(async (req) => {
     if (admins.length === 0 || !admins.includes((user.email ?? "").toLowerCase())) return json({ admin: false, error: "forbidden" }, 403);
 
     // ---------- Supabase (owned data) ----------
-    const [pc, rc, comms, pays, recRef, recComm, recPay] = await Promise.all([
+    const [pc, rc, comms, pays, recRef, recComm, recPay, pend] = await Promise.all([
       sb.from("partners").select("id", { count: "exact", head: true }),
       sb.from("referrals").select("id", { count: "exact", head: true }),
       sb.from("commissions").select("commission_cents,gross_cents,status,currency").limit(10000),
@@ -70,6 +70,8 @@ Deno.serve(async (req) => {
       sb.from("referrals").select("id,status,attributed_via,created_at,stripe_customer_id,partners(code)").order("created_at", { ascending: false }).limit(10),
       sb.from("commissions").select("commission_cents,gross_cents,rate,kind,status,currency,created_at").order("created_at", { ascending: false }).limit(10),
       sb.from("payouts").select("amount_cents,currency,status,stripe_transfer_id,created_at").order("created_at", { ascending: false }).limit(10),
+      // pending partner applications awaiting the owner's approval (vetting queue)
+      sb.from("partners").select("id,promo_channel,content_type,handle,created_at").eq("status", "pending").order("created_at", { ascending: true }).limit(100),
     ]);
 
     const C = comms.data ?? [];
@@ -137,6 +139,9 @@ Deno.serve(async (req) => {
         commissions: recComm.data ?? [],
         payouts: recPay.data ?? [],
       },
+
+      // -- new: pending partner applications (vetting queue for the admin card) --
+      pending_partners: pend.data ?? [],
     });
   } catch (e) {
     return json({ error: String((e as Error)?.message ?? e) }, 500);
