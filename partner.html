@@ -234,6 +234,7 @@
   .pb-table td{padding:11px 14px;border-top:1px solid var(--line)}
   .pb-table td.amt{color:var(--clay-d);font-weight:700}
   .pb-note{font-size:12.5px;color:var(--mut2);margin-top:10px;line-height:1.5}
+  .pb-code{font-family:ui-monospace,Menlo,monospace;font-weight:700;color:var(--clay-d);background:rgba(31,133,122,.10);padding:1px 6px;border-radius:6px;font-size:.92em;letter-spacing:.02em}
   .beats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px}
   @media(max-width:640px){.beats{grid-template-columns:1fr}}
   .beat{padding:16px;border-radius:14px;background:rgba(255,255,255,.5);border:1px solid var(--line)}
@@ -495,14 +496,14 @@
         <div class="beats">
           <div class="beat"><div class="num">1</div><b>Hook — first 3 seconds</b><p>Stop the scroll before they swipe. Tease the reveal, don't explain it.</p></div>
           <div class="beat"><div class="num">2</div><b>Your reaction</b><p>Film your genuine, unscripted reaction to your OWN reveal. Your face sells it, not a pitch.</p></div>
-          <div class="beat"><div class="num">3</div><b>Call to action</b><p>“Link in bio — 20% off with my code.”</p></div>
+          <div class="beat"><div class="num">3</div><b>Call to action</b><p>“Link in bio — code <span class="pb-code">YOURCODE</span> · 20% off.”</p></div>
         </div>
         <p class="small" style="font-weight:600;margin:20px 0 10px">4 hooks that stop the scroll</p>
         <div class="hooks">
-          <div class="hook"><q>“I uploaded 2 photos and this is me in 3 years…”</q><p>→ cut to your reveal → your honest reaction → “link in bio, 20% off with my code”</p></div>
-          <div class="hook"><q>“This is who I become if I keep going — and who I become if I don't.”</q><p>→ cut to your reveal → your honest reaction → “link in bio, 20% off with my code”</p></div>
-          <div class="hook"><q>“I wasn't ready to meet my future self.”</q><p>→ cut to your reveal → your honest reaction → “link in bio, 20% off with my code”</p></div>
-          <div class="hook"><q>“POV: you finally see the version of you you keep promising you'll become.”</q><p>→ cut to your reveal → your honest reaction → “link in bio, 20% off with my code”</p></div>
+          <div class="hook"><q>“I uploaded 2 photos and this is me in 3 years…”</q><p>→ cut to your reveal → your honest reaction → “link in bio, code <span class="pb-code">YOURCODE</span> · 20% off”</p></div>
+          <div class="hook"><q>“This is who I become if I keep going — and who I become if I don't.”</q><p>→ cut to your reveal → your honest reaction → “link in bio, code <span class="pb-code">YOURCODE</span> · 20% off”</p></div>
+          <div class="hook"><q>“I wasn't ready to meet my future self.”</q><p>→ cut to your reveal → your honest reaction → “link in bio, code <span class="pb-code">YOURCODE</span> · 20% off”</p></div>
+          <div class="hook"><q>“POV: you finally see the version of you you keep promising you'll become.”</q><p>→ cut to your reveal → your honest reaction → “link in bio, code <span class="pb-code">YOURCODE</span> · 20% off”</p></div>
         </div>
       </div>
 
@@ -538,7 +539,7 @@
         <p class="muted small" style="margin-bottom:14px">Four steps to your first payout.</p>
         <div class="pb-steps">
           <div class="pb-step"><div class="num">1</div><div class="txt"><b>Connect Stripe</b><p>So you can get paid — 30-day hold, then withdraw anytime. Use the Connect Stripe card on your dashboard.</p></div></div>
-          <div class="pb-step"><div class="num">2</div><div class="txt"><b>Grab your link + code</b><p>Copy them from your dashboard and drop them in your bio.</p></div><button class="jump" id="pbGrab">Dashboard →</button></div>
+          <div class="pb-step"><div class="num">2</div><div class="txt"><b>Grab your link + code</b><p>Copy them from your dashboard and drop them in your bio — your code is <span class="pb-code">YOURCODE</span>.</p></div><button class="jump" id="pbGrab">Dashboard →</button></div>
           <div class="pb-step"><div class="num">3</div><div class="txt"><b>Post your first reveal</b><p>Use one of the hooks above — react to your own future self.</p></div></div>
           <div class="pb-step"><div class="num">4</div><div class="txt"><b>Track earnings</b><p>Watch referrals and commission grow on your dashboard.</p></div><button class="jump" id="pbTrack">Dashboard →</button></div>
         </div>
@@ -687,6 +688,7 @@ else {
     if (!partner) return;
     $('link').textContent = `${PRODUCT_APP_URL}/?ref=${partner.code}`;
     $('codeTxt').textContent = partner.code;
+    document.querySelectorAll('.pb-code').forEach(el => el.textContent = partner.code);  // fill Playbook examples with the partner's real code (display-only)
     $('showLb').checked = !!partner.show_on_leaderboard;
     show('connectBanner', !partner.payout_enabled);
     show('connectedBadge', !!partner.payout_enabled);
