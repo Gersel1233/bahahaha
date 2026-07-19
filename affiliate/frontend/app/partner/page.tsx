@@ -11,6 +11,9 @@ import { useEffect, useState, useCallback } from "react";
 const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 const usd = (c: number) => "$" + (c / 100).toFixed(2);
 
+// Playbook look: FYON company register — warm paper, one spruce accent (#13635a), serif headers.
+const SERIF = { fontFamily: '"Newsreader","Iowan Old Style",Georgia,serif' };
+
 const TIERS = [
   { name: "Starter",  rate: 15, need: 0,       blurb: "Starting tier" },
   { name: "Bronze",   rate: 17, need: 10000,   blurb: "$100 in referral revenue" },
@@ -34,7 +37,7 @@ type Me = any;
 export default function PartnerPage() {
   const [me, setMe] = useState<Me | null>(null);
   const [board, setBoard] = useState<{ name: string; month_cents: number }[]>([]);
-  const [tab, setTab] = useState<"overview" | "links" | "referrals" | "earnings">("overview");
+  const [tab, setTab] = useState<"overview" | "playbook" | "links" | "referrals" | "earnings">("overview");
   const [copied, setCopied] = useState<string>("");
   const [busy, setBusy] = useState(false);
 
@@ -123,8 +126,8 @@ export default function PartnerPage() {
         )}
 
         {/* ---- tabs ---- */}
-        <nav className="grid grid-cols-4 rounded-2xl border border-black/5 bg-white p-1 text-sm">
-          {(["overview", "links", "referrals", "earnings"] as const).map(t => (
+        <nav className="grid grid-cols-5 rounded-2xl border border-black/5 bg-white p-1 text-sm">
+          {(["overview", "playbook", "links", "referrals", "earnings"] as const).map(t => (
             <button key={t} onClick={() => setTab(t)}
               className={`py-2.5 rounded-xl capitalize transition ${tab === t ? "bg-zinc-100 font-semibold" : "text-zinc-500 hover:text-zinc-800"}`}>{t}</button>
           ))}
@@ -193,6 +196,154 @@ export default function PartnerPage() {
           </>
         )}
 
+        {tab === "playbook" && (
+          <div className="space-y-5">
+
+            {/* intro */}
+            <section className="rounded-2xl bg-[#13635a] p-6 md:p-8 text-white">
+              <p className="text-xs tracking-[0.22em] text-[#8fc7bf]">YOUR PLAYBOOK</p>
+              <h2 className="mt-2 text-3xl md:text-4xl leading-tight" style={SERIF}>Turn your link into recurring income</h2>
+              <p className="mt-3 max-w-2xl text-[#cfe4e0]">You already have your link and code. Here's exactly what you earn, what to post, and the rules that keep you safe — everything a producing partner does.</p>
+            </section>
+
+            {/* 1 — what you earn */}
+            <PBSection title="What you earn" sub="Real recurring income — not a one-off bounty.">
+              <div className="grid gap-3 sm:grid-cols-2">
+                {[
+                  ["15%", "of every payment — the first month and every month they stay subscribed."],
+                  ["20% off", "for your audience's first month with your code. An easy reason to click."],
+                  ["15% → 30%", "your rate climbs with volume — you earn more on every active subscriber."],
+                  ["~$3.55/mo", "per active subscriber at the 15% starter rate (FYON Pro is $23.69/mo)."],
+                ].map(([big, small]) => (
+                  <div key={big} className="rounded-xl border border-[#13635a]/10 bg-white/60 p-4">
+                    <p className="text-2xl text-[#13635a]" style={SERIF}>{big}</p>
+                    <p className="mt-1 text-sm text-zinc-600">{small}</p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-5 overflow-hidden rounded-xl border border-[#13635a]/10">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="bg-[#13635a]/[0.06] text-left text-zinc-500">
+                      <th className="px-4 py-2.5 font-medium">Active members</th>
+                      <th className="px-4 py-2.5 font-medium">You earn / month</th>
+                      <th className="px-4 py-2.5 font-medium">You earn / year</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {[
+                      ["10", "$35.50", "$426"],
+                      ["25", "$88.75", "$1,065"],
+                      ["50", "$177.50", "$2,130"],
+                      ["100", "$355.00", "$4,260"],
+                    ].map(([m, mo, yr], i) => (
+                      <tr key={m} className={i % 2 ? "bg-white/40" : "bg-white/70"}>
+                        <td className="px-4 py-2.5 font-medium text-[#16181d]">{m}</td>
+                        <td className="px-4 py-2.5 font-semibold text-[#13635a]">{mo}</td>
+                        <td className="px-4 py-2.5 text-zinc-700">{yr}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <p className="mt-3 text-xs text-zinc-500">At the 15% starter rate — climb toward 30% and these roughly double. Paid via Stripe Connect: 30-day hold, then withdraw anytime.</p>
+            </PBSection>
+
+            {/* 2 — what to post */}
+            <PBSection title="What to post" sub="FYON's reveal sells itself — you just react to it.">
+              <p className="text-sm text-zinc-600">The reveal shows someone's realistic future self from 2 photos. That transformation is your hook. Every good video follows the same three beats:</p>
+              <div className="mt-4 grid gap-3 sm:grid-cols-3">
+                {[
+                  ["1", "Hook — first 3 seconds", "Stop the scroll before they swipe. Tease the reveal, don't explain it."],
+                  ["2", "Your reaction", "Film your genuine, unscripted reaction to your OWN reveal. Your face sells it, not a pitch."],
+                  ["3", "Call to action", "“Link in bio — 20% off with my code.”"],
+                ].map(([n, t, d]) => (
+                  <div key={n} className="rounded-xl border border-[#13635a]/10 bg-white/60 p-4">
+                    <div className="grid h-7 w-7 place-items-center rounded-full bg-[#13635a] text-sm font-semibold text-white">{n}</div>
+                    <p className="mt-2 font-semibold text-[#16181d]">{t}</p>
+                    <p className="mt-1 text-sm text-zinc-600">{d}</p>
+                  </div>
+                ))}
+              </div>
+
+              <p className="mt-6 mb-2 text-sm font-semibold text-[#16181d]">4 hooks that stop the scroll</p>
+              <div className="grid gap-3 sm:grid-cols-2">
+                {[
+                  "“I uploaded 2 photos and this is me in 3 years…”",
+                  "“This is who I become if I keep going — and who I become if I don't.”",
+                  "“I wasn't ready to meet my future self.”",
+                  "“POV: you finally see the version of you you keep promising you'll become.”",
+                ].map((h, i) => (
+                  <div key={i} className="rounded-xl border border-[#13635a]/10 bg-white/60 p-4">
+                    <p className="text-[#16181d]" style={SERIF}>{h}</p>
+                    <p className="mt-2 text-xs text-zinc-500">→ cut to your reveal → your honest reaction → “link in bio, 20% off with my code”</p>
+                  </div>
+                ))}
+              </div>
+            </PBSection>
+
+            {/* 3 — the rules */}
+            <PBSection title="The rules" sub="Keep it honest — it protects you, your audience, and the brand.">
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="rounded-xl border border-[#13635a]/20 bg-[#13635a]/[0.05] p-5">
+                  <p className="text-sm font-semibold tracking-wide text-[#13635a]">ALWAYS</p>
+                  <ul className="mt-3 space-y-2 text-sm text-zinc-700">
+                    {[
+                      "Use your own link and code.",
+                      "Disclose the partnership — #ad.",
+                      "Frame it as “become who you envisioned” — realistic, effort required.",
+                      "18+ audiences only.",
+                    ].map(x => (
+                      <li key={x} className="flex gap-2"><span className="font-semibold text-[#13635a]">✓</span><span>{x}</span></li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="rounded-xl border border-black/10 bg-white/60 p-5">
+                  <p className="text-sm font-semibold tracking-wide text-zinc-500">NEVER</p>
+                  <ul className="mt-3 space-y-2 text-sm text-zinc-700">
+                    {[
+                      "No income or results guarantees.",
+                      "No medical or surgical claims.",
+                      "No fake or edited results.",
+                      "No minors — ever.",
+                    ].map(x => (
+                      <li key={x} className="flex gap-2"><span className="text-zinc-400">✕</span><span>{x}</span></li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </PBSection>
+
+            {/* 4 — get started */}
+            <PBSection title="Get started" sub="Four steps to your first payout.">
+              <ol className="space-y-3">
+                {[
+                  ["Connect Stripe", "So you can get paid — 30-day hold, then withdraw anytime. Do it from the Overview tab.", ""],
+                  ["Grab your link + code", "Copy them from the Links tab and drop them in your bio.", "links"],
+                  ["Post your first reveal", "Use one of the hooks above — react to your own future self.", ""],
+                  ["Track earnings", "Watch referrals and commission grow here in your dashboard.", "earnings"],
+                ].map(([t, d, jump], i) => (
+                  <li key={t} className="flex items-start gap-3 rounded-xl border border-[#13635a]/10 bg-white/60 p-4">
+                    <div className="grid h-7 w-7 flex-none place-items-center rounded-full bg-[#13635a] text-sm font-semibold text-white">{i + 1}</div>
+                    <div className="flex-1">
+                      <p className="font-semibold text-[#16181d]">{t}</p>
+                      <p className="mt-0.5 text-sm text-zinc-600">{d}</p>
+                    </div>
+                    {jump && (
+                      <button onClick={() => setTab(jump as any)} className="mt-0.5 flex-none rounded-lg border border-[#13635a]/30 px-3 py-1.5 text-xs font-semibold text-[#13635a] transition hover:bg-[#13635a]/[0.06]">Open →</button>
+                    )}
+                  </li>
+                ))}
+              </ol>
+              {me?.coupon && (
+                <p className="mt-4 text-xs text-zinc-500">Your code: <span className="font-mono text-[#13635a]">{me.coupon}</span> · full link and coupon live in the Links tab.</p>
+              )}
+            </PBSection>
+
+          </div>
+        )}
+
         {tab === "links" && (
           <section className="rounded-2xl border border-black/5 bg-white p-6 space-y-3">
             <p className="font-semibold">Your links</p>
@@ -244,3 +395,14 @@ function Field({ label, value, onCopy }: any) {
   );
 }
 function Mini({ label, value }: any) { return <div className="rounded-xl bg-zinc-50 p-4"><p className="text-xs text-zinc-400">{label}</p><p className="text-2xl font-bold">{value}</p></div>; }
+
+// Playbook section shell — warm paper card, spruce-tinted border, serif heading.
+function PBSection({ title, sub, children }: any) {
+  return (
+    <section className="rounded-2xl border border-[#13635a]/10 bg-[#FBF8F1] p-6 md:p-7">
+      <h3 className="text-2xl md:text-[26px] text-[#16181d]" style={SERIF}>{title}</h3>
+      {sub && <p className="mt-1 text-sm text-zinc-500">{sub}</p>}
+      <div className="mt-5">{children}</div>
+    </section>
+  );
+}
