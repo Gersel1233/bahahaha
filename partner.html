@@ -283,6 +283,31 @@
   footer.site-footer .links{display:flex;gap:22px;font-size:13.5px;color:var(--mut)}
   footer.site-footer .links a:hover{color:var(--ink)}
   footer.site-footer .legal{font-size:12.5px;color:var(--mut2);margin-top:14px;text-align:center}
+
+  /* ============ MOBILE PASS (phones, ~≤600px) ============ */
+  @media(max-width:600px){
+    html,body{overflow-x:hidden}
+    /* top nav — keep it on one clean row, nothing cut off */
+    nav.site{top:8px}
+    nav.site .bar{gap:8px;padding:7px 10px 7px 14px}
+    .logo{font-size:16px;gap:7px}
+    .brand-mark{width:23px;height:23px}
+    .nav-cta{display:none}                 /* marketing CTA — redundant on the partner page; the hero carries CTAs */
+    /* comfortable tap targets (≥44px) */
+    .lg.sm{min-height:44px}
+    /* content breathing room + full-width cards */
+    .wrap{padding:80px 16px 24px!important}
+    .card{padding:20px}
+    .state-card{padding:26px 20px;margin-top:16px}
+    /* owner pending queue — stack each row so the buttons are big + tappable */
+    .pend-item{flex-direction:column;align-items:stretch;gap:10px}
+    .pend-actions{width:100%}
+    .pend-actions .lg{flex:1}
+    /* footer — stack so the links never crowd on a phone */
+    footer.site-footer{padding:28px 16px 40px}
+    footer.site-footer .in{flex-direction:column;align-items:flex-start;gap:12px}
+    footer.site-footer .links{flex-wrap:wrap;gap:12px 18px}
+  }
 </style>
 </head>
 <body>
@@ -295,7 +320,7 @@
     <a href="index.html#what">Why Fyon</a><a href="index.html#does">What it does</a><a href="index.html#approach">How it works</a><a href="index.html#principles">Principles</a><a href="partner.html?v=8" class="on">Partners</a>
   </div>
   <div style="display:flex;align-items:center;gap:10px">
-    <a class="lg sm" href="index.html#waitlist"><span class="lbl">Get early access</span></a>
+    <a class="lg sm nav-cta" href="index.html#waitlist"><span class="lbl">Get early access</span></a>
     <div class="acct hidden" id="acctWrap">
       <button class="lg ghost sm" id="acctBtn"><span class="lbl"><span id="who"></span><span class="chev">▾</span></span></button>
       <div class="acctmenu glass hidden" id="acctMenu">
@@ -413,8 +438,9 @@
     <div class="card state-card">
       <div class="state-ic" aria-hidden="true">🕓</div>
       <h2>Your application is under review</h2>
-      <p class="muted">Thanks for applying to the Fyon partner program. We personally review every partner to keep the community on-brand — you'll be notified the moment you're approved, and your link and 20%-off code will appear right here.</p>
-      <p class="muted small" id="pendMeta" style="margin-top:14px"></p>
+      <p class="muted">Thanks for applying! We review every partner personally to keep Fyon on-brand. You'll be approved or declined within 5–15 minutes — just refresh this page to see your link and code. Thanks for your patience 🙏</p>
+      <div style="margin-top:20px"><button class="lg primary" onclick="location.reload()"><span class="lbl">Check status →</span></button></div>
+      <p class="muted small" id="pendMeta" style="margin-top:16px"></p>
     </div>
   </section>
 
