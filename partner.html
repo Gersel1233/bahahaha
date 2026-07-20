@@ -4,6 +4,11 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Fyon by Lesreg — Partners</title>
+<link rel="manifest" href="manifest.webmanifest" />
+<meta name="theme-color" content="#166B62" />
+<link rel="apple-touch-icon" href="apple-touch-icon.png" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-title" content="Partners" />
 <link rel="preconnect" href="https://esm.sh" crossorigin />
 <link rel="preconnect" href="https://vvwevqhdwumnethujxhy.supabase.co" crossorigin />
 <link rel="stylesheet" href="liquid-glass.css?v=1" />
@@ -590,10 +595,14 @@
 
     <!-- ADMIN · launch checks (only shown to ADMIN_EMAILS) -->
     <div class="card hidden" id="adminCard" style="margin-top:16px;border:1px dashed rgba(31,133,122,.45)">
-      <div class="row" style="justify-content:space-between;align-items:center">
+      <div class="row" style="justify-content:space-between;align-items:center;gap:8px">
         <h3 style="font-size:18px">Admin · launch checks <span id="adminMode" class="pill" style="background:#fef3c7;color:#b45309;display:none">TEST MODE</span></h3>
-        <button class="lg ghost sm" id="adminRefresh"><span class="lbl">Refresh</span></button>
+        <div class="row" style="gap:8px">
+          <button class="lg ghost sm" id="pushBtn"><span class="lbl">🔔 Enable alerts</span></button>
+          <button class="lg ghost sm" id="adminRefresh"><span class="lbl">Refresh</span></button>
+        </div>
       </div>
+      <div id="pushMsg" class="muted small" style="margin-top:8px"></div>
       <div class="grid4" style="margin-top:14px">
         <div><div class="muted small">Stripe available</div><div class="stat" id="aStripe" style="font-size:26px">—</div><div class="muted small" id="aStripeP"></div></div>
         <div><div class="muted small">Pending commissions</div><div class="stat" id="aPending" style="font-size:26px;color:var(--mut)">—</div></div>
@@ -760,6 +769,16 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 //   prod: https://app.lesreg.com   (or  https://fyon.ai)
 const PRODUCT_APP_URL = "https://fyon.ai";
 const FN = SUPABASE_URL + "/functions/v1";
+// Web Push — VAPID PUBLIC key (safe to ship; the matching private key is a server secret).
+const VAPID_PUBLIC = "BPl3uXX-UmKN2dc0RvxD4ExGF0mJZOJI4ttgHf5wELJHVx3bKpeOM35XMnQFJ1YZOYkA_qYFbXhp8OJDHIiAxMU";
+// Register the service worker for everyone → enables "Add to Home Screen" (PWA). Harmless
+// for regular partners: only the ADMIN ever subscribes to push (button lives in the admin card).
+let swReg = null;
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').then(r=>{ swReg=r; }).catch(()=>{});
+  navigator.serviceWorker.addEventListener('message', (e)=>{ if(e.data && e.data.view==='approvals'){ const c=document.getElementById('adminCard'); if(c && !c.classList.contains('hidden')) c.scrollIntoView({behavior:'smooth',block:'start'}); } });
+}
+function urlB64ToU8(s){ const pad='='.repeat((4-s.length%4)%4); const b=(s+pad).replace(/-/g,'+').replace(/_/g,'/'); const raw=atob(b); const u=new Uint8Array(raw.length); for(let i=0;i<raw.length;i++) u[i]=raw.charCodeAt(i); return u; }
 // =============================================================================
 
 const TIERS = [
@@ -869,7 +888,41 @@ else {
       { const m=$('adminMode'); if(m) m.style.display = d.test_mode ? '' : 'none'; }
       renderPending(d.pending_partners || [], session);
       show('adminCard',true);
+      wirePush(session);          // admin-only push: enable-alerts button + notification deep-link
     }catch(e){ show('adminCard',false); }
+  }
+
+  // ---- admin-only Web Push: installable-PWA alerts on new applications ----
+  function wirePush(session){
+    const btn=$('pushBtn'), msg=$('pushMsg'); if(!btn) return;
+    const supported = ('serviceWorker' in navigator) && ('PushManager' in window) && ('Notification' in window);
+    if(!supported){ btn.disabled=true; if(msg) msg.textContent='This browser can’t do push — on iPhone use the installed home-screen app (iOS 16.4+).'; }
+    else if(Notification.permission==='granted'){ const l=btn.querySelector('.lbl'); if(l) l.textContent='🔔 Alerts on'; }
+    btn.onclick=()=>enablePush(session);
+    // notification tap (?view=approvals) → jump straight to the pending queue
+    if(new URLSearchParams(location.search).get('view')==='approvals'){
+      setTimeout(()=>{ const c=$('adminCard'); if(c && !c.classList.contains('hidden')) c.scrollIntoView({behavior:'smooth',block:'start'}); }, 400);
+    }
+  }
+  async function enablePush(session){
+    const msg=$('pushMsg');
+    try{
+      if(!('serviceWorker' in navigator) || !('PushManager' in window)){ if(msg) msg.textContent='Push not supported here.'; return; }
+      const standalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone===true;
+      if(/iP(hone|ad|od)/.test(navigator.userAgent) && !standalone){ if(msg) msg.textContent='On iPhone: Share → Add to Home Screen, open that app, then tap Enable alerts.'; return; }
+      const perm = await Notification.requestPermission();
+      if(perm!=='granted'){ if(msg) msg.textContent='Notifications are blocked — allow them to get alerts.'; return; }
+      const reg = swReg || await navigator.serviceWorker.ready;
+      let sub = await reg.pushManager.getSubscription();
+      if(!sub) sub = await reg.pushManager.subscribe({ userVisibleOnly:true, applicationServerKey: urlB64ToU8(VAPID_PUBLIC) });
+      const j = sub.toJSON();
+      const { error } = await sb.from('push_subscriptions').upsert(
+        { user_id: session.user.id, endpoint: sub.endpoint, p256dh: j.keys.p256dh, auth: j.keys.auth, ua: navigator.userAgent },
+        { onConflict: 'endpoint' });
+      if(error){ if(msg) msg.textContent='Could not save subscription: '+error.message; return; }
+      const l=$('pushBtn').querySelector('.lbl'); if(l) l.textContent='🔔 Alerts on';
+      if(msg) msg.textContent='✓ Alerts on for this device. Submit a test application to check.';
+    }catch(e){ if(msg) msg.textContent='Enable failed: '+(e.message||e); }
   }
 
   // ---- owner: pending-application queue (approve/reject via service-role fn) ----
