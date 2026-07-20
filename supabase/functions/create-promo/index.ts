@@ -1,5 +1,5 @@
 // Supabase Edge Function: create-promo
-// Creates a Stripe promotion code (the partner's 20%-off coupon code) on a
+// Creates a Stripe promotion code (the partner's referral coupon code; the discount % lives ON the shared coupon) on a
 // shared coupon, so the coupon path ALSO attributes sales. Called once at enroll.
 // Deploy:  supabase functions deploy create-promo
 // Secrets: STRIPE_SECRET_KEY, FYON_AFFILIATE_COUPON_ID
