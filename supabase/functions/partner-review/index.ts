@@ -18,6 +18,35 @@ const json = (b: unknown, s = 200) =>
 
 const sb = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
 
+const RANDOM = () => Array.from({ length: 10 }, () => "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"[Math.floor(Math.random() * 36)]).join("");
+
+// Normalize a social handle to FYON's code charset ^[a-z0-9_-]{3,64}$: strip a
+// leading @, lowercase, REPLACE runs of illegal chars (dots, spaces, …) with a
+// single "-", collapse repeats, trim leading/trailing -/_, cap at 64. "" if unusable.
+// e.g. @m.gersel → m-gersel · @my.name_123 → my-name_123
+function slugFromHandle(h: string): string {
+  let s = (h ?? "").trim().replace(/^@+/, "").toLowerCase();
+  s = s.replace(/[^a-z0-9_-]+/g, "-").replace(/-{2,}/g, "-");  // illegal run → a single dash
+  s = s.replace(/^[-_]+|[-_]+$/g, "").slice(0, 64).replace(/[-_]+$/g, "");
+  return s;
+}
+
+// Derive a UNIQUE, case-insensitive code from the handle. Appends -2, -3… on a
+// collision (checked against every existing code, lowercased). Falls back to a
+// random code if the handle is empty/too-short/unusable or no slot is free.
+async function deriveCode(handle: string): Promise<string> {
+  const base = slugFromHandle(handle);
+  if (base.length < 3) return RANDOM();
+  const { data: rows } = await sb.from("partners").select("code");
+  const taken = new Set((rows ?? []).map((r: { code?: string }) => (r.code ?? "").toLowerCase()).filter(Boolean));
+  for (let n = 1; n <= 200; n++) {
+    const suffix = n === 1 ? "" : `-${n}`;
+    const cand = base.slice(0, 64 - suffix.length) + suffix;
+    if (!taken.has(cand.toLowerCase())) return cand;
+  }
+  return RANDOM();
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: cors });
   try {
@@ -34,24 +63,29 @@ Deno.serve(async (req) => {
 
     const patch: Record<string, unknown> = { status: action === "approve" ? "approved" : "rejected" };
 
-    // On APPROVAL, assign the referral code here — it stayed null while pending, so a
-    // pending applicant never had a usable code. Re-approving keeps an existing code
-    // (never rotate a partner's live link). Reject leaves the code null.
+    // On APPROVAL, assign the referral code — DERIVED from the applicant's handle
+    // (e.g. @m.gersel → m-gersel), unique case-insensitively. It stayed null while
+    // pending. NEVER rotate an existing code (re-approve keeps it, so a live link
+    // never breaks). Reject leaves the code null.
     if (action === "approve") {
-      const { data: cur } = await sb.from("partners").select("code").eq("id", partner_id).maybeSingle();
+      const { data: cur } = await sb.from("partners").select("code,handle").eq("id", partner_id).maybeSingle();
       if (!cur) return json({ error: "partner not found" }, 404);
       if (!cur.code) {
-        const code = Array.from({ length: 10 }, () => "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"[Math.floor(Math.random() * 36)]).join("");
+        const code = await deriveCode(cur.handle);
         patch.code = code;
         patch.coupon_code = code;
       }
     }
 
-    const { data, error } = await sb.from("partners")
-      .update(patch)
-      .eq("id", partner_id)
-      .select("id,status,code")
-      .maybeSingle();
+    // Race-safe: if the lower(code) unique index rejects our pick (two approvals of
+    // the same handle at the same instant), fall back to a guaranteed-unique random
+    // code so the owner's Approve tap NEVER fails.
+    const doUpdate = () => sb.from("partners").update(patch).eq("id", partner_id).select("id,status,code").maybeSingle();
+    let { data, error } = await doUpdate();
+    if (error && (error as { code?: string }).code === "23505" && action === "approve") {
+      const rc = RANDOM(); patch.code = rc; patch.coupon_code = rc;
+      ({ data, error } = await doUpdate());
+    }
     if (error) return json({ error: error.message }, 500);
     if (!data) return json({ error: "partner not found" }, 404);
     return json({ ok: true, id: data.id, status: data.status });

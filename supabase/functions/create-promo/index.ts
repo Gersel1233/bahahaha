@@ -23,7 +23,13 @@ Deno.serve(async (req) => {
   const { data: p } = await sb.from("partners").select("*").eq("user_id", user.id).maybeSingle();
   if (!p || p.stripe_promo_code_id) return new Response(JSON.stringify({ ok: true }), { headers: { ...cors, "content-type": "application/json" } });
 
-  const promo = await stripe.promotionCodes.create({ coupon: COUPON, code: p.code, metadata: { fyon_partner: p.id } });
+  // Stripe promotion codes allow only [A-Za-z0-9] (case-insensitive, no - or _), while our
+  // referral codes may now contain - and _ (handle-derived, e.g. m-gersel). Sanitize to a
+  // Stripe-safe form so activating this path never 400s.  NOTE: for a code containing -/_ the
+  // customer-facing coupon then DIFFERS from the referral link (m-gersel → MGERSEL) — when you
+  // turn this path on, surface the real coupon (stripe_promo_code) in the dashboard.
+  const stripeCode = ((p.code || "").toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 40)) || p.id.replace(/-/g, "").slice(0, 12).toUpperCase();
+  const promo = await stripe.promotionCodes.create({ coupon: COUPON, code: stripeCode, metadata: { fyon_partner: p.id } });
   await sb.from("partners").update({ stripe_promo_code_id: promo.id }).eq("id", p.id);
   return new Response(JSON.stringify({ ok: true, id: promo.id }), { headers: { ...cors, "content-type": "application/json" } });
 });
