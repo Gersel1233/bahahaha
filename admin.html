@@ -129,12 +129,14 @@
   <section id="signin" class="card gate hidden" style="padding:30px">
     <div class="eyebrow" style="margin-bottom:12px">Fyon · Admin</div>
     <h1 style="font-size:24px">Sign in</h1>
-    <p class="muted small" style="margin:8px 0 4px">Admin access only. Continue with Google or an email link.</p>
+    <p class="muted small" style="margin:8px 0 4px">Admin access only. Continue with Google or email + password.</p>
     <button class="lg ghost" id="googleBtn" style="width:100%;margin-top:14px"><span class="lbl"><svg width="17" height="17" viewBox="0 0 48 48" aria-hidden="true" style="vertical-align:-3px"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.6l6.7-6.7C35.6 2.6 30.1 0 24 0 14.6 0 6.4 5.4 2.5 13.3l7.8 6.1C12.2 13.2 17.6 9.5 24 9.5z"/><path fill="#4285F4" d="M46.1 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.4c-.5 2.9-2.1 5.3-4.6 7l7.1 5.5C43.4 37.5 46.1 31.6 46.1 24.5z"/><path fill="#FBBC05" d="M10.3 28.6c-.5-1.4-.8-2.9-.8-4.6s.3-3.2.8-4.6l-7.8-6.1C.9 16.5 0 20.1 0 24s.9 7.5 2.5 10.7l7.8-6.1z"/><path fill="#34A853" d="M24 48c6.1 0 11.3-2 15-5.5l-7.1-5.5c-2 1.3-4.6 2.1-7.9 2.1-6.4 0-11.8-3.7-13.7-9.4l-7.8 6.1C6.4 42.6 14.6 48 24 48z"/></svg> Continue with Google</span></button>
-    <div class="signup-or"><span>or</span></div>
-    <div class="row" style="flex-wrap:nowrap">
-      <input id="email" type="email" placeholder="you@email.com" />
-      <button class="lg primary" id="sendlink"><span class="lbl">Send link</span></button>
+    <div class="signup-or"><span>or with email</span></div>
+    <input id="email" type="email" placeholder="you@email.com" autocomplete="email" />
+    <input id="pw" type="password" placeholder="Password (min 6 characters)" autocomplete="current-password" style="margin-top:10px" />
+    <div class="row" style="flex-wrap:nowrap;margin-top:12px">
+      <button class="lg primary" id="pwIn" style="flex:1"><span class="lbl">Sign in</span></button>
+      <button class="lg ghost" id="pwUp" style="flex:1"><span class="lbl">Create account</span></button>
     </div>
     <p id="authmsg" class="small muted" style="margin-top:12px"></p>
   </section>
@@ -307,13 +309,22 @@ function fillPay(rows, cur){
 // events
 $('googleBtn').onclick = async ()=>{
   if(!sb) return;
-  const { error } = await sb.auth.signInWithOAuth({ provider:'google', options:{ redirectTo: window.location.origin + window.location.pathname } });
+  const { error } = await sb.auth.signInWithOAuth({ provider:'google', options:{ redirectTo: window.location.origin + window.location.pathname, queryParams: { prompt: 'select_account' } } });
   if(error) $('authmsg').textContent = error.message;
 };
-$('sendlink').onclick = async ()=>{
-  const email=$('email').value.trim(); if(!email||!sb) return;
-  const { error } = await sb.auth.signInWithOtp({ email, options:{ emailRedirectTo: location.href } });
-  $('authmsg').textContent = error ? error.message : "Check your email for the sign-in link.";
+$('pwIn').onclick = async ()=>{
+  const email=$('email').value.trim(), pw=$('pw')?.value||''; if(!email||!pw||!sb){ $('authmsg').textContent='Enter your email and password.'; return; }
+  const { error } = await sb.auth.signInWithPassword({ email, password: pw });
+  $('authmsg').textContent = error ? error.message : '';   // onAuthStateChange → boot() takes over
+};
+$('pwUp').onclick = async ()=>{
+  const email=$('email').value.trim(), pw=$('pw')?.value||''; if(!email||!pw||!sb){ $('authmsg').textContent='Enter your email and a password.'; return; }
+  if(pw.length<6){ $('authmsg').textContent='Password must be at least 6 characters.'; return; }
+  const { data, error } = await sb.auth.signUp({ email, password: pw });
+  if(error){ $('authmsg').textContent = error.message; return; }
+  if(data.session){ $('authmsg').textContent=''; return; }
+  const { error: e2 } = await sb.auth.signInWithPassword({ email, password: pw });
+  $('authmsg').textContent = e2 ? 'Account created — check your email to confirm, then sign in.' : '';
 };
 $('refresh').onclick = ()=>{ toast('Refreshing…'); boot(); };
 const doSignout = async ()=>{ if(sb) await sb.auth.signOut(); location.reload(); };
