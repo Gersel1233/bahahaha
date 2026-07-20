@@ -1,0 +1,11 @@
+{
+  "_howto": "Creator Library manifest. Add items to the arrays below, then commit + push (the partner page fetches this file — no code changes needed). Schemas — videos: {title, desc, url, thumb, added}. downloads: {title, desc, url, type, size, added}. copy: {group, title, text, added} where group is one of hooks|captions|ctas|scripts. 'added' is a YYYY-MM-DD date and drives the NEW badge for 14 days. Delete the examples in _examples and paste real items into videos/downloads/copy.",
+  "_examples": {
+    "videos": [{ "title": "Reveal reaction — TikTok", "desc": "45s, hook in first 2s", "url": "https://www.youtube.com/watch?v=XXXXXXXX", "thumb": "https://img.youtube.com/vi/XXXXXXXX/hqdefault.jpg", "added": "2026-07-20" }],
+    "downloads": [{ "title": "B-roll pack — city mornings", "desc": "6 clips, 4K, no watermark", "url": "https://.../broll-city.zip", "type": "ZIP", "size": "180 MB", "added": "2026-07-20" }],
+    "copy": [{ "group": "hooks", "text": "I uploaded 2 photos and this is me in 3 years…", "added": "2026-07-20" }]
+  },
+  "videos": [],
+  "downloads": [],
+  "copy": []
+}
