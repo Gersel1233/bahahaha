@@ -2,7 +2,7 @@
 // Fired by a Database Webhook on INSERT to `partners`. When a new APPLICATION
 // lands (status='pending'), it Web-Pushes every stored admin subscription (phone
 // + laptop) so the owner is notified instantly — even with the app closed.
-// Money logic untouched: read-only on partners, read/prune on push_subscriptions.
+// Money logic untouched: read-only on partners, read/prune on partner_push_subscriptions.
 //
 // Deploy:  supabase functions deploy send-push --no-verify-jwt
 // Secrets: SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, VAPID_PUBLIC_KEY,
@@ -44,7 +44,7 @@ Deno.serve(async (req) => {
       tag: "partner-application",
     });
 
-    const { data: subs } = await sb.from("push_subscriptions").select("endpoint,p256dh,auth");
+    const { data: subs } = await sb.from("partner_push_subscriptions").select("endpoint,p256dh,auth");
     let sent = 0, pruned = 0;
     for (const s of subs ?? []) {
       try {
@@ -52,7 +52,7 @@ Deno.serve(async (req) => {
         sent++;
       } catch (e: any) {
         // 404/410 → the browser dropped this subscription; clean it up.
-        if (e?.statusCode === 404 || e?.statusCode === 410) { await sb.from("push_subscriptions").delete().eq("endpoint", s.endpoint); pruned++; }
+        if (e?.statusCode === 404 || e?.statusCode === 410) { await sb.from("partner_push_subscriptions").delete().eq("endpoint", s.endpoint); pruned++; }
       }
     }
     return json({ ok: true, sent, pruned });

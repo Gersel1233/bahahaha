@@ -10,7 +10,7 @@
 
 create extension if not exists pgcrypto;
 
-create table if not exists push_subscriptions (
+create table if not exists partner_push_subscriptions (
   id         uuid primary key default gen_random_uuid(),
   user_id    text not null,
   endpoint   text unique not null,        -- the browser push endpoint (one per device)
@@ -20,17 +20,17 @@ create table if not exists push_subscriptions (
   created_at timestamptz not null default now()
 );
 
-alter table push_subscriptions enable row level security;
+alter table partner_push_subscriptions enable row level security;
 
 -- Table privileges (RLS still restricts WHICH rows — see the policy below).
-grant select, insert, update, delete on push_subscriptions to authenticated;
+grant select, insert, update, delete on partner_push_subscriptions to authenticated;
 
 -- ADMIN-ONLY at the data layer: only mikkelgersel16@gmail.com's JWT may touch this
 -- table. Regular partners get nothing. The send-push Edge Function uses the service
 -- role, which bypasses RLS, so it can still read every subscription to fan out.
 do $$ begin
-  if not exists (select 1 from pg_policies where tablename='push_subscriptions' and policyname='push_admin_only') then
-    create policy push_admin_only on push_subscriptions
+  if not exists (select 1 from pg_policies where tablename='partner_push_subscriptions' and policyname='push_admin_only') then
+    create policy push_admin_only on partner_push_subscriptions
       for all
       using      ((auth.jwt() ->> 'email') = 'mikkelgersel16@gmail.com')
       with check ((auth.jwt() ->> 'email') = 'mikkelgersel16@gmail.com');
