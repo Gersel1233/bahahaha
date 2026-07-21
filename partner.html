@@ -401,9 +401,9 @@
         <a class="lg ghost" href="#signupbox"><span class="lbl">Already a partner? Sign in</span></a>
       </div>
       <div class="mathrow">
-        <div class="math glass"><b>10</b><span>active referrals</span><em>≈ $43 / mo</em></div>
-        <div class="math glass"><b>50</b><span>active referrals</span><em>≈ $217 / mo</em></div>
-        <div class="math glass"><b>200</b><span>active referrals</span><em>$870–1,700 / mo</em></div>
+        <div class="math glass"><b>10</b><span>active referrals</span><em>≈ $37 / mo</em></div>
+        <div class="math glass"><b>50</b><span>active referrals</span><em>≈ $187 / mo</em></div>
+        <div class="math glass"><b>200</b><span>active referrals</span><em>$750–1,500 / mo</em></div>
       </div>
       <p class="mathnote">Real math on Fyon Pro at the 15% starter rate — your rate climbs to 30% as you grow. And it repeats every month, not once.</p>
     </div>
@@ -643,20 +643,21 @@
       <!-- 1 · what you earn -->
       <div class="card">
         <h3 style="font-size:20px;margin-bottom:4px">What you earn</h3>
-        <p class="muted small" style="margin-bottom:14px">Real recurring income — not a one-off bounty.</p>
+        <p class="muted small" style="margin-bottom:12px">Real recurring income — not a one-off bounty.</p>
+        <p class="small" style="color:var(--mut);line-height:1.6;margin-bottom:14px">Fyon's <b>$9.99 unlock</b> is the low-friction hook that pulls people in — then you earn your rate on the <b>Pro subscription ($24.99/mo)</b> it converts into, <b>recurring every month they stay</b>. Your commission is on Pro, so the real money builds as your subscribers add up.</p>
         <div class="pb-grid">
-          <div class="pb-tile"><b>15%</b><p>of every payment — the first month and every month they stay subscribed.</p></div>
+          <div class="pb-tile"><b>15%</b><p>of every Pro payment — the first month and every month they stay subscribed.</p></div>
           <div class="pb-tile"><b>10% off</b><p>for your audience's first month with your code. An easy reason to click.</p></div>
           <div class="pb-tile"><b>15% → 30%</b><p>your rate climbs with volume — you earn more on every active subscriber.</p></div>
-          <div class="pb-tile"><b>~$3.55/mo</b><p>per active subscriber at the 15% starter rate (Fyon Pro is $23.69/mo).</p></div>
+          <div class="pb-tile"><b>~$3.75/mo</b><p>per active subscriber at the 15% starter rate (Fyon Pro is $24.99/mo).</p></div>
         </div>
         <table class="pb-table">
           <thead><tr><th>Active members</th><th>You earn / month</th><th>You earn / year</th></tr></thead>
           <tbody>
-            <tr><td>10</td><td class="amt">$35.50</td><td>$426</td></tr>
-            <tr><td>25</td><td class="amt">$88.75</td><td>$1,065</td></tr>
-            <tr><td>50</td><td class="amt">$177.50</td><td>$2,130</td></tr>
-            <tr><td>100</td><td class="amt">$355.00</td><td>$4,260</td></tr>
+            <tr><td>10</td><td class="amt">$37.50</td><td>$450</td></tr>
+            <tr><td>25</td><td class="amt">$93.75</td><td>$1,125</td></tr>
+            <tr><td>50</td><td class="amt">$187.50</td><td>$2,250</td></tr>
+            <tr><td>100</td><td class="amt">$375.00</td><td>$4,500</td></tr>
           </tbody>
         </table>
         <p class="pb-note">At the 15% starter rate — climb toward 30% and these roughly double. Paid via Stripe Connect: 30-day hold, then withdraw anytime.</p>
@@ -904,12 +905,31 @@ else {
     const btn=$('pushBtn'), msg=$('pushMsg'); if(!btn) return;
     const supported = ('serviceWorker' in navigator) && ('PushManager' in window) && ('Notification' in window);
     if(!supported){ btn.disabled=true; if(msg) msg.textContent='This browser can’t do push — on iPhone use the installed home-screen app (iOS 16.4+).'; }
-    else if(Notification.permission==='granted'){ const l=btn.querySelector('.lbl'); if(l) l.textContent='🔔 Alerts on'; }
+    else if(Notification.permission==='granted'){
+      const l=btn.querySelector('.lbl'); if(l) l.textContent='🔔 Alerts on';
+      // AUTO RE-ARM (permission already granted → no prompt): silently refresh this device's
+      // subscription in the DB each load, so alerts stay live after a reinstall / rotation.
+      // Guarded — a failure only reverts the label, it can never block the dashboard.
+      savePushSub(session).catch(()=>{ if(l) l.textContent='🔔 Enable alerts'; if(msg) msg.textContent='Alerts need re-enabling on this device — tap “Enable alerts”.'; });
+    }
     btn.onclick=()=>enablePush(session);
     // notification tap (?view=approvals) → jump straight to the pending queue
     if(new URLSearchParams(location.search).get('view')==='approvals'){
       setTimeout(()=>{ const c=$('adminCard'); if(c && !c.classList.contains('hidden')) c.scrollIntoView({behavior:'smooth',block:'start'}); }, 400);
     }
+  }
+  // Core: get/create this device's push subscription and save it (idempotent upsert).
+  // No permission prompt — callers only reach here once permission is granted.
+  async function savePushSub(session){
+    const reg = swReg || await navigator.serviceWorker.ready;
+    let sub = await reg.pushManager.getSubscription();
+    if(!sub) sub = await reg.pushManager.subscribe({ userVisibleOnly:true, applicationServerKey: urlB64ToU8(VAPID_PUBLIC) });
+    const j = sub.toJSON();
+    const { error } = await sb.from('partner_push_subscriptions').upsert(
+      { user_id: session.user.id, endpoint: sub.endpoint, p256dh: j.keys.p256dh, auth: j.keys.auth, ua: navigator.userAgent },
+      { onConflict: 'endpoint' });
+    if(error) throw new Error(error.message);
+    return sub;
   }
   async function enablePush(session){
     const msg=$('pushMsg');
@@ -919,14 +939,7 @@ else {
       if(/iP(hone|ad|od)/.test(navigator.userAgent) && !standalone){ if(msg) msg.textContent='On iPhone: Share → Add to Home Screen, open that app, then tap Enable alerts.'; return; }
       const perm = await Notification.requestPermission();
       if(perm!=='granted'){ if(msg) msg.textContent='Notifications are blocked — allow them to get alerts.'; return; }
-      const reg = swReg || await navigator.serviceWorker.ready;
-      let sub = await reg.pushManager.getSubscription();
-      if(!sub) sub = await reg.pushManager.subscribe({ userVisibleOnly:true, applicationServerKey: urlB64ToU8(VAPID_PUBLIC) });
-      const j = sub.toJSON();
-      const { error } = await sb.from('partner_push_subscriptions').upsert(
-        { user_id: session.user.id, endpoint: sub.endpoint, p256dh: j.keys.p256dh, auth: j.keys.auth, ua: navigator.userAgent },
-        { onConflict: 'endpoint' });
-      if(error){ if(msg) msg.textContent='Could not save subscription: '+error.message; return; }
+      await savePushSub(session);
       const l=$('pushBtn').querySelector('.lbl'); if(l) l.textContent='🔔 Alerts on';
       if(msg) msg.textContent='✓ Alerts on for this device. Submit a test application to check.';
     }catch(e){ if(msg) msg.textContent='Enable failed: '+(e.message||e); }
