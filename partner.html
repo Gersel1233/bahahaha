@@ -373,6 +373,38 @@
   .lib-rec-thumb img{width:100%;height:100%;object-fit:cover;display:block}
   .lib-editnote{margin-top:18px;font-size:14px;color:var(--ink2);line-height:1.6;
     background:rgba(31,133,122,.07);border:1px solid rgba(31,133,122,.22);border-left:3px solid var(--clay);border-radius:12px;padding:12px 14px}
+
+  /* ── partner application redesign ─────────────────────────────────────── */
+  .ap-card{max-width:680px;margin:8px auto 0;padding:28px}
+  .ap-sec{padding:22px 0;border-top:1px solid var(--line)}
+  .ap-sec:first-of-type{border-top:none;padding-top:0}
+  .ap-eyebrow{display:flex;align-items:center;gap:10px;font-size:11.5px;letter-spacing:.14em;
+    text-transform:uppercase;font-weight:700;color:var(--mut);margin-bottom:16px}
+  .ap-num{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;
+    border-radius:999px;background:rgba(31,133,122,.1);border:1px solid rgba(31,133,122,.28);
+    color:var(--clay-d);font-size:12px;letter-spacing:0;font-variant-numeric:tabular-nums}
+  .ap-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .ap-grid .apply-field{margin-bottom:14px}
+  .ap-opt{font-weight:500;color:var(--mut2);font-size:12px;margin-left:4px}
+  .rgroup{padding:15px 18px;border-radius:14px;background:rgba(255,255,255,.5);
+    border:1px solid var(--line);margin-bottom:12px}
+  .rgroup h4{font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+    font-family:var(--sans);color:var(--clay-d);margin-bottom:9px}
+  .rgroup ul{margin:0;padding:0}
+  .rgroup li{list-style:none;display:flex;gap:10px;font-size:14px;color:var(--ink2);
+    padding:5px 0;line-height:1.5}
+  .rgroup .mk{flex:none;font-weight:700;width:16px;text-align:center}
+  .rgroup .mk.y{color:var(--clay)} .rgroup .mk.n{color:var(--mut2)}
+  .ap-consequence{margin:14px 2px 0;font-size:13px;color:var(--mut);line-height:1.55}
+  .ap-accept{margin-top:18px;padding:14px 16px;border-radius:14px;
+    background:rgba(31,133,122,.06);border:1px solid rgba(31,133,122,.22)}
+  .ap-accept input{accent-color:var(--clay)}
+  .ap-actions{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:18px}
+  @media(max-width:640px){
+    .ap-card{padding:20px}
+    .ap-grid{grid-template-columns:1fr;gap:0}
+    .ap-actions{align-items:flex-start;flex-direction:column;gap:10px}
+  }
 </style>
 </head>
 <body>
@@ -460,47 +492,80 @@
     <div class="phero" style="padding-bottom:6px">
       <div class="eyebrow">Fyon Partners</div>
       <h1 style="font-size:clamp(28px,4.6vw,44px)">Apply to become a partner</h1>
-      <p class="lead">We hand-review every partner so Fyon is represented well. Tell us where you create — you'll get your link and 10%-off code the moment you're approved.</p>
+      <p class="lead">Every partner is reviewed personally — Fyon only works if it's represented honestly. Tell us where you create; the moment you're approved, your link and 10%-off code are live.</p>
     </div>
-    <div class="card" style="max-width:640px;margin:8px auto 0">
-      <div class="apply-field">
-        <label for="apPlatform">Which platform will you promote Fyon on?</label>
-        <select id="apPlatform">
-          <option value="">Select…</option>
-          <option>TikTok</option><option>Instagram</option><option>YouTube</option><option>Other</option>
-        </select>
-      </div>
-      <div class="apply-field">
-        <label for="apContent">What do you create?</label>
-        <input id="apContent" type="text" placeholder="e.g. fitness, beauty, lifestyle, self-improvement…" />
-      </div>
-      <div class="apply-field">
-        <label for="apHandle">Your username / handle on that platform</label>
-        <input id="apHandle" type="text" placeholder="@yourhandle" />
-      </div>
+    <div class="card ap-card">
 
-      <div class="apply-field">
-        <label>Partner guidelines</label>
-        <p class="muted small" style="margin:-2px 0 10px">These keep you and Fyon safe — you'll follow them in every post.</p>
-        <div class="rules">
-          <div class="rule do"><h4>Always</h4><ul>
-            <li><span class="mk">✓</span><span>Use your own link and code.</span></li>
-            <li><span class="mk">✓</span><span>Disclose the partnership — #ad.</span></li>
-            <li><span class="mk">✓</span><span>Frame it as “become who you envisioned” — realistic, effort required.</span></li>
-            <li><span class="mk">✓</span><span>18+ audiences only.</span></li>
-          </ul></div>
-          <div class="rule dont"><h4>Never</h4><ul>
-            <li><span class="mk">✕</span><span>No income or results guarantees.</span></li>
-            <li><span class="mk">✕</span><span>No medical or surgical claims.</span></li>
-            <li><span class="mk">✕</span><span>No fake or edited results.</span></li>
-            <li><span class="mk">✕</span><span>No minors — ever.</span></li>
-          </ul></div>
+      <div class="ap-sec">
+        <div class="ap-eyebrow"><span class="ap-num">01</span> Where you create</div>
+        <div class="ap-grid">
+          <div class="apply-field">
+            <label for="apPlatform">Platform</label>
+            <select id="apPlatform">
+              <option value="">Select…</option>
+              <option>TikTok</option><option>Instagram</option><option>YouTube</option><option>X (Twitter)</option><option>Other</option>
+            </select>
+          </div>
+          <div class="apply-field">
+            <label for="apHandle">Your handle there</label>
+            <input id="apHandle" type="text" placeholder="@yourhandle" autocomplete="off" />
+          </div>
+        </div>
+        <div class="ap-grid">
+          <div class="apply-field">
+            <label for="apContent">What you create</label>
+            <input id="apContent" type="text" placeholder="e.g. self-improvement reels, glow-up edits, fitness…" />
+          </div>
+          <div class="apply-field">
+            <label for="apAudience">Audience size <span class="ap-opt">optional</span></label>
+            <select id="apAudience">
+              <option value="">Prefer not to say</option>
+              <option>Under 1k</option><option>1k–10k</option><option>10k–50k</option><option>50k–250k</option><option>250k+</option>
+            </select>
+          </div>
         </div>
       </div>
 
-      <label class="accept"><input type="checkbox" id="apAccept" /> <span>I have read and accept the Fyon partner guidelines.</span></label>
+      <div class="ap-sec">
+        <div class="ap-eyebrow"><span class="ap-num">02</span> The standard you're signing</div>
+        <p class="muted small" style="margin:-4px 0 14px;line-height:1.55">Fyon shows people an honest, achievable version of themselves. Your content carries the same honesty — these rules protect your audience, your payouts and the brand.</p>
 
-      <div style="margin-top:16px"><button class="lg primary" id="apSubmit" disabled><span class="lbl">Submit application</span></button></div>
+        <div class="rgroup">
+          <h4>Disclosure &amp; traffic</h4>
+          <ul>
+            <li><span class="mk y">✓</span><span>Tag every promotional post <strong>#ad</strong> or <strong>#partner</strong>, clearly and up front — it's the law, and it builds trust.</span></li>
+            <li><span class="mk y">✓</span><span>Use only your own link and code.</span></li>
+            <li><span class="mk n">✕</span><span>No self-purchases, bought traffic, spam or coupon-site posting — commissions from them are void.</span></li>
+          </ul>
+        </div>
+
+        <div class="rgroup">
+          <h4>Honesty about results</h4>
+          <ul>
+            <li><span class="mk y">✓</span><span>Present Fyon renders as what they are — an AI visualization of <em>your achievable direction</em> ("my Fyon potential"), never as a real photo of an outcome.</span></li>
+            <li><span class="mk y">✓</span><span>Edit freely for pacing, captions and format — the result itself stays exactly as Fyon showed it.</span></li>
+            <li><span class="mk n">✕</span><span>No income or results guarantees, no fabricated before/afters, no exaggerating a render beyond what Fyon generated.</span></li>
+          </ul>
+        </div>
+
+        <div class="rgroup">
+          <h4>Audience &amp; safety</h4>
+          <ul>
+            <li><span class="mk y">✓</span><span>18+ audiences only — Fyon refuses minors by design, and your content does too.</span></li>
+            <li><span class="mk y">✓</span><span>Sell <em>becoming</em> — aspiration, effort, honesty. That's the angle that converts anyway.</span></li>
+            <li><span class="mk n">✕</span><span>No medical or surgical claims. No shame angles ("you're ugly without this"). No minors on screen — ever.</span></li>
+          </ul>
+        </div>
+
+        <p class="ap-consequence">Violations end the partnership and void unpaid commissions. The full guidelines live in your dashboard after approval.</p>
+      </div>
+
+      <label class="accept ap-accept"><input type="checkbox" id="apAccept" /> <span>I've read the partner guidelines and I'll follow them in every post — I understand violations end the partnership and void unpaid commissions.</span></label>
+
+      <div class="ap-actions">
+        <button class="lg primary" id="apSubmit" disabled><span class="lbl">Submit application →</span></button>
+        <p class="muted small" style="margin:0">Reviewed personally · typically approved in 5–15 minutes</p>
+      </div>
       <p id="apMsg" class="small muted" style="margin-top:12px"></p>
     </div>
   </section>
@@ -1225,8 +1290,11 @@ else {
     const acc=$('apAccept'); if(!acc || !acc.checked) return;
     const msg=$('apMsg'); if(msg) msg.textContent='';
     const platform=(($('apPlatform')&&$('apPlatform').value)||'').trim();
-    const content =(($('apContent') &&$('apContent').value) ||'').trim();
+    let   content =(($('apContent') &&$('apContent').value) ||'').trim();
     const handle  =(($('apHandle')  &&$('apHandle').value)  ||'').trim().replace(/^@+/,'');
+    // audience size rides inside content_type (same partners columns — never a schema change)
+    const audience=(($('apAudience')&&$('apAudience').value)||'').trim();
+    if(audience) content = [content, 'audience '+audience].filter(Boolean).join(' · ');
     if(!platform){ if(msg) msg.textContent='Please choose a platform.'; return; }
     if(!handle){ if(msg) msg.textContent='Please add your @handle.'; return; }
     const { data:sd } = await sb.auth.getSession(); const user=sd?.session?.user; if(!user) return;
