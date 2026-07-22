@@ -89,7 +89,7 @@
       <a href="#works">Why it works</a>
       <a href="#partners">Earn</a>
     </div>
-    <button class="btn" data-cta="waitlist">Try Fyon</button>
+    <a class="btn" href="https://fyon.ai" target="_blank" rel="noopener">Try Fyon</a>
   </nav>
 
   <div class="fyon-reveal">
@@ -101,7 +101,7 @@
       <h1 id="headline" data-bt>Everything else rates you and walks away. Fyon <em class="fh-knows">shows you.</em></h1>
       <p class="fh-sub">Upload two photos and meet your <b>actual future self</b>. Then the intelligence that knows you creates the plan, adapts it as you change, and makes sure you actually get there.</p>
       <div class="fh-cta">
-        <button class="fh-btn" data-cta="waitlist">Try Fyon <span class="ar">→</span></button>
+        <a class="fh-btn" href="https://fyon.ai" target="_blank" rel="noopener">Try Fyon <span class="ar">→</span></a>
         <a class="fh-link" href="#what">See how it works <span class="ar">→</span></a>
       </div>
     </header>
@@ -144,7 +144,7 @@
         </div>
       </div>
       <div class="kx-cta" id="kxcta">
-        <button class="btn btn-primary btn-lg" data-cta="waitlist">Try Fyon <span class="ar">→</span></button>
+        <a class="btn btn-primary btn-lg" href="https://fyon.ai" target="_blank" rel="noopener">Try Fyon <span class="ar">→</span></a>
         <a class="fy-flowlink" href="#why">See why it works <span class="ar">→</span></a>
       </div>
     </section>
@@ -324,7 +324,7 @@
         </div>
         <div class="foot-col">
           <span class="foot-h">Get started</span>
-          <a href="#" data-cta="waitlist">Try Fyon</a>
+          <a href="https://fyon.ai" target="_blank" rel="noopener">Try Fyon</a>
           <a href="#partners">Earn with Fyon</a>
           <a href="partner.html?v=7">Partner sign in</a>
         </div>
@@ -342,30 +342,6 @@
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M15.5 8.5H10a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 17.5v-11"/></svg>
     Earn money
   </a>
-
-  <!-- ===================== WAITLIST MODAL ===================== -->
-  <div id="wl-modal" class="wl-modal hidden" role="dialog" aria-modal="true" aria-label="Join the waitlist">
-    <div class="wl-backdrop" data-wl-close></div>
-    <div class="wl-card glass" role="document">
-      <button class="wl-x" type="button" data-wl-close aria-label="Close">×</button>
-      <p class="eyebrow">Live now</p>
-      <h3 class="wl-h">Join the Fyon waitlist</h3>
-      <p class="wl-sub">We're opening access in waves. Leave your details and we'll email you when it's your turn.</p>
-      <form id="wl-form" novalidate>
-        <label class="wl-l">Name
-          <input name="name" type="text" autocomplete="name" placeholder="Your name" />
-        </label>
-        <label class="wl-l">Email
-          <input name="email" type="email" required autocomplete="email" placeholder="you@email.com" />
-        </label>
-        <label class="wl-l">What do you want Fyon for? <span class="wl-opt">optional</span>
-          <textarea name="use_case" rows="3" placeholder="e.g. skincare, confidence, training, dating…"></textarea>
-        </label>
-        <button class="btn btn-primary btn-lg" type="submit" id="wl-submit" style="width:100%">Join waitlist</button>
-        <p id="wl-msg" class="wl-msg" role="status"></p>
-      </form>
-    </div>
-  </div>
 
   <script>
   /* ---- premium motion: word-blur hero + scroll-lit statements ---- */
@@ -478,77 +454,22 @@
   <script src="fyon-film.js?v=9" defer></script>
   <script src="site.js?v=45" defer></script>
 
-  <!-- CTA wiring — referral capture + waitlist/early-access + partner links.
-       The product app isn't live yet, so the product CTAs DO NOT touch Stripe.
-       They join the waitlist now; once PRODUCT_APP_URL is set they redirect to
-       the app with ?ref=CODE. partner.html / affiliate backend are untouched. -->
+  <!-- CTA wiring — Fyon is LIVE: product CTAs are direct links to fyon.ai.
+       This script only captures a ?ref=CODE for partner links and routes the
+       partner CTAs to partner.html. No forms, no Stripe, no backend calls. -->
   <script>
   (function(){
-    /* ---- CONFIG ---- */
-    // Set this when the Fyon product app is live, e.g. "https://app.fyon.ai".
-    // While empty, the product CTAs open the WAITLIST modal (no Stripe, no redirect).
-    var PRODUCT_APP_URL = "https://fyon.ai";   // LIVE — CTAs redirect with ?ref carried
-    var PARTNER         = "partner.html?v=7";
-    var SUPABASE_URL    = "https://vvwevqhdwumnethujxhy.supabase.co";
-    var SUPABASE_ANON   = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ2d2V2cWhkd3VtbmV0aHVqeGh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyMDg0ODYsImV4cCI6MjA5Njc4NDQ4Nn0.G60xcGM0DwDBYX2j48iYgb_y8SuXYxdNNiExQlDzarU";
+    var PARTNER = "partner.html?v=7";
 
-    /* referral capture (?ref=CODE) — kept in a 60-day cookie AND localStorage for later */
+    /* referral capture (?ref=CODE) — kept in a 60-day cookie + localStorage so a
+       partner's link survives the hop to partner.html */
     var rq=new URLSearchParams(location.search).get('ref');
     if(rq){ var c=rq.toUpperCase().slice(0,24);
       document.cookie='fyon_ref='+c+';max-age='+(60*60*24*60)+';path=/;samesite=lax';
       try{ localStorage.setItem('fyon_ref',c); }catch(e){} }
-    function getRef(){ return (document.cookie.match(/fyon_ref=([^;]+)/)||[])[1] || (function(){try{return localStorage.getItem('fyon_ref')||''}catch(e){return ''}})(); }
-
-    /* ---- waitlist modal ---- */
-    var modal=document.getElementById('wl-modal');
-    function openModal(){ if(!modal) return; modal.classList.remove('hidden'); document.body.style.overflow='hidden';
-      var f=modal.querySelector('input[name=email]'); if(f) setTimeout(function(){f.focus();},60); }
-    function closeModal(){ if(!modal) return; modal.classList.add('hidden'); document.body.style.overflow=''; }
-
-    // Product CTA: redirect to the app (with ?ref) once it's live; otherwise open the waitlist.
-    function productCta(){
-      var ref=getRef();
-      if(PRODUCT_APP_URL){
-        location.href = PRODUCT_APP_URL + (ref ? (PRODUCT_APP_URL.indexOf('?')>=0?'&':'?')+'ref='+encodeURIComponent(ref) : '');
-        return;
-      }
-      openModal();
-    }
-
-    // Waitlist writes go through the secure join-waitlist Edge Function (service
-    // role server-side). The browser only ever holds the public anon key.
-    var WAITLIST_FN = SUPABASE_URL + "/functions/v1/join-waitlist";
-
-    async function submitWaitlist(e){
-      e.preventDefault();
-      var form=e.target, btn=document.getElementById('wl-submit'), msg=document.getElementById('wl-msg');
-      var name=(form.name.value||'').trim(), email=(form.email.value||'').trim(), use_case=(form.use_case.value||'').trim();
-      if(!email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){ msg.className='wl-msg err'; msg.textContent='Please enter a valid email.'; return; }
-      var old=btn.innerHTML; btn.disabled=true; msg.textContent=''; msg.className='wl-msg';
-      btn.innerHTML='<span class="orbit-spin dark" style="--size:18px;margin-right:9px" aria-hidden="true"><i class="os-core"></i><i class="os-sat n"></i><i class="os-sat e"></i><i class="os-sat s"></i><i class="os-sat w"></i></span>Joining…';
-      try{
-        var res=await fetch(WAITLIST_FN,{
-          method:'POST',
-          headers:{ 'content-type':'application/json', 'authorization':'Bearer '+SUPABASE_ANON, 'apikey':SUPABASE_ANON },
-          body:JSON.stringify({ name:name||null, email:email, use_case:use_case||null, referral_code:getRef()||null })
-        });
-        var data={}; try{ data=await res.json(); }catch(_){}
-        if(res.ok && data.ok){
-          msg.className='wl-msg ok'; msg.textContent="You're on the list — we'll email you when Fyon opens.";
-          form.reset();
-        } else if(res.status===429){
-          msg.className='wl-msg err'; msg.textContent='Too many tries — give it a minute and retry.';
-        } else { throw new Error((data&&data.error)||('HTTP '+res.status)); }
-      }catch(err){ msg.className='wl-msg err'; msg.textContent='Could not join right now: '+(err.message||err); }
-      btn.disabled=false; btn.innerHTML=old;
-    }
 
     document.addEventListener('DOMContentLoaded',function(){
-      // product CTAs (Join waitlist / Get early access) -> modal (or app when live)
-      [].slice.call(document.querySelectorAll('[data-cta="waitlist"]')).forEach(function(b){
-        b.addEventListener('click',function(e){ e.preventDefault(); productCta(); });
-      });
-      // partner CTAs -> partner.html (unchanged)
+      // partner CTAs -> partner.html
       [].slice.call(document.querySelectorAll('button, a.link-arrow, a.fab-partner')).forEach(function(b){
         var t=(b.textContent||'').toLowerCase();
         if(t.indexOf('become a partner')>=0 || t.indexOf('already a partner')>=0 || t.indexOf('earn money')>=0){
@@ -561,12 +482,6 @@
       var fab=document.getElementById('fabPartner'), pSec=document.getElementById('partners');
       if(fab && pSec && 'IntersectionObserver' in window){
         new IntersectionObserver(function(es){ es.forEach(function(e){ fab.classList.toggle('hide', e.isIntersecting); }); },{threshold:.2}).observe(pSec);
-      }
-      // modal close + submit
-      if(modal){
-        [].slice.call(modal.querySelectorAll('[data-wl-close]')).forEach(function(x){ x.addEventListener('click',closeModal); });
-        document.addEventListener('keydown',function(e){ if(e.key==='Escape') closeModal(); });
-        var form=document.getElementById('wl-form'); if(form) form.addEventListener('submit',submitWaitlist);
       }
     });
   })();
