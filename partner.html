@@ -362,9 +362,9 @@
   .lib-vid{border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.5);overflow:hidden}
   .lib-vid video{display:block;margin:0 auto;height:380px;max-height:58vh;aspect-ratio:9/16;background:#000}
   .lib-vtop{display:flex;align-items:center;gap:8px;padding:12px 14px 10px;font-size:13.5px}
-  /* watermark preview — transparent PNG on a CONTRASTING background so it never blends into the page */
+  /* material preview — PNG shown whole (contain) on its letterbox bg, so any aspect (wide banner or 9:16 card) fits */
   .lib-mat-thumb{height:160px;display:flex;align-items:center;justify-content:center;overflow:hidden;border-bottom:1px solid var(--line)}
-  .lib-mat-thumb img{max-height:132px;max-width:86%;object-fit:contain}
+  .lib-mat-thumb img{max-height:140px;max-width:90%;object-fit:contain}
   /* edit-inspo block: divider, screen-recording poster thumb, apology note */
   .lib-div{border:none;border-top:1px solid var(--line);margin:22px 0 6px}
   #libEditVids{grid-template-columns:1fr}                    /* single inspo clip → centered, not left in a 2-col grid */
@@ -1226,16 +1226,17 @@ else {
 
     const cmat=Array.isArray(d.clipper_material)?d.clipper_material:[];
     { const el=$('libClipMat'); if(el) el.innerHTML = cmat.length ? cmat.map(x=>{
-        // Transparent PNG → preview on a CONTRASTING background so it's visible instead of blending
-        // into the page: a LIGHT watermark on dark, a DARK one on white (auto-detected, or set "bg").
+        // Preview each PNG on its own "bg" letterbox (opaque brand cards use a light one; a
+        // transparent overlay can force a CONTRASTING bg so it never blends into the page — a
+        // LIGHT one on dark, a DARK one on white, auto-detected from the name).
         const hay=((x.url||'')+' '+(x.title||'')).toLowerCase();
         const tone = /light/.test(hay) ? 'light' : (/dark/.test(hay) ? 'dark' : '');
         const bg = x.bg || (tone==='dark' ? '#ffffff' : '#173d37');
         return `<div class="lib-card">
         <div class="lib-mat-thumb" style="background:${escHtml(bg)}"><img src="${escHtml(x.url||'')}" alt="${escHtml(x.title||'')}" loading="lazy"></div>
         <div class="lib-meta"><div class="lib-top">${libBadge('download')}${libNew(x.added)}</div>
-          <b>${escHtml(x.title||'Watermark')}</b>${x.desc?`<p class="muted small">${escHtml(x.desc)}</p>`:''}
-          <div class="lib-file muted small">${escHtml(x.type||'PNG')}${x.size?' · '+escHtml(x.size):''} · transparent</div></div>
+          <b>${escHtml(x.title||'Material')}</b>${x.desc?`<p class="muted small">${escHtml(x.desc)}</p>`:''}
+          <div class="lib-file muted small">${escHtml(x.type||'PNG')}${x.size?' · '+escHtml(x.size):''}</div></div>
         <a class="lg primary sm lib-dl" href="${escHtml(x.url||'#')}" download target="_blank" rel="noopener"><span class="lbl">Download ↓</span></a>
       </div>`; }).join('') : libEmpty('No material yet'); }
 
