@@ -1,10 +1,20 @@
 {
-  "_howto": "Creator Library manifest. Add items to the arrays below, then commit + push (the partner page fetches this file — no code changes needed). Schemas — videos: {title, desc, url, thumb, added}. downloads: {title, desc, url, type, size, added}. copy: {group, title, text, added} where group is one of hooks|captions|ctas|scripts. 'added' is a YYYY-MM-DD date and drives the NEW badge for 14 days. Delete the examples in _examples and paste real items into videos/downloads/copy.",
+  "_howto": "Creator Library manifest. Add items to the arrays below, then commit + push (the partner page fetches this file — no code changes needed). Schemas — videos: {title, desc, url, thumb, added}. downloads: {title, desc, url, type, size, added}. copy: {group, title, text, added} where group is one of hooks|captions|ctas|scripts. clipper_videos (watch-only example edits, NOT downloadable): {title, src (mp4 path in the repo, e.g. clippers/clip-example-1.mp4), added}. clipper_material (downloadable overlays): {title, url, type, size, added}. 'added' is a YYYY-MM-DD date and drives the NEW badge for 14 days.",
   "_examples": {
     "videos": [{ "title": "Reveal reaction — TikTok", "desc": "45s, hook in first 2s", "url": "https://www.youtube.com/watch?v=XXXXXXXX", "thumb": "https://img.youtube.com/vi/XXXXXXXX/hqdefault.jpg", "added": "2026-07-20" }],
     "downloads": [{ "title": "B-roll pack — city mornings", "desc": "6 clips, 4K, no watermark", "url": "https://.../broll-city.zip", "type": "ZIP", "size": "180 MB", "added": "2026-07-20" }],
     "copy": [{ "group": "hooks", "text": "I uploaded 2 photos and this is me in 3 years…", "added": "2026-07-20" }]
   },
+  "clipper_videos": [
+    { "title": "Clip example 1", "src": "clippers/clip-example-1.mp4", "added": "2026-07-22" },
+    { "title": "Clip example 2", "src": "clippers/clip-example-2.mp4", "added": "2026-07-22" }
+  ],
+  "clipper_material": [
+    { "title": "Watermark · dark 1", "url": "clippers/watermark-caption-dark-1.png", "type": "PNG", "size": "64 KB", "added": "2026-07-22" },
+    { "title": "Watermark · dark 2", "url": "clippers/watermark-caption-dark-2.png", "type": "PNG", "size": "44 KB", "added": "2026-07-22" },
+    { "title": "Watermark · light 1", "url": "clippers/watermark-caption-light-1.png", "type": "PNG", "size": "60 KB", "added": "2026-07-22" },
+    { "title": "Watermark · light 2", "url": "clippers/watermark-caption-light-2.png", "type": "PNG", "size": "42 KB", "added": "2026-07-22" }
+  ],
   "videos": [],
   "downloads": [],
   "copy": []

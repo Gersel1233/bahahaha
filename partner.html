@@ -356,6 +356,12 @@
   @media(max-width:560px){.lib-copy{flex-direction:column;align-items:stretch}.lib-copybtn{align-self:flex-start}}
   .lib-empty{border:1px dashed var(--line);border-radius:14px;padding:24px;text-align:center;display:flex;flex-direction:column;gap:4px}
   .lib-empty b{font-family:var(--serif);font-weight:500;font-size:17px;color:var(--ink)}
+  /* clipper example clips — vertical 9:16, watch-only (no download control) */
+  .lib-vidgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+  @media(max-width:640px){.lib-vidgrid{grid-template-columns:1fr}}
+  .lib-vid{border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.5);overflow:hidden;padding-bottom:10px}
+  .lib-vid video{display:block;margin:0 auto;height:380px;max-height:58vh;aspect-ratio:9/16;background:#000}
+  .lib-vtop{display:flex;align-items:center;gap:8px;padding:10px 14px 0;font-size:13.5px}
 </style>
 </head>
 <body>
@@ -734,6 +740,14 @@
         <h3 class="lib-h">Inspiration videos</h3>
         <p class="muted small" style="margin-bottom:2px">Reference edits and examples to model your own.</p>
         <div id="libVideos" class="lib-grid"><div class="skel" style="height:170px;border-radius:14px"></div><div class="skel" style="height:170px;border-radius:14px"></div></div>
+      </div>
+
+      <div class="card">
+        <h3 class="lib-h">Clippers &amp; edits</h3>
+        <p class="muted small" style="margin-bottom:2px">Reference clips to model your edits — plus transparent Fyon watermarks to drop on your own.</p>
+        <div id="libClipVids" class="lib-vidgrid"><div class="skel" style="height:380px;border-radius:14px"></div><div class="skel" style="height:380px;border-radius:14px"></div></div>
+        <div class="lib-grouph" style="margin-top:18px">Material — overlay these on your edits</div>
+        <div id="libClipMat" class="lib-grid"><div class="skel" style="height:150px;border-radius:14px"></div><div class="skel" style="height:150px;border-radius:14px"></div></div>
       </div>
 
       <div class="card">
@@ -1116,6 +1130,23 @@ else {
         <div class="lib-meta"><div class="lib-top">${libBadge('video')}${libNew(v.added)}</div>
           <b>${escHtml(v.title||'Untitled')}</b>${v.desc?`<p class="muted small">${escHtml(v.desc)}</p>`:''}</div>
       </a>`).join('') : libEmpty('No inspiration videos yet');
+
+    // Clippers & edits — example clips (watch-only, no download control) + downloadable watermarks
+    const cvids=Array.isArray(d.clipper_videos)?d.clipper_videos:[];
+    { const el=$('libClipVids'); if(el) el.innerHTML = cvids.length ? cvids.map(v=>`
+      <div class="lib-vid">
+        <video src="${escHtml(v.src||'')}" controls controlslist="nodownload noremoteplayback noplaybackrate" disablepictureinpicture preload="metadata" playsinline></video>
+        <div class="lib-vtop">${libBadge('video')}${libNew(v.added)}<b style="margin-left:2px">${escHtml(v.title||'Clip')}</b></div>
+      </div>`).join('') : libEmpty('No clip examples yet'); }
+
+    const cmat=Array.isArray(d.clipper_material)?d.clipper_material:[];
+    { const el=$('libClipMat'); if(el) el.innerHTML = cmat.length ? cmat.map(x=>`
+      <div class="lib-card">
+        <div class="lib-meta"><div class="lib-top">${libBadge('download')}${libNew(x.added)}</div>
+          <b>${escHtml(x.title||'Watermark')}</b>${x.desc?`<p class="muted small">${escHtml(x.desc)}</p>`:''}
+          <div class="lib-file muted small">${escHtml(x.type||'PNG')}${x.size?' · '+escHtml(x.size):''} · transparent</div></div>
+        <a class="lg primary sm lib-dl" href="${escHtml(x.url||'#')}" download target="_blank" rel="noopener"><span class="lbl">Download ↓</span></a>
+      </div>`).join('') : libEmpty('No material yet'); }
 
     const dls=Array.isArray(d.downloads)?d.downloads:[];
     $('libDownloads').innerHTML = dls.length ? dls.map(x=>`
