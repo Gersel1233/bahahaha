@@ -15,6 +15,14 @@
     { "title": "Watermark · light 1", "url": "clippers/watermark-caption-light-1.png", "type": "PNG", "size": "60 KB", "added": "2026-07-22" },
     { "title": "Watermark · light 2", "url": "clippers/watermark-caption-light-2.png", "type": "PNG", "size": "42 KB", "added": "2026-07-22" }
   ],
+  "edit_videos": [
+    { "title": "Edit inspo", "src": "clippers/edit-inspo.mp4", "poster": "clippers/edit-inspo-poster.jpg", "added": "2026-07-22" }
+  ],
+  "edit_material": [
+    { "title": "Screen recording 1", "url": "clippers/screen-recording-1.mov", "thumb": "clippers/screen-recording-1-poster.jpg", "type": "MOV", "size": "22 MB", "added": "2026-07-22" },
+    { "title": "Screen recording 2", "url": "clippers/screen-recording-2.mov", "thumb": "clippers/screen-recording-2-poster.jpg", "type": "MOV", "size": "20 MB", "added": "2026-07-22" }
+  ],
+  "edit_note": "Our Fyon team aren't editors, so apologies if the videos aren't perfect — use them for inspo. The material isn't required, it's simply inspiration too.",
   "videos": [],
   "downloads": [],
   "copy": []

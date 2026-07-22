@@ -365,6 +365,11 @@
   /* watermark preview — transparent PNG on a CONTRASTING background so it never blends into the page */
   .lib-mat-thumb{height:160px;display:flex;align-items:center;justify-content:center;overflow:hidden;border-bottom:1px solid var(--line)}
   .lib-mat-thumb img{max-height:132px;max-width:86%;object-fit:contain}
+  /* edit-inspo block: divider, screen-recording poster thumb, apology note */
+  .lib-div{border:none;border-top:1px solid var(--line);margin:22px 0 6px}
+  .lib-rec-thumb{height:150px;overflow:hidden;border-bottom:1px solid var(--line);background:#0d0e12}
+  .lib-rec-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+  .lib-editnote{margin-top:16px;font-size:13px;color:var(--mut);line-height:1.6;font-style:italic}
 </style>
 </head>
 <body>
@@ -751,6 +756,15 @@
         <div id="libClipVids" class="lib-vidgrid"><div class="skel" style="height:380px;border-radius:14px"></div><div class="skel" style="height:380px;border-radius:14px"></div></div>
         <div class="lib-grouph" style="margin-top:18px">Material — overlay these on your edits</div>
         <div id="libClipMat" class="lib-grid"><div class="skel" style="height:180px;border-radius:14px"></div><div class="skel" style="height:180px;border-radius:14px"></div></div>
+
+        <div id="libEditBlock" class="hidden">
+          <hr class="lib-div">
+          <div class="lib-grouph">Edit inspo</div>
+          <div id="libEditVids" class="lib-vidgrid"></div>
+          <div class="lib-grouph" style="margin-top:18px">Material — screen recordings</div>
+          <div id="libEditMat" class="lib-grid"></div>
+          <p id="libEditNote" class="lib-editnote"></p>
+        </div>
       </div>
 
       <div class="card">
@@ -1156,6 +1170,27 @@ else {
           <div class="lib-file muted small">${escHtml(x.type||'PNG')}${x.size?' · '+escHtml(x.size):''} · transparent</div></div>
         <a class="lg primary sm lib-dl" href="${escHtml(x.url||'#')}" download target="_blank" rel="noopener"><span class="lbl">Download ↓</span></a>
       </div>`; }).join('') : libEmpty('No material yet'); }
+
+    // Edit-inspo block (a second group under a divider): one watch-only inspo clip + downloadable
+    // screen recordings + an apology note. The whole block hides if there's nothing to show.
+    const evids=Array.isArray(d.edit_videos)?d.edit_videos:[];
+    const emat=Array.isArray(d.edit_material)?d.edit_material:[];
+    const enote=(d.edit_note||'').toString().trim();
+    show('libEditBlock', !!(evids.length || emat.length || enote));
+    { const el=$('libEditVids'); if(el) el.innerHTML = evids.map(v=>`
+      <div class="lib-vid">
+        <div class="lib-vtop">${libBadge('video')}${libNew(v.added)}<b style="margin-left:2px">${escHtml(v.title||'Edit inspo')}</b></div>
+        <video src="${escHtml(v.src||'')}"${v.poster?` poster="${escHtml(v.poster)}"`:''} controls controlslist="nodownload noremoteplayback noplaybackrate" disablepictureinpicture preload="metadata" playsinline></video>
+      </div>`).join(''); }
+    { const el=$('libEditMat'); if(el) el.innerHTML = emat.map(x=>`
+      <div class="lib-card">
+        ${x.thumb?`<div class="lib-rec-thumb"><img src="${escHtml(x.thumb)}" alt="${escHtml(x.title||'')}" loading="lazy"></div>`:''}
+        <div class="lib-meta"><div class="lib-top">${libBadge('download')}${libNew(x.added)}</div>
+          <b>${escHtml(x.title||'Recording')}</b>${x.desc?`<p class="muted small">${escHtml(x.desc)}</p>`:''}
+          <div class="lib-file muted small">${escHtml(x.type||'MOV')}${x.size?' · '+escHtml(x.size):''}</div></div>
+        <a class="lg primary sm lib-dl" href="${escHtml(x.url||'#')}" download target="_blank" rel="noopener"><span class="lbl">Download ↓</span></a>
+      </div>`).join(''); }
+    { const el=$('libEditNote'); if(el){ el.textContent = enote; el.style.display = enote ? '' : 'none'; } }
 
     const dls=Array.isArray(d.downloads)?d.downloads:[];
     $('libDownloads').innerHTML = dls.length ? dls.map(x=>`
