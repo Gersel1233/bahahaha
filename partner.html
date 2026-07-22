@@ -405,6 +405,21 @@
     .ap-grid{grid-template-columns:1fr;gap:0}
     .ap-actions{align-items:flex-start;flex-direction:column;gap:10px}
   }
+
+  /* ── playbook: hook groups, craft notes, library cta ─────────────────── */
+  .hookset{margin-bottom:18px}
+  .hookset h5{font-size:12px;letter-spacing:.12em;text-transform:uppercase;font-family:var(--sans);
+    color:var(--clay-d);margin:0 0 10px;font-weight:700}
+  .pb-craft{margin-top:18px;padding:16px 18px;border-radius:14px;
+    background:rgba(31,133,122,.06);border:1px solid rgba(31,133,122,.22)}
+  .pb-craft b{font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--clay-d)}
+  .pb-craft ul{margin:8px 0 0;padding:0}
+  .pb-craft li{list-style:none;font-size:13.5px;color:var(--ink2);line-height:1.55;
+    padding:3px 0 3px 16px;position:relative}
+  .pb-craft li::before{content:"·";position:absolute;left:2px;font-weight:700;color:var(--clay)}
+  .pb-libcta{margin-top:18px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+    padding:16px 18px;border-radius:14px;background:rgba(255,255,255,.5);border:1px solid var(--line)}
+  .pb-libcta p{flex:1 1 300px;font-size:14px;color:var(--ink2);line-height:1.55;margin:0}
 </style>
 </head>
 <body>
@@ -748,45 +763,98 @@
       <!-- 2 · what to post -->
       <div class="card">
         <h3 style="font-size:20px;margin-bottom:4px">What to post</h3>
-        <p class="muted small" style="margin-bottom:12px">Fyon's reveal sells itself — you just react to it.</p>
-        <p class="small" style="color:var(--mut);line-height:1.6;max-width:640px">The reveal shows someone's realistic future self from 2 photos. That transformation is your hook. Every good video follows the same three beats:</p>
+        <p class="muted small" style="margin-bottom:12px">The reveal does the selling — your job is the moment around it.</p>
+        <p class="small" style="color:var(--mut);line-height:1.6;max-width:640px">Fyon turns 2 photos into someone's realistic future self. The strongest ad on earth for that is a real person seeing their own. Every winning video is the same 20 seconds:</p>
         <div class="beats">
-          <div class="beat"><div class="num">1</div><b>Hook — first 3 seconds</b><p>Stop the scroll before they swipe. Tease the reveal, don't explain it.</p></div>
-          <div class="beat"><div class="num">2</div><b>Your reaction</b><p>Film your genuine, unscripted reaction to your OWN reveal. Your face sells it, not a pitch.</p></div>
-          <div class="beat"><div class="num">3</div><b>Call to action</b><p>“Link in bio — code <span class="pb-code">YOURCODE</span> · 10% off.”</p></div>
+          <div class="beat"><div class="num">1</div><b>Hook — 0–3s</b><p>One line, spoken and on screen, that makes scrolling impossible. Tease the reveal — never explain the app.</p></div>
+          <div class="beat"><div class="num">2</div><b>Reveal + reaction — 3–20s</b><p>Film yourself seeing your future self for the <b>first</b> time. That half-second of silence is the whole ad. Then show the render close and slow.</p></div>
+          <div class="beat"><div class="num">3</div><b>CTA — last 3s</b><p>One line only: “Link in bio — code <span class="pb-code">YOURCODE</span> · 10% off.” Say it, caption it, pin it in comments.</p></div>
         </div>
-        <p class="small" style="font-weight:600;margin:20px 0 10px">4 hooks that stop the scroll</p>
-        <div class="hooks">
-          <div class="hook"><q>“I uploaded 2 photos and this is me in 3 years…”</q><p>→ cut to your reveal → your honest reaction → “link in bio, code <span class="pb-code">YOURCODE</span> · 10% off”</p></div>
-          <div class="hook"><q>“This is who I become if I keep going — and who I become if I don't.”</q><p>→ cut to your reveal → your honest reaction → “link in bio, code <span class="pb-code">YOURCODE</span> · 10% off”</p></div>
-          <div class="hook"><q>“I wasn't ready to meet my future self.”</q><p>→ cut to your reveal → your honest reaction → “link in bio, code <span class="pb-code">YOURCODE</span> · 10% off”</p></div>
-          <div class="hook"><q>“POV: you finally see the version of you you keep promising you'll become.”</q><p>→ cut to your reveal → your honest reaction → “link in bio, code <span class="pb-code">YOURCODE</span> · 10% off”</p></div>
+
+        <p class="small" style="font-weight:600;margin:22px 0 4px">Hooks that stop the scroll</p>
+        <p class="muted small" style="margin-bottom:12px">Every one cuts the same way: hook → reveal → your reaction → “link in bio, code <span class="pb-code">YOURCODE</span> · 10% off”. Post several with different hooks — the platform tells you which one wins.</p>
+
+        <div class="hookset">
+          <h5>The future-self angle — the core</h5>
+          <div class="hooks">
+            <div class="hook"><q>“I uploaded 2 photos and this is me in 3 years…”</q></div>
+            <div class="hook"><q>“I wasn't ready to meet my future self.”</q></div>
+            <div class="hook"><q>“This is what I look like in 2 years if I actually lock in.”</q></div>
+            <div class="hook"><q>“The scary part isn't the transformation. It's that it told me exactly how.”</q><p>Pivots to the plan — Fyon's real difference. Show a glimpse of your journey after the render.</p></div>
+          </div>
+        </div>
+
+        <div class="hookset">
+          <h5>The skeptic angle — for audiences tired of fake glow-ups</h5>
+          <div class="hooks">
+            <div class="hook"><q>“I thought these AI glow-up apps were fake. So I tested the honest one.”</q></div>
+            <div class="hook"><q>“It refused to change my eyes. That's when I knew it was serious.”</q><p>True — Fyon never touches eyes or bone structure. The honesty IS the hook.</p></div>
+            <div class="hook"><q>“No filter, no surgery edit — it only shows what I can actually reach. Watch.”</q></div>
+            <div class="hook"><q>“POV: you finally see the version of you you keep promising you'll become.”</q></div>
+          </div>
+        </div>
+
+        <div class="hookset">
+          <h5>The journey angle — recurring content, not a one-off</h5>
+          <div class="hooks">
+            <div class="hook"><q>“Day 14 of following the plan my future self gave me.”</q><p>The update format — post it weekly, same hook, rising number. Your streak becomes a series.</p></div>
+            <div class="hook"><q>“My future self has a jawline. Apparently we're going to the gym.”</q></div>
+            <div class="hook"><q>“It measures how much closer I've gotten every week. Today it said 23%.”</q></div>
+            <div class="hook"><q>“This is who I become if I keep going — and who I become if I don't.”</q></div>
+          </div>
+        </div>
+
+        <p class="small" style="font-weight:600;margin:22px 0 10px">Four formats that work</p>
+        <div class="pb-grid">
+          <div class="pb-tile"><b>The reaction</b><p>Your first viewing, selfie cam. Never re-record it — the genuine beat can't be acted.</p></div>
+          <div class="pb-tile"><b>The screen-rec edit</b><p>The app doing its thing, cut fast. Screen recordings + overlay material are in your Library.</p></div>
+          <div class="pb-tile"><b>The day-N update</b><p>Weekly progress against your render — streak, plan, measurement. Recurring views, recurring clicks.</p></div>
+          <div class="pb-tile"><b>The duet / green screen</b><p>You over your own reveal, reacting live. Cheapest video you'll ever make.</p></div>
+        </div>
+
+        <div class="pb-craft">
+          <b>Craft notes</b>
+          <ul>
+            <li>Raw beats produced — selfie cam + native captions outperform polished edits.</li>
+            <li>Trending audio, low under your voice. Speak the hook out loud, don't just caption it.</li>
+            <li>Three versions of the same reveal, three hooks. Let the algorithm pick the winner.</li>
+            <li>Your caption's last line is always the CTA with your code.</li>
+          </ul>
+        </div>
+
+        <div class="pb-libcta">
+          <p><b>Everything to remix is in your Library</b> — inspiration videos, reveal screen recordings, overlay material, edit inspo and copy-paste captions.</p>
+          <button class="jump" id="pbLib">Open Library →</button>
         </div>
       </div>
 
       <!-- 3 · the rules -->
       <div class="card">
-        <h3 style="font-size:20px;margin-bottom:4px">The rules</h3>
-        <p class="muted small" style="margin-bottom:14px">Keep it honest — it protects you, your audience, and the brand.</p>
-        <div class="rules">
-          <div class="rule do">
-            <h4>Always</h4>
-            <ul>
-              <li><span class="mk">✓</span><span>Use your own link and code.</span></li>
-              <li><span class="mk">✓</span><span>Disclose the partnership — #ad.</span></li>
-              <li><span class="mk">✓</span><span>Frame it as “become who you envisioned” — realistic, effort required.</span></li>
-              <li><span class="mk">✓</span><span>18+ audiences only.</span></li>
-            </ul>
-          </div>
-          <div class="rule dont">
-            <h4>Never</h4>
-            <ul>
-              <li><span class="mk">✕</span><span>No income or results guarantees.</span></li>
-              <li><span class="mk">✕</span><span>No medical or surgical claims.</span></li>
-              <li><span class="mk">✕</span><span>No fake or edited results.</span></li>
-              <li><span class="mk">✕</span><span>No minors — ever.</span></li>
-            </ul>
-          </div>
+        <h3 style="font-size:20px;margin-bottom:4px">The standard you signed</h3>
+        <p class="muted small" style="margin-bottom:14px">You accepted these when you applied — they protect your audience, your payouts and the brand. In every post:</p>
+
+        <div class="rgroup">
+          <h4>Disclosure &amp; traffic</h4>
+          <ul>
+            <li><span class="mk y">✓</span><span>Tag every promotional post <strong>#ad</strong> or <strong>#partner</strong> — clearly, up front.</span></li>
+            <li><span class="mk y">✓</span><span>Use only your own link and code.</span></li>
+            <li><span class="mk n">✕</span><span>No self-purchases, bought traffic, spam or coupon-site posting — those commissions are void.</span></li>
+          </ul>
+        </div>
+        <div class="rgroup">
+          <h4>Honesty about results</h4>
+          <ul>
+            <li><span class="mk y">✓</span><span>Present renders as what they are — an AI visualization of an achievable direction (“my Fyon potential”), never a real photo of an outcome.</span></li>
+            <li><span class="mk y">✓</span><span>Edit for pacing and format freely — the result itself stays exactly as Fyon showed it.</span></li>
+            <li><span class="mk n">✕</span><span>No income or results guarantees, no fabricated before/afters, no exaggerating a render.</span></li>
+          </ul>
+        </div>
+        <div class="rgroup">
+          <h4>Audience &amp; safety</h4>
+          <ul>
+            <li><span class="mk y">✓</span><span>18+ audiences only. Sell <em>becoming</em> — aspiration, effort, honesty.</span></li>
+            <li><span class="mk n">✕</span><span>No medical or surgical claims. No shame angles. No minors on screen — ever.</span></li>
+          </ul>
         </div>
       </div>
 
@@ -1355,6 +1423,7 @@ else {
     const toDash=()=>{ setSection('dashboard'); const t=$('dashTop'); if(t) setTimeout(()=>t.scrollIntoView({behavior:'smooth',block:'start'}),80); };
     { const b=$('pbGrab');  if(b) b.onclick=toDash; }
     { const b=$('pbTrack'); if(b) b.onclick=toDash; }
+    { const b=$('pbLib');   if(b) b.onclick=()=>setSection('library'); }
   }
   $('showLb').onchange = async (e)=>{ if(partner) await sb.from('partners').update({show_on_leaderboard:e.target.checked}).eq('id',partner.id); };
   $('promoChannel').onchange = async (e)=>{ if(partner) await sb.from('partners').update({promo_channel:e.target.value}).eq('id',partner.id); };
