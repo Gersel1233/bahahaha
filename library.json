@@ -6,8 +6,8 @@
     "copy": [{ "group": "hooks", "text": "I uploaded 2 photos and this is me in 3 years…", "added": "2026-07-20" }]
   },
   "clipper_videos": [
-    { "title": "Clip example 1", "src": "clippers/clip-example-1.mp4", "added": "2026-07-22" },
-    { "title": "Clip example 2", "src": "clippers/clip-example-2.mp4", "added": "2026-07-22" }
+    { "title": "Clipping example", "src": "clippers/clip-example-1.mp4", "added": "2026-07-22" },
+    { "title": "Edit example style", "src": "clippers/clip-example-2.mp4", "added": "2026-07-22" }
   ],
   "clipper_material": [
     { "title": "Watermark · dark 1", "url": "clippers/watermark-caption-dark-1.png", "type": "PNG", "size": "64 KB", "added": "2026-07-22" },
