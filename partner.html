@@ -367,9 +367,12 @@
   .lib-mat-thumb img{max-height:132px;max-width:86%;object-fit:contain}
   /* edit-inspo block: divider, screen-recording poster thumb, apology note */
   .lib-div{border:none;border-top:1px solid var(--line);margin:22px 0 6px}
-  .lib-rec-thumb{height:150px;overflow:hidden;border-bottom:1px solid var(--line);background:#0d0e12}
+  #libEditVids{grid-template-columns:1fr}                    /* single inspo clip → centered, not left in a 2-col grid */
+  #libEditVids .lib-vid{max-width:300px;margin:0 auto}
+  .lib-rec-thumb{height:300px;max-height:50vh;aspect-ratio:9/16;margin:14px auto 6px;border-radius:10px;overflow:hidden;background:#0d0e12}
   .lib-rec-thumb img{width:100%;height:100%;object-fit:cover;display:block}
-  .lib-editnote{margin-top:16px;font-size:13px;color:var(--mut);line-height:1.6;font-style:italic}
+  .lib-editnote{margin-top:18px;font-size:14px;color:var(--ink2);line-height:1.6;
+    background:rgba(31,133,122,.07);border:1px solid rgba(31,133,122,.22);border-left:3px solid var(--clay);border-radius:12px;padding:12px 14px}
 </style>
 </head>
 <body>
