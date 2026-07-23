@@ -16,7 +16,7 @@
 <link rel="preload" as="font" type="font/woff2" href="fonts/newsreader-latin-normal.woff2" crossorigin />
 <link rel="preload" as="font" type="font/woff2" href="fonts/sora-latin-600.woff2" crossorigin />
 <link rel="stylesheet" href="styles.css?v=40" />
-<link rel="stylesheet" href="fyon.css?v=15" />
+<link rel="stylesheet" href="fyon.css?v=16" />
 <script src="image-slot.js?v=31" defer></script>
 <style id="fh-style">
 /* ===== Ported Fyon hero + scroll reveal — fully scoped under #fyon-hero so it
@@ -377,17 +377,42 @@
     /* the flow film — scroll rotates the phone in, then the manifesto speaks */
     var track=document.getElementById('ktrack'), ph=document.getElementById('ph3d'),
         phw=document.getElementById('phwrap'), kx=document.getElementById('kxcta'),
+        pv=document.querySelector('.ph-vid'),
         kml=[].slice.call(document.querySelectorAll('.kml'));
+
+    /* keep the phone video playing inline. iOS refuses silent autoplay while the
+       phone loads rotated edge-on (zero visible area) and then shows a tap-to-play
+       glyph — so we nudge play() on load, on the first gesture, and when it scrolls
+       into view. Muted + playsinline are set both as attributes and properties. */
+    if(pv){
+      pv.muted=true; pv.defaultMuted=true; pv.setAttribute('muted','');
+      var kick=function(){ try{ var r=pv.play(); if(r&&r.catch) r.catch(function(){}); }catch(e){} };
+      kick();
+      pv.addEventListener('loadeddata',kick);
+      pv.addEventListener('canplay',kick);
+      ['touchstart','pointerdown','scroll','click'].forEach(function(ev){
+        window.addEventListener(ev,kick,{once:true,passive:true}); });
+      if('IntersectionObserver' in window){
+        new IntersectionObserver(function(es){ es.forEach(function(en){
+          if(en.isIntersecting){ kick(); } else { try{ pv.pause(); }catch(e){} }
+        }); },{rootMargin:'250px'}).observe(pv);
+      }
+    }
+
     if(track && !reduce){
-      var kq=false;
+      // cache layout metrics — reading offsetTop/offsetHeight inside the scroll
+      // handler forces a synchronous reflow every frame (the main source of jank
+      // on phones). Measure once, and only re-measure on resize.
+      var kq=false, kTop=0, kH=0, kVH=0, kMob=false;
+      function kMeasure(){ kTop=track.offsetTop; kH=track.offsetHeight; kVH=window.innerHeight; kMob=window.innerWidth<=820; }
+      kMeasure();
       function ramp(p,a,b){ return Math.max(0,Math.min(1,(p-a)/(b-a))); }
       function kUpd(){
         kq=false;
-        var vh=window.innerHeight, mob=window.innerWidth<=820;
-        var p=Math.max(0,Math.min(1,(window.scrollY - track.offsetTop) / (track.offsetHeight - vh)));
+        var p=Math.max(0,Math.min(1,(window.scrollY - kTop) / (kH - kVH)));
         var q=ramp(p,.05,.44), e=1-Math.pow(1-q,3);
         ph.style.transform='rotateY('+(-96*(1-e)).toFixed(2)+'deg) rotateX('+(-9*(1-e)).toFixed(2)+'deg) scale('+(.86+.14*e).toFixed(4)+')';
-        if(mob){
+        if(kMob){
           // the phone lifts away and fades FULLY out before the manifesto speaks,
           // so nothing ghosts behind the text
           var msh=ramp(p,.4,.5);
@@ -408,14 +433,16 @@
           var dim=(i<active)?.62:1; dim+=(1-dim)*c;
           kml[i].style.opacity=(eo*dim).toFixed(3);
           kml[i].style.transform='translateY('+(22*(1-eo)).toFixed(1)+'px)';
-          kml[i].style.filter='blur('+(7*(1-eo)).toFixed(2)+'px)';
+          // blur() per-frame is cheap on desktop but a real cost on phone GPUs —
+          // skip it on mobile; the fade + rise alone read clean
+          if(!kMob) kml[i].style.filter='blur('+(7*(1-eo)).toFixed(2)+'px)';
         }
         kx.style.opacity=c.toFixed(3);
         kx.style.transform='translateY('+(14*(1-c)).toFixed(1)+'px)';
         kx.style.pointerEvents=c>.4?'auto':'none';
       }
       window.addEventListener('scroll',function(){ if(!kq){ kq=true; requestAnimationFrame(kUpd); } },{passive:true});
-      window.addEventListener('resize',function(){ if(!kq){ kq=true; requestAnimationFrame(kUpd); } },{passive:true});
+      window.addEventListener('resize',function(){ kMeasure(); if(!kq){ kq=true; requestAnimationFrame(kUpd); } },{passive:true});
       kUpd();
     }
 
