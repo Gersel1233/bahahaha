@@ -281,7 +281,7 @@
   .pb-step .num{flex:none;width:28px;height:28px;border-radius:50%;background:var(--clay);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700}
   .pb-step b{font-size:15px}
   .pb-step .txt p{font-size:13.5px;color:var(--mut);margin-top:2px;line-height:1.5}
-  .pb-step .jump,.pb-libcta .jump{flex:none;margin-left:auto;align-self:center;font:inherit;font-size:12.5px;color:var(--clay-d);font-weight:600;background:none;border:1px solid rgba(31,133,122,.3);border-radius:9px;padding:6px 11px;cursor:pointer}
+  .pb-step .jump,.pb-libcta .jump{flex:none;margin-left:auto;align-self:center;font:inherit;font-size:12.5px;color:var(--clay-d);font-weight:600;background:none;border:1px solid rgba(31,133,122,.3);border-radius:9px;padding:6px 11px;cursor:pointer;text-decoration:none;display:inline-block}
   .pb-step .jump:hover,.pb-libcta .jump:hover{background:rgba(31,133,122,.08)}
 
   footer.site-footer{position:relative;z-index:2;border-top:1px solid var(--line);margin-top:60px;padding:34px 22px 50px}
@@ -811,6 +811,15 @@
         <p>Ready-to-use videos, downloadable clips, and copy you can drop straight into your posts — everything you need to make your edits fast.</p>
       </div>
 
+      <!-- [studio] the invite-only render stage — your own reveal as a ready-to-record scene -->
+      <div class="card">
+        <h3 class="lib-h">Fyon Studio — film your own reveal ✨</h3>
+        <div class="pb-libcta" style="margin-top:10px">
+          <p><b>Your reveal, staged as a ready-to-record 9:16 scene</b> — upload two photos, watch FYON think, and record the moment your potential appears. Free for approved partners, your code on the end frame. Access is invite-only — ask Fyon if yours isn't open yet.</p>
+          <a class="jump" id="libStudio" href="https://www.fyon.ai/studio" target="_blank" rel="noopener">Open Studio →</a>
+        </div>
+      </div>
+
       <div class="card">
         <h3 class="lib-h">Inspiration videos</h3>
         <p class="muted small" style="margin-bottom:2px">Reference edits and examples to model your own.</p>
@@ -1100,6 +1109,7 @@ else {
     $('link').textContent = `${PRODUCT_APP_URL}/?ref=${partner.code}`;
     $('codeTxt').textContent = partner.code;
     document.querySelectorAll('.pb-code').forEach(el => el.textContent = partner.code);  // fill Playbook examples with the partner's real code (display-only)
+    { const s=$('libStudio'); if(s) s.href = 'https://www.fyon.ai/studio?partner=' + encodeURIComponent(partner.code); }  // [studio] carry their code into the unlock
     $('showLb').checked = !!partner.show_on_leaderboard;
     show('connectBanner', !partner.payout_enabled);
     show('connectedBadge', !!partner.payout_enabled);
