@@ -359,10 +359,21 @@ body::after{ content:none; }
 .cx-one{ margin:clamp(20px,3vw,30px) 0 0; font-family:'Instrument Serif',serif;
   font-size:clamp(1.2rem,2.2vw,1.55rem); line-height:1.35; color:var(--ax-ink); max-width:44ch; }
 .cx-one em{ font-style:italic; color:var(--ax-spruce); }
+.cx-swipe{ display:none; }
 @media(max-width:880px){ .cx-feats{ grid-template-columns:1fr 1fr; } }
 @media(max-width:600px){
-  .cx-grid2{ grid-template-columns:1fr; }
-  .cx-feats{ grid-template-columns:1fr; }
+  .cx-grid2{ grid-template-columns:1fr; gap:18px; }
+  /* phone: the features become a swipe deck — one card at a time, the next
+     peeking in at the edge, full-bleed so it breathes past the margins */
+  .cx-feats{ display:flex; gap:12px; overflow-x:auto; scroll-snap-type:x mandatory;
+    margin:0 calc(50% - 50vw); padding:4px 22px 12px; -webkit-overflow-scrolling:touch;
+    scrollbar-width:none; }
+  .cx-feats::-webkit-scrollbar{ display:none; }
+  .cx-feat{ flex:0 0 74vw; scroll-snap-align:center; }
+  .cx-feat p{ font-size:13.5px; }
+  .cx-swipe{ display:block; margin:2px 0 0; font-family:var(--mono,monospace);
+    font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--ax-faint); }
+  .cx-built-intro{ font-size:14.5px; }
 }
 
 @media(max-width:820px){
