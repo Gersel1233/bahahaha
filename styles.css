@@ -739,4 +739,10 @@ html.fyon-loaded .fyon-reveal{ opacity:1; transform:none; }
   .abtn.spruce:hover, .abtn.ink:hover, .abtn.glass:hover{ transform:none; }
   .btn:hover::after, .btn-primary:hover::after, .fh-btn:hover::after,
   .gn-cta:hover::after, .abtn:hover::after{ transform:translateX(-140%); }
+  /* no hover-lift on anything else either — touch taps must act immediately */
+  .foot-col a:hover, .alink:hover, .cx-feat:hover, .kd-card:hover{ transform:none; }
 }
+/* every tap fires on the FIRST tap: manipulation removes the double-tap-zoom
+   wait on all interactive elements, site-wide */
+a, button, [role="button"], input, label, summary{
+  touch-action:manipulation; -webkit-tap-highlight-color:rgba(31,133,122,.14); }
