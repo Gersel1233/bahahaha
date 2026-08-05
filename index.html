@@ -18,7 +18,7 @@
 <link rel="preload" as="font" type="font/woff2" href="fonts/barlow-normal-400.woff2" crossorigin />
 <link rel="preload" as="font" type="font/woff2" href="fonts/kanit-normal-900.woff2" crossorigin />
 <link rel="stylesheet" href="styles.css?v=41" />
-<link rel="stylesheet" href="lesreg.css?v=27" />
+<link rel="stylesheet" href="lesreg.css?v=28" />
 </head>
 <body>
 
@@ -110,7 +110,7 @@
       <p class="ar-sub reveal">Not mockups — intelligent systems we design, build and operate ourselves, running live in production. Here&rsquo;s one, working every single day.</p>
 
       <!-- device scene: laptop (desktop) + phone (mobile), both running Spiis -->
-      <div class="cx-stage reveal" id="cxStage" aria-hidden="true">
+      <div class="cx-stage" id="cxStage" aria-hidden="true">
         <div class="cx-scene">
           <div class="cx-laptop">
             <div class="cx-lid">
@@ -188,18 +188,23 @@
   <!-- ===================== THE STUDIO / CONTACT ===================== -->
   <section class="s abts" id="contact" data-screen-label="contact">
     <div class="s-inner">
-      <p class="gk reveal">The studio</p>
-      <h2 class="arh reveal" style="margin-bottom:26px">Have a project?</h2>
-      <p class="abt litx">Fyon is the first product we built for ourselves — the same team and the same standard we bring to yours. We design, code and operate the whole thing, from first sketch to stable production. Bring the idea; we build the system that runs it.</p>
-      <div class="gc-chips reveal">
-        <span>Websites</span><span>Booking &amp; ordering systems</span><span>Intelligent products</span>
+      <div class="fin-card reveal" id="finCard">
+        <span class="fin-aura a" aria-hidden="true"></span>
+        <span class="fin-aura b" aria-hidden="true"></span>
+        <span class="fin-dots" aria-hidden="true"></span>
+        <p class="gk">The studio</p>
+        <h2 class="arh" style="margin-bottom:26px">Have a project?</h2>
+        <p class="abt litx">Fyon is the first product we built for ourselves — the same team and the same standard we bring to yours. We design, code and operate the whole thing, from first sketch to stable production. Bring the idea; we build the system that runs it.</p>
+        <div class="gc-chips">
+          <span>Websites</span><span>Booking &amp; ordering systems</span><span>Intelligent products</span>
+        </div>
+        <div class="ac-cta center">
+          <span class="mag" data-magnet="90,7"><a class="abtn spruce big" href="mailto:mgersel@lesreg.com">Start a project
+            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg>
+          </a></span>
+        </div>
+        <a class="alink quiet" href="mailto:mgersel@lesreg.com">mgersel@lesreg.com</a>
       </div>
-      <div class="ac-cta center reveal d1">
-        <span class="mag" data-magnet="90,7"><a class="abtn spruce big" href="mailto:mgersel@lesreg.com">Start a project
-          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg>
-        </a></span>
-      </div>
-      <a class="alink quiet reveal d2" href="mailto:mgersel@lesreg.com">mgersel@lesreg.com</a>
     </div>
   </section>
 
@@ -266,6 +271,15 @@
       window.addEventListener('scroll',function(){ if(!aq){ aq=true; requestAnimationFrame(updAbt); } },{passive:true});
       updAbt();
     });
+
+    /* the device scene plays in when it enters the viewport and reverses back
+       out when it leaves — scrolling up and down replays it both ways */
+    var cxs=document.getElementById('cxStage');
+    if(cxs && !reduce && 'IntersectionObserver' in window){
+      new IntersectionObserver(function(es){ es.forEach(function(e){
+        cxs.classList.toggle('in', e.isIntersecting);
+      }); },{threshold:.22}).observe(cxs);
+    } else if(cxs){ cxs.classList.add('in'); }
 
     /* magnet — buttons lean gently toward the pointer, spring back on exit */
     if(!reduce && window.matchMedia('(hover:hover)').matches){
