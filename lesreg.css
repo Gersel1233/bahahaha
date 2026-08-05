@@ -405,10 +405,17 @@ body::after{ content:none; }
   -webkit-mask-image:radial-gradient(120% 90% at 50% 42%, #000 28%, transparent 76%);
   mask-image:radial-gradient(120% 90% at 50% 42%, #000 28%, transparent 76%); }
 /* content sits above the light */
-.fin-card>.gk,.fin-card>.arh,.fin-card>.abt,.fin-card>.gc-chips,.fin-card>.ac-cta,.fin-card>.alink{ position:relative; z-index:2; }
+.fin-card>.gk,.fin-card>.fin-h,.fin-card>.abt,.fin-card>.gc-chips,.fin-card>.ac-cta,.fin-card>.alink{ position:relative; z-index:2; }
 .fin-card .gk{ color:#3fb3a5; }
-.fin-card .arh{ color:#f4ecdd; }
+/* the headline IS the pitch — big, two lines, the second in living spruce */
+.fin-h{ margin:0 0 20px; font-family:'Instrument Serif',serif; font-style:italic; font-weight:400;
+  font-size:clamp(2.7rem,7.5vw,4.8rem); line-height:1.04; letter-spacing:-.015em; color:#f4ecdd; }
+.fin-h em{ background:linear-gradient(96deg,#52c8b8,#2ba393 55%,#3fb3a5);
+  -webkit-background-clip:text; background-clip:text; color:transparent; }
 .fin-card .abt{ color:#efe6d4; }
+/* short pitch line — support, not a wall of text */
+.fin-card .fin-p{ max-width:38ch; font-size:clamp(1.15rem,2.2vw,1.55rem); line-height:1.45;
+  margin-bottom:clamp(24px,4vw,38px); }
 .fin-card .alink.quiet{ color:rgba(244,236,221,.5); }
 .fin-card .alink.quiet:hover{ color:#3fb3a5; }
 /* chips: dark glass, staggered entrance, then a quiet float */
@@ -422,7 +429,15 @@ body::after{ content:none; }
 .fin-card.in .gc-chips span:nth-child(2){ transition-delay:.3s;  animation:finBob 6s ease-in-out 1.8s infinite; }
 .fin-card.in .gc-chips span:nth-child(3){ transition-delay:.42s; animation:finBob 6s ease-in-out 2.2s infinite; }
 @keyframes finBob{ 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(-5px); } }
-@media(max-width:600px){ .fin-card{ border-radius:22px; } }
+@media(max-width:600px){
+  .fin-card{ border-radius:22px; padding:46px 22px 42px; }
+  .fin-h{ font-size:clamp(2.4rem,11.5vw,3rem); margin-bottom:16px; }
+  .fin-card .fin-p{ font-size:1.08rem; line-height:1.5; margin-bottom:22px; }
+  .fin-card .gc-chips{ gap:8px; margin-bottom:24px; }
+  .fin-card .gc-chips span{ font-size:12px; padding:8px 13px; }
+  .fin-card .ac-cta{ width:100%; }
+  .fin-card .alink.quiet{ padding:10px; margin-top:10px; }
+}
 @media (prefers-reduced-motion: reduce){
   .fin-card::before,.fin-aura{ animation:none; }
   .fin-card .gc-chips span{ opacity:1 !important; transform:none !important; transition:none; animation:none !important; }
