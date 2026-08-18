@@ -54,12 +54,15 @@ a{ color:inherit; text-decoration:none; }
 .s-inner{ max-width:var(--maxw); margin:0 auto; padding:108px 40px; }
 @media(max-width:680px){ .s-inner{ padding:74px 22px; } }
 
-/* reveal on scroll */
-.reveal{ opacity:0; transform:translateY(18px); filter:blur(7px);
-  transition:opacity .75s ease, transform .95s cubic-bezier(.16,1,.3,1), filter .75s ease; }
-.reveal.in{ opacity:1; transform:none; filter:none; }
-.reveal.d1{ transition-delay:.08s; } .reveal.d2{ transition-delay:.16s; } .reveal.d3{ transition-delay:.24s; } .reveal.d4{ transition-delay:.32s; }
-@media (prefers-reduced-motion: reduce){ .reveal{ opacity:1 !important; transform:none !important; filter:none !important; } }
+/* reveal on scroll — ONE language for every section. Compositor-only
+   (opacity + transform, no filters: an animated blur repaints on the CPU and
+   reads as lag), short and springy so it keeps up with fast scrolling. */
+.reveal{ opacity:0; transform:translateY(14px);
+  transition:opacity .45s ease-out, transform .6s cubic-bezier(.16,1,.3,1);
+  will-change:opacity,transform; }
+.reveal.in{ opacity:1; transform:none; will-change:auto; }
+.reveal.d1{ transition-delay:.05s; } .reveal.d2{ transition-delay:.1s; } .reveal.d3{ transition-delay:.15s; } .reveal.d4{ transition-delay:.2s; }
+@media (prefers-reduced-motion: reduce){ .reveal{ opacity:1 !important; transform:none !important; } }
 
 /* ---------- glass buttons ---------- */
 .btn{ position:relative; isolation:isolate; display:inline-flex; align-items:center; justify-content:center; gap:.5em;
