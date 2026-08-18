@@ -18,7 +18,7 @@
 <link rel="preload" as="font" type="font/woff2" href="fonts/barlow-normal-400.woff2" crossorigin />
 <link rel="preload" as="font" type="font/woff2" href="fonts/kanit-normal-900.woff2" crossorigin />
 <link rel="stylesheet" href="styles.css?v=42" />
-<link rel="stylesheet" href="lesreg.css?v=34" />
+<link rel="stylesheet" href="lesreg.css?v=36" />
 </head>
 <body>
 
@@ -58,7 +58,8 @@
       <a href="#contact" data-da="Kontakt">Contact</a>
     </div>
     <div class="gn-right">
-      <div class="langsw" role="group" aria-label="Language">
+      <div class="langsw" id="langsw" data-lang="en" role="group" aria-label="Language">
+        <span class="lang-thumb" aria-hidden="true"></span>
         <button type="button" data-lang-btn="da">DA</button><button type="button" data-lang-btn="en">EN</button>
       </div>
       <a class="gn-cta" href="https://fyon.ai" target="_blank" rel="noopener"><span data-da="Pr&oslash;v Fyon">Try Fyon</span>
@@ -284,6 +285,7 @@
         if(n.innerHTML!==html) n.innerHTML=html;
       });
       document.documentElement.lang = (l==='da') ? 'da' : 'en';
+      var sw=document.getElementById('langsw'); if(sw) sw.setAttribute('data-lang', l);
       [].slice.call(document.querySelectorAll('[data-lang-btn]')).forEach(function(b){
         var on = b.getAttribute('data-lang-btn')===l;
         b.classList.toggle('on', on);
@@ -294,7 +296,12 @@
     var saved=null; try{ saved=localStorage.getItem(LKEY); }catch(e){}
     var wantsDa = saved ? (saved==='da')
       : (navigator.languages || [navigator.language || '']).some(function(x){ return /^da\b/i.test(x||''); });
+    // first paint: place the switch without sliding it, so a Danish visitor
+    // doesn't see the lens travel from EN to DA on load
+    var sw0=document.getElementById('langsw');
+    if(sw0) sw0.classList.add('no-anim');
     applyLang(wantsDa ? 'da' : 'en');
+    if(sw0) requestAnimationFrame(function(){ requestAnimationFrame(function(){ sw0.classList.remove('no-anim'); }); });
     [].slice.call(document.querySelectorAll('[data-lang-btn]')).forEach(function(b){
       b.addEventListener('click', function(){ applyLang(b.getAttribute('data-lang-btn')); });
     });
