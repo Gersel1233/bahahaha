@@ -21,9 +21,71 @@
   window.addEventListener('resize', onScroll, {passive:true});
   applyScroll();
 
-  /* ---------- reveal on scroll ---------- */
-  var io=new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } }); }, {threshold:.04, rootMargin:'0px 0px 6% 0px'});
-  document.querySelectorAll('.reveal, .wd-act').forEach(function(n){ io.observe(n); });
+  /* ---------- reveal on scroll ----------
+     Sections are placed by the scroll itself rather than played as a clip once
+     they come into view: each one rises as it crosses the lower part of the
+     screen and is standing by the time it reaches the middle. The same move as
+     the headline at the end of the intro, so the whole page reads as one hand.
+
+     Cost is kept flat by measuring every element's place in the document once
+     — reading it per frame would force the browser to lay the page out again
+     each time — and by touching only the handful near the screen. Nothing but
+     transform and opacity is written, so the work stays off the main thread.  */
+  var RV=[], rvQ=false, rvMeasured=false;
+  /* .wd-act is not one of these — it stays on an observer, because what it
+     reveals is an animation inside it, not a move of its own */
+  var io=new IntersectionObserver(function(es){ es.forEach(function(e){
+    if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } }); },
+    {threshold:.04, rootMargin:'0px 0px 6% 0px'});
+  document.querySelectorAll('.wd-act').forEach(function(n){ io.observe(n); });
+  function rvCollect(){
+    RV=[].slice.call(document.querySelectorAll('.reveal')).map(function(n){
+      return { n:n, top:0, h:0, d:(n.classList.contains('d4')?3:n.classList.contains('d3')?2:
+                                  n.classList.contains('d2')?1:n.classList.contains('d1')?.5:0), last:-1 };
+    });
+  }
+  function rvMeasure(){
+    var y=window.scrollY||window.pageYOffset;
+    for(var i=0;i<RV.length;i++){
+      var r=RV[i].n.getBoundingClientRect();
+      RV[i].top=r.top+y; RV[i].h=r.height;
+    }
+    rvMeasured=true;
+  }
+  function rvApply(){
+    rvQ=false;
+    if(!rvMeasured) return;
+    var y=window.scrollY||window.pageYOffset, vh=window.innerHeight;
+    var span=vh*.34;                       /* the stretch it travels over */
+    for(var i=0;i<RV.length;i++){
+      var o=RV[i];
+      if(o.top>y+vh*1.3 || o.top+o.h<y-vh*.4) continue;   /* far from the screen */
+      var u=(y+vh*.94-o.top-o.d*44)/span;
+      u=u<0?0:u>1?1:u;
+      var e=1-Math.pow(1-u,3);
+      if(Math.abs(e-o.last)<.004) continue;
+      o.last=e;
+      if(e<1){
+        o.n.style.opacity=e.toFixed(3);
+        o.n.style.transform='translate3d(0,'+((1-e)*38).toFixed(1)+'px,0)';
+      } else {
+        o.n.style.opacity=''; o.n.style.transform='';
+        o.n.classList.add('in');          /* for anything hanging off the finished state */
+      }
+    }
+  }
+  function rvOnScroll(){ if(!rvQ){ rvQ=true; requestAnimationFrame(rvApply); } }
+  if(prefersReduced){
+    document.querySelectorAll('.reveal').forEach(function(n){ n.classList.add('in'); });
+  } else {
+    document.documentElement.classList.add('rv-scroll');
+    rvCollect(); rvMeasure(); rvApply();
+    window.addEventListener('scroll', rvOnScroll, {passive:true});
+    window.addEventListener('resize', function(){ rvMeasure(); rvApply(); }, {passive:true});
+    window.addEventListener('load', function(){ rvMeasure(); rvApply(); });
+    /* fonts land late and move everything below them */
+    if(document.fonts && document.fonts.ready) document.fonts.ready.then(function(){ rvMeasure(); rvApply(); });
+  }
 
   /* ============================================================
      PROBLEM SECTION (animated forgetting vs compounding)
