@@ -623,7 +623,7 @@ body::after{ content:none; }
    place behind it — the film can dissolve into the page without anything
    moving. Both heights use lvh so they stay in step with the negative margin
    and never shift when a phone's address bar collapses. */
-.dro-track{ height:210vh; height:210lvh; margin-bottom:-100vh; margin-bottom:-100lvh;
+.dro-track{ height:210vh; height:210lvh; margin-bottom:-120vh; margin-bottom:-120lvh;
   position:relative; z-index:3; }
 /* the dark backing belongs to the layer that fades, not the track — on the
    track it would stay behind and hide the page the film just handed over to */
