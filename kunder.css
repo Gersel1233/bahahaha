@@ -1,0 +1,175 @@
+/* ============================================================
+   LESREG — Kunder.
+
+   Two customers, a screen each, on the same stage engine as Konceptet.
+   No green anywhere in here: the only colour is the customer's own, set
+   per section, so the two cases read as two places and not as two cards.
+   ============================================================ */
+
+/* ---------- the intro scene ---------- */
+.scene.intro{ height:180vh; }
+.scene.intro .inner{ max-width:1180px; }
+.scene h1 i, .cname i{ font-style:normal; color:var(--ink-soft); }
+.scene h1 .w > i{ display:inline-block; opacity:0; will-change:transform,opacity,filter; }
+
+/* ============================================================
+   A CASE — text on the left, the work itself on the right
+   ============================================================ */
+.scene.case{ height:270vh; --brand:#a8431c; --cream:#f7ece1; }
+.scene.case[data-brand="mosede"]{ --brand:#b4242f; --cream:#faf3e8; }
+.scene.case .stage{ perspective:1700px; perspective-origin:64% 50%;
+  box-sizing:border-box; padding-top:var(--nav); }
+
+.wrap{ position:relative; z-index:1; transform-style:preserve-3d;
+  width:min(1320px, calc(100% - clamp(24px,6vw,112px)));
+  display:grid; grid-template-columns:.82fr 1.18fr; align-items:center;
+  gap:clamp(22px,4.4vw,80px); }
+
+.col{ text-align:left; will-change:transform,opacity,filter; }
+.kicker{ margin:0 0 clamp(10px,1.6vh,18px); opacity:0; font-size:12px; font-weight:500;
+  letter-spacing:.22em; text-transform:uppercase; color:var(--ink-faint);
+  will-change:transform,opacity; }
+.cname{ margin:0; font-weight:700; color:var(--ink);
+  font-size:clamp(36px,5.6vw,82px); line-height:.98; letter-spacing:-.048em; }
+.cname .w{ display:inline-block; white-space:pre; }
+.cname .w > span, .cname .w > i{ display:inline-block; opacity:0;
+  will-change:transform,opacity,filter; }
+.curl{ display:inline-block; margin-top:clamp(8px,1.4vh,14px); opacity:0;
+  font-size:14.5px; color:var(--brand); letter-spacing:-.006em;
+  border-bottom:1px solid color-mix(in srgb, var(--brand) 34%, transparent);
+  will-change:transform,opacity; }
+.curl:hover{ border-bottom-color:currentColor; }
+.blurb{ margin:clamp(14px,2.2vh,22px) 0 0; max-width:38ch; opacity:0;
+  font-size:clamp(15px,1.12vw,18px); line-height:1.62; letter-spacing:-.008em;
+  color:var(--ink-soft); will-change:transform,opacity; }
+.blurb b{ color:var(--ink); font-weight:600; }
+
+.facts{ list-style:none; margin:clamp(18px,3vh,30px) 0 0; padding:0;
+  display:grid; gap:0; max-width:34ch; }
+.facts li{ opacity:0; padding:11px 0 11px 18px; position:relative;
+  font-size:15px; line-height:1.5; color:var(--ink-soft);
+  border-top:1px solid color-mix(in srgb, var(--ink) 9%, transparent);
+  will-change:transform,opacity; }
+.facts li::before{ content:""; position:absolute; left:0; top:19px;
+  width:6px; height:1px; background:var(--brand); }
+
+/* ---------- the cluster ----------
+   Height-led, not width-led: the lid is sized off the viewport height, and
+   the column takes whatever that comes to. Sized off the column instead, a
+   short window would push the laptop straight through the bottom of the
+   stage — which is exactly the bug this shape exists to avoid. */
+/* the phone hangs 3% past the right edge, so the cluster keeps a margin of
+   its own — otherwise the stage clips the very thing it is leaning on */
+.devices{ --lidmax:58vh; position:relative;
+  width:min(91%, calc(var(--lidmax) * 1.547)); margin-inline:auto;
+  will-change:transform,opacity,filter; }
+
+.mac{ container-type:inline-size; width:100%; }
+.mac .lid{ position:relative; aspect-ratio:1.547; padding:.5cqw;
+  border-radius:1.5cqw;
+  background:linear-gradient(158deg,#e4e0da,#b6b1a9 36%,#8b8680 64%,#c7c2bb);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.55),
+    0 44px 80px -44px rgba(27,23,20,.6), 0 4px 14px -8px rgba(27,23,20,.35); }
+.mac .bez{ position:relative; height:100%; background:#0c0b0a;
+  border-radius:1.1cqw; padding:.86cqw .62cqw .9cqw; }
+.mac .notch{ position:absolute; left:50%; top:0; transform:translateX(-50%);
+  width:12.4cqw; height:.86cqw; background:#0c0b0a;
+  border-radius:0 0 .34cqw .34cqw; z-index:3; }
+.mac .screen{ position:relative; height:100%; border-radius:.45cqw;
+  overflow:hidden; background:var(--cream); container-type:size; }
+.mac .foot{ position:relative; height:1.9cqw; margin:0 -4.6cqw;
+  border-radius:0 0 .9cqw .9cqw;
+  background:linear-gradient(180deg,#dcd8d2,#b0aba4 46%,#87837d);
+  box-shadow:0 18px 26px -18px rgba(27,23,20,.5); }
+.mac .foot::after{ content:""; position:absolute; left:50%; top:0;
+  transform:translateX(-50%); width:14cqw; height:.62cqw;
+  border-radius:0 0 .5cqw .5cqw; background:rgba(0,0,0,.16); }
+
+/* the phone leans on the laptop's corner — its percentages resolve against
+   the cluster, which is the lid's width, so the pair keeps its proportions */
+.iphone{ container-type:inline-size; position:absolute; right:-3%; bottom:-6%;
+  width:16%; min-width:78px; aspect-ratio:9/19.5; padding:1.1cqw; z-index:2;
+  border-radius:16cqw;
+  background:linear-gradient(145deg,#8c8782,#4a4641 26%,#2a2722 50%,#6c6761 74%,#39352f);
+  box-shadow:0 34px 54px -30px rgba(27,23,20,.72); }
+.iphone .inn{ height:100%; padding:.9cqw; background:#070605; border-radius:15.2cqw; }
+.iphone .screen{ position:relative; height:100%; border-radius:14.4cqw;
+  overflow:hidden; background:var(--cream); container-type:size; }
+.iphone .isl{ position:absolute; left:50%; top:2.6cqw; transform:translateX(-50%);
+  width:30cqw; height:8.2cqw; border-radius:99px; background:#070605; z-index:4; }
+.iphone .b{ position:absolute; width:.9cqw; border-radius:.45cqw;
+  background:linear-gradient(180deg,#b7b2ac,#6d6862); }
+.iphone .b.act{ left:-.45cqw; top:22%; height:7%; }
+.iphone .b.vu{ left:-.45cqw; top:32%; height:11%; }
+.iphone .b.vd{ left:-.45cqw; top:45.5%; height:11%; }
+.iphone .b.pw{ right:-.45cqw; top:30%; height:15%; }
+.iphone .screen img, .mac .screen img{ display:block; width:100%; height:100%;
+  object-fit:cover; object-position:top center; }
+
+/* The section carries no green of its own, and that holds inside the screens
+   too — the kitchen's markers take the restaurant's own colour. */
+.scene.case .sd-dot{ background:color-mix(in srgb, var(--brand) 62%, #cfc4b4); }
+.scene.case .sd-o.new .sd-dot{ background:var(--brand); }
+
+/* ---------- Mosede: one menu, three places it shows up ---------- */
+.md{ position:absolute; inset:0; display:flex; flex-direction:column;
+  background:#faf3e8; color:#241a17; text-align:left; }
+.md-top{ display:flex; align-items:center; gap:2cqw; padding:2.6cqw 3.4cqw;
+  background:#f3e8da; border-bottom:1px solid rgba(36,26,23,.08); }
+.md-logo{ font-weight:700; font-size:2.9cqw; letter-spacing:-.03em; color:#b4242f; }
+.md-nav{ display:flex; gap:1.4cqw; margin-left:1.6cqw; }
+.md-nav i{ width:5.4cqw; height:1.5cqw; border-radius:99px; background:rgba(36,26,23,.13); }
+.md-open{ margin-left:auto; font-size:2.1cqw; color:#6e6158; }
+.md-main{ flex:1; display:grid; grid-template-columns:1.25fr 1fr; gap:3cqw;
+  padding:3.4cqw; min-height:0; }
+.md-card{ display:flex; flex-direction:column; gap:1.6cqw; }
+.md-kick{ font-size:1.9cqw; font-weight:700; letter-spacing:.2em;
+  text-transform:uppercase; color:#b4242f; }
+.md-h{ font-size:5cqw; font-weight:700; letter-spacing:-.04em; line-height:1; }
+.md-row{ display:flex; align-items:baseline; gap:1.6cqw; padding:1.7cqw 0;
+  border-top:1px solid rgba(36,26,23,.1); font-size:2.3cqw; }
+.md-row b{ font-weight:600; }
+.md-row span{ margin-left:auto; color:#8a7c72; }
+.md-screen{ display:flex; flex-direction:column; border-radius:2cqw; overflow:hidden;
+  background:#241a17; color:#fdf6ec; padding:2.6cqw; gap:1.4cqw; }
+.md-screen .md-sh{ font-size:2cqw; letter-spacing:.18em; text-transform:uppercase;
+  color:rgba(253,246,236,.55); }
+.md-screen .md-big{ font-size:3.6cqw; font-weight:700; letter-spacing:-.03em; line-height:1.05; }
+.md-screen .md-l{ display:flex; gap:1.4cqw; font-size:2.1cqw;
+  color:rgba(253,246,236,.82); }
+.md-screen .md-l span{ margin-left:auto; }
+.md-tag{ margin-top:auto; font-size:1.8cqw; color:rgba(253,246,236,.45); }
+
+/* ---------- the closer ---------- */
+.closer{ padding:clamp(110px,18vh,220px) 0 clamp(96px,14vh,170px);
+  text-align:center; background:var(--paper-1); }
+.closer h2{ margin:0 auto; max-width:16ch; font-weight:700; color:var(--ink);
+  font-size:clamp(34px,6vw,84px); line-height:1; letter-spacing:-.045em; }
+.closer h2 i{ font-style:normal; color:var(--ink-soft); }
+.closer .cta{ margin-top:clamp(26px,4vh,44px); }
+/* no green in this part of the page — the call sits in the same black pill
+   as the one in the bar */
+.closer .abtn.spruce{ background:var(--dark); text-shadow:none;
+  box-shadow:0 14px 30px -18px rgba(27,23,20,.8); }
+
+@media(max-width:980px){
+  .scene.intro{ height:210vh; }
+  .scene.case{ height:310vh; }
+  .wrap{ grid-template-columns:1fr; gap:clamp(18px,4vh,34px); }
+  .devices{ --lidmax:38vh; width:min(88%, calc(var(--lidmax) * 1.547)); }
+  .iphone{ width:18%; bottom:-5%; }
+  .facts{ grid-template-columns:1fr 1fr; gap:0 clamp(14px,3vw,26px); max-width:none; }
+}
+@media(max-height:760px){
+  .devices{ --lidmax:36vh; }
+  .cname{ font-size:clamp(32px,4.4vw,58px); }
+  .facts{ display:none; }
+}
+
+@media (prefers-reduced-motion: reduce){
+  .scene.intro, .scene.case{ height:auto; }
+  .devices{ --lidmax:52vh; }
+  .kicker, .curl, .blurb, .facts li, .cname .w > span, .cname .w > i,
+  .scene h1 .w > i{ opacity:1 !important; transform:none !important; filter:none !important; }
+  .wrap{ padding:6vh 0; }
+}

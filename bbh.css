@@ -7,11 +7,13 @@
    ============================================================ */
 
 :root{
-  --paper-1:#f4ede1; --paper-2:#ece3d4; --peach:#f7e6d3;
-  --ink:#211d18; --ink-soft:#6a6055; --ink-faint:#9a9082;
-  --dark:#26231f;
+  --paper-1:#f1eade; --paper-2:#e7dfd1; --peach:#f6e3cd;
+  --ink:#1b1714; --ink-soft:#645a50; --ink-faint:#9b9084;
+  --dark:#221e1a;
   --accent:#1f857a; --accent-deep:#166b62; --accent-tint:#2f9e91;
-  --nav:64px;
+  --nav:66px;
+  /* the Kunder brief names the same two papers without the numbers */
+  --paper:var(--paper-1);
   --sys:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Helvetica Neue",Helvetica,sans-serif;
   /* the older sheet paints everything from these; moving them keeps one page */
   --ax-bg:var(--paper-1); --ax-ink:var(--ink); --ax-soft:var(--ink-soft);
@@ -102,7 +104,7 @@ body{ font-family:var(--sys); color:var(--ink);
 
 /* the veil closes the stage into --paper-2, so the section that follows opens
    in that same tone and walks back to the page's own paper */
-#kunder{ background:linear-gradient(180deg, var(--paper-2) 0, var(--paper-1) 46vh); }
+.scene.intro{ background:linear-gradient(180deg, var(--paper-2) 0, var(--paper-1) 46vh); }
 
 @media(max-width:860px){
   .scene{ height:270vh; }
