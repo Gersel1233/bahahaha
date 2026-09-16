@@ -630,6 +630,9 @@ body::after{ content:none; }
 .dro-stick{ position:sticky; top:0; height:100vh; height:100lvh; overflow:hidden;
   pointer-events:none; background:#0e0c0a; will-change:opacity; }
 .khero{ position:relative; z-index:1; }
+/* the flight is the headline's entrance, so neither the real one nor the copy
+   carries a move of its own — the copy's lines are placed by the scroll */
+.khero.no-rise .khl i, .khero.no-rise .kmeta{ transition:none; }
 .dro-vid{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
 .dro-brand{ position:absolute; inset:0; display:flex; flex-direction:column; align-items:center;
   justify-content:center; pointer-events:none; will-change:opacity; }

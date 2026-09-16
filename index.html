@@ -18,7 +18,7 @@
 <link rel="preload" as="font" type="font/woff2" href="fonts/barlow-normal-400.woff2" crossorigin />
 <link rel="preload" as="font" type="font/woff2" href="fonts/kanit-normal-900.woff2" crossorigin />
 <link rel="stylesheet" href="styles.css?v=44" />
-<link rel="stylesheet" href="lesreg.css?v=52" />
+<link rel="stylesheet" href="lesreg.css?v=53" />
 </head>
 <body>
 
@@ -344,16 +344,23 @@
       /* Built once, at load. Cloning a headline costs a frame, and a frame
          spent in the middle of the flight is the one thing the scroll cannot
          afford — so it is spent here, where nothing is moving yet. */
-      var dHero=false, dhr=document.getElementById('droHero'), dhK=null;
+      var dhr=document.getElementById('droHero'), dhK=null, dhL=null, dhM=null, dHLast=-1;
+      /* the real headline sits in its finished state behind the film, with no
+         move of its own — the copy above does the writing */
+      if(hero) hero.classList.add('go','no-rise');
       function dHeroBuild(){
         if(!dhr || !hero) return;
         dhr.innerHTML='';
         dhK=hero.cloneNode(true);
         dhK.removeAttribute('id');
         [].slice.call(dhK.querySelectorAll('[id]')).forEach(function(c){ c.removeAttribute('id'); });
-        dhK.classList.remove('go');
-        if(dHero) dhK.classList.add('go');
+        dhK.classList.add('go','no-rise');
         dhr.appendChild(dhK);
+        dhL=dhK.querySelectorAll('.kh .khl i');
+        dhM=dhK.querySelector('.kmeta');
+        for(var i=0;i<dhL.length;i++) dhL[i].style.transform='translate3d(0,112%,0)';
+        if(dhM){ dhM.style.opacity='0'; dhM.style.transform='translate3d(0,20px,0)'; }
+        dHLast=-1;
       }
       dHeroBuild();
       [].slice.call(document.querySelectorAll('[data-lang-btn]')).forEach(function(b){
@@ -379,11 +386,13 @@
          arriving and handing over are one moment, and scrolling on from it
          simply carries the page up — no stretch of scroll where nothing
          happens, and no jump. Measured, so the two can never drift apart. */
-      var dArr=1;
+      var dArr=1, dFin=.72, dWri=.74;
       function dMeasure(){
         dTop=dtr.offsetTop;
         dRange=Math.max(1,dtr.offsetHeight-dst.offsetHeight);
         dArr=Math.max(.4,Math.min(1,((hero?hero.offsetTop:dRange)-dTop)/dRange));
+        dFin=dArr*.88;              /* the flight is over here; the rest is the headline */
+        dWri=dArr*.905;             /* and here it starts writing itself in */
       }
       window.addEventListener('resize',function(){ dMeasure(); dSize(); },{passive:true});
       dMeasure();
@@ -404,7 +413,7 @@
              instead of simply stopping wherever the reader's finger stops.
              The last stretch of the track barely moves the picture, which is
              what makes the arrival read as an arrival. */
-          var q=1-Math.pow(1-Math.min(1,pc/dArr),1.9);
+          var q=1-Math.pow(1-Math.min(1,pc/dFin),1.9);
           dTarget=q*dDur;
           /* only touch the DOM when a value actually changes — writing every
              frame costs a style recalc and reads as jitter */
@@ -436,18 +445,37 @@
              that same colour in exact terms, laid over the film's compressed
              version of it, so the moment the layer goes there is nothing to
              see — not even a shift in tone. */
-          var fa=+Math.max(0,Math.min(1,(q-.86)/.09)).toFixed(3);
+          /* the film has landed on the screen's own paper by now, so this is
+             only that same colour in exact terms — beige laid on beige */
+          var fa=+Math.max(0,Math.min(1,(pc-(dFin-.015))/(dArr-dFin)*3.2)).toFixed(3);
           if(fa!==dFaLast){ dFaLast=fa; dfa.style.opacity=fa; }
-          /* Once that field is solid the headline writes itself into it, in
-             the place it will still be standing when the film is gone. The
-             copy on the film and the real one below are given the move at the
-             same instant, so they are in the same state at every moment —
-             the handover can land mid-rise and still show nothing. */
-          if(q>.95 && !dHero){ dHero=true; if(dhK) dhK.classList.add('go'); go(); }
-          /* it belongs to the paper, so it only shows while the paper does —
-             scroll back into the room and it goes with the field */
-          var hv=q>.94;
+          /* Once the flight has landed on that field, the rest of the track
+             belongs to the headline: it writes itself in under the same
+             scroll that flew in, line after line, rather than playing a
+             clip of its own once the scrolling is over. */
+          var h=(pc-dWri)/(dArr-dWri);
+          /* The layer is switched on long before it has anything to show —
+             its lines are still pushed below their own clip and the line
+             under them is transparent — so the frame that first draws it is
+             spent early, not on the one where the writing begins. */
+          var hv=pc>dFin*.55;
           if(hv!==dHvLast){ dHvLast=hv; dhr.classList.toggle('on', hv); }
+          if(hv && dhL){
+            h=Math.max(0,Math.min(1,h));
+            if(Math.abs(h-dHLast)>.002){
+              dHLast=h;
+              for(var li=0; li<dhL.length; li++){
+                var u=Math.max(0,Math.min(1,(h-li*.13)/.60));
+                u=1-Math.pow(1-u,3);
+                dhL[li].style.transform='translate3d(0,'+((1-u)*112).toFixed(2)+'%,0)';
+              }
+              if(dhM){
+                var um=Math.max(0,Math.min(1,(h-.44)/.56)); um=1-Math.pow(1-um,3);
+                dhM.style.opacity=um.toFixed(3);
+                dhM.style.transform='translate3d(0,'+((1-um)*20).toFixed(1)+'px,0)';
+              }
+            }
+          }
           /* Hand over at the exact scroll where the hero behind lands on the
              top of the screen. A hair early and the real page is still a few
              pixels low, which is the jump this arrangement exists to avoid. */
