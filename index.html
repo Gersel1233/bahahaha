@@ -13,6 +13,7 @@
 <meta name="twitter:card" content="summary_large_image" />
 <link rel="icon" type="image/svg+xml" href="favicon.svg?v=1" />
 <link rel="mask-icon" href="favicon.svg?v=1" color="#0f9b8e" />
+<link rel="preload" as="font" type="font/woff2" href="fonts/greatvibes-latin-400.woff2" crossorigin />
 <link rel="preload" as="font" type="font/woff2" href="fonts/sora-latin-600.woff2" crossorigin />
 <link rel="preload" as="font" type="font/woff2" href="fonts/instrumentserif-italic-400.woff2" crossorigin />
 <link rel="preload" as="font" type="font/woff2" href="fonts/barlow-normal-400.woff2" crossorigin />
@@ -20,6 +21,7 @@
 <link rel="stylesheet" href="lesreg.css?v=53" />
 <link rel="stylesheet" href="bbh.css?v=4" />
 <link rel="stylesheet" href="kunder.css?v=4" />
+<link rel="stylesheet" href="script.css?v=5" />
 </head>
 <body>
 
@@ -78,7 +80,7 @@
 
   <!-- ===================== HERO — the statement (Koto) ===================== -->
   <header id="top" class="khero" data-screen-label="hero">
-    <h1 class="kh">
+    <h1 class="kh liquid-script">
       <span class="khl"><i data-da="Bedre.">Better.</i></span>
       <span class="khl"><i data-da="Billigere.">Cheaper.</i></span>
       <span class="khl"><i data-da="Hurtigere<span class=&quot;em&quot;>.</span>">Faster<span class="em">.</span></i></span>
@@ -419,6 +421,12 @@
       }
       window.addEventListener('resize',function(){ dMeasure(); dSize(); },{passive:true});
       dMeasure();
+      /* the headline is set in a webfont, and it changes height the moment
+         that font arrives — so the landing point is measured again then, or
+         the flight would hand over to a hero that has since moved */
+      if(document.fonts && document.fonts.ready){
+        document.fonts.ready.then(function(){ dMeasure(); dHeroBuild(); });
+      }
       function dNav(hide){ if(hide!==dNavHid){ dNavHid=hide; document.body.classList.toggle('dro-on',hide); } }
       dNav(true);
 
@@ -621,6 +629,7 @@
             started=true;
             window.addEventListener('resize', measure, {passive:true});
             window.addEventListener('load', measure);
+            if(document.fonts && document.fonts.ready) document.fonts.ready.then(measure);
             document.addEventListener('visibilitychange', function(){
               t0=null;
               if(document.visibilityState!=='visible'){
