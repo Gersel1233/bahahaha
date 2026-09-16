@@ -60,9 +60,10 @@ body{ font-family:var(--sys); color:var(--ink);
 /* ============================================================
    KONCEPTET — one sticky stage, everything moved by the scroll
    ============================================================ */
-/* Two screens of scroll drives the whole sequence. Longer than that and the
-   section stops being a move and becomes a wait. */
-.scene{ position:relative; height:300vh; background:var(--paper-1); }
+/* The scroll span is cut to what the sequence actually needs. The last card
+   lands right before the stage lets go, so the moment the section is finished
+   it is also out of the way. */
+.scene{ position:relative; height:230vh; background:var(--paper-1); }
 .stage{ position:sticky; top:0; height:100vh; overflow:hidden;
   display:flex; align-items:center; justify-content:center;
   perspective:1500px; perspective-origin:50% 44%; }
@@ -70,12 +71,12 @@ body{ font-family:var(--sys); color:var(--ink);
   transform:translateX(-50%); pointer-events:none; will-change:transform,opacity;
   background:radial-gradient(60% 55% at 50% 40%, var(--peach) 0%, transparent 72%); }
 .inner{ position:relative; z-index:1; transform-style:preserve-3d; will-change:transform;
-  width:min(1180px,calc(100% - clamp(20px,6vw,72px))); text-align:center; }
+  width:min(1400px,calc(100% - clamp(20px,5vw,96px))); text-align:center; }
 .veil{ position:absolute; inset:0; pointer-events:none; opacity:0; will-change:opacity;
   background:linear-gradient(180deg, transparent 0%, var(--paper-2) 78%); }
 
 .scene h1{ margin:0; font-weight:700; color:var(--ink);
-  font-size:clamp(40px,8.4vw,116px); line-height:.94; letter-spacing:-.045em; }
+  font-size:clamp(40px,9vw,168px); line-height:.94; letter-spacing:-.045em; }
 .scene h1 .w{ display:inline-block; white-space:pre; }
 .scene h1 .w > span{ display:inline-block; opacity:0; will-change:transform,opacity,filter; }
 .lede{ margin:clamp(14px,2.2vh,24px) auto 0; max-width:42ch; opacity:0;
@@ -104,7 +105,7 @@ body{ font-family:var(--sys); color:var(--ink);
 #kunder{ background:linear-gradient(180deg, var(--paper-2) 0, var(--paper-1) 46vh); }
 
 @media(max-width:860px){
-  .scene{ height:340vh; }
+  .scene{ height:270vh; }
   .cards{ grid-template-columns:1fr; gap:10px; }
   .card{ padding:18px 20px; border-radius:18px; }
 }
@@ -172,8 +173,18 @@ body{ font-family:var(--sys); color:var(--ink);
   letter-spacing:-.024em; color:var(--ink); margin-bottom:8px; }
 .way-list p{ margin:0; font-size:clamp(14.5px,1.35vw,17px); line-height:1.55; color:var(--ink-soft); }
 
-.kh{ font-weight:700; text-transform:none;
-  font-size:clamp(40px,8.4vw,116px); line-height:.94; letter-spacing:-.045em; }
+/* The hero statement is the page's one big gesture, so it is sized to the
+   glass: as wide as the screen allows, held back only by the height the three
+   lines and the strip under them actually need. The room around it is cut
+   back to the least the bar and the strip can live with, because every pixel
+   given to padding is a pixel taken off the type. */
+.khero{ padding:84px clamp(18px,4vw,48px) clamp(24px,3.4vh,40px); }
+.kh{ font-weight:700; text-transform:none; padding-top:clamp(10px,2.2vh,26px);
+  font-size:clamp(44px, min(20vw, calc((100vh - 230px) / 2.8)), 420px);
+  line-height:.92; letter-spacing:-.045em; }
+@media(max-width:700px){
+  .kh{ font-size:clamp(40px, min(19vw, calc((100vh - 200px) / 2.8)), 120px); }
+}
 .kh .em{ color:var(--accent); }
 .kmeta{ font-size:13.5px; letter-spacing:-.006em; }
 .abtn{ font-family:var(--sys); font-weight:600; letter-spacing:-.01em; }
