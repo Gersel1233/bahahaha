@@ -16,11 +16,9 @@
 <link rel="preload" as="font" type="font/woff2" href="fonts/sora-latin-600.woff2" crossorigin />
 <link rel="preload" as="font" type="font/woff2" href="fonts/instrumentserif-italic-400.woff2" crossorigin />
 <link rel="preload" as="font" type="font/woff2" href="fonts/barlow-normal-400.woff2" crossorigin />
-<link rel="preload" as="font" type="font/woff2" href="fonts/inter-latin-700.woff2" crossorigin />
-<link rel="preload" as="font" type="font/woff2" href="fonts/inter-latin-400.woff2" crossorigin />
 <link rel="stylesheet" href="styles.css?v=45" />
 <link rel="stylesheet" href="lesreg.css?v=53" />
-<link rel="stylesheet" href="bbh.css?v=1" />
+<link rel="stylesheet" href="bbh.css?v=2" />
 </head>
 <body>
 
@@ -91,29 +89,33 @@
     </div>
   </header>
 
-  <!-- ===================== THE IDEA — three words, and what they cost us to mean =====================
-       Each claim is paired with the reason it is true here, so it reads as a
-       way of working rather than a boast. -->
-  <section class="s bbh center" id="bbh" data-screen-label="idea">
-    <div class="s-inner">
-      <p class="gk reveal" data-da="Konceptet">The idea</p>
-      <h2 class="sec-h reveal" data-da="Tre ord. Ingen omsvøb.">Three words. Nothing wrapped up.</h2>
-      <p class="sec-p reveal d1" data-da="Vi bygger og driver software for virksomheder. Det er hele forretningen &mdash; og det er derfor de tre ord kan lade sig gøre.">We build and run software for businesses. That is the whole business &mdash; and it is why the three words hold.</p>
-
-      <div class="bbh-grid">
-        <article class="bbh-card reveal">
-          <span class="bbh-w" data-da="Bedre">Better</span>
-          <p data-da="Vi designer, bygger og driver det hele selv. Ingen underleverand&oslash;rer, ingen skabelon &mdash; og <em>vi retter, til det er, som I vil have det.</em>">We design, build and run all of it ourselves. No subcontractors, no template &mdash; and <em>we keep fixing until it is the way you want it.</em></p>
-        </article>
-        <article class="bbh-card reveal d1">
-          <span class="bbh-w" data-da="Billigere">Cheaper</span>
-          <p data-da="Der er ingen bureau-overhead at betale for. <em>&Eacute;n fast pris, aftalt p&aring; forh&aring;nd</em> &mdash; og ingen kommission af jeres oms&aelig;tning.">There is no agency overhead to pay for. <em>One fixed price, agreed up front</em> &mdash; and no commission on your revenue.</p>
-        </article>
-        <article class="bbh-card reveal d2">
-          <span class="bbh-w" data-da="Hurtigere">Faster</span>
-          <p data-da="I taler direkte med den, der bygger det. Der er ingen led imellem, s&aring; <em>en rettelse tager timer, ikke uger.</em>">You talk straight to the person building it. Nothing sits in between, so <em>a change takes hours, not weeks.</em></p>
-        </article>
+  <!-- ===================== THE IDEA — one stage, moved entirely by the scroll =====================
+       The section is a long sticky stage: the camera dollies in, the headline
+       writes itself word by word, then steps back as the three cards rise
+       through it. Every value comes from the scroll, so it can be read at any
+       speed and in both directions. -->
+  <section class="scene" id="bbh" data-screen-label="idea">
+    <div class="stage">
+      <div class="glow" aria-hidden="true"></div>
+      <div class="inner">
+        <h1 data-split data-da="Tre ord. Ingen omsvøb.">Three words. Nothing wrapped up.</h1>
+        <p class="lede" data-da="Vi bygger og driver software for virksomheder. Det er <b>hele forretningen</b> &mdash; og derfor kan de tre ord lade sig g&oslash;re.">We build and run software for businesses. That is <b>the whole business</b> &mdash; and it is why the three words hold.</p>
+        <div class="cards">
+          <article class="card">
+            <h2 data-split data-da="Bedre">Better</h2>
+            <p data-da="Vi designer, bygger og driver det hele selv. Ingen underleverand&oslash;rer, ingen skabelon &mdash; og <b>vi retter, til det er, som I vil have det.</b>">We design, build and run all of it ourselves. No subcontractors, no template &mdash; and <b>we keep fixing until it is the way you want it.</b></p>
+          </article>
+          <article class="card">
+            <h2 data-split data-da="Billigere">Cheaper</h2>
+            <p data-da="Der er ingen bureau-overhead at betale for. <b>&Eacute;n fast pris, aftalt p&aring; forh&aring;nd</b> &mdash; og ingen kommission af jeres oms&aelig;tning.">There is no agency overhead to pay for. <b>One fixed price, agreed up front</b> &mdash; and no commission on your revenue.</p>
+          </article>
+          <article class="card">
+            <h2 data-split data-da="Hurtigere">Faster</h2>
+            <p data-da="I taler direkte med den, der bygger det. Der er ingen led imellem, s&aring; <b>en rettelse tager timer, ikke uger.</b>">You talk straight to the person building it. Nothing sits in between, so <b>a change takes hours, not weeks.</b></p>
+          </article>
+        </div>
       </div>
+      <div class="veil" aria-hidden="true"></div>
     </div>
   </section>
 
@@ -511,6 +513,163 @@
       /* safety: if the video never becomes seekable, the site must not hide —
          the fade overlay and hero gate above run regardless of video state */
     } else { go(); }
+
+    /* ---------- KONCEPTET — one stage, one loop ----------
+       The section is five screens of scroll with a single sticky stage inside
+       it. Everything on the stage — the camera, the headline, the cards, the
+       light behind them — is one function of how far that scroll has run, so
+       it reads the same at any speed and plays backwards just as well.
+
+       The scroll position is not used raw: it is chased by a lerp, and that
+       damping is the whole reason it feels smooth rather than tied to the
+       wheel. Only transform, opacity and filter are touched — nothing in the
+       loop can cost a layout. */
+    var scn=document.getElementById('bbh');
+    if(scn){
+      var stg=scn.querySelector('.stage'), inr=scn.querySelector('.inner'),
+          glw=scn.querySelector('.glow'), vei=scn.querySelector('.veil'),
+          sHd=scn.querySelector('h1'),    sLe=scn.querySelector('.lede'),
+          sCd=[].slice.call(scn.querySelectorAll('.card'));
+      var sW=[], sCW=[], sCP=[];
+
+      /* each word gets its own layer: the outer span keeps the spacing, the
+         inner one is what tips, blurs and rises */
+      function sSplit(el){
+        if(!el) return [];
+        var chunks=(el.textContent||'').match(/\S+\s*/g)||[], out=[];
+        var frag=document.createDocumentFragment();
+        chunks.forEach(function(ch){
+          var word=ch.replace(/\s+$/,''), tail=ch.slice(word.length);
+          var w=document.createElement('span'); w.className='w';
+          var s=document.createElement('span'); s.textContent=word;
+          w.appendChild(s);
+          if(tail) w.appendChild(document.createTextNode(tail));
+          frag.appendChild(w); out.push(s);
+        });
+        el.textContent=''; el.appendChild(frag);
+        return out;
+      }
+      function sBuild(){
+        sW=sSplit(sHd);
+        sCW=sCd.map(function(c){ return sSplit(c.querySelector('h2')); });
+        sCP=sCd.map(function(c){ return c.querySelector('p'); });
+      }
+      /* the stage starts hidden in CSS, so it must never be left to the loop
+         alone — this is the state it falls back to if nothing is animating */
+      function sBase(){
+        var all=[sLe].concat(sW, sCd, sCP);
+        sCW.forEach(function(a){ all=all.concat(a); });
+        all.forEach(function(n){ if(!n) return;
+          n.style.opacity='1'; n.style.transform='none'; n.style.filter='none';
+          n._op='1'; n._tr='none'; n._fl='none'; });
+        if(inr){ inr.style.transform='none'; inr._tr='none'; }
+      }
+
+      if(reduce){ sBuild(); sBase(); }
+      else{
+        var sOut =function(t){ return 1-Math.pow(1-t,3); },
+            sIo  =function(t){ return t<.5 ? 4*t*t*t : 1-Math.pow(-2*t+2,3)/2; },
+            sFilm=function(t){ return 1-Math.pow(1-t,4.2); };   /* quick off the mark, long tail */
+        function sSeg(s,a,b){ return Math.max(0,Math.min(1,(s-a)/(b-a))); }
+        /* write only what changed — a style write the browser has already got
+           still costs a recalculation */
+        function sSet(n,tr,op,fl){
+          if(!n) return;
+          if(tr!==null && n._tr!==tr){ n._tr=tr; n.style.transform=tr; }
+          if(op!==null && n._op!==op){ n._op=op; n.style.opacity=op; }
+          if(fl!==undefined && n._fl!==fl){ n._fl=fl; n.style.filter=fl; }
+        }
+        sBuild(); sBase();
+
+        function sPaint(s){
+          /* the camera moves in once, at the very start */
+          var d=sFilm(sSeg(s,0,.16));
+          sSet(inr,'translate3d(0,'+((1-d)*24).toFixed(2)+'px,0) translateZ('+(-320*(1-d)).toFixed(1)+'px)',null);
+
+          /* and the headline steps back out of the way as the cards arrive */
+          var r=sIo(sSeg(s,.42,.84));
+          sSet(sHd,'translate3d(0,'+(-5*r).toFixed(3)+'vh,0) scale('+(1-.09*r).toFixed(4)+')',(1-.32*r).toFixed(3));
+
+          for(var i=0;i<sW.length;i++){
+            var t=sFilm(sSeg(s,.04+i*.03,.26+i*.03));
+            sSet(sW[i],
+              'translate3d(0,'+((1-t)*.9).toFixed(3)+'em,0) rotateX('+(-58*(1-t)).toFixed(2)+'deg) scale('+(.91+.09*t).toFixed(4)+')',
+              t.toFixed(3), t>=1?'none':'blur('+(14*(1-t)).toFixed(2)+'px)');
+          }
+
+          var lt=sOut(sSeg(s,.26,.42));
+          sSet(sLe,'translate3d(0,'+((1-lt)*24).toFixed(2)+'px,0)',
+            (lt*(1-.8*r)).toFixed(3), r<=0?'none':'blur('+(4*r).toFixed(2)+'px)');
+
+          for(i=0;i<sCd.length;i++){
+            var ct=sIo(sSeg(s,.46+i*.08,.86+i*.08));
+            sSet(sCd[i],
+              'translate3d(0,'+((1-ct)*90).toFixed(2)+'px,0) rotateX('+(12*(1-ct)).toFixed(2)+'deg) scale('+(.93+.07*ct).toFixed(4)+')',
+              ct.toFixed(3), ct>=1?'none':'blur('+(8*(1-ct)).toFixed(2)+'px)');
+            var ws=sCW[i]||[];
+            for(var j=0;j<ws.length;j++){
+              var wt=sFilm(sSeg(s,.52+i*.08,.82+i*.08));
+              sSet(ws[j],
+                'translate3d(0,'+((1-wt)*.62).toFixed(3)+'em,0) rotateX('+(-52*(1-wt)).toFixed(2)+'deg)',
+                wt.toFixed(3), wt>=1?'none':'blur('+(9*(1-wt)).toFixed(2)+'px)');
+            }
+            var pt=sOut(sSeg(s,.60+i*.08,.92+i*.08));
+            sSet(sCP[i],'translate3d(0,'+((1-pt)*14).toFixed(2)+'px,0)',pt.toFixed(3));
+          }
+
+          /* the light behind it all drifts up and opens out the whole way */
+          sSet(glw,'translate3d(-50%,'+(-14*s).toFixed(3)+'vh,0) scale('+(1+.26*s).toFixed(4)+')',
+            (.9-.5*s).toFixed(3));
+          /* and the last stretch closes the stage into the next section */
+          sSet(vei,null,sSeg(s,.9,1).toFixed(3));
+        }
+
+        var sTop=0, sSpan=1, sLead=0, sSm=0, sT0=null, sLast=-1, sIntroOn=null;
+        /* The timeline starts while the stage is still sliding into view, not
+           only once it is pinned — otherwise the first screen of the section
+           is a blank field of paper waiting for a scroll that has already
+           happened. */
+        function sMeasure(){
+          sTop=scn.offsetTop;
+          sSpan=Math.max(1, scn.offsetHeight-stg.offsetHeight);
+          sLead=Math.round(window.innerHeight*0.62);
+        }
+        sMeasure();
+        window.addEventListener('resize', sMeasure, {passive:true});
+        window.addEventListener('load', sMeasure);
+
+        function sLoop(now){
+          requestAnimationFrame(sLoop);
+          /* a hidden tab gets no work at all, and no stale clock when it returns */
+          if(document.visibilityState!=='visible'){ sT0=null; return; }
+          if(sT0===null){ sT0=now; }
+          var intro=sOut(Math.min(1,(now-sT0)/900));
+          var y=window.scrollY||window.pageYOffset;
+          var p=Math.max(0,Math.min(1,(y-sTop+sLead)/(sSpan+sLead)));
+          sSm+=(p-sSm)*0.12;
+          if(Math.abs(p-sSm)<0.0004) sSm=p;
+          /* The opening beat plays by itself for someone who lands inside the
+             section — a reload, or a link straight to it. Arriving down the
+             page instead, the scroll owns the whole timeline, so the section
+             never holds still while it is being scrolled through. */
+          if(sIntroOn===null) sIntroOn = p>0.02 && p<0.999;
+          var s=sIntroOn ? Math.max(sSm, intro*0.3) : sSm;
+          if(Math.abs(s-sLast)>0.0004){ sLast=s; sPaint(s); }
+        }
+        requestAnimationFrame(sLoop);
+
+        document.addEventListener('visibilitychange', function(){
+          sT0=null;
+          if(document.visibilityState!=='visible') sBase();   /* never leave it blank */
+          else sLast=-1;
+        });
+        /* the language switch rewrites the text, so the words have to be cut
+           apart again and the stage repainted where the scroll is now */
+        [].slice.call(document.querySelectorAll('[data-lang-btn]')).forEach(function(b){
+          b.addEventListener('click', function(){ sBuild(); sLast=-1; });
+        });
+      }
+    }
 
     /* statements light up character by character with the scroll —
        and always finish before the page runs out of scroll */

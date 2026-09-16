@@ -1,114 +1,180 @@
 /* ============================================================
-   LESREG — the showcase layer.
+   LESREG — header + Konceptet.
 
-   One neutral grotesque for everything, set the way a product page
-   sets it: very large, very tight, centred, with air doing the work
-   instead of rules and boxes. Loaded after lesreg.css, so it keeps
-   the parts that still hold — the nav, the flight, the device scene —
-   and replaces the voice of the page around them.
+   Built to the brief: system type, one sticky stage, one rAF loop.
+   Loaded after lesreg.css, so it keeps what still holds — the flight,
+   the device scene, the finale — and replaces the voice around them.
    ============================================================ */
 
-@font-face{ font-family:'Inter'; font-style:normal; font-weight:300; font-display:swap;
-  src:url('fonts/inter-latin-300.woff2') format('woff2'); }
-@font-face{ font-family:'Inter'; font-style:normal; font-weight:400; font-display:swap;
-  src:url('fonts/inter-latin-400.woff2') format('woff2'); }
-@font-face{ font-family:'Inter'; font-style:normal; font-weight:500; font-display:swap;
-  src:url('fonts/inter-latin-500.woff2') format('woff2'); }
-@font-face{ font-family:'Inter'; font-style:normal; font-weight:600; font-display:swap;
-  src:url('fonts/inter-latin-600.woff2') format('woff2'); }
-@font-face{ font-family:'Inter'; font-style:normal; font-weight:700; font-display:swap;
-  src:url('fonts/inter-latin-700.woff2') format('woff2'); }
+:root{
+  --paper-1:#f4ede1; --paper-2:#ece3d4; --peach:#f7e6d3;
+  --ink:#211d18; --ink-soft:#6a6055; --ink-faint:#9a9082;
+  --dark:#26231f;
+  --accent:#1f857a; --accent-deep:#166b62; --accent-tint:#2f9e91;
+  --nav:64px;
+  --sys:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Helvetica Neue",Helvetica,sans-serif;
+  /* the older sheet paints everything from these; moving them keeps one page */
+  --ax-bg:var(--paper-1); --ax-ink:var(--ink); --ax-soft:var(--ink-soft);
+  --ax-faint:var(--ink-faint); --ax-line:color-mix(in srgb, var(--ink) 12%, transparent);
+  --ax-spruce:var(--accent);
+}
 
-:root{ --gr:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif; }
+html, body{ background:var(--paper-1); }
+body{ font-family:var(--sys); color:var(--ink);
+  -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; }
+.brand-l, .gn-links a, .gn-cta, .langsw button, .abtn, .kh, .kmeta{ font-family:var(--sys); }
 
-body, .brand-l, .gn-links a, .gn-cta, .langsw button{ font-family:var(--gr); }
-body{ -webkit-font-smoothing:antialiased; }
+/* ---------- the bar ---------- */
+.nav{ height:var(--nav); padding:0 clamp(16px,3.4vw,40px); gap:20px;
+  background:color-mix(in srgb, var(--paper-1) 72%, transparent);
+  -webkit-backdrop-filter:saturate(180%) blur(20px); backdrop-filter:saturate(180%) blur(20px);
+  border-bottom:1px solid color-mix(in srgb, var(--ink) 8%, transparent); }
+.nav.scrolled{ background:color-mix(in srgb, var(--paper-1) 86%, transparent);
+  border-bottom-color:color-mix(in srgb, var(--ink) 8%, transparent); }
+.brand-l{ font-size:20px; font-weight:600; letter-spacing:-.022em; gap:9px; }
+.brand-l .orbm{ --s:26px; border-radius:8px; padding:0;
+  background:linear-gradient(150deg,var(--accent-tint),var(--accent-deep));
+  box-shadow:0 2px 8px -3px rgba(22,107,98,.6); }
+.brand-l .orbm i{ background:#fff; opacity:.95; }
+.brand-l .orbm .c{ background:#fff; opacity:1; }
+.gn-links{ gap:4px; }
+.gn-links a{ font-size:15px; font-weight:500; color:var(--ink-soft); padding:7px 11px; }
+.gn-links a:hover{ color:var(--ink); background:color-mix(in srgb, var(--ink) 5%, transparent); }
+.gn-cta{ background:var(--dark); color:#faf6ef; font-size:14px; font-weight:600;
+  padding:9px 16px; letter-spacing:-.008em;
+  -webkit-backdrop-filter:none; backdrop-filter:none; }
+.langsw button{ font-family:var(--sys); font-size:11.5px; }
 
-/* ---------- the statement ---------- */
-.kh{ font-family:var(--gr); font-weight:700; text-transform:none;
-  font-size:clamp(3.1rem,10.2vw,9.5rem); line-height:.98; letter-spacing:-.045em; }
-.kh .em{ color:var(--ax-spruce); }
-.kmeta{ font-size:clamp(13px,1.35vw,15.5px); letter-spacing:-.005em; }
+/* the reading progress sits on top of the bar */
+#sprog{ height:3px; }
+#sprog i{ background:linear-gradient(90deg,var(--accent-tint),var(--accent-deep)); }
 
-/* ---------- sections: centred, generous, no furniture ---------- */
+/* ---------- the line under the bar ---------- */
+.meta{ display:flex; align-items:center; justify-content:space-between; gap:20px;
+  width:min(1180px,calc(100% - clamp(20px,6vw,72px))); margin:0 auto;
+  padding:14px 0; font-size:13.5px; letter-spacing:-.006em; color:var(--ink-faint);
+  border-bottom:1px solid color-mix(in srgb, var(--ink) 8%, transparent); }
+.meta b{ color:var(--ink); font-weight:600; }
+@media(max-width:860px){ .meta .meta-r{ display:none; } }
+
+/* ============================================================
+   KONCEPTET — one sticky stage, everything moved by the scroll
+   ============================================================ */
+.scene{ position:relative; height:560vh; background:var(--paper-1); }
+.stage{ position:sticky; top:0; height:100vh; overflow:hidden;
+  display:flex; align-items:center; justify-content:center;
+  perspective:1500px; perspective-origin:50% 44%; }
+.glow{ position:absolute; left:50%; top:-18vh; width:min(1500px,140vw); height:110vh;
+  transform:translateX(-50%); pointer-events:none; will-change:transform,opacity;
+  background:radial-gradient(60% 55% at 50% 40%, var(--peach) 0%, transparent 72%); }
+.inner{ position:relative; z-index:1; transform-style:preserve-3d; will-change:transform;
+  width:min(1180px,calc(100% - clamp(20px,6vw,72px))); text-align:center; }
+.veil{ position:absolute; inset:0; pointer-events:none; opacity:0; will-change:opacity;
+  background:linear-gradient(180deg, transparent 0%, var(--paper-2) 78%); }
+
+.scene h1{ margin:0; font-weight:700; color:var(--ink);
+  font-size:clamp(40px,8.4vw,116px); line-height:.94; letter-spacing:-.045em; }
+.scene h1 .w{ display:inline-block; white-space:pre; }
+.scene h1 .w > span{ display:inline-block; opacity:0; will-change:transform,opacity,filter; }
+.lede{ margin:clamp(14px,2.2vh,24px) auto 0; max-width:42ch; opacity:0;
+  font-size:clamp(16px,1.35vw,21px); line-height:1.55; letter-spacing:-.012em;
+  color:var(--ink-soft); will-change:transform,opacity,filter; }
+.lede b{ color:var(--ink); font-weight:600; }
+
+.cards{ display:grid; grid-template-columns:repeat(3,1fr); gap:clamp(12px,1.4vw,22px);
+  margin-top:clamp(18px,3vh,34px); text-align:left; }
+.card{ opacity:0; padding:clamp(22px,2.2vw,30px) clamp(20px,2vw,28px); border-radius:24px;
+  background:linear-gradient(180deg,#fffdf9,#f8f1e6);
+  border:1px solid color-mix(in srgb, var(--ink) 7%, transparent);
+  box-shadow:0 30px 60px -30px rgba(33,29,24,.28), 0 2px 6px rgba(33,29,24,.05);
+  will-change:transform,opacity,filter; }
+.card h2{ margin:0 0 10px; font-weight:700; color:var(--ink);
+  font-size:clamp(26px,2.9vw,42px); line-height:1.02; letter-spacing:-.038em; }
+.card h2 .w{ display:inline-block; white-space:pre; }
+.card h2 .w > span{ display:inline-block; opacity:0; will-change:transform,opacity,filter; }
+.card p{ margin:0; opacity:0; color:var(--ink-soft);
+  font-size:clamp(14px,1.05vw,16.5px); line-height:1.55; letter-spacing:-.006em;
+  will-change:transform,opacity; }
+.card p b{ color:var(--ink); font-weight:600; }
+
+/* the veil closes the stage into --paper-2, so the section that follows opens
+   in that same tone and walks back to the page's own paper */
+#kunder{ background:linear-gradient(180deg, var(--paper-2) 0, var(--paper-1) 46vh); }
+
+@media(max-width:860px){
+  .scene{ height:700vh; }
+  .cards{ grid-template-columns:1fr; gap:10px; }
+  .card{ padding:18px 20px; border-radius:18px; }
+}
+
+/* the stage does its own placing, so nothing here answers to a viewer */
+@media (prefers-reduced-motion: reduce){
+  .scene{ height:auto; }
+  .stage{ position:static; height:auto; padding:12vh 0; perspective:none; }
+  .scene h1 .w > span, .lede, .card, .card h2 .w > span, .card p{
+    opacity:1 !important; transform:none !important; filter:none !important; }
+  .glow{ opacity:.55; } .veil{ opacity:1; }
+}
+
+/* ============================================================
+   the sections that follow, in the same quiet voice
+   ============================================================ */
 .s{ padding:clamp(96px,15vh,190px) 0; }
 .s-inner{ width:min(1120px,calc(100% - clamp(20px,6vw,80px))); margin:0 auto; }
 .gk{ font-size:12px; font-weight:600; letter-spacing:.16em; text-transform:uppercase;
-  color:var(--ax-faint); margin:0 0 20px; }
+  color:var(--ink-faint); margin:0 0 20px; }
 .sec-h{ margin:0; font-weight:700; letter-spacing:-.04em; line-height:1.03;
-  font-size:clamp(2.1rem,5.4vw,4.4rem); color:var(--ax-ink); }
-.sec-p{ margin:22px auto 0; max-width:36ch; font-size:clamp(16px,1.75vw,21px);
-  line-height:1.5; color:var(--ax-soft); font-weight:400; letter-spacing:-.01em; }
+  font-size:clamp(2.1rem,5.4vw,4.4rem); color:var(--ink); }
+.sec-p{ margin:22px auto 0; max-width:42ch; font-size:clamp(16px,1.35vw,21px);
+  line-height:1.55; color:var(--ink-soft); letter-spacing:-.012em; }
 .center{ text-align:center; }
-.center .sec-p{ margin-left:auto; margin-right:auto; }
 
-/* ============================================================
-   BBH — the three words, one per panel
-   ============================================================ */
-.bbh-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:clamp(16px,2.4vw,30px);
-  margin-top:clamp(48px,7vh,86px); }
-.bbh-card{ padding:clamp(28px,3.4vw,44px) clamp(22px,2.6vw,36px);
-  border-radius:26px; background:rgba(255,255,255,.5);
-  box-shadow:inset 0 0 0 1px rgba(31,27,22,.07), 0 18px 40px -30px rgba(70,45,25,.5); }
-.bbh-w{ display:block; font-weight:700; letter-spacing:-.04em; line-height:1;
-  font-size:clamp(1.9rem,3.4vw,2.9rem); color:var(--ax-ink); }
-.bbh-card p{ margin:16px 0 0; font-size:clamp(14.5px,1.35vw,17px); line-height:1.55;
-  color:var(--ax-soft); letter-spacing:-.005em; }
-.bbh-card em{ font-style:normal; color:var(--ax-ink); font-weight:600; }
-@media(max-width:860px){ .bbh-grid{ grid-template-columns:1fr; gap:14px; } }
-
-/* ============================================================
-   PROOF — the live ones, one full panel each
-   ============================================================ */
 .pf{ margin-top:clamp(64px,9vh,120px); }
 .pf-head{ display:flex; align-items:baseline; gap:14px; flex-wrap:wrap;
   justify-content:center; margin-bottom:10px; }
 .pf-name{ margin:0; font-weight:700; letter-spacing:-.035em;
-  font-size:clamp(1.7rem,3.6vw,3rem); color:var(--ax-ink); }
+  font-size:clamp(1.7rem,3.6vw,3rem); color:var(--ink); }
 .pf-live{ display:inline-flex; align-items:center; gap:7px; font-size:12px; font-weight:600;
-  letter-spacing:.1em; text-transform:uppercase; color:var(--ax-spruce); }
-.pf-live i{ width:7px; height:7px; border-radius:50%; background:var(--ax-spruce);
-  box-shadow:0 0 0 4px rgba(31,133,122,.16); }
-.pf-url{ display:inline-block; margin-top:2px; font-size:14.5px; color:var(--ax-soft);
+  letter-spacing:.1em; text-transform:uppercase; color:var(--accent); }
+.pf-live i{ width:7px; height:7px; border-radius:50%; background:var(--accent);
+  box-shadow:0 0 0 4px color-mix(in srgb, var(--accent) 16%, transparent); }
+.pf-url{ display:inline-block; margin-top:2px; font-size:14.5px; color:var(--ink-soft);
   border-bottom:1px solid var(--ax-line); }
-.pf-url:hover{ color:var(--ax-ink); border-bottom-color:currentColor; }
-.pf-p{ margin:20px auto 0; max-width:40ch; text-align:center;
-  font-size:clamp(15.5px,1.6vw,19px); line-height:1.55; color:var(--ax-soft); }
+.pf-url:hover{ color:var(--ink); border-bottom-color:currentColor; }
+.pf-p{ margin:20px auto 0; max-width:42ch; text-align:center;
+  font-size:clamp(15.5px,1.35vw,19px); line-height:1.55; color:var(--ink-soft); }
 .pf-list{ list-style:none; margin:26px auto 0; padding:0; max-width:760px;
   display:grid; grid-template-columns:repeat(3,1fr); gap:clamp(12px,1.8vw,22px); }
-.pf-list li{ font-size:14.5px; line-height:1.5; color:var(--ax-soft); text-align:left;
+.pf-list li{ font-size:14.5px; line-height:1.5; color:var(--ink-soft); text-align:left;
   padding-top:14px; border-top:1px solid var(--ax-line); }
-.pf-list b{ display:block; color:var(--ax-ink); font-weight:600; margin-bottom:4px; }
+.pf-list b{ display:block; color:var(--ink); font-weight:600; margin-bottom:4px; }
 @media(max-width:760px){ .pf-list{ grid-template-columns:1fr; gap:0; }
   .pf-list li{ padding:12px 0; } }
 
-/* the phones that carry the real screens */
 .pf-shots{ display:flex; justify-content:center; align-items:flex-start;
   gap:clamp(16px,3vw,44px); margin-top:clamp(40px,6vh,70px); }
 .pf-phone{ position:relative; width:clamp(168px,21vw,262px); flex:none;
   border-radius:clamp(26px,3.2vw,40px); padding:clamp(6px,.8vw,10px);
   background:linear-gradient(160deg,#3a352e,#1d1a16 45%,#3a352e);
-  box-shadow:0 30px 60px -34px rgba(31,27,22,.7), inset 0 0 0 1px rgba(255,255,255,.1); }
+  box-shadow:0 30px 60px -34px rgba(33,29,24,.7), inset 0 0 0 1px rgba(255,255,255,.1); }
 .pf-phone img{ display:block; width:100%; height:auto; border-radius:clamp(20px,2.5vw,31px); }
 .pf-phone:nth-child(2){ margin-top:clamp(22px,4vw,56px); }
 @media(max-width:600px){ .pf-shots{ gap:12px; } .pf-phone:nth-child(2){ margin-top:26px; } }
 
-/* ============================================================
-   THE WAY WE WORK — three plain statements
-   ============================================================ */
-.way-list{ list-style:none; margin:clamp(44px,6vh,76px) 0 0; padding:0;
-  display:grid; gap:clamp(18px,2.4vw,26px); max-width:900px; margin-inline:auto; }
+.way-list{ list-style:none; margin:clamp(44px,6vh,76px) auto 0; padding:0;
+  display:grid; gap:clamp(18px,2.4vw,26px); max-width:900px; }
 .way-list li{ padding:clamp(24px,3vw,34px) clamp(22px,2.6vw,34px); border-radius:24px;
-  background:rgba(255,255,255,.44); box-shadow:inset 0 0 0 1px rgba(31,27,22,.06);
-  text-align:left; }
+  background:linear-gradient(180deg,#fffdf9,#f8f1e6);
+  border:1px solid color-mix(in srgb, var(--ink) 7%, transparent); text-align:left; }
 .way-list b{ display:block; font-size:clamp(17px,2vw,22px); font-weight:600;
-  letter-spacing:-.02em; color:var(--ax-ink); margin-bottom:8px; }
-.way-list p{ margin:0; font-size:clamp(14.5px,1.4vw,17px); line-height:1.55; color:var(--ax-soft); }
+  letter-spacing:-.024em; color:var(--ink); margin-bottom:8px; }
+.way-list p{ margin:0; font-size:clamp(14.5px,1.35vw,17px); line-height:1.55; color:var(--ink-soft); }
 
-/* ---------- buttons, in the same quiet grotesque ---------- */
-.abtn{ font-family:var(--gr); font-weight:600; letter-spacing:-.01em; }
-
-/* ---------- the finale keeps its warmth, but not its serif ---------- */
-.fin-h{ font-family:var(--gr); font-weight:700; letter-spacing:-.04em; line-height:1.05; }
+.kh{ font-weight:700; text-transform:none;
+  font-size:clamp(40px,8.4vw,116px); line-height:.94; letter-spacing:-.045em; }
+.kh .em{ color:var(--accent); }
+.kmeta{ font-size:13.5px; letter-spacing:-.006em; }
+.abtn{ font-family:var(--sys); font-weight:600; letter-spacing:-.01em; }
+.fin-h{ font-family:var(--sys); font-weight:700; letter-spacing:-.04em; line-height:1.05; }
 .fin-h em{ font-style:normal; }
-.fin-p, .fin-steps b, .fin-steps p, .fin-re{ font-family:var(--gr); }
+.fin-p, .fin-steps b, .fin-steps p, .fin-re{ font-family:var(--sys); }
