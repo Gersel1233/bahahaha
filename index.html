@@ -20,6 +20,7 @@
 <link rel="stylesheet" href="lesreg.css?v=53" />
 <link rel="stylesheet" href="bbh.css?v=5" />
 <link rel="stylesheet" href="kunder.css?v=4" />
+<link rel="stylesheet" href="telefon.css?v=2" />
 </head>
 <body>
 
@@ -216,6 +217,44 @@
             </div></div>
           </div>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== THE APP AND THE ADMINISTRATION =====================
+       One pinned stage with a real phone in it, in three acts: the guest
+       app arrives and turns, the administration takes its place, and the
+       screen changes from the inside while a notification lands on the
+       glass. It follows the last customer with no pause between them. -->
+  <section class="scene tel" id="telefoner" data-screen-label="app">
+    <div class="stage">
+      <div class="glow" aria-hidden="true"></div>
+      <canvas class="tel-canvas" id="telCanvas" aria-hidden="true"></canvas>
+      <div class="tel-text">
+        <div class="tel-bottom">
+          <div class="tel-act" data-act="1">
+            <h2 data-split data-da="Ikke nok med at design og funktionalitet er i top.">Design and function at the top is not enough.</h2>
+            <p data-da="Vi bygger til dem der skal bruge det &mdash; ikke til en portfolio.">We build for the people who have to use it &mdash; not for a portfolio.</p>
+            <ul class="tel-tags">
+              <li data-da="Tilg&aelig;ngelighed">Accessibility</li>
+              <li data-da="Brugervenlighed">Usability</li>
+            </ul>
+          </div>
+        </div>
+        <div class="tel-side"><div class="tel-side-in">
+          <div class="tel-act" data-act="2">
+            <h2 data-split data-da="Komplet administration for jer.">Complete administration, for you.</h2>
+            <p data-da="Alt det kunderne ikke ser: priser, menukort, bookinger og bestillinger &mdash; &eacute;t sted, uden en udvikler i r&oslash;ret.">Everything the customers never see: prices, menus, bookings and orders &mdash; in one place, with no developer on the phone.</p>
+          </div>
+          <div class="tel-act" data-act="3">
+            <h2 data-split data-da="Admin-app med notifikationer.">An admin app that tells you.</h2>
+            <p data-da="Nemt at navigere og administrere &mdash; ogs&aring; midt i en travl service, fra telefonen i forkl&aelig;det.">Easy to move around and run &mdash; also in the middle of a busy service, from the phone in your apron.</p>
+            <ul class="tel-tags">
+              <li data-da="Notifikationer">Notifications</li>
+              <li data-da="&Eacute;t tryk til handling">One tap to act</li>
+            </ul>
+          </div>
+        </div></div>
       </div>
     </div>
   </section>
@@ -654,6 +693,19 @@
             started=true;
             window.addEventListener('resize', measure, {passive:true});
             window.addEventListener('load', measure);
+            if(document.fonts && document.fonts.ready) document.fonts.ready.then(measure);
+            /* A scene is placed by where it starts and how long it runs, and
+               both move whenever anything above it changes height — a late
+               image, a font, a canvas that only takes its size once its
+               script has run. Measured once, a section can spend its whole
+               scroll believing it begins a screen and a half further down,
+               and then it never reaches its own end: the last card never
+               lands, the notification never arrives. So the page's own box
+               is watched, and every scene is measured again whenever it
+               moves. */
+            if('ResizeObserver' in window){
+              new ResizeObserver(function(){ measure(); }).observe(document.documentElement);
+            }
             document.addEventListener('visibilitychange', function(){
               t0=null;
               if(document.visibilityState!=='visible'){
@@ -843,6 +895,42 @@
       });
     });
 
+    /* ---------- TELEFONER — the words that stand over the phone ----------
+       The phone itself is drawn in WebGL and knows nothing about the page.
+       It reads one number, and this is where that number comes from — so
+       the words and the object they describe can never fall out of step.
+       Each act writes itself in, holds, and is pushed up as the next one
+       takes over. */
+    window.__lesreg = window.__lesreg || { s:0, err:null };
+    var tel=document.getElementById('telefoner');
+    if(tel){
+      var tA=[].slice.call(tel.querySelectorAll('.tel-act')),
+          tH=tA.map(function(a){ return a.querySelector('h2'); }), tW=[];
+      /* in, held, out — lined up with the acts the phone plays */
+      var tBand=[[.04,.20,.34,.46],[.44,.60,.64,.74],[.72,.88,1.02,1.03]];
+      SC.add({
+        el:tel,
+        build:function(){ tW=tH.map(function(h){ return SC.split(h); }); },
+        base:function(){ var all=tA.slice(); tW.forEach(function(a){ all=all.concat(a); }); SC.plain(all); },
+        paint:function(s){
+          window.__lesreg.s=s;
+          for(var i=0;i<tA.length;i++){
+            var b=tBand[i];
+            var into=SC.out(SC.seg(s,b[0],b[1])), away=SC.io(SC.seg(s,b[2],b[3]));
+            SC.set(tA[i],'translate3d(0,'+((1-into)*20-away*28).toFixed(1)+'px,0)',
+              (into*(1-away)).toFixed(3));
+            var ws=tW[i]||[];
+            for(var j=0;j<ws.length;j++){
+              var t=SC.film(SC.seg(s,b[0]+j*.012,b[1]+j*.012));
+              SC.set(ws[j],
+                'translate3d(0,'+((1-t)*.5).toFixed(3)+'em,0) rotateX('+(-44*(1-t)).toFixed(2)+'deg)',
+                t.toFixed(3), t>=1?'none':'blur('+(8*(1-t)).toFixed(2)+'px)');
+            }
+          }
+        }
+      });
+    }
+
     /* statements light up character by character with the scroll —
        and always finish before the page runs out of scroll */
     [].slice.call(document.querySelectorAll('.litx')).forEach(function(abt){
@@ -903,6 +991,13 @@
 
   })();
   </script>
+
+  <!-- the phone is drawn in three.js, pinned to one version and served
+       from here rather than from someone else's network -->
+  <script type="importmap">
+  { "imports": { "three": "./vendor/three.module.js?v=0.184.0" } }
+  </script>
+  <script type="module" src="telefon-3d.js?v=5"></script>
 
   <script src="site.js?v=47" defer></script>
 </body>

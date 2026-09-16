@@ -1,0 +1,78 @@
+/* ============================================================
+   LESREG — the app and the administration.
+
+   One pinned stage with a real phone in it. The canvas fills the stage
+   and the words sit on top as ordinary DOM, driven by the same progress
+   — so they can be read, selected and translated, which pixels in a
+   canvas cannot.
+   ============================================================ */
+
+.scene.tel{ height:440vh; background:var(--paper-1); }
+.scene.tel .stage{ perspective:none; box-sizing:border-box; }
+
+.tel-canvas{ position:absolute; inset:0; z-index:1;
+  width:100%; height:100%; display:block; }
+
+.tel-text{ position:absolute; inset:0; z-index:4; pointer-events:none; }
+.tel-act{ opacity:0; will-change:transform,opacity; }
+.tel-act h2{ margin:0; font-weight:700; color:var(--ink);
+  font-size:clamp(28px,3.6vw,54px); line-height:1.04; letter-spacing:-.04em; }
+.tel-act h2 .w{ display:inline-block; white-space:pre; }
+.tel-act h2 .w > span, .tel-act h2 .w > i{ display:inline-block; opacity:0;
+  font-style:normal; will-change:transform,opacity,filter; }
+.tel-act p{ margin:clamp(12px,1.8vh,20px) 0 0; max-width:40ch;
+  font-size:clamp(15px,1.15vw,18.5px); line-height:1.6; letter-spacing:-.008em;
+  color:var(--ink-soft); }
+.tel-act p b{ color:var(--ink); font-weight:600; }
+.tel-tags{ list-style:none; display:flex; gap:clamp(12px,1.6vw,24px);
+  margin:clamp(14px,2.2vh,24px) 0 0; padding:0; }
+.tel-tags li{ font-size:12px; font-weight:600; letter-spacing:.16em;
+  text-transform:uppercase; color:var(--ink-faint);
+  padding-top:10px; border-top:1px solid color-mix(in srgb, var(--ink) 12%, transparent); }
+
+/* Act one keeps the phone in the upper half, so its words own the
+   bottom third and never sit on the glass. */
+.tel-bottom{ position:absolute; left:50%; transform:translateX(-50%);
+  bottom:clamp(40px,9vh,96px); width:min(720px, calc(100% - clamp(24px,6vw,96px)));
+  text-align:center; }
+.tel-bottom .tel-tags{ justify-content:center; }
+.tel-bottom p{ margin-left:auto; margin-right:auto; }
+
+/* Acts two and three sit in the right column, which is why the phone
+   stops left of centre rather than in the middle. */
+.tel-side{ position:absolute; inset:0; margin:0 auto;
+  width:min(1320px, calc(100% - clamp(24px,6vw,112px)));
+  display:grid; grid-template-columns:1fr 1fr; align-items:center; }
+.tel-side-in{ position:relative; grid-column:2; min-height:1px; }
+.tel-side .tel-act{ position:absolute; left:0; right:0; top:50%;
+  transform:translateY(-50%); text-align:left; }
+
+@media(max-width:900px){
+  .scene.tel{ height:540vh; }
+  /* The phone goes up and gets smaller, and every act's words sit in the
+     lower third under it. The column has to stop being a grid here: its
+     cell is a hairline in the middle of the stage, and an act measured
+     from the bottom of that lands in the middle of the screen — on top
+     of the phone, which is the one thing this layout exists to avoid. */
+  .tel-side{ display:block; width:calc(100% - clamp(20px,6vw,48px)); }
+  .tel-side-in{ position:static; }
+  .tel-side .tel-act{ position:absolute; left:0; right:0;
+    top:auto; bottom:clamp(30px,7vh,70px); transform:none; text-align:center; }
+  .tel-side .tel-act p{ margin-left:auto; margin-right:auto; }
+  .tel-side .tel-tags{ justify-content:center; }
+  .tel-bottom{ bottom:clamp(30px,7vh,70px); }
+}
+
+@media (prefers-reduced-motion: reduce){
+  .scene.tel{ height:auto; }
+  .scene.tel .stage{ position:static; height:auto; padding:10vh 0 6vh; }
+  .tel-canvas{ position:relative; height:62vh; min-height:340px; }
+  .tel-text{ position:static; display:grid; gap:clamp(28px,5vh,56px);
+    width:min(1120px, calc(100% - clamp(24px,6vw,80px))); margin:6vh auto 0; }
+  .tel-bottom, .tel-side{ position:static; transform:none; width:auto;
+    display:block; margin:0; }
+  .tel-side .tel-act{ position:static; transform:none; text-align:left;
+    margin-top:clamp(28px,5vh,56px); }
+  .tel-act, .tel-act h2 .w > span, .tel-act h2 .w > i{
+    opacity:1 !important; transform:none !important; filter:none !important; }
+}
