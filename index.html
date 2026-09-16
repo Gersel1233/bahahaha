@@ -55,7 +55,9 @@
        window, up to the desk, into the screen — and the site fades in. -->
   <div class="dro-track" id="droTrack" data-screen-label="drone-intro">
     <div class="dro-stick">
-      <video class="dro-vid" id="droVid" src="media/drone-intro.mp4?v=7" poster="media/drone-intro-poster.jpg?v=7" muted playsinline preload="auto" disablepictureinpicture aria-hidden="true"></video>
+      <!-- src is chosen below: phones get the light cut, big screens the full
+           one — a wide screen would show the light cut's softness -->
+      <video class="dro-vid" id="droVid" poster="media/drone-intro-poster.jpg?v=8" muted playsinline preload="auto" disablepictureinpicture aria-hidden="true"></video>
       <div class="dro-brand" id="droBrand" aria-hidden="true">
         <span class="dro-word">Lesreg</span>
         <span class="dro-hint" data-da="Scroll for at flyve ind">Scroll to fly in</span>
@@ -325,6 +327,12 @@
     if(dtr && !reduce){
       var dv=document.getElementById('droVid'), dbr=document.getElementById('droBrand'), dfa=document.getElementById('droFade');
       var dDur=14, dTop=0, dRange=1, dCur=0, dTarget=0, dHero=false, dNavHid=false;
+      /* 1920px flight on real screens, a 1280px cut on phones and on anyone
+         asking to save data — the full file is three times the download */
+      var dCon=navigator.connection||{};
+      var dThin=(Math.max(screen.width||0, window.innerWidth||0) < 760)
+             || dCon.saveData===true || /(^|-)2g$/.test(dCon.effectiveType||'');
+      dv.src='media/drone-intro'+(dThin?'-sd':'')+'.mp4?v=8';
       dv.addEventListener('loadedmetadata',function(){ if(dv.duration && isFinite(dv.duration)) dDur=dv.duration; });
       try{ dv.load(); }catch(_){}
       function dMeasure(){ var vh=window.innerHeight; dTop=dtr.offsetTop; dRange=Math.max(1,dtr.offsetHeight-vh); }
@@ -346,10 +354,12 @@
              frame costs a style recalc and reads as jitter */
           var br=+Math.max(0,1-pc*5).toFixed(3);
           if(br!==dBrLast){ dBrLast=br; dbr.style.opacity=br; }
-          var fa=+Math.max(0,Math.min(1,(pc-.88)/.12)).toFixed(3);
+          /* the flight ends on the site's own front page, shown on the laptop,
+             so the wash only has to dissolve that image into the real one */
+          var fa=+Math.max(0,Math.min(1,(pc-.90)/.10)).toFixed(3);
           if(fa!==dFaLast){ dFaLast=fa; dfa.style.opacity=fa; }
-          dNav(pc<.84);
-          if(!dHero && pc>.86){ dHero=true; go(); }
+          dNav(pc<.86);
+          if(!dHero && pc>.88){ dHero=true; go(); }
           var diff=dTarget-dCur;
           if(dv.readyState>1){
             if(Math.abs(diff)>0.5){ dCur=dTarget; }          /* jumped — catch up at once */
