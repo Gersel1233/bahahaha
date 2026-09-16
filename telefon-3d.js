@@ -178,7 +178,31 @@ const chassisGeo = new THREE.ExtrudeGeometry(roundedRect(W, H, R), {
    offsets expect it. */
 chassisGeo.translate(0, 0, -D / 2 - 0.012);
 const bezelGeo  = new THREE.ShapeGeometry(roundedRect(W - 0.014, H - 0.014, R - 0.007), 24);
-const screenGeo = new THREE.PlaneGeometry(SCREEN_W, SCREEN_H);
+
+/* The display is not a rectangle. A plane gave it square corners inside a
+   rounded body, which is the one thing that stops a phone reading as a
+   phone. A shape carries the radius — but three lays its UVs straight off
+   the shape's own coordinates, so a texture put on it would land in the
+   wrong place and at the wrong size. They are remapped across the
+   bounding box, and then a recording fills the glass edge to edge. */
+function screenShape(w, h, r) {
+  const g = new THREE.ShapeGeometry(roundedRect(w, h, r), 24);
+  g.computeBoundingBox();
+  const bb = g.boundingBox, uv = g.attributes.uv, pos = g.attributes.position;
+  const dx = bb.max.x - bb.min.x, dy = bb.max.y - bb.min.y;
+  for (let i = 0; i < uv.count; i++) {
+    uv.setXY(i, (pos.getX(i) - bb.min.x) / dx, (pos.getY(i) - bb.min.y) / dy);
+  }
+  uv.needsUpdate = true;
+  return g;
+}
+const screenGeo = screenShape(SCREEN_W, SCREEN_H, R - 0.018);
+
+/* The Dynamic Island. It is the single cue that says which phone this is,
+   and it sits on the glass rather than in the bezel — a notification
+   comes to rest just under it, the way it does on the device. */
+const ISLAND_W = SCREEN_W * 0.31, ISLAND_H = SCREEN_W * 0.086;
+const islandGeo = new THREE.ShapeGeometry(roundedRect(ISLAND_W, ISLAND_H, ISLAND_H / 2), 16);
 const btnGeo    = new THREE.BoxGeometry(0.012, 1, D * 0.62);
 const shadowGeo = new THREE.PlaneGeometry(W * 3.1, W * 2.2);
 const notifGeo  = new THREE.PlaneGeometry(SCREEN_W * 0.94, SCREEN_W * 0.94 * (560 / 900));
@@ -210,9 +234,14 @@ function buildPhone(labelA, labelB) {
   screenB.position.z = D / 2 + 0.005;
   g.add(screen, screenB);
 
+  const islandMat = new THREE.MeshBasicMaterial({ color: 0x070605, toneMapped: false, transparent: true });
+  const island = new THREE.Mesh(islandGeo, islandMat);
+  island.position.set(0, SCREEN_H / 2 - SCREEN_W * 0.026 - ISLAND_H / 2, D / 2 + 0.0058);
+  g.add(island);
+
   const notifMat = new THREE.MeshBasicMaterial({ map: notifTex, toneMapped: false, transparent: true, opacity: 0 });
   const notif = new THREE.Mesh(notifGeo, notifMat);
-  notif.position.set(0, H * 0.30, D / 2 + 0.006);
+  notif.position.set(0, H * 0.285, D / 2 + 0.0065);
   notif.visible = false;
   g.add(notif);
 
@@ -235,7 +264,7 @@ function buildPhone(labelA, labelB) {
 
   g.visible = false;
   scene.add(g);
-  return { g, body: [titan, bezelMat, btnMat], shadowMat, sA, sB, notifMat, notif,
+  return { g, body: [titan, bezelMat, btnMat, islandMat], shadowMat, sA, sB, notifMat, notif,
            mix: { a: 1, b: 0, n: 0 }, o: 0 };
 }
 
@@ -302,7 +331,7 @@ function pose(s) {
      and as nothing at all when it stops. */
   p2.g.rotation.set(0, 0.42 * (1 - e2), buzz * 0.021);
   p2.notif.visible = p2.mix.n > 0.002;
-  p2.notif.position.y = H * 0.30 + (1 - p2.mix.n) * 0.55 * H;
+  p2.notif.position.y = H * 0.285 + (1 - p2.mix.n) * 0.55 * H;
   setOpacity(p2, seg(s, 0.36, 0.44));
 
   camera.position.y = Math.sin(s * Math.PI) * 0.04;
@@ -353,7 +382,7 @@ if (reduce) {
   setOpacity(p1, 1);
   p2.g.position.set(0.78, 0, 0); p2.g.scale.setScalar(0.58); p2.g.rotation.set(0, 0, 0);
   p2.mix.a = 0; p2.mix.b = 1; p2.mix.n = 1;
-  p2.notif.visible = true; p2.notif.position.y = H * 0.30;
+  p2.notif.visible = true; p2.notif.position.y = H * 0.285;
   setOpacity(p2, 1);
   camera.position.set(0, 0, 4.4); camera.updateProjectionMatrix(); camera.lookAt(0, 0, 0);
   renderer.render(scene, camera);
