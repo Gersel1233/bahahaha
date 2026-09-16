@@ -18,7 +18,7 @@
 <link rel="preload" as="font" type="font/woff2" href="fonts/barlow-normal-400.woff2" crossorigin />
 <link rel="preload" as="font" type="font/woff2" href="fonts/kanit-normal-900.woff2" crossorigin />
 <link rel="stylesheet" href="styles.css?v=43" />
-<link rel="stylesheet" href="lesreg.css?v=48" />
+<link rel="stylesheet" href="lesreg.css?v=49" />
 </head>
 <body>
 
@@ -57,7 +57,7 @@
     <div class="dro-stick" id="droStick">
       <!-- src is chosen below: phones get the light cut, big screens the full
            one — a wide screen would show the light cut's softness -->
-      <video class="dro-vid" id="droVid" poster="media/drone-intro-poster.jpg?v=13" muted playsinline preload="auto" disablepictureinpicture aria-hidden="true"></video>
+      <video class="dro-vid" id="droVid" poster="media/drone-intro-poster.jpg?v=14" muted playsinline preload="auto" disablepictureinpicture aria-hidden="true"></video>
       <div class="dro-brand" id="droBrand" aria-hidden="true">
         <span class="dro-word">Lesreg</span>
         <span class="dro-hint" data-da="Scroll for at flyve ind">Scroll to fly in</span>
@@ -342,8 +342,12 @@
       var dCon=navigator.connection||{};
       var dThin=(Math.max(screen.width||0, window.innerWidth||0) < 760)
              || dCon.saveData===true || /(^|-)2g$/.test(dCon.effectiveType||'');
-      dv.src='media/drone-intro'+(dThin?'-sd':'')+'.mp4?v=13';
+      dv.src='media/drone-intro'+(dThin?'-sd':'')+'.mp4?v=14';
       dv.addEventListener('loadedmetadata',function(){ if(dv.duration && isFinite(dv.duration)) dDur=dv.duration; });
+      var dSeek=false;
+      dv.addEventListener('seeking',function(){ dSeek=true; });
+      dv.addEventListener('seeked', function(){ dSeek=false; });
+      dv.addEventListener('error',  function(){ dSeek=false; });
       try{ dv.load(); }catch(_){}
       /* the flight ends exactly when the hero behind the film reaches the top
          of the screen — which is the track minus one sticky screen, not minus
@@ -359,7 +363,7 @@
         dRange=Math.max(1,dtr.offsetHeight-dst.offsetHeight);
         dArr=Math.max(.4,Math.min(1,((hero?hero.offsetTop:dRange)-dTop)/dRange));
       }
-      window.addEventListener('resize',dMeasure,{passive:true});
+      window.addEventListener('resize',function(){ dMeasure(); dSize(); },{passive:true});
       dMeasure();
       function dNav(hide){ if(hide!==dNavHid){ dNavHid=hide; document.body.classList.toggle('dro-on',hide); } }
       dNav(true);
@@ -372,24 +376,42 @@
          the visitor's own language, and by the last frame its transform is
          plainly nothing at all, which is the page exactly as the browser
          draws it. PATH is where that screen sits in the footage. */
-      var PATH=null, dPage=null, dLive=!dThin, dTxLast='', dOpLast=-1;
+      var PATH=null, dLive=!dThin, dTxLast='', dOpLast=-1;
       try{ PATH=JSON.parse(document.getElementById('droPath').textContent); }catch(_){ dLive=false; }
+      /* Two boxes. The inner one is the page at the visitor's own window size,
+         so it can land on the real page untouched. The outer one is the lit
+         screen it is shown on, which the film's 16:9 frame makes wider than
+         that window — it carries the page's paper out to the screen's edges,
+         so the page fills the laptop instead of floating in the middle of it. */
+      var dPage=null, dIn=null;
       function dBuild(){
         if(!dLive || !PATH || dPage) return;
         dPage=document.createElement('div');
         dPage.className='dro-page'; dPage.setAttribute('aria-hidden','true');
+        dIn=document.createElement('div'); dIn.className='dro-in';
+        dPage.appendChild(dIn);
         dst.insertBefore(dPage, dfa);
-        dFill();
+        dSize(); dFill();
+      }
+      function dSize(){
+        if(!dPage) return;
+        var W=dst.clientWidth, H=dst.clientHeight;
+        var sc=Math.max(W/PATH.w, H/PATH.h), e=PATH.rest;
+        var ew=(e[2]-e[0])*sc, eh=(e[3]-e[1])*sc;
+        dPage.style.width=ew+'px'; dPage.style.height=eh+'px';
+        dPage.style.marginLeft=(-ew/2)+'px'; dPage.style.marginTop=(-eh/2)+'px';
+        dIn.style.width=W+'px'; dIn.style.height=H+'px';
+        dIn.style.marginLeft=(-W/2)+'px'; dIn.style.marginTop=(-H/2)+'px';
       }
       function dFill(){                     /* keep the copy in the current language */
-        if(!dPage) return;
-        dPage.innerHTML='';
+        if(!dIn) return;
+        dIn.innerHTML='';
         var n=document.querySelector('.nav').cloneNode(true), k=hero.cloneNode(true);
         [n,k].forEach(function(el){
           el.removeAttribute('id');
           [].slice.call(el.querySelectorAll('[id]')).forEach(function(c){ c.removeAttribute('id'); });
         });
-        dPage.appendChild(n); dPage.appendChild(k);
+        dIn.appendChild(n); dIn.appendChild(k);
       }
       [].slice.call(document.querySelectorAll('[data-lang-btn]')).forEach(function(b){
         b.addEventListener('click', dFill);
@@ -414,17 +436,15 @@
         var r=dRect(t), e=PATH.rest;
         var rw=(r[2]-r[0])*s, ew=(e[2]-e[0])*s;
         var cx=((r[0]+r[2])/2-PATH.w/2)*s+W/2, cy=((r[1]+r[3])/2-PATH.h/2)*s+H/2;
-        /* One rule the whole way: the page grows in exact proportion to the
-           screen it sits on, so the approach cannot hesitate anywhere, and by
-           the last frame that proportion is 1 — the page at its own size. It
-           leaves a hair of the lit screen showing around the page early on,
-           which is nothing to see, since that screen is the page's own paper. */
+        /* One rule the whole way: the screen's paper grows in exact proportion
+           to the screen itself, so the approach cannot hesitate anywhere, and
+           by the last frame that proportion is 1 — the page at its own size. */
         var k=rw/ew;
         /* the last step is the whole point: land on the page untouched, and
-           never a fraction of a percent off it */
-        if(prog>=.995) k=1;
-        var tr=(k>.999 && k<1.001) ? 'none'
-              : 'translate('+(cx-W*k/2).toFixed(1)+'px,'+(cy-H*k/2).toFixed(1)+'px) scale('+k.toFixed(4)+')';
+           never a fraction of a percent — or a pixel — off it */
+        if(prog>=.995){ k=1; cx=W/2; cy=H/2; }
+        var tr=(k>.999 && k<1.001 && Math.abs(cx-W/2)<1 && Math.abs(cy-H/2)<1) ? 'none'
+              : 'translate('+(cx-W/2).toFixed(1)+'px,'+(cy-H/2).toFixed(1)+'px) scale('+k.toFixed(4)+')';
         if(tr!==dTxLast){ dTxLast=tr; dPage.style.transform=tr; }
         var op=+Math.max(0,Math.min(1,(t*PATH.fps-PATH.first)/(PATH.fadeIn*PATH.fps))).toFixed(2);
         if(op!==dOpLast){ dOpLast=op; dPage.style.opacity=op<1 ? op : ''; }
@@ -465,9 +485,12 @@
              browser decoding again for a picture that cannot change. */
           var fr=(PATH&&PATH.fps)||24;
           var ft=Math.round(dCur*fr)/fr;
-          if(dv.readyState>1){
+          /* Never ask for a new frame while the last one is still being
+             found. Stacking seeks on a busy decoder is what turns a scroll
+             into a stutter — the requests queue and arrive late and uneven. */
+          if(dv.readyState>1 && !dSeek){
             var sk=Math.min(ft, dDur-0.04);
-            if(Math.abs(dv.currentTime-sk)>0.6/fr){ try{ dv.currentTime=sk; }catch(_){} }
+            if(Math.abs(dv.currentTime-sk)>0.6/fr){ try{ dSeek=true; dv.currentTime=sk; }catch(_){ dSeek=false; } }
           }
           /* the page appears on the screen only once there is a screen worth
              putting it on — until then it is a blank lit panel, which is what

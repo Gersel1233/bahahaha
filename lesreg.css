@@ -637,9 +637,10 @@ body::after{ content:none; }
 /* the real front page, drawn into the blank laptop screen in the footage.
    Promoted to its own layer so the scroll only moves it, never re-lays it
    out, and given the page's own paper so its edges melt into the lit screen. */
-.dro-page{ position:absolute; inset:0; overflow:hidden; background:var(--ax-bg);
-  transform-origin:0 0; will-change:transform, opacity; contain:layout paint;
+.dro-page{ position:absolute; left:50%; top:50%; overflow:hidden; background:var(--ax-bg);
+  transform-origin:50% 50%; will-change:transform, opacity; contain:layout paint;
   backface-visibility:hidden; }
+.dro-in{ position:absolute; left:50%; top:50%; }
 .dro-page .nav{ position:absolute; opacity:1 !important;
   /* a live blur behind a layer that is being scaled every frame is redrawn
      every frame too, and that shows up as a shiver — the bar is opaque here
