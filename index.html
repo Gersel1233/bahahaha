@@ -18,7 +18,7 @@
 <link rel="preload" as="font" type="font/woff2" href="fonts/barlow-normal-400.woff2" crossorigin />
 <link rel="preload" as="font" type="font/woff2" href="fonts/kanit-normal-900.woff2" crossorigin />
 <link rel="stylesheet" href="styles.css?v=43" />
-<link rel="stylesheet" href="lesreg.css?v=42" />
+<link rel="stylesheet" href="lesreg.css?v=43" />
 </head>
 <body>
 
@@ -54,10 +54,10 @@
        Scroll scrubs one continuous drone shot: over the house, in through the
        window, up to the desk, into the screen — and the site fades in. -->
   <div class="dro-track" id="droTrack" data-screen-label="drone-intro">
-    <div class="dro-stick">
+    <div class="dro-stick" id="droStick">
       <!-- src is chosen below: phones get the light cut, big screens the full
            one — a wide screen would show the light cut's softness -->
-      <video class="dro-vid" id="droVid" poster="media/drone-intro-poster.jpg?v=8" muted playsinline preload="auto" disablepictureinpicture aria-hidden="true"></video>
+      <video class="dro-vid" id="droVid" poster="media/drone-intro-poster.jpg?v=9" muted playsinline preload="auto" disablepictureinpicture aria-hidden="true"></video>
       <div class="dro-brand" id="droBrand" aria-hidden="true">
         <span class="dro-word">Lesreg</span>
         <span class="dro-hint" data-da="Scroll for at flyve ind">Scroll to fly in</span>
@@ -325,22 +325,26 @@
        dissolves the screen glow into the page — then the hero lines rise. */
     var dtr=document.getElementById('droTrack');
     if(dtr && !reduce){
-      var dv=document.getElementById('droVid'), dbr=document.getElementById('droBrand'), dfa=document.getElementById('droFade');
+      var dv=document.getElementById('droVid'), dbr=document.getElementById('droBrand'),
+          dfa=document.getElementById('droFade'), dst=document.getElementById('droStick');
       var dDur=14, dTop=0, dRange=1, dCur=0, dTarget=0, dHero=false, dNavHid=false;
       /* 1920px flight on real screens, a 1280px cut on phones and on anyone
          asking to save data — the full file is three times the download */
       var dCon=navigator.connection||{};
       var dThin=(Math.max(screen.width||0, window.innerWidth||0) < 760)
              || dCon.saveData===true || /(^|-)2g$/.test(dCon.effectiveType||'');
-      dv.src='media/drone-intro'+(dThin?'-sd':'')+'.mp4?v=8';
+      dv.src='media/drone-intro'+(dThin?'-sd':'')+'.mp4?v=9';
       dv.addEventListener('loadedmetadata',function(){ if(dv.duration && isFinite(dv.duration)) dDur=dv.duration; });
       try{ dv.load(); }catch(_){}
-      function dMeasure(){ var vh=window.innerHeight; dTop=dtr.offsetTop; dRange=Math.max(1,dtr.offsetHeight-vh); }
+      /* the flight ends exactly when the hero behind the film reaches the top
+         of the screen — which is the track minus one sticky screen, not minus
+         the live viewport, so a collapsing address bar can't shift the landing */
+      function dMeasure(){ dTop=dtr.offsetTop; dRange=Math.max(1,dtr.offsetHeight-dst.offsetHeight); }
       window.addEventListener('resize',dMeasure,{passive:true});
       dMeasure();
       function dNav(hide){ if(hide!==dNavHid){ dNavHid=hide; document.body.classList.toggle('dro-on',hide); } }
       dNav(true);
-      var dPrev=0, dBrLast=-1, dFaLast=-1;
+      var dPrev=0, dBrLast=-1, dFaLast=-1, dLiftLast=-1;
       function dLoop(now){
         /* frame-rate independent easing, so the flight follows the scroll the
            same way on a 60Hz laptop and a 120Hz phone */
@@ -354,12 +358,28 @@
              frame costs a style recalc and reads as jitter */
           var br=+Math.max(0,1-pc*5).toFixed(3);
           if(br!==dBrLast){ dBrLast=br; dbr.style.opacity=br; }
-          /* the flight ends on the site's own front page, shown on the laptop,
-             so the wash only has to dissolve that image into the real one */
-          var fa=+Math.max(0,Math.min(1,(pc-.90)/.10)).toFixed(3);
+
+          /* The landing. The film ends on the site's own front page, and the
+             real one is already behind it in the same place, so this is a
+             dissolve rather than a cut: the picture keeps easing forward while
+             a wash of the page's own paper blooms over it, then the whole
+             layer clears. The wash only has to be heavy enough to cover the
+             difference — for a Danish visitor the words underneath are the
+             same ones, so it stays light. */
+          var bloom=(document.documentElement.lang==='da') ? .42 : .82;
+          var fa=+(bloom*Math.max(0,Math.min(1,(pc-.80)/.15))).toFixed(3);
           if(fa!==dFaLast){ dFaLast=fa; dfa.style.opacity=fa; }
-          dNav(pc<.86);
-          if(!dHero && pc>.88){ dHero=true; go(); }
+          var lift=+Math.max(0,Math.min(1,(pc-.80)/.20)).toFixed(3);
+          if(lift!==dLiftLast){
+            dLiftLast=lift;
+            dst.style.opacity=(1-lift).toFixed(3);
+            dv.style.transform='scale('+(1+lift*.05).toFixed(4)+')';
+            dst.style.visibility=lift>=1 ? 'hidden' : '';
+          }
+          dNav(pc<.88);
+          /* the lines are standing before the film clears, so the page is
+             settled the moment it appears — no second entrance */
+          if(!dHero && pc>.70){ dHero=true; go(); }
           var diff=dTarget-dCur;
           if(dv.readyState>1){
             if(Math.abs(diff)>0.5){ dCur=dTarget; }          /* jumped — catch up at once */
