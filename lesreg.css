@@ -634,6 +634,13 @@ body::after{ content:none; }
    hands over — nothing to rise, nothing to catch mid-move */
 .khero.no-rise .khl i{ transition:none; }
 .dro-vid{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+/* the real front page, drawn into the blank laptop screen in the footage.
+   Promoted to its own layer so the scroll only moves it, never re-lays it
+   out, and given the page's own paper so its edges melt into the lit screen. */
+.dro-page{ position:absolute; inset:0; overflow:hidden; background:var(--ax-bg);
+  transform-origin:0 0; will-change:transform, opacity; contain:layout paint;
+  backface-visibility:hidden; }
+.dro-page .nav{ position:absolute; opacity:1 !important; }
 .dro-brand{ position:absolute; inset:0; display:flex; flex-direction:column; align-items:center;
   justify-content:center; pointer-events:none; will-change:opacity; }
 .dro-word{ font-family:var(--sora,'Sora'),sans-serif; font-weight:600; letter-spacing:-.02em;

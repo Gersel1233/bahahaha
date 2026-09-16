@@ -18,7 +18,7 @@
 <link rel="preload" as="font" type="font/woff2" href="fonts/barlow-normal-400.woff2" crossorigin />
 <link rel="preload" as="font" type="font/woff2" href="fonts/kanit-normal-900.woff2" crossorigin />
 <link rel="stylesheet" href="styles.css?v=43" />
-<link rel="stylesheet" href="lesreg.css?v=45" />
+<link rel="stylesheet" href="lesreg.css?v=46" />
 </head>
 <body>
 
@@ -57,13 +57,17 @@
     <div class="dro-stick" id="droStick">
       <!-- src is chosen below: phones get the light cut, big screens the full
            one — a wide screen would show the light cut's softness -->
-      <video class="dro-vid" id="droVid" poster="media/drone-intro-poster.jpg?v=11" muted playsinline preload="auto" disablepictureinpicture aria-hidden="true"></video>
+      <video class="dro-vid" id="droVid" poster="media/drone-intro-poster.jpg?v=12" muted playsinline preload="auto" disablepictureinpicture aria-hidden="true"></video>
       <div class="dro-brand" id="droBrand" aria-hidden="true">
         <span class="dro-word">Lesreg</span>
         <span class="dro-hint" data-da="Scroll for at flyve ind">Scroll to fly in</span>
       </div>
       <div class="dro-fade" id="droFade" aria-hidden="true"></div>
     </div>
+    <!-- Where the laptop screen sits in the footage: measured on every frame,
+         then fitted to a curve so the page rides it without a tremble. "rest"
+         is the rectangle the screen has grown to by the last frame. -->
+    <script type="application/json" id="droPath">{"fps":24.0,"w":2560,"h":1440,"first":263,"last":337,"settle":333,"rest":[0.0,-80.0,2560.0,1520.0],"fadeIn":0.55,"fit":[[0.0005574736689832384,-0.5600955888905199,171.4936488496219,-15593.58829790689],[-0.0006587640772536055,0.553725587549017,-161.59046398124707,16582.980166115674],[-0.0007338284426425581,0.7145161673302513,-217.0673634502509,22658.730389782737],[-0.001580925426251282,1.4571988762860328,-436.4086176912554,43624.812745755924]]}</script>
   </div>
 
   <!-- ===================== HERO — the statement (Koto) ===================== -->
@@ -338,7 +342,7 @@
       var dCon=navigator.connection||{};
       var dThin=(Math.max(screen.width||0, window.innerWidth||0) < 760)
              || dCon.saveData===true || /(^|-)2g$/.test(dCon.effectiveType||'');
-      dv.src='media/drone-intro'+(dThin?'-sd':'')+'.mp4?v=11';
+      dv.src='media/drone-intro'+(dThin?'-sd':'')+'.mp4?v=12';
       dv.addEventListener('loadedmetadata',function(){ if(dv.duration && isFinite(dv.duration)) dDur=dv.duration; });
       try{ dv.load(); }catch(_){}
       /* the flight ends exactly when the hero behind the film reaches the top
@@ -350,6 +354,73 @@
       function dNav(hide){ if(hide!==dNavHid){ dNavHid=hide; document.body.classList.toggle('dro-on',hide); } }
       dNav(true);
 
+      /* ---- the front page on the laptop screen --------------------------
+         A picture of the page can never land on the real one: the picture is
+         one fixed shape, the film another, the visitor's window a third, and
+         each step crops a little off the sides. So the screen in the footage
+         is left blank and the real page is drawn into it here — live markup,
+         the visitor's own language, and by the last frame its transform is
+         plainly nothing at all, which is the page exactly as the browser
+         draws it. PATH is where that screen sits in the footage. */
+      var PATH=null, dPage=null, dLive=!dThin, dTxLast='', dOpLast=-1;
+      try{ PATH=JSON.parse(document.getElementById('droPath').textContent); }catch(_){ dLive=false; }
+      function dBuild(){
+        if(!dLive || !PATH || dPage) return;
+        dPage=document.createElement('div');
+        dPage.className='dro-page'; dPage.setAttribute('aria-hidden','true');
+        dst.insertBefore(dPage, dfa);
+        dFill();
+      }
+      function dFill(){                     /* keep the copy in the current language */
+        if(!dPage) return;
+        dPage.innerHTML='';
+        var n=document.querySelector('.nav').cloneNode(true), k=hero.cloneNode(true);
+        [n,k].forEach(function(el){
+          el.removeAttribute('id');
+          [].slice.call(el.querySelectorAll('[id]')).forEach(function(c){ c.removeAttribute('id'); });
+        });
+        dPage.appendChild(n); dPage.appendChild(k);
+      }
+      [].slice.call(document.querySelectorAll('[data-lang-btn]')).forEach(function(b){
+        b.addEventListener('click', dFill);
+      });
+
+      function dRect(t){                    /* the screen, in the film's own pixels */
+        var i=Math.max(PATH.first, Math.min(PATH.last, t*PATH.fps)), r=[0,0,0,0];
+        for(var k=0;k<4;k++){
+          var c=PATH.fit[k], v=0;
+          for(var j=0;j<c.length;j++) v=v*i+c[j];
+          r[k]=v;
+        }
+        if(PATH.settle!=null && i>PATH.settle){
+          var s=(i-PATH.settle)/(PATH.last-PATH.settle); s=s*s*(3-2*s);
+          for(var m=0;m<4;m++) r[m]+=(PATH.rest[m]-r[m])*s;
+        }
+        return r;
+      }
+      function dPlace(t, pc){
+        var W=dst.clientWidth, H=dst.clientHeight;
+        var s=Math.max(W/PATH.w, H/PATH.h);          /* the film covers the box */
+        var r=dRect(t), e=PATH.rest;
+        var rw=(r[2]-r[0])*s, ew=(e[2]-e[0])*s;
+        var cx=((r[0]+r[2])/2-PATH.w/2)*s+W/2, cy=((r[1]+r[3])/2-PATH.h/2)*s+H/2;
+        /* Two ways to size it, and both are wanted: filling the screen while
+           the laptop is still a laptop, and landing on plain 1:1 at the end.
+           They are the same number by the finish, so cross over to the second
+           on the approach, where the screen is already past the frame edges
+           and no one can see the difference. */
+        var u=Math.max(0,Math.min(1,(pc-.62)/.30)); u=u*u*(3-2*u);
+        var k=(rw/W)*(1-u)+(rw/ew)*u;
+        /* the last step is the whole point: land on the page untouched, and
+           never a fraction of a percent off it */
+        if(pc>=.994) k=1;
+        var tr=(k>.999 && k<1.001) ? 'none'
+              : 'translate('+(cx-W*k/2).toFixed(1)+'px,'+(cy-H*k/2).toFixed(1)+'px) scale('+k.toFixed(4)+')';
+        if(tr!==dTxLast){ dTxLast=tr; dPage.style.transform=tr; }
+        var op=+Math.max(0,Math.min(1,(t*PATH.fps-PATH.first)/(PATH.fadeIn*PATH.fps))).toFixed(2);
+        if(op!==dOpLast){ dOpLast=op; dPage.style.opacity=op<1 ? op : ''; }
+      }
+
       var dPrev=0, dBrLast=-1, dFaLast=-1, dCutLast=null;
       function dLoop(now){
         /* frame-rate independent easing, so the flight follows the scroll the
@@ -359,20 +430,22 @@
         var p=(y-dTop)/dRange;
         if(p>-0.15 && p<1.15){
           var pc=Math.max(0,Math.min(1,p));
-          dTarget=Math.min(dDur-.04, pc*dDur);
+          dTarget=pc*dDur;
           /* only touch the DOM when a value actually changes — writing every
              frame costs a style recalc and reads as jitter */
           var br=+Math.max(0,1-pc*5).toFixed(3);
           if(br!==dBrLast){ dBrLast=br; dbr.style.opacity=br; }
 
-          /* the words on the laptop screen are the front page itself, and its
-             last frame is drawn exactly as the browser would draw the page —
-             so the handover is one layer going away, never two copies of the
-             same sentence dissolving through each other */
-          var fa=+((document.documentElement.lang==='da'?0:.9)
-                   *Math.max(0,Math.min(1,(pc-.93)/.06))).toFixed(3);
-          if(fa!==dFaLast){ dFaLast=fa; dfa.style.opacity=fa; }
-          var cut=pc>=.995;
+          /* the page appears on the screen only once there is a screen worth
+             putting it on — until then it is a blank lit panel, which is what
+             a page that has not drawn yet looks like */
+          if(dLive && pc>.45){ dBuild(); if(dPage) dPlace(dCur, pc); }
+          if(!dLive){
+            var fa=+((document.documentElement.lang==='da'?0:.9)
+                     *Math.max(0,Math.min(1,(pc-.93)/.06))).toFixed(3);
+            if(fa!==dFaLast){ dFaLast=fa; dfa.style.opacity=fa; }
+          }
+          var cut=pc>=.996;
           if(cut!==dCutLast){
             dCutLast=cut;
             dst.style.visibility=cut ? 'hidden' : '';
@@ -385,8 +458,9 @@
           else if(Math.abs(diff)>0.002){
             dCur+=diff*(1-Math.pow(1-0.34, dt/16.7));
           }
-          if(dv.readyState>1 && Math.abs(dv.currentTime-dCur)>0.004){
-            try{ dv.currentTime=dCur; }catch(_){}
+          if(dv.readyState>1){
+            var sk=Math.min(dCur, dDur-0.04);   /* seeking to the very end stalls */
+            if(Math.abs(dv.currentTime-sk)>0.004){ try{ dv.currentTime=sk; }catch(_){} }
           }
         } else { dNav(false); }
         requestAnimationFrame(dLoop);

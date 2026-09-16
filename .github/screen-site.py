@@ -100,12 +100,19 @@ print('settles from frame', settle, 'onto', [round(v) for v in REST])
 
 for f in files:
     idx = int(f[1:-4])
-    img = Image.open(os.path.join(src_dir, f)).convert('RGB')
+    img = Image.open(os.path.join(os.path.join(src_dir, f))).convert('RGB')
     if idx < first:
         img.save(os.path.join(out_dir, f)); continue
 
-    x0, y0, x1, y1 = [float(np.polyval(p, idx)) for p in fits]
-    if settle is not None and idx >= settle and last > settle:
+    if mode == 'blank' and idx in raw:
+        # A flat fill does not care about a trembling measurement, and the
+        # frame's own reading covers the fake browser bar exactly, which a
+        # smoothed curve can fall a few pixels short of.
+        x0, y0, x1, y1 = [float(v) for v in raw[idx]]
+        x0 += 2; y0 += 2; x1 -= 2; y1 -= 2
+    else:
+        x0, y0, x1, y1 = [float(np.polyval(p, idx)) for p in fits]
+    if mode != 'blank' and settle is not None and idx >= settle and last > settle:
         s = (idx - settle) / (last - settle)
         s = s * s * (3 - 2 * s)                     # smoothstep: ease to rest
         x0 += (REST[0] - x0) * s; y0 += (REST[1] - y0) * s
