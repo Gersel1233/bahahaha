@@ -11,7 +11,7 @@
   --ink:#1b1714; --ink-soft:#645a50; --ink-faint:#9b9084;
   --dark:#221e1a;
   --accent:#1f857a; --accent-deep:#166b62; --accent-tint:#2f9e91;
-  --nav:66px;
+  --nav:76px;
   /* the Kunder brief names the same two papers without the numbers */
   --paper:var(--paper-1);
   --sys:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Helvetica Neue",Helvetica,sans-serif;
@@ -38,6 +38,14 @@ body{ font-family:var(--sys); color:var(--ink);
    scaled down: heavier, and pulled tight — though nowhere near the
    headline's -.045em, which at 15px would start closing the words up. */
 .brand-l{ font-size:20.5px; font-weight:700; letter-spacing:-.032em; gap:9px; }
+/* The drawn mark stands in for the lockup. It is three words woven
+   together, so it needs real height to be read at all — at 38px it went
+   to a smudge. The bar was given ten pixels more so the mark can have
+   48, which is where the words come back. */
+.brand-mark{ display:block; height:48px; width:auto; }
+/* the footer is the one place it can have its full size */
+.brand-mark.foot{ height:56px; }
+@media(max-width:700px){ .brand-mark{ height:38px; } .brand-mark.foot{ height:46px; } }
 .brand-l .orbm{ --s:26px; border-radius:8px; padding:0;
   background:linear-gradient(150deg,var(--accent-tint),var(--accent-deep));
   box-shadow:0 2px 8px -3px rgba(22,107,98,.6); }
