@@ -356,6 +356,24 @@ function resize() {
   pending = true;
 }
 
+/* ---------- the recordings ----------
+   A clip is not fetched until its act is nearly up, and it is wound back
+   to the start every time that act begins — so a visitor sees the take
+   from its first frame rather than wherever a loop happened to be when
+   they arrived. Off the act it is paused, which costs nothing while
+   someone reads the rest of the page. */
+const clips = [];
+function driveClips(s) {
+  for (let i = 0; i < clips.length; i++) {
+    const v = clips[i], near = s > v.at - 0.12;
+    if (near && v.el.preload === 'none') { v.el.preload = 'auto'; v.el.load(); }
+    if (near && v.el.paused) v.el.play().catch(() => {});
+    else if (!near && !v.el.paused) v.el.pause();
+    if (s >= v.at && !v.armed) { v.armed = true; try { v.el.currentTime = 0; } catch (_) {} }
+    else if (s < v.at - 0.02) v.armed = false;
+  }
+}
+
 /* ---------- the loop ---------- */
 let last = -1, pending = true;
 function frame() {
@@ -364,7 +382,13 @@ function frame() {
   if (document.visibilityState !== 'visible') return;
   try {
     const s = st.s || 0;
-    if (!pending && Math.abs(s - last) < 0.0004) return;
+    driveClips(s);
+    /* a running clip needs a frame even when the scroll is still */
+    let live = false;
+    for (let i = 0; i < clips.length; i++) {
+      if (!clips[i].el.paused && clips[i].el.readyState > 2) { live = true; break; }
+    }
+    if (!pending && !live && Math.abs(s - last) < 0.0004) return;
     last = s; pending = false;
     pose(s);
     renderer.render(scene, camera);
@@ -392,16 +416,19 @@ if (reduce) {
 
 /* ---------- the hook the recordings come in through ---------- */
 window.LesregTelefon = {
+  /* 1 = the guest app, 2 = the administration, 3 = the admin app */
   setVideo(which, src) {
     const el = document.createElement('video');
-    el.loop = true; el.muted = true; el.autoplay = true; el.playsInline = true;
+    el.loop = true; el.muted = true; el.playsInline = true; el.preload = 'none';
+    /* muted and inline are what let a phone play it without being asked */
     el.setAttribute('playsinline', ''); el.setAttribute('muted', '');
+    el.setAttribute('disablepictureinpicture', '');
     el.src = src;
     const tex = new THREE.VideoTexture(el);
     tex.colorSpace = THREE.SRGBColorSpace;
     const target = which === 1 ? p1.sA : which === 2 ? p2.sA : p2.sB;
     target.map = tex; target.needsUpdate = true;
-    el.play().catch(() => {});
+    clips.push({ el, at: which === 1 ? 0.02 : which === 2 ? 0.38 : 0.70, armed: false });
     pending = true;
     return el;
   },
@@ -418,6 +445,8 @@ window.LesregTelefon = {
       screenA: +p2.sA.opacity.toFixed(3), screenB: +p2.sB.opacity.toFixed(3),
       notif: +p2.notifMat.opacity.toFixed(3),
       draws: renderer.info.render.calls,
+      clips: clips.map(c => ({ at: c.at, paused: c.el.paused,
+        ready: c.el.readyState, t: +c.el.currentTime.toFixed(2) })),
     };
   },
 };
