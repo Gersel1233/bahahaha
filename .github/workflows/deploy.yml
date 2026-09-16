@@ -31,6 +31,12 @@ jobs:
         with:
           enablement: true
 
+      # Vaerktoejsfiler hoerer ikke til paa den offentlige side.
+      # Deployet lagger hele mappen op, saa de fjernes her - kun fra
+      # kopien paa byggeserveren, aldrig fra selve repoet.
+      - name: Fjern udviklingsfiler
+        run: rm -rf .claude CLAUDE.md
+
       - name: Upload site
         uses: actions/upload-pages-artifact@v3
         with:
