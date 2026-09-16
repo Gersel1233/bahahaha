@@ -630,8 +630,10 @@ body::after{ content:none; }
 .dro-stick{ position:sticky; top:0; height:100vh; height:100lvh; overflow:hidden;
   pointer-events:none; background:#0e0c0a; will-change:opacity; }
 .khero{ position:relative; z-index:1; }
-.dro-vid{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
-  transform-origin:50% 45%; will-change:transform; }
+/* with the flight in front, the headline is already standing when the film
+   hands over — nothing to rise, nothing to catch mid-move */
+.khero.no-rise .khl i{ transition:none; }
+.dro-vid{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
 .dro-brand{ position:absolute; inset:0; display:flex; flex-direction:column; align-items:center;
   justify-content:center; pointer-events:none; will-change:opacity; }
 .dro-word{ font-family:var(--sora,'Sora'),sans-serif; font-weight:600; letter-spacing:-.02em;
@@ -641,10 +643,6 @@ body::after{ content:none; }
   color:rgba(255,255,255,.85); text-shadow:0 1px 14px rgba(0,0,0,.55);
   animation:droNudge 2.4s ease-in-out infinite; }
 @keyframes droNudge{ 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(6px); } }
-/* the real front page, drawn into the laptop screen in the footage */
-.dro-page{ position:absolute; inset:0; overflow:hidden; background:var(--ax-bg);
-  transform-origin:0 0; will-change:transform; }
-.dro-page .nav{ position:absolute; }
 .dro-fade{ position:absolute; inset:0; background:var(--ax-bg); opacity:0; pointer-events:none; will-change:opacity; }
 
 /* the nav stays out of the shot until the flight lands on the screen */
