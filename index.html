@@ -423,6 +423,10 @@
       dNav(true);
 
       var dPrev=0, dBrLast=-1, dFaLast=-1, dCutLast=null, dNmLast=null, dHvLast=null;
+      /* dRATE is most of the track per second — well above any reading
+         scroll, so only a flick ever meets it. dLAG is how far the film may
+         fall behind the page before it simply follows along. */
+      var dPr=0, dRATE=1.15, dLAG=0.22;
       function dLoop(now){
         /* frame-rate independent easing, so the flight follows the scroll the
            same way on a 60Hz laptop and a 120Hz phone */
@@ -430,7 +434,37 @@
         var y=window.scrollY||window.pageYOffset;
         var p=(y-dTop)/dRange;
         if(p>-0.15 && p<1.15){
-          var pc=Math.max(0,Math.min(1,p));
+          var pcRaw=Math.max(0,Math.min(1,p));
+          /* ---- the flight runs at its own speed ----
+             The scroll says where to go, not how fast to get there. A flick
+             can ask for half the track in a single frame, and a film cannot
+             be shown half a track at a time — the decoder is handed a jump
+             it cannot make, and what comes out is the stutter.
+
+             So the progress the intro actually runs on chases the scroll,
+             and its speed is capped: at full tilt it covers dRATE of the
+             track per second and no more. Ordinary scrolling never reaches
+             that ceiling, so it feels exactly as before; a flick is turned
+             into a run-through that keeps its pace and finishes by itself
+             after the finger has stopped.
+
+             It is allowed to fall behind, but only so far. Past that it
+             follows at a fixed distance instead of dropping further back,
+             which bounds how long the film can hold the screen after the
+             page beneath it has arrived. */
+          var ds=dt/1000;
+          var dGap=pcRaw-dPr;
+          var dStep=dGap*(1-Math.pow(1-0.21, dt/16.7));
+          var dCap=dRATE*ds;
+          if(dStep>dCap) dStep=dCap; else if(dStep<-dCap) dStep=-dCap;
+          /* An eased chase never quite arrives, and the handover waits for
+             it to. Four thousandths of the track is seven pixels of scroll
+             — under a frame of film — so it is taken as arrived, and the
+             long tail of the ease stops holding the page back. */
+          dPr = (Math.abs(dGap)<0.004) ? pcRaw : dPr+dStep;
+          if(pcRaw-dPr>dLAG) dPr=pcRaw-dLAG;
+          else if(dPr-pcRaw>dLAG) dPr=pcRaw+dLAG;
+          var pc=dPr;
           /* The flight does not run at the scroll's own pace — it eases out of
              it, so the camera decelerates into the page and comes to rest
              instead of simply stopping wherever the reader's finger stops.
@@ -443,13 +477,12 @@
           var br=+Math.max(0,1-pc*5).toFixed(3);
           if(br!==dBrLast){ dBrLast=br; dbr.style.opacity=br; }
 
-          var diff=dTarget-dCur;
-          /* the eased time advances whatever the video is doing — the page
-             drawn on the screen must never stall waiting for a decoder */
-          if(Math.abs(diff)>0.5){ dCur=dTarget; }            /* jumped — catch up at once */
-          else if(Math.abs(diff)>0.002){
-            dCur+=diff*(1-Math.pow(1-0.34, dt/16.7));
-          }
+          /* The smoothing now lives in the progress above, and the film
+             simply follows it. Easing a second time here would only add
+             lag on top of lag — and the old catch-up jump, which threw the
+             decoder a whole second of film at once, is exactly what the
+             pacing exists to prevent. */
+          dCur=dTarget;
           /* The film can only stand on whole frames, so
              so it is asked for whole ones. Nudging currentTime by less than a
              frame makes the browser decode again for a picture that cannot
@@ -514,7 +547,7 @@
              before the desk fills the frame */
           var nm=q>.50 && q<.78;
           if(nm!==dNmLast){ dNmLast=nm; dnm.classList.toggle('on', nm); }
-        } else { dNav(false); }
+        } else { dPr=Math.max(0,Math.min(1,p)); dNav(false); }
         requestAnimationFrame(dLoop);
       }
       requestAnimationFrame(dLoop);
