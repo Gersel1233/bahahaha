@@ -115,43 +115,6 @@
 .iphone .screen img, .mac .screen img{ display:block; width:100%; height:100%;
   object-fit:cover; object-position:top center; }
 
-/* the phone's own content starts below the island, the way an app does */
-.iphone .screen .sm{ padding-top:15cqw; }
-
-/* The section carries no green of its own, and that holds inside the screens
-   too — the kitchen's markers take the restaurant's own colour. */
-.scene.case .sd-dot{ background:color-mix(in srgb, var(--brand) 62%, #cfc4b4); }
-.scene.case .sd-o.new .sd-dot{ background:var(--brand); }
-
-/* ---------- Mosede: one menu, three places it shows up ---------- */
-.md{ position:absolute; inset:0; display:flex; flex-direction:column;
-  background:#faf3e8; color:#241a17; text-align:left; }
-.md-top{ display:flex; align-items:center; gap:2cqw; padding:2.6cqw 3.4cqw;
-  background:#f3e8da; border-bottom:1px solid rgba(36,26,23,.08); }
-.md-logo{ font-weight:700; font-size:2.9cqw; letter-spacing:-.03em; color:#b4242f; }
-.md-nav{ display:flex; gap:1.4cqw; margin-left:1.6cqw; }
-.md-nav i{ width:5.4cqw; height:1.5cqw; border-radius:99px; background:rgba(36,26,23,.13); }
-.md-open{ margin-left:auto; font-size:2.1cqw; color:#6e6158; }
-.md-main{ flex:1; display:grid; grid-template-columns:1.25fr 1fr; gap:3cqw;
-  padding:3.4cqw; min-height:0; }
-.md-card{ display:flex; flex-direction:column; gap:1.6cqw; }
-.md-kick{ font-size:1.9cqw; font-weight:700; letter-spacing:.2em;
-  text-transform:uppercase; color:#b4242f; }
-.md-h{ font-size:5cqw; font-weight:700; letter-spacing:-.04em; line-height:1; }
-.md-row{ display:flex; align-items:baseline; gap:1.6cqw; padding:1.7cqw 0;
-  border-top:1px solid rgba(36,26,23,.1); font-size:2.3cqw; }
-.md-row b{ font-weight:600; }
-.md-row span{ margin-left:auto; color:#8a7c72; }
-.md-screen{ display:flex; flex-direction:column; border-radius:2cqw; overflow:hidden;
-  background:#241a17; color:#fdf6ec; padding:2.6cqw; gap:1.4cqw; }
-.md-screen .md-sh{ font-size:2cqw; letter-spacing:.18em; text-transform:uppercase;
-  color:rgba(253,246,236,.55); }
-.md-screen .md-big{ font-size:3.6cqw; font-weight:700; letter-spacing:-.03em; line-height:1.05; }
-.md-screen .md-l{ display:flex; gap:1.4cqw; font-size:2.1cqw;
-  color:rgba(253,246,236,.82); }
-.md-screen .md-l span{ margin-left:auto; }
-.md-tag{ margin-top:auto; font-size:1.8cqw; color:rgba(253,246,236,.45); }
-
 /* ---------- the closer ---------- */
 .closer{ padding:clamp(110px,18vh,220px) 0 clamp(96px,14vh,170px);
   text-align:center; background:var(--paper-1); }
