@@ -641,6 +641,10 @@ body::after{ content:none; }
   color:rgba(255,255,255,.85); text-shadow:0 1px 14px rgba(0,0,0,.55);
   animation:droNudge 2.4s ease-in-out infinite; }
 @keyframes droNudge{ 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(6px); } }
+/* the real front page, drawn into the laptop screen in the footage */
+.dro-page{ position:absolute; inset:0; overflow:hidden; background:var(--ax-bg);
+  transform-origin:0 0; will-change:transform; }
+.dro-page .nav{ position:absolute; }
 .dro-fade{ position:absolute; inset:0; background:var(--ax-bg); opacity:0; pointer-events:none; will-change:opacity; }
 
 /* the nav stays out of the shot until the flight lands on the screen */

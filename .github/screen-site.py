@@ -13,6 +13,10 @@ from PIL import Image
 
 src_dir, shot_path, out_dir = sys.argv[1], sys.argv[2], sys.argv[3]
 fps = float(sys.argv[4]) if len(sys.argv) > 4 else 24.0
+# "blank" paints the screen in the page's own paper instead of the page itself,
+# for the cut where the real page is drawn live on top of it.
+mode = sys.argv[5] if len(sys.argv) > 5 else 'page'
+PAPER = (242, 236, 224)
 FADE_IN = 0.55          # seconds for the page to "render" once we can place it
 os.makedirs(out_dir, exist_ok=True)
 
@@ -78,6 +82,22 @@ fits = [np.polyfit(ca, np.array([raw[i][k] for i in clean], dtype=float), 3) for
 print(f'fitted on {len(clean)} clean frames: {clean[0]}..{clean[-1]}')
 
 first = idxs[0]
+last = int(files[-1][1:-4])
+
+# Where the fitted screen first covers the whole picture. From there the push
+# eases to a stop instead of barrelling past, so the film settles exactly on
+# the page filling the frame — and the real page can take over without moving.
+settle = None
+for i in range(first, last + 1):
+    if float(np.polyval(fits[0], i)) <= 0 and float(np.polyval(fits[1], i)) <= 0:
+        settle = i; break
+# Rest on the page covering the frame at its own proportions — stretching it to
+# the frame would leave the last picture 11% too wide to dissolve into the page.
+sa = shot.width / shot.height
+tw_ = max(w, h * sa); th_ = tw_ / sa
+REST = (-(tw_ - w) / 2, -(th_ - h) / 2, w + (tw_ - w) / 2, h + (th_ - h) / 2)
+print('settles from frame', settle, 'onto', [round(v) for v in REST])
+
 for f in files:
     idx = int(f[1:-4])
     img = Image.open(os.path.join(src_dir, f)).convert('RGB')
@@ -85,13 +105,19 @@ for f in files:
         img.save(os.path.join(out_dir, f)); continue
 
     x0, y0, x1, y1 = [float(np.polyval(p, idx)) for p in fits]
+    if settle is not None and idx >= settle and last > settle:
+        s = (idx - settle) / (last - settle)
+        s = s * s * (3 - 2 * s)                     # smoothstep: ease to rest
+        x0 += (REST[0] - x0) * s; y0 += (REST[1] - y0) * s
+        x1 += (REST[2] - x1) * s; y1 += (REST[3] - y1) * s
     bw, bh = x1 - x0, y1 - y0
     if bw < 10 or bh < 10:
         img.save(os.path.join(out_dir, f)); continue
 
     # render the page at the screen's size, then paste it where the screen is
     tw, th = int(round(bw)), int(round(bh))
-    page = shot.resize((tw, th), Image.LANCZOS)
+    page = (Image.new('RGB', (tw, th), PAPER) if mode == 'blank'
+            else shot.resize((tw, th), Image.LANCZOS))
     px, py = int(round(x0)), int(round(y0))
 
     k = min(1.0, (idx - first) / (FADE_IN * fps))
@@ -104,3 +130,13 @@ for f in files:
     img.save(os.path.join(out_dir, f))
 
 print('composited from frame', first)
+
+# Hand the same path to the page, so it can draw the real front page into the
+# screen instead of relying on video pixels for it.
+json.dump({
+    'fps': fps, 'w': w, 'h': h,
+    'first': first, 'last': last, 'settle': settle, 'rest': list(REST),
+    'fit': [list(map(float, p)) for p in fits],
+    'fadeIn': FADE_IN,
+}, open(os.path.join(os.path.dirname(out_dir) or '.', 'screen-path.json'), 'w'), indent=1)
+print('wrote screen-path.json')
