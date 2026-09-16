@@ -18,36 +18,16 @@
 <link rel="preload" as="font" type="font/woff2" href="fonts/barlow-normal-400.woff2" crossorigin />
 <link rel="preload" as="font" type="font/woff2" href="fonts/kanit-normal-900.woff2" crossorigin />
 <link rel="stylesheet" href="styles.css?v=43" />
-<link rel="stylesheet" href="lesreg.css?v=39" />
+<link rel="stylesheet" href="lesreg.css?v=40" />
 </head>
 <body>
 
   <!-- reading progress -->
   <div id="sprog" aria-hidden="true"><i></i></div>
 
-  <!-- ===================== CINEMATIC INTRO (Orbit) — the company opening ===================== -->
-  <div id="lg-intro" role="status" aria-label="Lesreg">
-    <div class="lgi-stage" aria-hidden="true">
-      <div class="lgi-collide">
-        <span class="lgi-blk n"></span><span class="lgi-blk e"></span>
-        <span class="lgi-blk s"></span><span class="lgi-blk w"></span>
-        <span class="lgi-ring"></span>
-      </div>
-      <div class="lgi-word3">
-        <div class="lgi-front"><span>G</span><span>E</span><span>R</span><span>S</span><span>E</span><span>L</span></div>
-        <div class="lgi-back">LESREG</div>
-      </div>
-      <div class="lgi-lockup">
-        <span class="lgi-orbit">
-          <span class="o n"></span><span class="o e"></span><span class="o s"></span><span class="o w"></span>
-          <span class="o core"></span>
-        </span>
-        <span class="lgi-word">Lesreg</span>
-      </div>
-    </div>
-    <span class="lgi-skip">tap to skip</span>
-  </div>
-  <script src="loader.js?v=32"></script>
+  <!-- The old overlay intro is retired — the drone flight below is the opening
+       now, so the page unlocks immediately. -->
+  <script>document.documentElement.classList.add('fyon-loaded');</script>
 
   <!-- ===================== NAV — lockup · links · one CTA ===================== -->
   <nav class="nav" data-screen-label="nav">
@@ -69,6 +49,20 @@
   </nav>
 
   <div class="fyon-reveal">
+
+  <!-- ===================== DRONE INTRO — the flight into the studio =====================
+       Scroll scrubs one continuous drone shot: over the house, in through the
+       window, up to the desk, into the screen — and the site fades in. -->
+  <div class="dro-track" id="droTrack" data-screen-label="drone-intro">
+    <div class="dro-stick">
+      <video class="dro-vid" id="droVid" src="media/drone-intro.mp4?v=1" poster="media/drone-intro-poster.jpg" muted playsinline preload="auto" disablepictureinpicture aria-hidden="true"></video>
+      <div class="dro-brand" id="droBrand" aria-hidden="true">
+        <span class="dro-word">Lesreg</span>
+        <span class="dro-hint" data-da="Scroll for at flyve ind">Scroll to fly in</span>
+      </div>
+      <div class="dro-fade" id="droFade" aria-hidden="true"></div>
+    </div>
+  </div>
 
   <!-- ===================== HERO — the statement (Koto) ===================== -->
   <header id="top" class="khero" data-screen-label="hero">
@@ -322,9 +316,44 @@
 
     var hero=document.querySelector('.khero');
     function go(){ if(hero) requestAnimationFrame(function(){ hero.classList.add('go'); }); }
-    if(reduce || document.documentElement.classList.contains('fyon-loaded')){ go(); }
-    else{ var t=setInterval(function(){ if(document.documentElement.classList.contains('fyon-loaded')){ clearInterval(t); go(); } },80);
-      setTimeout(function(){ clearInterval(t); go(); },9000); }
+
+    /* drone intro — the scroll scrubs the flight. A rAF loop eases the video
+       toward the scroll position (direct seeking per event is choppy), the
+       brand fades out as the flight starts, and near the end a cream overlay
+       dissolves the screen glow into the page — then the hero lines rise. */
+    var dtr=document.getElementById('droTrack');
+    if(dtr && !reduce){
+      var dv=document.getElementById('droVid'), dbr=document.getElementById('droBrand'), dfa=document.getElementById('droFade');
+      var dDur=14, dTop=0, dRange=1, dCur=0, dTarget=0, dHero=false, dNavHid=false;
+      dv.addEventListener('loadedmetadata',function(){ if(dv.duration && isFinite(dv.duration)) dDur=dv.duration; });
+      try{ dv.load(); }catch(_){}
+      function dMeasure(){ var vh=window.innerHeight; dTop=dtr.offsetTop; dRange=Math.max(1,dtr.offsetHeight-vh); }
+      window.addEventListener('resize',dMeasure,{passive:true});
+      dMeasure();
+      function dNav(hide){ if(hide!==dNavHid){ dNavHid=hide; document.body.classList.toggle('dro-on',hide); } }
+      dNav(true);
+      function dLoop(){
+        var y=window.scrollY||window.pageYOffset;
+        var p=(y-dTop)/dRange;
+        if(p>-0.15 && p<1.15){
+          var pc=Math.max(0,Math.min(1,p));
+          dTarget=Math.min(dDur-.06, pc*dDur);
+          dbr.style.opacity=Math.max(0,1-pc*5).toFixed(3);
+          dfa.style.opacity=Math.max(0,Math.min(1,(pc-.86)/.14)).toFixed(3);
+          dNav(pc<.82);
+          if(!dHero && pc>.85){ dHero=true; go(); }
+          var diff=dTarget-dCur;
+          if(Math.abs(diff)>0.004 && dv.readyState>1){
+            dCur+=diff*0.22;
+            try{ dv.currentTime=dCur; }catch(_){}
+          }
+        } else { dNav(false); }
+        requestAnimationFrame(dLoop);
+      }
+      requestAnimationFrame(dLoop);
+      /* safety: if the video never becomes seekable, the site must not hide —
+         the fade overlay and hero gate above run regardless of video state */
+    } else { go(); }
 
     /* statements light up character by character with the scroll —
        and always finish before the page runs out of scroll */
