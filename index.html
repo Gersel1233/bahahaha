@@ -17,8 +17,8 @@
 <link rel="preload" as="font" type="font/woff2" href="fonts/instrumentserif-italic-400.woff2" crossorigin />
 <link rel="preload" as="font" type="font/woff2" href="fonts/barlow-normal-400.woff2" crossorigin />
 <link rel="preload" as="font" type="font/woff2" href="fonts/kanit-normal-900.woff2" crossorigin />
-<link rel="stylesheet" href="styles.css?v=43" />
-<link rel="stylesheet" href="lesreg.css?v=50" />
+<link rel="stylesheet" href="styles.css?v=44" />
+<link rel="stylesheet" href="lesreg.css?v=52" />
 </head>
 <body>
 
@@ -62,7 +62,16 @@
         <span class="dro-word">Lesreg</span>
         <span class="dro-hint" data-da="Scroll for at flyve ind">Scroll to fly in</span>
       </div>
+      <!-- a lower third, the way a film names the person it has just found -->
+      <div class="dro-name" id="droName" aria-hidden="true">
+        <span class="dn-rule"></span>
+        <span class="dn-who">Mikkel Gersel</span>
+        <span class="dn-role" data-da="Grundl&aelig;gger, Lesreg">Founder, Lesreg</span>
+      </div>
       <div class="dro-fade" id="droFade" aria-hidden="true"></div>
+      <!-- the headline, written into the film's own field of paper, so it
+           arrives as the last beat of the flight and not after it -->
+      <div class="dro-hero" id="droHero" aria-hidden="true"></div>
     </div>
   </div>
 
@@ -326,12 +335,30 @@
     var dtr=document.getElementById('droTrack');
     if(dtr && !reduce){
       var dv=document.getElementById('droVid'), dbr=document.getElementById('droBrand'),
-          dfa=document.getElementById('droFade'), dst=document.getElementById('droStick');
+          dfa=document.getElementById('droFade'), dst=document.getElementById('droStick'),
+          dnm=document.getElementById('droName');
       var dDur=14, dTop=0, dRange=1, dCur=0, dTarget=0, dNavHid=false;
       /* The headline waits behind the film and rises the moment the flight
          lands, so the page writes itself in as the last beat of the same
          move rather than being there already. */
-      var dHero=false;
+      /* Built once, at load. Cloning a headline costs a frame, and a frame
+         spent in the middle of the flight is the one thing the scroll cannot
+         afford — so it is spent here, where nothing is moving yet. */
+      var dHero=false, dhr=document.getElementById('droHero'), dhK=null;
+      function dHeroBuild(){
+        if(!dhr || !hero) return;
+        dhr.innerHTML='';
+        dhK=hero.cloneNode(true);
+        dhK.removeAttribute('id');
+        [].slice.call(dhK.querySelectorAll('[id]')).forEach(function(c){ c.removeAttribute('id'); });
+        dhK.classList.remove('go');
+        if(dHero) dhK.classList.add('go');
+        dhr.appendChild(dhK);
+      }
+      dHeroBuild();
+      [].slice.call(document.querySelectorAll('[data-lang-btn]')).forEach(function(b){
+        b.addEventListener('click', dHeroBuild);
+      });
       /* 1920px flight on real screens, a 1280px cut on phones and on anyone
          asking to save data — the full file is three times the download */
       var dCon=navigator.connection||{};
@@ -363,7 +390,7 @@
       function dNav(hide){ if(hide!==dNavHid){ dNavHid=hide; document.body.classList.toggle('dro-on',hide); } }
       dNav(true);
 
-      var dPrev=0, dBrLast=-1, dFaLast=-1, dCutLast=null;
+      var dPrev=0, dBrLast=-1, dFaLast=-1, dCutLast=null, dNmLast=null, dHvLast=null;
       function dLoop(now){
         /* frame-rate independent easing, so the flight follows the scroll the
            same way on a 60Hz laptop and a 120Hz phone */
@@ -409,8 +436,18 @@
              that same colour in exact terms, laid over the film's compressed
              version of it, so the moment the layer goes there is nothing to
              see — not even a shift in tone. */
-          var fa=+Math.max(0,Math.min(1,(q-.90)/.09)).toFixed(3);
+          var fa=+Math.max(0,Math.min(1,(q-.86)/.09)).toFixed(3);
           if(fa!==dFaLast){ dFaLast=fa; dfa.style.opacity=fa; }
+          /* Once that field is solid the headline writes itself into it, in
+             the place it will still be standing when the film is gone. The
+             copy on the film and the real one below are given the move at the
+             same instant, so they are in the same state at every moment —
+             the handover can land mid-rise and still show nothing. */
+          if(q>.95 && !dHero){ dHero=true; if(dhK) dhK.classList.add('go'); go(); }
+          /* it belongs to the paper, so it only shows while the paper does —
+             scroll back into the room and it goes with the field */
+          var hv=q>.94;
+          if(hv!==dHvLast){ dHvLast=hv; dhr.classList.toggle('on', hv); }
           /* Hand over at the exact scroll where the hero behind lands on the
              top of the screen. A hair early and the real page is still a few
              pixels low, which is the jump this arrangement exists to avoid. */
@@ -418,9 +455,12 @@
           if(cut!==dCutLast){
             dCutLast=cut;
             dst.style.visibility=cut ? 'hidden' : '';
-            if(cut && !dHero){ dHero=true; go(); }
           }
           dNav(q<.85);
+          /* the name card holds while the camera is with him, then leaves
+             before the desk fills the frame */
+          var nm=q>.50 && q<.78;
+          if(nm!==dNmLast){ dNmLast=nm; dnm.classList.toggle('on', nm); }
         } else { dNav(false); }
         requestAnimationFrame(dLoop);
       }

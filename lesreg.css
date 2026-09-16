@@ -640,7 +640,43 @@ body::after{ content:none; }
   color:rgba(255,255,255,.85); text-shadow:0 1px 14px rgba(0,0,0,.55);
   animation:droNudge 2.4s ease-in-out infinite; }
 @keyframes droNudge{ 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(6px); } }
+/* ---- the name card ------------------------------------------------
+   A lower third, the way a film names the person it has just found: a
+   hairline draws out, the name follows it up, and the line under that
+   arrives last. It sits low and left, clear of the man in the middle of
+   the frame, and leaves before the desk fills the screen. */
+.dro-name{ position:absolute; left:clamp(18px,4vw,64px);
+  bottom:calc(clamp(52px,9vh,110px) + env(safe-area-inset-bottom));
+  pointer-events:none; opacity:0; transition:opacity .5s ease .1s; }
+.dro-name.on{ opacity:1; transition-delay:0s; }
+.dn-rule{ display:block; width:clamp(54px,7vw,92px); height:1.5px; margin-bottom:14px;
+  background:rgba(255,255,255,.9); box-shadow:0 1px 10px rgba(0,0,0,.45);
+  transform:scaleX(0); transform-origin:0 50%;
+  transition:transform .55s cubic-bezier(.16,1,.3,1); }
+.dro-name.on .dn-rule{ transform:scaleX(1); }
+.dn-who, .dn-role{ display:block; color:#fff;
+  transform:translateY(14px); opacity:0;
+  transition:transform .8s cubic-bezier(.16,1,.3,1), opacity .6s ease; }
+.dn-who{ font-family:var(--sora,'Sora'),sans-serif; font-weight:600; letter-spacing:-.015em;
+  font-size:clamp(23px,2.6vw,36px); line-height:1.1; text-shadow:0 2px 26px rgba(0,0,0,.5);
+  transition-delay:.14s; }
+.dn-role{ margin-top:9px; font-size:clamp(10.5px,1vw,12.5px); font-weight:500;
+  letter-spacing:.2em; text-transform:uppercase; color:rgba(255,255,255,.78);
+  text-shadow:0 1px 14px rgba(0,0,0,.5); transition-delay:.26s; }
+.dro-name.on .dn-who, .dro-name.on .dn-role{ transform:none; opacity:1; }
+@media (max-width:600px){
+  .dn-rule{ margin-bottom:11px; }
+  .dro-name{ bottom:calc(64px + env(safe-area-inset-bottom)); }
+}
 .dro-fade{ position:absolute; inset:0; background:var(--ax-bg); opacity:0; pointer-events:none; will-change:opacity; }
+/* the headline on the film's own paper — exactly where the real one will be
+   standing when the film goes, so the two are never in different places */
+.dro-hero{ position:absolute; inset:0; opacity:0; pointer-events:none;
+  /* kept on its own layer from the start, so the first frame it is shown on
+     is not also the frame it is first drawn on */
+  will-change:opacity; contain:layout paint; }
+.dro-hero.on{ opacity:1; }
+.dro-hero .khero{ position:absolute; inset:0; min-height:0; }
 
 /* the nav stays out of the shot until the flight lands on the screen */
 .nav{ transition:border-color .3s ease, opacity .55s ease; }
