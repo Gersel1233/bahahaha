@@ -587,33 +587,36 @@
           sSet(inr,'translate3d(0,'+((1-d)*24).toFixed(2)+'px,0) translateZ('+(-320*(1-d)).toFixed(1)+'px)',null);
 
           /* and the headline steps back out of the way as the cards arrive */
-          var r=sIo(sSeg(s,.42,.84));
+          var r=sIo(sSeg(s,.40,.76));
           sSet(sHd,'translate3d(0,'+(-5*r).toFixed(3)+'vh,0) scale('+(1-.09*r).toFixed(4)+')',(1-.32*r).toFixed(3));
 
           for(var i=0;i<sW.length;i++){
-            var t=sFilm(sSeg(s,.04+i*.03,.26+i*.03));
+            var t=sFilm(sSeg(s,.04+i*.025,.22+i*.025));
             sSet(sW[i],
               'translate3d(0,'+((1-t)*.9).toFixed(3)+'em,0) rotateX('+(-58*(1-t)).toFixed(2)+'deg) scale('+(.91+.09*t).toFixed(4)+')',
               t.toFixed(3), t>=1?'none':'blur('+(14*(1-t)).toFixed(2)+'px)');
           }
 
-          var lt=sOut(sSeg(s,.26,.42));
+          var lt=sOut(sSeg(s,.24,.38));
           sSet(sLe,'translate3d(0,'+((1-lt)*24).toFixed(2)+'px,0)',
             (lt*(1-.8*r)).toFixed(3), r<=0?'none':'blur('+(4*r).toFixed(2)+'px)');
 
+          /* The three cards are staggered close enough that the last one has
+             landed before the section lets go — a card still rising while the
+             stage unsticks is the one thing that reads as broken. */
           for(i=0;i<sCd.length;i++){
-            var ct=sIo(sSeg(s,.46+i*.08,.86+i*.08));
+            var ct=sIo(sSeg(s,.40+i*.06,.74+i*.06));
             sSet(sCd[i],
               'translate3d(0,'+((1-ct)*90).toFixed(2)+'px,0) rotateX('+(12*(1-ct)).toFixed(2)+'deg) scale('+(.93+.07*ct).toFixed(4)+')',
               ct.toFixed(3), ct>=1?'none':'blur('+(8*(1-ct)).toFixed(2)+'px)');
             var ws=sCW[i]||[];
             for(var j=0;j<ws.length;j++){
-              var wt=sFilm(sSeg(s,.52+i*.08,.82+i*.08));
+              var wt=sFilm(sSeg(s,.46+i*.06,.72+i*.06));
               sSet(ws[j],
                 'translate3d(0,'+((1-wt)*.62).toFixed(3)+'em,0) rotateX('+(-52*(1-wt)).toFixed(2)+'deg)',
                 wt.toFixed(3), wt>=1?'none':'blur('+(9*(1-wt)).toFixed(2)+'px)');
             }
-            var pt=sOut(sSeg(s,.60+i*.08,.92+i*.08));
+            var pt=sOut(sSeg(s,.50+i*.06,.78+i*.06));
             sSet(sCP[i],'translate3d(0,'+((1-pt)*14).toFixed(2)+'px,0)',pt.toFixed(3));
           }
 
@@ -621,18 +624,20 @@
           sSet(glw,'translate3d(-50%,'+(-14*s).toFixed(3)+'vh,0) scale('+(1+.26*s).toFixed(4)+')',
             (.9-.5*s).toFixed(3));
           /* and the last stretch closes the stage into the next section */
-          sSet(vei,null,sSeg(s,.9,1).toFixed(3));
+          sSet(vei,null,sSeg(s,.88,1).toFixed(3));
         }
 
         var sTop=0, sSpan=1, sLead=0, sSm=0, sT0=null, sLast=-1, sIntroOn=null;
-        /* The timeline starts while the stage is still sliding into view, not
-           only once it is pinned — otherwise the first screen of the section
-           is a blank field of paper waiting for a scroll that has already
-           happened. */
+        /* The timeline starts a little before the stage locks to the top —
+           but only a little. It has to begin at the point where the headline
+           has actually come over the bottom edge, or the words write
+           themselves below the screen and are simply finished by the time
+           anyone sees them. Just under half a screen is where the type is on
+           the glass and still rising. */
         function sMeasure(){
           sTop=scn.offsetTop;
           sSpan=Math.max(1, scn.offsetHeight-stg.offsetHeight);
-          sLead=Math.round(window.innerHeight*0.62);
+          sLead=Math.round(window.innerHeight*0.45);
         }
         sMeasure();
         window.addEventListener('resize', sMeasure, {passive:true});
@@ -646,7 +651,7 @@
           var intro=sOut(Math.min(1,(now-sT0)/900));
           var y=window.scrollY||window.pageYOffset;
           var p=Math.max(0,Math.min(1,(y-sTop+sLead)/(sSpan+sLead)));
-          sSm+=(p-sSm)*0.12;
+          sSm+=(p-sSm)*0.14;
           if(Math.abs(p-sSm)<0.0004) sSm=p;
           /* The opening beat plays by itself for someone who lands inside the
              section — a reload, or a link straight to it. Arriving down the

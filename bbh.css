@@ -60,7 +60,9 @@ body{ font-family:var(--sys); color:var(--ink);
 /* ============================================================
    KONCEPTET — one sticky stage, everything moved by the scroll
    ============================================================ */
-.scene{ position:relative; height:560vh; background:var(--paper-1); }
+/* Two screens of scroll drives the whole sequence. Longer than that and the
+   section stops being a move and becomes a wait. */
+.scene{ position:relative; height:300vh; background:var(--paper-1); }
 .stage{ position:sticky; top:0; height:100vh; overflow:hidden;
   display:flex; align-items:center; justify-content:center;
   perspective:1500px; perspective-origin:50% 44%; }
@@ -102,7 +104,7 @@ body{ font-family:var(--sys); color:var(--ink);
 #kunder{ background:linear-gradient(180deg, var(--paper-2) 0, var(--paper-1) 46vh); }
 
 @media(max-width:860px){
-  .scene{ height:700vh; }
+  .scene{ height:340vh; }
   .cards{ grid-template-columns:1fr; gap:10px; }
   .card{ padding:18px 20px; border-radius:18px; }
 }
