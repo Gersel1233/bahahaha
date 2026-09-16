@@ -18,7 +18,7 @@
 <link rel="preload" as="font" type="font/woff2" href="fonts/barlow-normal-400.woff2" crossorigin />
 <link rel="preload" as="font" type="font/woff2" href="fonts/kanit-normal-900.woff2" crossorigin />
 <link rel="stylesheet" href="styles.css?v=43" />
-<link rel="stylesheet" href="lesreg.css?v=47" />
+<link rel="stylesheet" href="lesreg.css?v=48" />
 </head>
 <body>
 
@@ -57,7 +57,7 @@
     <div class="dro-stick" id="droStick">
       <!-- src is chosen below: phones get the light cut, big screens the full
            one — a wide screen would show the light cut's softness -->
-      <video class="dro-vid" id="droVid" poster="media/drone-intro-poster.jpg?v=12" muted playsinline preload="auto" disablepictureinpicture aria-hidden="true"></video>
+      <video class="dro-vid" id="droVid" poster="media/drone-intro-poster.jpg?v=13" muted playsinline preload="auto" disablepictureinpicture aria-hidden="true"></video>
       <div class="dro-brand" id="droBrand" aria-hidden="true">
         <span class="dro-word">Lesreg</span>
         <span class="dro-hint" data-da="Scroll for at flyve ind">Scroll to fly in</span>
@@ -342,7 +342,7 @@
       var dCon=navigator.connection||{};
       var dThin=(Math.max(screen.width||0, window.innerWidth||0) < 760)
              || dCon.saveData===true || /(^|-)2g$/.test(dCon.effectiveType||'');
-      dv.src='media/drone-intro'+(dThin?'-sd':'')+'.mp4?v=12';
+      dv.src='media/drone-intro'+(dThin?'-sd':'')+'.mp4?v=13';
       dv.addEventListener('loadedmetadata',function(){ if(dv.duration && isFinite(dv.duration)) dDur=dv.duration; });
       try{ dv.load(); }catch(_){}
       /* the flight ends exactly when the hero behind the film reaches the top
@@ -414,13 +414,12 @@
         var r=dRect(t), e=PATH.rest;
         var rw=(r[2]-r[0])*s, ew=(e[2]-e[0])*s;
         var cx=((r[0]+r[2])/2-PATH.w/2)*s+W/2, cy=((r[1]+r[3])/2-PATH.h/2)*s+H/2;
-        /* Two ways to size it, and both are wanted: filling the screen while
-           the laptop is still a laptop, and landing on plain 1:1 at the end.
-           They are the same number by the finish, so cross over to the second
-           on the approach, where the screen is already past the frame edges
-           and no one can see the difference. */
-        var u=Math.max(0,Math.min(1,(prog-.62)/.30)); u=u*u*(3-2*u);
-        var k=(rw/W)*(1-u)+(rw/ew)*u;
+        /* One rule the whole way: the page grows in exact proportion to the
+           screen it sits on, so the approach cannot hesitate anywhere, and by
+           the last frame that proportion is 1 — the page at its own size. It
+           leaves a hair of the lit screen showing around the page early on,
+           which is nothing to see, since that screen is the page's own paper. */
+        var k=rw/ew;
         /* the last step is the whole point: land on the page untouched, and
            never a fraction of a percent off it */
         if(prog>=.995) k=1;
@@ -452,10 +451,28 @@
           var br=+Math.max(0,1-pc*5).toFixed(3);
           if(br!==dBrLast){ dBrLast=br; dbr.style.opacity=br; }
 
+          var diff=dTarget-dCur;
+          /* the eased time advances whatever the video is doing — the page
+             drawn on the screen must never stall waiting for a decoder */
+          if(Math.abs(diff)>0.5){ dCur=dTarget; }            /* jumped — catch up at once */
+          else if(Math.abs(diff)>0.002){
+            dCur+=diff*(1-Math.pow(1-0.34, dt/16.7));
+          }
+          /* One time, one picture. The film can only stand on whole frames, so
+             the page drawn on its screen stands on the same one — otherwise the
+             room steps twenty-four times a second while the page glides, and
+             the two cadences read as a shiver. Whole frames also stop the
+             browser decoding again for a picture that cannot change. */
+          var fr=(PATH&&PATH.fps)||24;
+          var ft=Math.round(dCur*fr)/fr;
+          if(dv.readyState>1){
+            var sk=Math.min(ft, dDur-0.04);
+            if(Math.abs(dv.currentTime-sk)>0.6/fr){ try{ dv.currentTime=sk; }catch(_){} }
+          }
           /* the page appears on the screen only once there is a screen worth
              putting it on — until then it is a blank lit panel, which is what
              a page that has not drawn yet looks like */
-          if(dLive && q>.45){ dBuild(); if(dPage) dPlace(dCur, q); }
+          if(dLive && q>.45){ dBuild(); if(dPage) dPlace(ft, q); }
           if(!dLive){
             /* the light cut carries the page as pixels, and a narrow screen
                crops them differently than the page lays itself out, so the
@@ -474,21 +491,6 @@
             dst.style.visibility=cut ? 'hidden' : '';
           }
           dNav(q<.85);
-          var diff=dTarget-dCur;
-          /* the eased time advances whatever the video is doing — the page
-             drawn on the screen must never stall waiting for a decoder */
-          if(Math.abs(diff)>0.5){ dCur=dTarget; }            /* jumped — catch up at once */
-          else if(Math.abs(diff)>0.002){
-            dCur+=diff*(1-Math.pow(1-0.34, dt/16.7));
-          }
-          if(dv.readyState>1){
-            /* Ask for whole frames only. Nudging currentTime by less than one
-               frame makes the browser decode again for a picture that cannot
-               change — that work is what the scroll was stumbling over. */
-            var fr=(PATH&&PATH.fps)||24;
-            var sk=Math.min(Math.round(dCur*fr)/fr, dDur-0.04);
-            if(Math.abs(dv.currentTime-sk)>0.6/fr){ try{ dv.currentTime=sk; }catch(_){} }
-          }
         } else { dNav(false); }
         requestAnimationFrame(dLoop);
       }

@@ -640,7 +640,12 @@ body::after{ content:none; }
 .dro-page{ position:absolute; inset:0; overflow:hidden; background:var(--ax-bg);
   transform-origin:0 0; will-change:transform, opacity; contain:layout paint;
   backface-visibility:hidden; }
-.dro-page .nav{ position:absolute; opacity:1 !important; }
+.dro-page .nav{ position:absolute; opacity:1 !important;
+  /* a live blur behind a layer that is being scaled every frame is redrawn
+     every frame too, and that shows up as a shiver — the bar is opaque here
+     anyway, since there is only the page's own paper behind it */
+  -webkit-backdrop-filter:none; backdrop-filter:none; background:var(--ax-bg); }
+.dro-page .nav .gn-cta, .dro-page .nav .langsw{ animation:none; }
 .dro-brand{ position:absolute; inset:0; display:flex; flex-direction:column; align-items:center;
   justify-content:center; pointer-events:none; will-change:opacity; }
 .dro-word{ font-family:var(--sora,'Sora'),sans-serif; font-weight:600; letter-spacing:-.02em;
