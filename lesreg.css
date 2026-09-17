@@ -701,3 +701,8 @@ body.dro-on .nav{ opacity:0; pointer-events:none; }
 @media (prefers-reduced-motion: reduce){
   .dro-track{ display:none; }
 }
+
+/* the flight is one screen on a phone, and it plays rather than scrubs */
+html.tap .dro-track{ height:100vh; height:100svh; margin-bottom:0; }
+html.tap .dro-stick{ position:static; height:100vh; height:100svh; }
+html.tap .dro-hint{ display:none; }

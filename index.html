@@ -17,10 +17,10 @@
 <link rel="preload" as="font" type="font/woff2" href="fonts/instrumentserif-italic-400.woff2" crossorigin />
 <link rel="preload" as="font" type="font/woff2" href="fonts/barlow-normal-400.woff2" crossorigin />
 <link rel="stylesheet" href="styles.css?v=45" />
-<link rel="stylesheet" href="lesreg.css?v=57" />
-<link rel="stylesheet" href="bbh.css?v=8" />
-<link rel="stylesheet" href="kunder.css?v=5" />
-<link rel="stylesheet" href="telefon.css?v=2" />
+<link rel="stylesheet" href="lesreg.css?v=58" />
+<link rel="stylesheet" href="bbh.css?v=9" />
+<link rel="stylesheet" href="kunder.css?v=6" />
+<link rel="stylesheet" href="telefon.css?v=4" />
 </head>
 <body>
 
@@ -395,6 +395,17 @@
     });
 
     var hero=document.querySelector('.khero');
+    /* A phone is not a small desktop. Everything below that hangs on the
+       scroll — the flight scrubbed frame by frame, the sticky stages that
+       turn one section into three screens of scrolling — is the wrong
+       instrument there: seeking a video per frame is the most expensive
+       thing a phone can be asked to do, and a thumb throws the page rather
+       than winding it. On a phone a section arrives and its animation
+       plays. Decided once, in one place, and written to the document so
+       the stylesheets read the same answer as the engine. */
+    var TAP = window.matchMedia('(max-width:760px)').matches;
+    document.documentElement.classList.toggle('tap', TAP);
+
     function go(){ if(hero) requestAnimationFrame(function(){ hero.classList.add('go'); }); }
 
     /* drone intro — the scroll scrubs the flight. A rAF loop eases the video
@@ -402,7 +413,51 @@
        brand fades out as the flight starts, and the film ends on the front
        page itself, which the real one then takes over from unchanged. */
     var dtr=document.getElementById('droTrack');
-    if(dtr && !reduce){
+    if(dtr && !reduce && TAP){
+      /* It plays. Nothing here touches currentTime, so there is no seeking
+         at all — the one job a phone does badly is simply not asked for.
+         The film dissolves to paper on its own clock as it ends, and the
+         headline below rises when it is scrolled to, like every other
+         section on the page. */
+      var pv=document.getElementById('droVid'), pbr=document.getElementById('droBrand'),
+          pfa=document.getElementById('droFade');
+      document.documentElement.classList.add('dro-tall');
+      pv.poster='media/drone-intro-tel-poster.jpg?v=16';
+      pv.src='media/drone-intro-tel.mp4?v=16';
+      pv.muted=true; pv.playsInline=true;
+      pv.setAttribute('playsinline',''); pv.setAttribute('muted','');
+      pv.preload='auto'; pv.loop=false;
+      document.body.classList.add('dro-on');
+      var pEnd=false;
+      function pFinish(){ if(pEnd) return; pEnd=true;
+        if(pfa) pfa.style.opacity='1';
+        document.body.classList.remove('dro-on'); }
+      pv.addEventListener('timeupdate',function(){
+        var d=pv.duration||14, t=pv.currentTime;
+        if(pbr) pbr.style.opacity=(t>0.7?'0':'1');
+        if(pfa && !pEnd){
+          var f=Math.max(0,Math.min(1,(t-(d-1.7))/1.3));
+          pfa.style.opacity=f.toFixed(3);
+          if(f>=1) pFinish();
+        }
+      },{passive:true});
+      pv.addEventListener('ended',pFinish);
+      /* autoplay is allowed for a muted inline video, but not promised —
+         a first touch is the fallback, and the film is never a gate: if it
+         never plays at all, the page below is still there to scroll to */
+      var pTry=function(){ var r=pv.play(); if(r&&r.catch) r.catch(function(){}); };
+      pTry();
+      window.addEventListener('touchstart',pTry,{passive:true,once:true});
+      setTimeout(function(){ if(pv.paused && pv.currentTime===0) pFinish(); },6000);
+      /* the headline rises when it is reached, on its own CSS transition —
+         the same one it had before the flight was ever built */
+      if(hero && 'IntersectionObserver' in window){
+        var hio=new IntersectionObserver(function(es){
+          if(es[0].isIntersecting){ hio.disconnect(); go(); }
+        },{rootMargin:'0px 0px -20% 0px'});
+        hio.observe(hero);
+      } else go();
+    } else if(dtr && !reduce){
       var dv=document.getElementById('droVid'), dbr=document.getElementById('droBrand'),
           dfa=document.getElementById('droFade'), dst=document.getElementById('droStick'),
           dnm=document.getElementById('droName');
@@ -728,6 +783,14 @@
         var y=window.scrollY||window.pageYOffset;
         for(var i=0;i<scenes.length;i++){
           var o=scenes[i];
+          if(TAP){
+            /* started by the section coming into view, then it runs on its
+               own — the scroll is the visitor's again */
+            var ts=o.t0===null ? 0 : Math.min(1,(now-o.t0)/o.dur);
+            if(o.live!==true){ o.live=true; o.el.classList.add('live'); }
+            if(Math.abs(ts-o.last)>0.0004 || (ts===1&&o.last!==1)){ o.last=ts; o.paint(ts); }
+            continue;
+          }
           var praw=(y-o.top+o.lead)/(o.span+o.lead);
           var p=Math.max(0,Math.min(1,praw));
           /* Only the scene the scroll is in keeps its composited layers —
@@ -748,11 +811,20 @@
       }
       return {
         out:out, io:io, film:film, seg:seg, set:set, split:split, plain:plain, blur:blur,
+        tap:TAP,
         /* the stage starts hidden in CSS, so it must never be left to the
            loop alone — base() is the state it falls back to */
         add:function(o){
           o.stage=o.el.querySelector('.stage');
           o.sm=0; o.last=-1; o.introOn=null; o.top=0; o.span=1; o.lead=0; o.live=null;
+          o.t0=null; o.dur=o.dur||2800;
+          if(TAP && 'IntersectionObserver' in window){
+            new IntersectionObserver(function(es){
+              for(var k=0;k<es.length;k++){
+                if(es[k].isIntersecting && o.t0===null){ o.t0=performance.now(); }
+              }
+            },{rootMargin:'0px 0px -22% 0px'}).observe(o.el);
+          }
           scenes.push(o);
           o.build(); o.base();
           if(reduce) return;
@@ -823,7 +895,7 @@
           SC.set(inr,'translate3d(0,'+((1-d)*24).toFixed(2)+'px,0) translateZ('+(-320*(1-d)).toFixed(1)+'px)',null);
 
           /* and the headline steps back out of the way as the cards arrive */
-          var r=SC.io(SC.seg(s,.40,.78));
+          var r=SC.tap ? 0 : SC.io(SC.seg(s,.40,.78));
           SC.set(sHd,'translate3d(0,'+(-5*r).toFixed(3)+'vh,0) scale('+(1-.09*r).toFixed(4)+')',(1-.32*r).toFixed(3));
 
           for(var i=0;i<sW.length;i++){
@@ -860,7 +932,7 @@
           SC.set(glw,'translate3d(-50%,'+(-14*s).toFixed(3)+'vh,0) scale('+(1+.26*s).toFixed(4)+')',
             (.9-.5*s).toFixed(3));
           /* and the last stretch closes the stage into the next section */
-          SC.set(vei,null,SC.seg(s,.90,1).toFixed(3));
+          SC.set(vei,null,SC.tap ? '0' : SC.seg(s,.90,1).toFixed(3));
         }
       });
     }
@@ -880,7 +952,7 @@
 
           /* the whole line leaves together at the end, so the first case
              arrives on a clear stage rather than over a leftover sentence */
-          var x=SC.io(SC.seg(s,.62,1));
+          var x=SC.tap ? 0 : SC.io(SC.seg(s,.62,1));
           SC.set(kHd,'translate3d(0,'+(-7*x).toFixed(3)+'vh,0) scale('+(1-.10*x).toFixed(4)+')',
             (1-.85*x).toFixed(3), SC.blur(9*x));
 
@@ -917,7 +989,7 @@
         build:function(){ nw=SC.split(name); },
         base:function(){ SC.plain(nw.concat(facts, [kick,url,blurb,col,dev,phone])); },
         paint:function(q){
-          var ex=SC.io(SC.seg(q,.84,1));
+          var ex=SC.tap ? 0 : SC.io(SC.seg(q,.84,1));
 
           var kt=SC.out(SC.seg(q,0,.10));
           SC.set(kick,'translate3d(0,'+((1-kt)*14).toFixed(2)+'px,0)',kt.toFixed(3));
@@ -991,7 +1063,8 @@
           window.__lesreg.s=s;
           for(var i=0;i<tA.length;i++){
             var b=tBand[i];
-            var into=SC.out(SC.seg(s,b[0],b[1])), away=SC.io(SC.seg(s,b[2],b[3]));
+            var into=SC.out(SC.seg(s,b[0],b[1])),
+                away=SC.tap ? 0 : SC.io(SC.seg(s,b[2],b[3]));
             SC.set(tA[i],'translate3d(0,'+((1-into)*20-away*28).toFixed(1)+'px,0)',
               (into*(1-away)).toFixed(3));
             var ws=tW[i]||[];
@@ -1072,7 +1145,7 @@
   <script type="importmap">
   { "imports": { "three": "./vendor/three.module.js?v=0.184.0" } }
   </script>
-  <script type="module" src="telefon-3d.js?v=14"></script>
+  <script type="module" src="telefon-3d.js?v=16"></script>
 
   <script src="site.js?v=47" defer></script>
 </body>

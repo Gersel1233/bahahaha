@@ -456,6 +456,15 @@ function setOpacity(p, o) {
    and gets smaller, and the words stack underneath it. */
 let L = layout();
 function layout() {
+  /* Three placements, because the words sit somewhere different in each.
+     On a wide window they are a column to the right, so the phone stops
+     left of centre. On a pinned narrow one they are under it, so it keeps
+     the upper half. And where the section is laid out as a block — the
+     phone, where it plays rather than scrubs — the words are below the
+     canvas entirely, nothing shares the frame, and the phone has no reason
+     to be small or to hug the top. */
+  if (document.documentElement.classList.contains('tap'))
+    return { y1: 0.05, s1: 0.98, x2: 0, y2: 0.05, s2: 0.98 };
   return window.innerWidth < 900
     ? { y1: 0.34, s1: 0.62, x2: 0,     y2: 0.36, s2: 0.62 }
     : { y1: 0.34, s1: 0.72, x2: -0.66, y2: 0,    s2: 0.86 };
@@ -532,9 +541,15 @@ function pose(s) {
 
 /* ---------- fitting the room to the window ---------- */
 function resize() {
+  /* Measured off the canvas itself, not off its parent. While the stage is
+     pinned the canvas fills it and the two are the same; laid out as a
+     block on a phone the stage is as tall as all its content and the canvas
+     is a band inside it, and sizing the drawing buffer to the parent drew a
+     phone twelve hundred pixels tall into a box five hundred tall — a
+     phone squashed into a tablet. */
   const host = canvas.parentElement;
-  const w = Math.max(1, Math.round(host.clientWidth));
-  const h = Math.max(1, Math.round(host.clientHeight));
+  const w = Math.max(1, Math.round(canvas.clientWidth || host.clientWidth));
+  const h = Math.max(1, Math.round(canvas.clientHeight || host.clientHeight));
   renderer.setSize(w, h, false);
   camera.aspect = w / h;
   /* Far enough back that the phone's top edge stays on the glass with the
@@ -590,6 +605,9 @@ function frame() {
 }
 
 window.addEventListener('resize', resize, { passive: true });
+/* the canvas changes shape without the window doing so — fonts landing,
+   the address bar folding, the block above it growing */
+if ('ResizeObserver' in window) new ResizeObserver(() => resize()).observe(canvas);
 resize();
 
 if (reduce) {

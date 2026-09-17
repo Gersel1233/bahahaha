@@ -65,7 +65,7 @@
 
 @media (prefers-reduced-motion: reduce){
   .scene.tel{ height:auto; }
-  .scene.tel .stage{ position:static; height:auto; padding:10vh 0 6vh; }
+  .scene.tel .stage{ position:static; height:auto; padding:10vh 0 6vh; display:block; }
   .tel-canvas{ position:relative; height:62vh; min-height:340px; }
   .tel-text{ position:static; display:grid; gap:clamp(28px,5vh,56px);
     width:min(1120px, calc(100% - clamp(24px,6vw,80px))); margin:6vh auto 0; }
@@ -76,3 +76,22 @@
   .tel-act, .tel-act h2 .w > span, .tel-act h2 .w > i{
     opacity:1 !important; transform:none !important; filter:none !important; }
 }
+
+html.tap .scene.tel{ height:auto; }
+/* The stage is a flex box — that is how it centres one thing on a pinned
+   screen. Laid out as a block it has two children in the flow, the canvas
+   and the words, and flex made them two columns half the width each. */
+html.tap .scene.tel .stage{ position:static; height:auto; padding:10vh 0 6vh;
+  display:block; }
+html.tap .tel-canvas{ position:relative; height:58vh; min-height:320px; }
+/* the three acts stack and stay — on a pinned stage they hand over to each
+   other in one place, and in a block there is room for all three */
+html.tap .tel-text{ position:static; display:grid; gap:clamp(24px,4vh,44px);
+  width:calc(100% - clamp(20px,6vw,48px)); margin:5vh auto 0; }
+html.tap .tel-bottom, html.tap .tel-side{ position:static; transform:none;
+  width:auto; display:block; margin:0; }
+html.tap .tel-side .tel-act{ position:static; transform:none; text-align:left;
+  margin-top:clamp(24px,4vh,44px); bottom:auto; }
+html.tap .tel-bottom{ text-align:left; bottom:auto; }
+html.tap .tel-bottom p, html.tap .tel-side .tel-act p{ margin-left:0; margin-right:0; }
+html.tap .tel-bottom .tel-tags, html.tap .tel-side .tel-tags{ justify-content:flex-start; }
