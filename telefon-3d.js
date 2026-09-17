@@ -107,66 +107,116 @@ function blankScreen(label) {
 }
 
 /* The notification is drawn into a plane on the screen rather than laid
-   over the page as DOM, so it turns and tilts with the phone. */
+   over the page as DOM, so it turns and tilts with the phone.
+
+   Every measurement below is taken off a real screenshot of the phone
+   these notifications land on — 1206 x 2622, so three pixels to the
+   point. The card runs 1116 wide by 231 tall with 83 between cards, the
+   icon is 113 square set 40 in from the card edge, the text column
+   starts 191 in, and the four lines sit on a 54-pixel rhythm. Written by
+   eye instead, a notification lands in the uncanny valley: near enough
+   to be recognised and wrong enough to be noticed.
+
+   The names are not his customers'. The screenshot carries eight real
+   ones with their booking times, and this page is public. The format is
+   the device's, line for line; the people in it are not real. */
+const NOTIF_PAD = 40, CARD_W = 1116, CARD_GAP = 83;
+const NOTIF_W = CARD_W + NOTIF_PAD * 2;
+const TX = 191, B1 = 45, LP = 54, TAIL = 24;   // text column, first baseline, line pitch, foot
+const NOTIF_CARDS = [
+  { stamp: 'nu',          body: 'Sofie Kragh · kl. 18:00 · 2 pers. · Spiser her' },
+  { stamp: '2 t. siden',  body: 'Anders Bay Nielsen · kl. 17:30 · To-go' },
+];
+
 function notificationTexture() {
   const c = document.createElement('canvas');
-  c.width = 900; c.height = 560;
   const x = c.getContext('2d');
-  const F = '-apple-system, "SF Pro Text", "Helvetica Neue", Helvetica, sans-serif';
+  const F = '-apple-system, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Helvetica, sans-serif';
 
-  function card(ox, oy, w, h, alpha, scale) {
+  /* The chef's hat is drawn rather than set as an emoji. A notification
+     whose icon is a glyph is at the mercy of whatever emoji font the
+     visitor's system happens to carry, and a missing one is a tofu box
+     in the middle of the thing this act exists to show. */
+  function hat(cx, cy, s, fill, band) {
     x.save();
-    x.globalAlpha = alpha;
-    x.translate(ox + w / 2, oy + h / 2); x.scale(scale, scale); x.translate(-(w / 2), -(h / 2));
-    x.shadowColor = 'rgba(0,0,0,.45)'; x.shadowBlur = 34; x.shadowOffsetY = 12;
-    x.fillStyle = 'rgba(30,29,27,.9)';
-    x.beginPath(); x.roundRect(0, 0, w, h, 40); x.fill();
-    x.shadowColor = 'transparent';
+    x.translate(cx, cy); x.scale(s, s);
+    x.fillStyle = fill;
+    x.beginPath();
+    x.arc(-14, 2, 15, 0, Math.PI * 2); x.arc(0, -6, 17, 0, Math.PI * 2);
+    x.arc(14, 2, 15, 0, Math.PI * 2); x.fill();
+    x.beginPath(); x.roundRect(-18, 6, 36, 26, 5); x.fill();
+    x.fillStyle = band;
+    x.fillRect(-18, 20, 36, 3.5);
+    x.restore();
   }
 
-  // the one underneath, already read
-  card(30, 18, 840, 200, 0.55, 0.92);
-  x.fillStyle = 'rgba(247,241,232,.82)';
-  x.font = '600 30px ' + F;
-  x.fillText('Anders Bay Nielsen', 90, 84);
-  x.font = '400 28px ' + F;
-  x.fillStyle = 'rgba(247,241,232,.6)';
-  x.fillText('kl. 17:30 · To-go · 2 t. siden', 90, 132);
-  x.restore();
+  /* The body is one string that wraps, the way the device wraps it — not
+     two lines written as two, which breaks the moment a name is longer
+     than the one it was laid out for. And because it wraps, the card is
+     as tall as what is in it: a name that fits on one line gets a card
+     one line shorter, rather than a card with a hole in the bottom. */
+  function wrap(body) {
+    x.font = '400 43px ' + F;
+    const words = body.split(' '), max = CARD_W - TX - 51, lines = [];
+    let line = '';
+    for (let i = 0; i < words.length; i++) {
+      const t = line ? line + ' ' + words[i] : words[i];
+      if (x.measureText(t).width > max && line) {
+        lines.push(line); line = words[i];
+        if (lines.length === 2) break;
+      } else line = t;
+    }
+    if (lines.length < 2 && line) lines.push(line);
+    return lines;
+  }
 
-  // the one that just landed
-  card(30, 230, 840, 300, 1, 1);
-  x.fillStyle = '#e8712f';
-  x.beginPath(); x.roundRect(64, 38, 84, 84, 16); x.fill();
-  // a chef's hat, drawn rather than fetched
-  x.fillStyle = '#fff';
-  x.beginPath();
-  x.arc(92, 68, 15, 0, Math.PI * 2); x.arc(106, 61, 17, 0, Math.PI * 2);
-  x.arc(120, 68, 15, 0, Math.PI * 2); x.fill();
-  x.beginPath(); x.roundRect(88, 72, 36, 26, 4); x.fill();
-  x.fillStyle = 'rgba(232,113,47,.9)';
-  x.fillRect(88, 86, 36, 3);
+  const plan = NOTIF_CARDS.map(n => {
+    const lines = wrap(n.body);
+    /* the header, then the title, then the body — so the last baseline is
+       LP × (1 + however many lines the body wrapped to) below the first */
+    return { ...n, lines, h: B1 + LP * (1 + lines.length) + TAIL };
+  });
+  c.width = NOTIF_W;
+  c.height = NOTIF_PAD * 2 + plan.reduce((a, p) => a + p.h, 0) + CARD_GAP * (plan.length - 1);
 
-  x.fillStyle = 'rgba(247,241,232,.72)';
-  x.font = '600 26px ' + F;
-  x.fillText('Ny bestilling', 168, 68);
-  x.textAlign = 'right';
-  x.font = '400 26px ' + F;
-  x.fillText('nu', 782, 68);
-  x.textAlign = 'left';
-  x.fillStyle = '#fdf7ee';
-  x.font = '600 32px ' + F;
-  x.fillText('from Spiis Admin', 168, 116);
-  x.font = '400 31px ' + F;
-  x.fillStyle = 'rgba(253,247,238,.92)';
-  x.fillText('Sofie Kragh', 168, 166);
-  x.font = '400 29px ' + F;
-  x.fillStyle = 'rgba(253,247,238,.66)';
-  x.fillText('kl. 18:00 · 2 pers. · Spiser her', 168, 212);
-  x.restore();
+  let oy = NOTIF_PAD;
+  for (const p of plan) {
+    x.save();
+    x.translate(NOTIF_PAD, oy);
+    x.shadowColor = 'rgba(0,0,0,.42)'; x.shadowBlur = 40; x.shadowOffsetY = 14;
+    x.fillStyle = 'rgba(23,24,20,.94)';
+    x.beginPath(); x.roundRect(0, 0, CARD_W, p.h, 66); x.fill();
+    x.shadowColor = 'transparent';
+
+    // the app icon: a squircle with the same hat in it
+    x.fillStyle = 'rgb(196,107,54)';
+    x.beginPath(); x.roundRect(40, (p.h - 113) / 2, 113, 113, 26); x.fill();
+    hat(96.5, p.h / 2, 1.5, '#fff', 'rgba(196,107,54,.92)');
+
+    hat(TX + 21, B1 - 14, 0.62, 'rgba(255,255,255,.95)', 'rgba(23,24,20,.95)');
+    x.fillStyle = 'rgba(255,255,255,.95)';
+    x.font = '600 44px ' + F;
+    x.fillText('Ny bestilling', TX + 52, B1);
+    x.textAlign = 'right';
+    x.font = '400 42px ' + F;
+    x.fillStyle = 'rgba(255,255,255,.5)';
+    x.fillText(p.stamp, CARD_W - 51, B1);
+    x.textAlign = 'left';
+
+    x.fillStyle = 'rgba(255,255,255,.96)';
+    x.font = '600 44px ' + F;
+    x.fillText('from Spiis Admin', TX, B1 + LP);
+
+    x.font = '400 43px ' + F;
+    x.fillStyle = 'rgba(255,255,255,.78)';
+    p.lines.forEach((l, i) => x.fillText(l, TX, B1 + LP * (2 + i)));
+    x.restore();
+    oy += p.h + CARD_GAP;
+  }
 
   const t = new THREE.CanvasTexture(c);
   t.colorSpace = THREE.SRGBColorSpace;
+  t.anisotropy = 4;
   return t;
 }
 
@@ -239,8 +289,19 @@ const screenGeo = screenShape(SCREEN_W, SCREEN_H, R - BEZ);
 const ISLAND_W = SCREEN_W * 0.31, ISLAND_H = SCREEN_W * 0.086;
 const islandGeo = new THREE.ShapeGeometry(roundedRect(ISLAND_W, ISLAND_H, ISLAND_H / 2), 16);
 const shadowGeo = new THREE.PlaneGeometry(W * 3.1, W * 2.2);
-const notifGeo  = new THREE.PlaneGeometry(SCREEN_W * 0.94, SCREEN_W * 0.94 * (560 / 900));
+/* The stack is as wide on the glass as it is on the device: 1116 of the
+   screenshot's 1206, plus the room the shadow needs. Its height comes
+   back from the drawing rather than being declared, because the cards
+   size themselves to the text the visitor's own font metrics produce. */
 const notifTex  = notificationTexture();
+const NOTIF_H   = notifTex.image.height;
+const NOTIF_PW = SCREEN_W * (NOTIF_W / 1206);
+const NOTIF_PH = NOTIF_PW * (NOTIF_H / NOTIF_W);
+const notifGeo  = new THREE.PlaneGeometry(NOTIF_PW, NOTIF_PH);
+/* And it rests where it rests there. In the screenshot the top card's
+   edge is 248 pixels down a 2622-pixel display — 9.5%, which clears the
+   island — and the plane's own transparent margin sits above that. */
+const NOTIF_Y = SCREEN_H / 2 - ((248 - NOTIF_PAD) / 2622) * SCREEN_H - NOTIF_PH / 2;
 const shadowTex = shadowTexture();
 
 /* Every phone gets its own materials. Shared, one phone's fade pulls the
@@ -280,7 +341,7 @@ function buildPhone(labelA, labelB) {
 
   const notifMat = new THREE.MeshBasicMaterial({ map: notifTex, toneMapped: false, transparent: true, opacity: 0 });
   const notif = new THREE.Mesh(notifGeo, notifMat);
-  notif.position.set(0, H * 0.285, D / 2 + 0.0046);
+  notif.position.set(0, NOTIF_Y, D / 2 + 0.0046);
   notif.visible = false;
   g.add(notif);
 
@@ -430,8 +491,16 @@ function pose(s) {
      crooked rather than shaking. A degree and a bit reads as the buzz
      and as nothing at all when it stops. */
   p2.g.rotation.set(0, 0.42 * (1 - e2), buzz * 0.021);
+  /* It used to start 0.55 of the body above its resting place, which is
+     well above the phone — the card flew in over the titanium and across
+     the top edge before it reached the glass. A notification does not
+     come from outside the device. This one only ever exists on the
+     display: it settles 0.02 of the body, from just under the island, and
+     grows the last six per cent while it fades up. Nothing to clip,
+     because nothing ever leaves. */
   p2.notif.visible = p2.mix.n > 0.002;
-  p2.notif.position.y = H * 0.285 + (1 - p2.mix.n) * 0.55 * H;
+  p2.notif.position.y = NOTIF_Y + (1 - p2.mix.n) * 0.020 * H;
+  p2.notif.scale.setScalar(0.94 + 0.06 * p2.mix.n);
   setOpacity(p2, seg(s, 0.36, 0.44));
 
   camera.position.y = Math.sin(s * Math.PI) * 0.04;
@@ -544,6 +613,14 @@ window.LesregTelefon = {
       o1: +p1.o.toFixed(3), o2: +p2.o.toFixed(3),
       screenA: +p2.sA.opacity.toFixed(3), screenB: +p2.sB.opacity.toFixed(3),
       notif: +p2.notifMat.opacity.toFixed(3),
+      /* the card's own edges against the edges of the glass, so "it never
+         leaves the phone" is a number rather than an impression */
+      glass: [+(-SCREEN_H / 2).toFixed(4), +(SCREEN_H / 2).toFixed(4)],
+      island: +(SCREEN_H / 2 - SCREEN_W * 0.026 - ISLAND_H).toFixed(4),
+      card: [
+        +(p2.notif.position.y - (NOTIF_PH / 2 - NOTIF_PH * (NOTIF_PAD / NOTIF_H)) * p2.notif.scale.x).toFixed(4),
+        +(p2.notif.position.y + (NOTIF_PH / 2 - NOTIF_PH * (NOTIF_PAD / NOTIF_H)) * p2.notif.scale.x).toFixed(4),
+      ],
       draws: renderer.info.render.calls,
       clips: clips.map(c => ({ at: c.at, paused: c.el.paused,
         ready: c.el.readyState, t: +c.el.currentTime.toFixed(2) })),
