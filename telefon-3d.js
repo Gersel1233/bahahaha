@@ -1,10 +1,10 @@
 /* ============================================================
    LESREG — the phone.
 
-   A real phone in three.js rather than a CSS frame, because this
-   section turns it over: it arrives out of nothing, spins once, steps
-   aside for a second one, and takes a notification on the glass while
-   it buzzes. None of that survives being faked with boxes and shadows.
+   A real phone in three.js rather than a CSS frame, because this section
+   moves it: it arrives out of nothing, steps aside for a second one, and
+   takes a notification on the glass while it buzzes. None of that
+   survives being faked with boxes and shadows.
 
    The scroll drives it through one number. The stage engine in the page
    writes the section's progress to window.__lesreg.s, and everything
@@ -194,10 +194,10 @@ chassisGeo.translate(0, 0, -D / 2 - BEV);
 const ZBACK = -D / 2 - BEV * 2;                     // the back of the body
 const bezelGeo  = new THREE.ShapeGeometry(roundedRect(W - BEV * 2, H - BEV * 2, R - BEV), 24);
 
-/* The back. The plateau across the top says iPhone 17 Pro louder than
-   anything else on the device, and act one turns the phone a whole
-   revolution — so for a third of that turn the back is what is being
-   looked at. Left flat it read as a grey slab. */
+/* The back. It is never turned square to the visitor — the arrival stops
+   short of ninety degrees on purpose — but the phone is seen from its
+   edge through the whole turn, and the plateau is what stands proud there.
+   Without it the silhouette was a flat slab. */
 const PLT_W = W * 0.955, PLT_H = W * 0.36, PLT_D = 0.015;
 const plateauGeo = new THREE.ExtrudeGeometry(roundedRect(PLT_W, PLT_H, W * 0.125), {
   depth: PLT_D, bevelEnabled: true, bevelThickness: 0.0022, bevelSize: 0.0022,
@@ -238,7 +238,6 @@ const screenGeo = screenShape(SCREEN_W, SCREEN_H, R - BEZ);
    comes to rest just under it, the way it does on the device. */
 const ISLAND_W = SCREEN_W * 0.31, ISLAND_H = SCREEN_W * 0.086;
 const islandGeo = new THREE.ShapeGeometry(roundedRect(ISLAND_W, ISLAND_H, ISLAND_H / 2), 16);
-const btnGeo    = new THREE.BoxGeometry(0.012, 1, D * 0.62);
 const shadowGeo = new THREE.PlaneGeometry(W * 3.1, W * 2.2);
 const notifGeo  = new THREE.PlaneGeometry(SCREEN_W * 0.94, SCREEN_W * 0.94 * (560 / 900));
 const notifTex  = notificationTexture();
@@ -341,16 +340,11 @@ function buildPhone(labelA, labelB) {
   dot(-PLT_W * 0.235, -PLT_H * 0.20, W * 0.024, lensGlass);
   dot(-PLT_W * 0.085, -PLT_H * 0.26, W * 0.009, lensGlass);
 
-  /* the buttons sit where they sit on the phone: measured down from the
-     top edge as a share of the body, not eyeballed */
-  const btnMat = new THREE.MeshStandardMaterial({ color: 0xbdb8b2, metalness: 1, roughness: 0.24, transparent: true });
-  [[-1, 0.22, 0.07], [-1, 0.32, 0.11], [-1, 0.455, 0.11], [1, 0.30, 0.15]]
-    .forEach(([side, top, len]) => {
-      const b = new THREE.Mesh(btnGeo, btnMat);
-      b.scale.y = len * H;
-      b.position.set(side * W / 2, H / 2 - (top + len / 2) * H, 0);
-      g.add(b);
-    });
+  /* There were side buttons here, measured down from the top edge as a
+     share of the body. At this size they read as four dark notches cut
+     into the band rather than as buttons, and the band is the one part of
+     the edge the visitor sees. A clean edge is closer to the device than
+     an approximate one. */
 
   const shadowMat = new THREE.MeshBasicMaterial({ map: shadowTex, transparent: true, depthWrite: false });
   const shade = new THREE.Mesh(shadowGeo, shadowMat);
@@ -360,7 +354,7 @@ function buildPhone(labelA, labelB) {
 
   g.visible = false;
   scene.add(g);
-  return { g, body: [titan, bezelMat, btnMat, islandMat, backMat, lensMetal, lensGlass, flashMat],
+  return { g, body: [titan, bezelMat, islandMat, backMat, lensMetal, lensGlass, flashMat],
            shadowMat, sA, sB, notifMat, notif, mix: { a: 1, b: 0, n: 0 }, o: 0 };
 }
 
@@ -395,17 +389,27 @@ function layout() {
 
 /* ---------- the three acts ---------- */
 function pose(s) {
-  /* 1 — it arrives out of nothing, turns one whole revolution on the way
-     in, and settles in the upper half so the words have the bottom third
-     to themselves. Then it slides off to the left. */
+  /* 1 — it arrives out of nothing and settles in the upper half so the
+     words have the bottom third to themselves. Then it slides off left.
+
+     It used to come in on a whole revolution, then on sixty degrees. Both
+     are better arrivals on paper and worse ones on the page: a turn is
+     only worth having if what it turns towards you is worth seeing, and
+     here it was the back and then the edge. The depth is carried by the
+     dolly instead — four units of it — and the face is all that is ever
+     square to the visitor. */
   const e1 = slow(seg(s, 0, 0.32));
   const x1 = io(seg(s, 0.34, 0.50));
   p1.g.scale.setScalar(0.04 + (L.s1 - 0.04) * e1);
   p1.g.position.set(-2.9 * x1,
                     0.46 + (L.y1 - 0.46) * e1,
                     -3.4 + 3.4 * e1 + 0.5 * x1);
-  p1.g.rotation.set(0.1 * (1 - e1), Math.PI * 2 * (1 - e1) - 0.5 * x1, 0);
-  setOpacity(p1, Math.min(seg(s, 0.02, 0.10), 1 - x1));
+  p1.g.rotation.set(0.1 * (1 - e1), -0.5 * x1, 0);
+  /* The fade decides which pose the visitor actually meets, not the
+     rotation: whatever angle the phone has reached when it stops being
+     transparent is the pose the arrival appears to start from. Held to
+     0.02 it surfaced at forty-odd degrees, well past the turn. */
+  setOpacity(p1, Math.min(seg(s, 0.005, 0.085), 1 - x1));
 
   /* 2 — the second comes in from the right and stops left of centre, so
      the right column is left free for the text.

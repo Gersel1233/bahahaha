@@ -94,8 +94,14 @@
    and a corner radius meant to be 16% of a 120px phone came out 16% of the
    screen. That is what turned it into a pill. Everything shaped in cqw sits
    one level in, where the unit means the phone. */
+/* Sized off the two devices rather than by eye: an iPhone 17 Pro is 71.9mm
+   across and a 14" MacBook Pro lid is 312.6, so the phone is 23% of the
+   lid — and 71.9 by 149.9 is the body it has, not the 9:19.5 of the
+   display inside it. At 16% the phone was a prop; the minimum of 78px then
+   pushed it back up to 25% on a narrow window, so the pair changed
+   proportion depending on the screen it was read on. */
 .iphone{ container-type:inline-size; position:absolute; right:-3%; bottom:-6%;
-  width:16%; min-width:78px; aspect-ratio:9/19.5; z-index:2; }
+  width:23%; min-width:64px; aspect-ratio:71.9/149.9; z-index:2; }
 .iphone .inn{ height:100%; padding:1.15cqw; border-radius:16cqw;
   background:linear-gradient(145deg,#8c8782,#4a4641 26%,#2a2722 50%,#6c6761 74%,#39352f);
   box-shadow:0 34px 54px -30px rgba(27,23,20,.72),
@@ -132,7 +138,8 @@
   .scene.case{ height:310vh; }
   .wrap{ grid-template-columns:1fr; gap:clamp(18px,4vh,34px); }
   .devices{ --lidmax:38vh; width:min(88%, calc(var(--lidmax) * 1.547)); }
-  .iphone{ width:18%; bottom:-5%; }
+  /* the width is the real ratio at every size now — only the overhang moves */
+  .iphone{ bottom:-5%; }
   .facts{ grid-template-columns:1fr 1fr; gap:0 clamp(14px,3vw,26px); max-width:none; }
 }
 @media(max-height:760px){

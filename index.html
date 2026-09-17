@@ -19,7 +19,7 @@
 <link rel="stylesheet" href="styles.css?v=45" />
 <link rel="stylesheet" href="lesreg.css?v=53" />
 <link rel="stylesheet" href="bbh.css?v=5" />
-<link rel="stylesheet" href="kunder.css?v=4" />
+<link rel="stylesheet" href="kunder.css?v=5" />
 <link rel="stylesheet" href="telefon.css?v=2" />
 </head>
 <body>
@@ -914,13 +914,13 @@
       var tBand=[[.04,.20,.34,.46],[.44,.60,.64,.74],[.72,.88,1.02,1.03]];
       SC.add({
         el:tel,
-        /* Act one is an arrival: the phone turns a whole revolution on its
-           way in, and that is the one beat in this section that has to be
-           watched rather than read. On the standard lead it was spent
-           before the stage was on screen — 188 degrees through the turn
-           with the canvas still 30% below the fold, and down to 37 by the
-           time it pinned. Almost none of it was ever seen. */
-        leadF:0.12,
+        /* Act one is an arrival, and it is the one beat in this section
+           that has to be watched rather than read. On the standard lead it
+           was spent before the stage was on screen — most of the way
+           through the turn with the canvas still below the fold. The turn
+           is a short one now, so the lead is shorter again: the phone
+           should not be halfway home by the time the stage pins. */
+        leadF:0.05,
         build:function(){ tW=tH.map(function(h){ return SC.split(h); }); },
         base:function(){ var all=tA.slice(); tW.forEach(function(a){ all=all.concat(a); }); SC.plain(all); },
         paint:function(s){
@@ -1008,7 +1008,7 @@
   <script type="importmap">
   { "imports": { "three": "./vendor/three.module.js?v=0.184.0" } }
   </script>
-  <script type="module" src="telefon-3d.js?v=8"></script>
+  <script type="module" src="telefon-3d.js?v=10"></script>
 
   <script src="site.js?v=47" defer></script>
 </body>
