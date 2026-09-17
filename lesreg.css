@@ -640,6 +640,13 @@ body::after{ content:none; }
    carries a move of its own — the copy's lines are placed by the scroll */
 .khero.no-rise .khl i, .khero.no-rise .kmeta{ transition:none; }
 .dro-vid{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+/* On a phone the film is its own shape rather than a slice of one: a 9:16
+   block across the full width, centred, with the stage's own dark field
+   above and below it — which is where the lockup and the name card already
+   sit. It reads as full screen on a dark stage, and nothing is cropped,
+   because the file is cut to exactly this frame. */
+.dro-tall .dro-vid{ inset:50% 0 auto 0; height:auto; aspect-ratio:9/16;
+  transform:translateY(-50%); }
 .dro-brand{ position:absolute; inset:0; display:flex; flex-direction:column; align-items:center;
   justify-content:center; pointer-events:none; will-change:opacity; }
 .dro-word{ font-family:var(--sora,'Sora'),sans-serif; font-weight:600; letter-spacing:-.02em;

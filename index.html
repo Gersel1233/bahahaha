@@ -17,7 +17,7 @@
 <link rel="preload" as="font" type="font/woff2" href="fonts/instrumentserif-italic-400.woff2" crossorigin />
 <link rel="preload" as="font" type="font/woff2" href="fonts/barlow-normal-400.woff2" crossorigin />
 <link rel="stylesheet" href="styles.css?v=45" />
-<link rel="stylesheet" href="lesreg.css?v=56" />
+<link rel="stylesheet" href="lesreg.css?v=57" />
 <link rel="stylesheet" href="bbh.css?v=8" />
 <link rel="stylesheet" href="kunder.css?v=5" />
 <link rel="stylesheet" href="telefon.css?v=2" />
@@ -438,9 +438,22 @@
       /* 1920px flight on real screens, a 1280px cut on phones and on anyone
          asking to save data — the full file is three times the download */
       var dCon=navigator.connection||{};
-      var dThin=(Math.max(screen.width||0, window.innerWidth||0) < 760)
-             || dCon.saveData===true || /(^|-)2g$/.test(dCon.effectiveType||'');
-      dv.src='media/drone-intro'+(dThin?'-sd':'')+'.mp4?v=15';
+      /* A phone is not a small cinema screen, it is a different shape. The
+         landscape cut covered a portrait window by throwing away 74% of the
+         frame's width and blowing the rest up three and a half times — the
+         laptop the whole flight lands on was outside the crop. The portrait
+         cut is taken from the 1600px master, not from the already reduced
+         landscape file, so it is not scaled down twice: 506x900, which is
+         the frame the phone actually shows. 1.33MB against 3.76.
+
+         The class is set here rather than in a media query so the two can
+         never disagree — a portrait file in a landscape box would be the
+         same crop all over again. */
+      var dNarrow=Math.max(screen.width||0, window.innerWidth||0) < 760;
+      var dSlow=dCon.saveData===true || /(^|-)2g$/.test(dCon.effectiveType||'');
+      document.documentElement.classList.toggle('dro-tall', dNarrow);
+      if(dNarrow) dv.poster='media/drone-intro-tel-poster.jpg?v=16';
+      dv.src='media/drone-intro'+(dNarrow?'-tel':dSlow?'-sd':'')+'.mp4?v=16';
       dv.addEventListener('loadedmetadata',function(){ if(dv.duration && isFinite(dv.duration)) dDur=dv.duration; });
       var dSeek=false;
       dv.addEventListener('seeking',function(){ dSeek=true; });
@@ -471,7 +484,10 @@
         dWri=Math.max(.30, dArr-(dWRI*vh)/dRange);   /* here it starts writing */
         dFin=Math.max(.25, dWri-(dGAP*vh)/dRange);   /* the flight is over here */
       }
-      window.addEventListener('resize',function(){ dMeasure(); dSize(); },{passive:true});
+      /* dSize() was called here and has never existed anywhere in this file.
+         A phone fires a resize every time its address bar folds away, so this
+         threw a ReferenceError on most scrolls on most phones. */
+      window.addEventListener('resize',function(){ dMeasure(); },{passive:true});
       dMeasure();
       function dNav(hide){ if(hide!==dNavHid){ dNavHid=hide; document.body.classList.toggle('dro-on',hide); } }
       dNav(true);
