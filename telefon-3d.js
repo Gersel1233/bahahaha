@@ -13,8 +13,19 @@
    ============================================================ */
 import * as THREE from 'three';
 
-const W = 0.70, H = 1.517, D = 0.082, R = 0.105;          // 9:19.5
-const SCREEN_W = W - 0.036, SCREEN_H = SCREEN_W / (9 / 19.5);
+/* Measured off the device — 71.9 × 149.9 × 8.75 mm — and scaled so the
+   width is 0.70.
+
+   The chamfer matters more than it looks. three adds a bevel beyond both
+   ends of an extrusion, so a bevel of 0.012 was quietly making a body of
+   0.082 come out 0.106 thick: 29% over the number, and 0.151 of the
+   width where the real phone is 0.122. It also curved the sides, and the
+   sides of this phone are flat. A third of a millimetre is the whole of
+   the rounding on a titanium band. */
+const W = 0.70, H = 1.484, D = 0.074, R = 0.115;
+const BEV = 0.0035;                                        // the chamfer
+const BEZ = 0.014;                                         // the black border
+const SCREEN_W = W - BEZ * 2, SCREEN_H = SCREEN_W / (9 / 19.5);
 
 const st = (window.__lesreg = window.__lesreg || { s: 0, err: null });
 
@@ -46,8 +57,11 @@ function envTexture() {
   c.width = 32; c.height = 128;
   const x = c.getContext('2d');
   const g = x.createLinearGradient(0, 0, 0, 128);
-  g.addColorStop(0, '#fffaf2'); g.addColorStop(0.42, '#efe4d3');
-  g.addColorStop(0.72, '#8e8577'); g.addColorStop(1, '#2b2620');
+  /* Polished metal is mostly a picture of the room, so the floor of this
+     gradient is the phone's own colour. Almost black down there and the
+     titanium came out brown — the device is a light silver. */
+  g.addColorStop(0, '#fffaf2'); g.addColorStop(0.42, '#f2e8d9');
+  g.addColorStop(0.72, '#a9a091'); g.addColorStop(1, '#443c33');
   x.fillStyle = g; x.fillRect(0, 0, 32, 128);
   const t = new THREE.CanvasTexture(c);
   t.mapping = THREE.EquirectangularReflectionMapping;
@@ -168,16 +182,37 @@ function shadowTexture() {
 }
 
 const chassisGeo = new THREE.ExtrudeGeometry(roundedRect(W, H, R), {
-  depth: D, bevelEnabled: true, bevelThickness: 0.012, bevelSize: 0.012,
-  bevelSegments: 3, curveSegments: 24,
+  depth: D, bevelEnabled: true, bevelThickness: BEV, bevelSize: BEV,
+  bevelSegments: 2, curveSegments: 24,
 });
 /* The bevel is added beyond both ends of the extrusion, so the metal
-   front sits 12 thousandths proud of the depth — right on top of the
-   screen, which is why the glass came out as brushed aluminium. Pushed
-   back by exactly that, the front face lands on D/2 where the screen
-   offsets expect it. */
-chassisGeo.translate(0, 0, -D / 2 - 0.012);
-const bezelGeo  = new THREE.ShapeGeometry(roundedRect(W - 0.014, H - 0.014, R - 0.007), 24);
+   front sits proud of the depth — right on top of the screen, which is
+   why the glass once came out as brushed aluminium. Pushed back by
+   exactly that, the front face lands on D/2 where the screen offsets
+   expect it, and the body runs from -D/2-2·BEV to D/2. */
+chassisGeo.translate(0, 0, -D / 2 - BEV);
+const ZBACK = -D / 2 - BEV * 2;                     // the back of the body
+const bezelGeo  = new THREE.ShapeGeometry(roundedRect(W - BEV * 2, H - BEV * 2, R - BEV), 24);
+
+/* The back. The plateau across the top says iPhone 17 Pro louder than
+   anything else on the device, and act one turns the phone a whole
+   revolution — so for a third of that turn the back is what is being
+   looked at. Left flat it read as a grey slab. */
+const PLT_W = W * 0.955, PLT_H = W * 0.36, PLT_D = 0.015;
+const plateauGeo = new THREE.ExtrudeGeometry(roundedRect(PLT_W, PLT_H, W * 0.125), {
+  depth: PLT_D, bevelEnabled: true, bevelThickness: 0.0022, bevelSize: 0.0022,
+  bevelSegments: 2, curveSegments: 20,
+});
+plateauGeo.translate(0, 0, -PLT_D);
+const PLT_Y = H / 2 - W * 0.05 - PLT_H / 2;
+const PLT_Z = ZBACK - PLT_D;                        // the plateau's own back face
+
+/* The glass window under it, a shade off the metal — the same two-tone
+   back the device has. */
+const backGeo = new THREE.ShapeGeometry(roundedRect(W * 0.80, H * 0.46, W * 0.15), 20);
+
+const lensBarrelGeo = new THREE.CylinderGeometry(1, 1, 1, 28);
+const lensGlassGeo  = new THREE.CircleGeometry(1, 28);
 
 /* The display is not a rectangle. A plane gave it square corners inside a
    rounded body, which is the one thing that stops a phone reading as a
@@ -196,7 +231,7 @@ function screenShape(w, h, r) {
   uv.needsUpdate = true;
   return g;
 }
-const screenGeo = screenShape(SCREEN_W, SCREEN_H, R - 0.018);
+const screenGeo = screenShape(SCREEN_W, SCREEN_H, R - BEZ);
 
 /* The Dynamic Island. It is the single cue that says which phone this is,
    and it sits on the glass rather than in the bezel — a notification
@@ -216,7 +251,7 @@ function buildPhone(labelA, labelB) {
   const g = new THREE.Group();
 
   const titan = new THREE.MeshStandardMaterial({
-    color: 0xb9b4ae, metalness: 1, roughness: 0.34, envMapIntensity: 1.5, transparent: true,
+    color: 0xd6d2cd, metalness: 1, roughness: 0.30, envMapIntensity: 1.5, transparent: true,
   });
   g.add(new THREE.Mesh(chassisGeo, titan));
 
@@ -224,30 +259,91 @@ function buildPhone(labelA, labelB) {
     color: 0x090807, metalness: 0.2, roughness: 0.55, transparent: true,
   });
   const bezel = new THREE.Mesh(bezelGeo, bezelMat);
-  bezel.position.z = D / 2 + 0.0015;
+  bezel.position.z = D / 2 + 0.001;
   g.add(bezel);
 
+  /* The glass sat four thousandths proud of the metal, which on a body
+     this thin is a five per cent lip — and this section shows the phone
+     edge-on halfway through the turn, which is exactly where a lip shows.
+     Flush enough to read as one surface, apart enough not to fight for
+     depth. */
   const sA = new THREE.MeshBasicMaterial({ map: blankScreen(labelA), toneMapped: false, transparent: true });
   const sB = new THREE.MeshBasicMaterial({ map: blankScreen(labelB), toneMapped: false, transparent: true, opacity: 0 });
   const screen = new THREE.Mesh(screenGeo, sA), screenB = new THREE.Mesh(screenGeo, sB);
-  screen.position.z  = D / 2 + 0.004;
-  screenB.position.z = D / 2 + 0.005;
+  screen.position.z  = D / 2 + 0.0022;
+  screenB.position.z = D / 2 + 0.0030;
   g.add(screen, screenB);
 
   const islandMat = new THREE.MeshBasicMaterial({ color: 0x070605, toneMapped: false, transparent: true });
   const island = new THREE.Mesh(islandGeo, islandMat);
-  island.position.set(0, SCREEN_H / 2 - SCREEN_W * 0.026 - ISLAND_H / 2, D / 2 + 0.0058);
+  island.position.set(0, SCREEN_H / 2 - SCREEN_W * 0.026 - ISLAND_H / 2, D / 2 + 0.0038);
   g.add(island);
 
   const notifMat = new THREE.MeshBasicMaterial({ map: notifTex, toneMapped: false, transparent: true, opacity: 0 });
   const notif = new THREE.Mesh(notifGeo, notifMat);
-  notif.position.set(0, H * 0.285, D / 2 + 0.0065);
+  notif.position.set(0, H * 0.285, D / 2 + 0.0046);
   notif.visible = false;
   g.add(notif);
 
+  /* ---- the back ---- */
+  const backMat = new THREE.MeshStandardMaterial({
+    color: 0xf0ece6, metalness: 0.15, roughness: 0.55, envMapIntensity: 1.0, transparent: true,
+  });
+  const back = new THREE.Mesh(backGeo, backMat);
+  back.position.set(0, -H * 0.10, ZBACK - 0.0008);
+  back.rotation.y = Math.PI;
+  g.add(back);
+
+  const plateau = new THREE.Mesh(plateauGeo, titan);
+  plateau.position.set(0, PLT_Y, ZBACK);
+  g.add(plateau);
+
+  const lensMetal = new THREE.MeshStandardMaterial({
+    color: 0xb6b1ab, metalness: 1, roughness: 0.2, envMapIntensity: 1.7, transparent: true,
+  });
+  const lensGlass = new THREE.MeshStandardMaterial({
+    color: 0x0a0b0d, metalness: 0.6, roughness: 0.06, envMapIntensity: 2.4, transparent: true,
+  });
+  const flashMat = new THREE.MeshStandardMaterial({
+    color: 0xfdf2df, metalness: 0.1, roughness: 0.3, transparent: true,
+  });
+
+  /* A lens is a barrel standing off the plateau with the glass set down
+     inside it. Flat discs read as stickers. */
+  function lens(x, y, r) {
+    const barrel = new THREE.Mesh(lensBarrelGeo, lensMetal);
+    barrel.scale.set(r, 0.012, r);
+    barrel.rotation.x = Math.PI / 2;
+    barrel.position.set(x, PLT_Y + y, PLT_Z - 0.004);
+    const glass = new THREE.Mesh(lensGlassGeo, lensGlass);
+    glass.scale.setScalar(r * 0.78);
+    glass.rotation.y = Math.PI;
+    glass.position.set(x, PLT_Y + y, PLT_Z - 0.006);
+    g.add(barrel, glass);
+  }
+  function dot(x, y, r, mat) {
+    const d = new THREE.Mesh(lensGlassGeo, mat);
+    d.scale.setScalar(r);
+    d.rotation.y = Math.PI;
+    d.position.set(x, PLT_Y + y, PLT_Z - 0.0012);
+    g.add(d);
+  }
+
+  /* The camera sits top-left of the back, and the back is what act one
+     turns towards the visitor — so in model space, where +X is the
+     viewer's right from the front, the cluster belongs on +X. Put on -X
+     it comes round the turn as a mirror image of the device. */
+  const RL = W * 0.092;
+  lens(PLT_W * 0.29, PLT_H * 0.29, RL);
+  lens(PLT_W * 0.29, -PLT_H * 0.29, RL);
+  lens(PLT_W * 0.055, 0, RL);
+  dot(-PLT_W * 0.235, PLT_H * 0.21, W * 0.030, flashMat);
+  dot(-PLT_W * 0.235, -PLT_H * 0.20, W * 0.024, lensGlass);
+  dot(-PLT_W * 0.085, -PLT_H * 0.26, W * 0.009, lensGlass);
+
   /* the buttons sit where they sit on the phone: measured down from the
      top edge as a share of the body, not eyeballed */
-  const btnMat = new THREE.MeshStandardMaterial({ color: 0xa9a49e, metalness: 1, roughness: 0.3, transparent: true });
+  const btnMat = new THREE.MeshStandardMaterial({ color: 0xbdb8b2, metalness: 1, roughness: 0.24, transparent: true });
   [[-1, 0.22, 0.07], [-1, 0.32, 0.11], [-1, 0.455, 0.11], [1, 0.30, 0.15]]
     .forEach(([side, top, len]) => {
       const b = new THREE.Mesh(btnGeo, btnMat);
@@ -264,8 +360,8 @@ function buildPhone(labelA, labelB) {
 
   g.visible = false;
   scene.add(g);
-  return { g, body: [titan, bezelMat, btnMat, islandMat], shadowMat, sA, sB, notifMat, notif,
-           mix: { a: 1, b: 0, n: 0 }, o: 0 };
+  return { g, body: [titan, bezelMat, btnMat, islandMat, backMat, lensMetal, lensGlass, flashMat],
+           shadowMat, sA, sB, notifMat, notif, mix: { a: 1, b: 0, n: 0 }, o: 0 };
 }
 
 const p1 = buildPhone('Gæsteappen', 'Gæsteappen');
