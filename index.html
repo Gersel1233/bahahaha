@@ -653,7 +653,11 @@
         scenes.forEach(function(o){
           o.top=o.el.offsetTop;
           o.span=Math.max(1, o.el.offsetHeight-o.stage.offsetHeight);
-          o.lead=Math.round(vh*0.45);
+          /* The lead starts a scene's timeline before it reaches the top of
+             the window. Words want that — they have to be readable by the
+             time the stage pins. A scene whose opening beat is the thing
+             worth seeing wants the opposite, and says so. */
+          o.lead=Math.round(vh*(o.leadF==null?0.45:o.leadF));
           o.last=-1;
         });
       }
@@ -910,6 +914,13 @@
       var tBand=[[.04,.20,.34,.46],[.44,.60,.64,.74],[.72,.88,1.02,1.03]];
       SC.add({
         el:tel,
+        /* Act one is an arrival: the phone turns a whole revolution on its
+           way in, and that is the one beat in this section that has to be
+           watched rather than read. On the standard lead it was spent
+           before the stage was on screen — 188 degrees through the turn
+           with the canvas still 30% below the fold, and down to 37 by the
+           time it pinned. Almost none of it was ever seen. */
+        leadF:0.12,
         build:function(){ tW=tH.map(function(h){ return SC.split(h); }); },
         base:function(){ var all=tA.slice(); tW.forEach(function(a){ all=all.concat(a); }); SC.plain(all); },
         paint:function(s){
