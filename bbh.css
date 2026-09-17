@@ -27,11 +27,23 @@ body{ font-family:var(--sys); color:var(--ink);
 .brand-l, .gn-links a, .gn-cta, .langsw button, .abtn, .kh, .kmeta{ font-family:var(--sys); }
 
 /* ---------- the bar ---------- */
+/* The bar had a backdrop-filter: a twenty-pixel blur with a saturate on
+   top of it, across the full width of a fixed element. That is the most
+   expensive thing a page can ask for while it scrolls — the whole strip
+   behind the bar has to be read back, blurred and re-saturated every
+   single frame, at whatever the screen's pixel density is, for as long as
+   the page is open.
+
+   And it was doing nothing. The bar is hidden outright for the whole
+   drone flight (body.dro-on .nav), and from the moment it appears it
+   carries .scrolled for the rest of the page — so the blur only ever
+   worked behind a bar that was 86% opaque, over the page's own flat
+   paper. Solid, it is the same bar, measured: 0.86 of paper-1 over the
+   background's own peach at the top of the window comes to f2e9dc. */
 .nav{ height:var(--nav); padding:0 clamp(16px,3.4vw,40px); gap:20px;
-  background:color-mix(in srgb, var(--paper-1) 72%, transparent);
-  -webkit-backdrop-filter:saturate(180%) blur(20px); backdrop-filter:saturate(180%) blur(20px);
+  background:#f2e9dc; -webkit-backdrop-filter:none; backdrop-filter:none;
   border-bottom:1px solid color-mix(in srgb, var(--ink) 8%, transparent); }
-.nav.scrolled{ background:color-mix(in srgb, var(--paper-1) 86%, transparent);
+.nav.scrolled{ background:#f2e9dc;
   border-bottom-color:color-mix(in srgb, var(--ink) 8%, transparent); }
 /* The bar is set in the same family as the headlines, but it was set
    loose and light, so it read as a different face. Same treatment,
