@@ -17,7 +17,7 @@
 <link rel="preload" as="font" type="font/woff2" href="fonts/instrumentserif-italic-400.woff2" crossorigin />
 <link rel="preload" as="font" type="font/woff2" href="fonts/barlow-normal-400.woff2" crossorigin />
 <link rel="stylesheet" href="styles.css?v=45" />
-<link rel="stylesheet" href="lesreg.css?v=53" />
+<link rel="stylesheet" href="lesreg.css?v=54" />
 <link rel="stylesheet" href="bbh.css?v=5" />
 <link rel="stylesheet" href="kunder.css?v=5" />
 <link rel="stylesheet" href="telefon.css?v=2" />
@@ -448,13 +448,23 @@
          arriving and handing over are one moment, and scrolling on from it
          simply carries the page up — no stretch of scroll where nothing
          happens, and no jump. Measured, so the two can never drift apart. */
-      var dArr=1, dFin=.72, dWri=.74;
+      var dArr=1, dFin=.60, dWri=.62;
+      /* The headline's stretch used to be a share of the track — 9.5% of
+         it — which on a range of 110vh came to under a tenth of a screen.
+         A share of the track is the wrong unit: it makes the writing
+         faster the shorter the track, and it has nothing to do with how
+         far a person actually scrolls to read three lines. It is a share
+         of the window now, and a generous one: 0.42 of a screen, the same
+         order of scroll as a beat in any of the sections below it, held
+         on a laptop and a phone alike. The flight keeps the remainder. */
+      var dWRI=0.42, dGAP=0.03;
       function dMeasure(){
         dTop=dtr.offsetTop;
         dRange=Math.max(1,dtr.offsetHeight-dst.offsetHeight);
         dArr=Math.max(.4,Math.min(1,((hero?hero.offsetTop:dRange)-dTop)/dRange));
-        dFin=dArr*.88;              /* the flight is over here; the rest is the headline */
-        dWri=dArr*.905;             /* and here it starts writing itself in */
+        var vh=window.innerHeight||1;
+        dWri=Math.max(.30, dArr-(dWRI*vh)/dRange);   /* here it starts writing */
+        dFin=Math.max(.25, dWri-(dGAP*vh)/dRange);   /* the flight is over here */
       }
       window.addEventListener('resize',function(){ dMeasure(); dSize(); },{passive:true});
       dMeasure();
@@ -542,7 +552,12 @@
              see — not even a shift in tone. */
           /* the film has landed on the screen's own paper by now, so this is
              only that same colour in exact terms — beige laid on beige */
-          var fa=+Math.max(0,Math.min(1,(pc-(dFin-.015))/(dArr-dFin)*3.2)).toFixed(3);
+          /* The dissolve to paper was measured against the whole tail of
+             the track. Now that the tail is mostly the headline's, that
+             would stretch a two-second dissolve over half a screen — so it
+             is measured against the breath between the flight and the
+             writing instead, and lands just as the first line moves. */
+          var fa=+Math.max(0,Math.min(1,(pc-(dFin-.015))/((dWri-dFin)+.035))).toFixed(3);
           if(fa!==dFaLast){ dFaLast=fa; dfa.style.opacity=fa; }
           /* Once the flight has landed on that field, the rest of the track
              belongs to the headline: it writes itself in under the same
@@ -560,12 +575,19 @@
             if(Math.abs(h-dHLast)>.002){
               dHLast=h;
               for(var li=0; li<dhL.length; li++){
-                var u=Math.max(0,Math.min(1,(h-li*.13)/.60));
+                /* The stagger was set when the whole writing had under a
+                   tenth of a screen to happen in, so the three lines had
+                   to overlap heavily to fit. With four times the scroll
+                   they can be spread: each line now has most of the
+                   window to itself and arrives as its own beat, which is
+                   the difference between reading three words and
+                   watching one movement. */
+                var u=Math.max(0,Math.min(1,(h-li*.19)/.60));
                 u=1-Math.pow(1-u,3);
                 dhL[li].style.transform='translate3d(0,'+((1-u)*112).toFixed(2)+'%,0)';
               }
               if(dhM){
-                var um=Math.max(0,Math.min(1,(h-.44)/.56)); um=1-Math.pow(1-um,3);
+                var um=Math.max(0,Math.min(1,(h-.60)/.40)); um=1-Math.pow(1-um,3);
                 dhM.style.opacity=um.toFixed(3);
                 dhM.style.transform='translate3d(0,'+((1-um)*20).toFixed(1)+'px,0)';
               }
