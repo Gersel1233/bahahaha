@@ -354,7 +354,10 @@ function buildPhone(labelA, labelB) {
   back.rotation.y = Math.PI;
   g.add(back);
 
-  const plateau = new THREE.Mesh(plateauGeo, titan);
+  const plateauMat = new THREE.MeshStandardMaterial({
+    color: 0xd6d2cd, metalness: 1, roughness: 0.30, envMapIntensity: 1.5, transparent: true,
+  });
+  const plateau = new THREE.Mesh(plateauGeo, plateauMat);
   plateau.position.set(0, PLT_Y, ZBACK);
   g.add(plateau);
 
@@ -415,7 +418,8 @@ function buildPhone(labelA, labelB) {
 
   g.visible = false;
   scene.add(g);
-  return { g, body: [titan, bezelMat, islandMat, backMat, lensMetal, lensGlass, flashMat],
+  return { g, body: [titan, bezelMat, islandMat],
+           back: [plateauMat, backMat, lensMetal, lensGlass, flashMat],
            shadowMat, sA, sB, notifMat, notif, mix: { a: 1, b: 0, n: 0 }, o: 0 };
 }
 
@@ -429,6 +433,15 @@ function setOpacity(p, o) {
   p.o = o;
   p.g.visible = o > 0.002;
   p.body.forEach(m => { m.opacity = o; });
+  /* The back is a liability while the phone is fading. Alpha blending does
+     not care which side of a body a surface is on, so a half-transparent
+     phone shows its own camera plateau and lenses through the glass from
+     the front — the phone arrived looking like a photograph of its own
+     back. The back comes in over the last of the fade, once the body is
+     opaque enough to hide what is behind it, and until then the phone
+     fades the way it did before it had one. */
+  const bo = Math.max(0, (o - 0.86) / 0.14);
+  p.back.forEach(m => { m.opacity = bo; });
   p.shadowMat.opacity = o * 0.9;
   p.sA.opacity = o * p.mix.a;
   p.sB.opacity = o * p.mix.b;
@@ -461,16 +474,26 @@ function pose(s) {
      square to the visitor. */
   const e1 = slow(seg(s, 0, 0.32));
   const x1 = io(seg(s, 0.34, 0.50));
-  p1.g.scale.setScalar(0.04 + (L.s1 - 0.04) * e1);
+  /* It used to come from a twenty-fifth of its size and three and a half
+     units back — a speck, and a speck that was still fading. The arrival
+     starts a third of the way up and half as far out: far enough to be a
+     move, near enough that the first thing seen is a phone. */
+  p1.g.scale.setScalar(0.34 + (L.s1 - 0.34) * e1);
   p1.g.position.set(-2.9 * x1,
                     0.46 + (L.y1 - 0.46) * e1,
-                    -3.4 + 3.4 * e1 + 0.5 * x1);
-  p1.g.rotation.set(0.1 * (1 - e1), -0.5 * x1, 0);
+                    -1.5 + 1.5 * e1 + 0.5 * x1);
+  /* The turn gets a curve of its own. On the arrival's own easing — a
+     quintic, chosen to plant the phone quickly — five sixths of the turn
+     was over in the first tenth of the act, so the sixty degrees existed
+     on paper and not on the screen. A cubic in and out holds the angle,
+     turns through the middle, and settles. */
+  const turn = io(seg(s, 0.01, 0.26));
+  p1.g.rotation.set(0.1 * (1 - e1), 1.05 * (1 - turn) - 0.5 * x1, 0);
   /* The fade decides which pose the visitor actually meets, not the
      rotation: whatever angle the phone has reached when it stops being
-     transparent is the pose the arrival appears to start from. Held to
-     0.02 it surfaced at forty-odd degrees, well past the turn. */
-  setOpacity(p1, Math.min(seg(s, 0.005, 0.085), 1 - x1));
+     transparent is the pose the arrival appears to start from. Over a
+     long fade the whole turn happens behind it. */
+  setOpacity(p1, Math.min(seg(s, 0.002, 0.020), 1 - x1));
 
   /* 2 — the second comes in from the right and stops left of centre, so
      the right column is left free for the text.
@@ -611,6 +634,10 @@ window.LesregTelefon = {
       rot1: +p1.g.rotation.y.toFixed(3), rot2: +p2.g.rotation.y.toFixed(3),
       scale1: +p1.g.scale.x.toFixed(3), scale2: +p2.g.scale.x.toFixed(3),
       o1: +p1.o.toFixed(3), o2: +p2.o.toFixed(3),
+      /* the back's own fade, which must stay at nothing for as long as the
+         body is see-through — otherwise the phone shows its camera through
+         its own glass */
+      back1: +p1.back[0].opacity.toFixed(3), back2: +p2.back[0].opacity.toFixed(3),
       screenA: +p2.sA.opacity.toFixed(3), screenB: +p2.sB.opacity.toFixed(3),
       notif: +p2.notifMat.opacity.toFixed(3),
       /* the card's own edges against the edges of the glass, so "it never
