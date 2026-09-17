@@ -629,7 +629,7 @@ body::after{ content:none; }
    lines and the line under them went by in a single flick. The track is
    longer so the headline can have a proper stretch of scroll without the
    film having to scrub any faster for it. */
-.dro-track{ height:250vh; height:250lvh; margin-bottom:-115vh; margin-bottom:-115lvh;
+.dro-track{ height:230vh; height:230lvh; margin-bottom:-115vh; margin-bottom:-115lvh;
   position:relative; z-index:3; }
 /* the dark backing belongs to the layer that fades, not the track — on the
    track it would stay behind and hide the page the film just handed over to */
