@@ -18,7 +18,7 @@
 <link rel="preload" as="font" type="font/woff2" href="fonts/barlow-normal-400.woff2" crossorigin />
 <link rel="stylesheet" href="styles.css?v=45" />
 <link rel="stylesheet" href="lesreg.css?v=56" />
-<link rel="stylesheet" href="bbh.css?v=7" />
+<link rel="stylesheet" href="bbh.css?v=8" />
 <link rel="stylesheet" href="kunder.css?v=5" />
 <link rel="stylesheet" href="telefon.css?v=2" />
 </head>
@@ -476,7 +476,7 @@
       function dNav(hide){ if(hide!==dNavHid){ dNavHid=hide; document.body.classList.toggle('dro-on',hide); } }
       dNav(true);
 
-      var dPrev=0, dBrLast=-1, dFaLast=-1, dCutLast=null, dNmLast=null, dHvLast=null;
+      var dDone=false, dPrev=0, dBrLast=-1, dFaLast=-1, dCutLast=null, dNmLast=null, dHvLast=null;
       /* dRATE is most of the track per second — well above any reading
          scroll, so only a flick ever meets it. dLAG is how far the film may
          fall behind the page before it simply follows along. */
@@ -611,7 +611,12 @@
              before the desk fills the frame */
           var nm=q>.50 && q<.78;
           if(nm!==dNmLast){ dNmLast=nm; dnm.classList.toggle('on', nm); }
-        } else { dPr=Math.max(0,Math.min(1,p)); dNav(false); }
+        } else { dPr=Math.max(0,Math.min(1,p)); dNav(false);
+          /* past the track for good: the film, its fade, its brand and the
+             headline copy are four full-window layers held by will-change,
+             and none of them has anything left to do */
+          if(p>1 && !dDone){ dDone=true; dtr.classList.add('dro-done'); }
+          else if(p<=1 && dDone){ dDone=false; dtr.classList.remove('dro-done'); } }
         requestAnimationFrame(dLoop);
       }
       requestAnimationFrame(dLoop);
@@ -707,7 +712,13 @@
         var y=window.scrollY||window.pageYOffset;
         for(var i=0;i<scenes.length;i++){
           var o=scenes[i];
-          var p=Math.max(0,Math.min(1,(y-o.top+o.lead)/(o.span+o.lead)));
+          var praw=(y-o.top+o.lead)/(o.span+o.lead);
+          var p=Math.max(0,Math.min(1,praw));
+          /* Only the scene the scroll is in keeps its composited layers —
+             see the note in bbh.css. A quarter of a scene either side, so
+             the layers exist before they are needed and outlast the exit. */
+          var lv=praw>-0.25 && praw<1.25;
+          if(lv!==o.live){ o.live=lv; o.el.classList.toggle('live', lv); }
           o.sm+=(p-o.sm)*0.14;
           if(Math.abs(p-o.sm)<0.0004) o.sm=p;
           /* The opening beat plays by itself only for someone who lands
@@ -725,7 +736,7 @@
            loop alone — base() is the state it falls back to */
         add:function(o){
           o.stage=o.el.querySelector('.stage');
-          o.sm=0; o.last=-1; o.introOn=null; o.top=0; o.span=1; o.lead=0;
+          o.sm=0; o.last=-1; o.introOn=null; o.top=0; o.span=1; o.lead=0; o.live=null;
           scenes.push(o);
           o.build(); o.base();
           if(reduce) return;
