@@ -634,6 +634,18 @@
       function seg(s,a,b){ return Math.max(0,Math.min(1,(s-a)/(b-a))); }
       /* write only what changed — handing the browser a value it already has
          still costs a style recalculation */
+      /* A blur whose radius changes every frame is the most expensive thing
+         on this page: the browser cannot reuse the layer it rasterised last
+         frame, so every word being revealed is redrawn from scratch at
+         whatever the screen's pixel density is. Rounded to a quarter of a
+         pixel, a fourteen-pixel reveal asks for 56 distinct rasters instead
+         of one per frame for as long as it runs, and it is not possible to
+         see the difference. Under a third of a pixel it is dropped: a blur
+         that small is a layer's worth of work for nothing. */
+      function blur(px){
+        if(!(px>0.34)) return 'none';
+        return 'blur('+(Math.round(px*4)/4)+'px)';
+      }
       function set(n,tr,op,fl){
         if(!n) return;
         if(tr!==null && n._tr!==tr){ n._tr=tr; n.style.transform=tr; }
@@ -701,7 +713,7 @@
         }
       }
       return {
-        out:out, io:io, film:film, seg:seg, set:set, split:split, plain:plain,
+        out:out, io:io, film:film, seg:seg, set:set, split:split, plain:plain, blur:blur,
         /* the stage starts hidden in CSS, so it must never be left to the
            loop alone — base() is the state it falls back to */
         add:function(o){
@@ -784,12 +796,12 @@
             var t=SC.film(SC.seg(s,.04+i*.025,.22+i*.025));
             SC.set(sW[i],
               'translate3d(0,'+((1-t)*.9).toFixed(3)+'em,0) rotateX('+(-58*(1-t)).toFixed(2)+'deg) scale('+(.91+.09*t).toFixed(4)+')',
-              t.toFixed(3), t>=1?'none':'blur('+(14*(1-t)).toFixed(2)+'px)');
+              t.toFixed(3), SC.blur(10*(1-t)));
           }
 
           var lt=SC.out(SC.seg(s,.24,.38));
           SC.set(sLe,'translate3d(0,'+((1-lt)*24).toFixed(2)+'px,0)',
-            (lt*(1-.8*r)).toFixed(3), r<=0?'none':'blur('+(4*r).toFixed(2)+'px)');
+            (lt*(1-.8*r)).toFixed(3), SC.blur(4*r));
 
           /* The three cards are staggered close enough that the last one has
              landed before the section lets go — a card still rising while the
@@ -798,13 +810,13 @@
             var ct=SC.io(SC.seg(s,.42+i*.06,.76+i*.06));
             SC.set(sCd[i],
               'translate3d(0,'+((1-ct)*90).toFixed(2)+'px,0) rotateX('+(12*(1-ct)).toFixed(2)+'deg) scale('+(.93+.07*ct).toFixed(4)+')',
-              ct.toFixed(3), ct>=1?'none':'blur('+(8*(1-ct)).toFixed(2)+'px)');
+              ct.toFixed(3), SC.blur(6*(1-ct)));
             var ws=sCW[i]||[];
             for(var j=0;j<ws.length;j++){
               var wt=SC.film(SC.seg(s,.48+i*.06,.74+i*.06));
               SC.set(ws[j],
                 'translate3d(0,'+((1-wt)*.62).toFixed(3)+'em,0) rotateX('+(-52*(1-wt)).toFixed(2)+'deg)',
-                wt.toFixed(3), wt>=1?'none':'blur('+(9*(1-wt)).toFixed(2)+'px)');
+                wt.toFixed(3), SC.blur(6*(1-wt)));
             }
             var pt=SC.out(SC.seg(s,.52+i*.06,.80+i*.06));
             SC.set(sCP[i],'translate3d(0,'+((1-pt)*14).toFixed(2)+'px,0)',pt.toFixed(3));
@@ -836,18 +848,18 @@
              arrives on a clear stage rather than over a leftover sentence */
           var x=SC.io(SC.seg(s,.62,1));
           SC.set(kHd,'translate3d(0,'+(-7*x).toFixed(3)+'vh,0) scale('+(1-.10*x).toFixed(4)+')',
-            (1-.85*x).toFixed(3), x<=0?'none':'blur('+(12*x).toFixed(2)+'px)');
+            (1-.85*x).toFixed(3), SC.blur(9*x));
 
           for(var i=0;i<kW.length;i++){
             var t=SC.film(SC.seg(s,.03+i*.035,.28+i*.035));
             SC.set(kW[i],
               'translate3d(0,'+((1-t)*.82).toFixed(3)+'em,0) rotateX('+(-54*(1-t)).toFixed(2)+'deg) scale('+(.93+.07*t).toFixed(4)+')',
-              t.toFixed(3), t>=1?'none':'blur('+(13*(1-t)).toFixed(2)+'px)');
+              t.toFixed(3), SC.blur(10*(1-t)));
           }
 
           var lt=SC.out(SC.seg(s,.30,.48));
           SC.set(kLe,'translate3d(0,'+((1-lt)*22-7*x*10).toFixed(2)+'px,0)',
-            (lt*(1-x)).toFixed(3), x<=0?'none':'blur('+(10*x).toFixed(2)+'px)');
+            (lt*(1-x)).toFixed(3), SC.blur(8*x));
 
           SC.set(kGlw,'translate3d(-50%,'+(-14*s).toFixed(3)+'vh,0) scale('+(1+.26*s).toFixed(4)+')',
             (.9-.45*s).toFixed(3));
@@ -880,7 +892,7 @@
             var t=SC.film(SC.seg(q,.04+i*.05,.28+i*.05));
             SC.set(nw[i],
               'translate3d(0,'+((1-t)*.6).toFixed(3)+'em,0) rotateX('+(-50*(1-t)).toFixed(2)+'deg) scale('+(.94+.06*t).toFixed(4)+')',
-              t.toFixed(3), t>=1?'none':'blur('+(9*(1-t)).toFixed(2)+'px)');
+              t.toFixed(3), SC.blur(7*(1-t)));
           }
 
           var ut=SC.out(SC.seg(q,.20,.34));
@@ -899,7 +911,7 @@
             ' rotateY('+(-19*(1-g)+6*ex).toFixed(2)+'deg) rotateX('+(7*(1-g)).toFixed(2)+'deg)'+
             ' scale('+(.93+.07*g).toFixed(4)+')',
             (g*(1-.92*ex)).toFixed(3),
-            (g>=1&&ex<=0)?'none':'blur('+(9*(1-g)+10*ex).toFixed(2)+'px)');
+            SC.blur(7*(1-g)+8*ex));
 
           /* and the phone comes in late, leaning on its corner */
           var ph=SC.io(SC.seg(q,.44,.84));
@@ -909,7 +921,7 @@
 
           /* on the way out the text is pushed up and back, not blinked off */
           SC.set(col,'translate3d(0,'+(-5*ex).toFixed(3)+'vh,0) scale('+(1-.05*ex).toFixed(4)+')',
-            (1-ex).toFixed(3), ex<=0?'none':'blur('+(8*ex).toFixed(2)+'px)');
+            (1-ex).toFixed(3), SC.blur(6*ex));
 
           SC.set(glow,'translate3d(-50%,'+(-12*q).toFixed(3)+'vh,0) scale('+(1+.22*q).toFixed(4)+')',
             (.75-.4*q).toFixed(3));
@@ -953,7 +965,7 @@
               var t=SC.film(SC.seg(s,b[0]+j*.012,b[1]+j*.012));
               SC.set(ws[j],
                 'translate3d(0,'+((1-t)*.5).toFixed(3)+'em,0) rotateX('+(-44*(1-t)).toFixed(2)+'deg)',
-                t.toFixed(3), t>=1?'none':'blur('+(8*(1-t)).toFixed(2)+'px)');
+                t.toFixed(3), SC.blur(6*(1-t)));
             }
           }
         }
