@@ -17,7 +17,7 @@
 <link rel="preload" as="font" type="font/woff2" href="fonts/instrumentserif-italic-400.woff2" crossorigin />
 <link rel="preload" as="font" type="font/woff2" href="fonts/barlow-normal-400.woff2" crossorigin />
 <link rel="stylesheet" href="styles.css?v=45" />
-<link rel="stylesheet" href="lesreg.css?v=55" />
+<link rel="stylesheet" href="lesreg.css?v=56" />
 <link rel="stylesheet" href="bbh.css?v=5" />
 <link rel="stylesheet" href="kunder.css?v=5" />
 <link rel="stylesheet" href="telefon.css?v=2" />
@@ -448,24 +448,20 @@
          arriving and handing over are one moment, and scrolling on from it
          simply carries the page up — no stretch of scroll where nothing
          happens, and no jump. Measured, so the two can never drift apart. */
-      var dArr=1, dFin=.75, dWri=.78;
-      /* dWri is no longer a stretch of scroll to write over — the writing
-         is on a clock — it is the point that sets it going: the film has
-         landed, and the visitor has scrolled on from it by about one notch
-         of a wheel. Measured against the window rather than the track, so
-         that one notch is one notch on a laptop and on a phone. */
-      var dTRIG=0.14, dGAP=0.03, dHDUR=1500;
-      var dHArm=false, dHT=0, dHDone=false, dRL=null, dRM=null;
-      if(hero){
-        dRL=hero.querySelectorAll('.kh .khl i');
-        dRM=hero.querySelector('.kmeta');
-      }
+      var dArr=1, dFin=.56, dWri=.58;
+      /* The headline's stretch is a share of the window, not of the track.
+         A share of the track makes the writing faster the shorter the
+         track, and it has nothing to do with how far a person actually
+         scrolls to read three lines. Half a screen: enough that a flick of
+         the wheel cannot take the whole headline with it, which is the
+         whole complaint. The flight keeps the remainder. */
+      var dWRI=0.50, dGAP=0.03;
       function dMeasure(){
         dTop=dtr.offsetTop;
         dRange=Math.max(1,dtr.offsetHeight-dst.offsetHeight);
         dArr=Math.max(.4,Math.min(1,((hero?hero.offsetTop:dRange)-dTop)/dRange));
         var vh=window.innerHeight||1;
-        dWri=Math.max(.30, dArr-(dTRIG*vh)/dRange);  /* here it is set going */
+        dWri=Math.max(.30, dArr-(dWRI*vh)/dRange);   /* here it starts writing */
         dFin=Math.max(.25, dWri-(dGAP*vh)/dRange);   /* the flight is over here */
       }
       window.addEventListener('resize',function(){ dMeasure(); dSize(); },{passive:true});
@@ -473,7 +469,7 @@
       function dNav(hide){ if(hide!==dNavHid){ dNavHid=hide; document.body.classList.toggle('dro-on',hide); } }
       dNav(true);
 
-      var dPrev=0, dBrLast=-1, dFaLast=-1, dCutLast=null, dNmLast=null, dHvLast=null, dHoLast=-1;
+      var dPrev=0, dBrLast=-1, dFaLast=-1, dCutLast=null, dNmLast=null, dHvLast=null;
       /* dRATE is most of the track per second — well above any reading
          scroll, so only a flick ever meets it. dLAG is how far the film may
          fall behind the page before it simply follows along. */
@@ -554,63 +550,42 @@
              see — not even a shift in tone. */
           /* the film has landed on the screen's own paper by now, so this is
              only that same colour in exact terms — beige laid on beige */
-          /* The dissolve to paper was measured against the whole tail of
-             the track. Now that the tail is mostly the headline's, that
-             would stretch a two-second dissolve over half a screen — so it
-             is measured against the breath between the flight and the
-             writing instead, and lands just as the first line moves. */
-          var fa=+Math.max(0,Math.min(1,(pc-(dFin-.015))/((dWri-dFin)+.035))).toFixed(3);
+          /* The dissolve to paper is measured against the breath between
+             the flight landing and the writing starting, so it is complete
+             at the exact scroll where the first line begins to move. Given
+             any of the headline's own stretch it would still be dissolving
+             with words already standing on it — a headline on a room. */
+          var fa=+Math.max(0,Math.min(1,(pc-(dFin-.015))/((dWri-dFin)+.015))).toFixed(3);
           if(fa!==dFaLast){ dFaLast=fa; dfa.style.opacity=fa; }
-          /* The flight belongs to the wheel; the headline does not. Once the
-             film has landed on its field of paper and the visitor has
-             scrolled on from it once, the writing plays itself out on a
-             clock — it is an arrival, and an arrival that can be pushed
-             back and forth by the wheel is not one. It is armed once and
-             never rewinds. */
-          if(!dHArm && pc>dWri) dHArm=true;
-          if(dHArm && dHT<1) dHT=Math.min(1, dHT+dt/dHDUR);
-          var h=dHArm ? dHT : 0;
+          /* Once the flight has landed on that field, the rest of the track
+             belongs to the headline: it writes itself in under the same
+             scroll that flew in, line after line, rather than playing a
+             clip of its own once the scrolling is over. */
+          var h=(pc-dWri)/(dArr-dWri);
           /* The layer is switched on long before it has anything to show —
              its lines are still pushed below their own clip and the line
              under them is transparent — so the frame that first draws it is
              spent early, not on the one where the writing begins. */
           var hv=pc>dFin*.55;
-          if(hv!==dHvLast){ dHvLast=hv; dhr.classList.toggle('on', hv); if(!hv) dhr.style.opacity=''; }
-          /* The writing never rewinds, so scrolling back up into the flight
-             would otherwise leave a finished headline pasted over a film
-             that is flying backwards under it. The layer is carried by the
-             same fade that turns the film into paper: the headline belongs
-             to the paper, and goes back where the paper does. */
-          if(hv && fa!==dHoLast){ dHoLast=fa; dhr.style.opacity=fa; }
+          if(hv!==dHvLast){ dHvLast=hv; dhr.classList.toggle('on', hv); }
           if(hv && dhL){
-            if(Math.abs(h-dHLast)>.002 || (h===1&&dHLast!==1)){
+            h=Math.max(0,Math.min(1,h));
+            if(Math.abs(h-dHLast)>.002){
               dHLast=h;
               for(var li=0; li<dhL.length; li++){
-                /* Each line has most of the run to itself and arrives as
-                   its own beat, which is the difference between reading
-                   three words and watching one movement. */
-                var u=Math.max(0,Math.min(1,(h-li*.19)/.60));
+                /* A wide stagger let the three lines arrive as three
+                   separate events, which on a headline this size reads as
+                   the words being out of step with each other rather than
+                   as one statement landing. They overlap closely now: each
+                   still leads the next, but they are a group. */
+                var u=Math.max(0,Math.min(1,(h-li*.10)/.60));
                 u=1-Math.pow(1-u,3);
-                var tr='translate3d(0,'+((1-u)*112).toFixed(2)+'%,0)';
-                dhL[li].style.transform=tr;
-                /* The real headline under the film is given the same frame.
-                   The handover is a scroll position and the writing is now a
-                   clock, so the two can meet anywhere — and wherever they
-                   meet, the line the film hands over is the line the page
-                   already has. */
-                if(dHArm && dRL && dRL[li]) dRL[li].style.transform=tr;
+                dhL[li].style.transform='translate3d(0,'+((1-u)*112).toFixed(2)+'%,0)';
               }
               if(dhM){
-                var um=Math.max(0,Math.min(1,(h-.60)/.40)); um=1-Math.pow(1-um,3);
-                var mo=um.toFixed(3), mt='translate3d(0,'+((1-um)*20).toFixed(1)+'px,0)';
-                dhM.style.opacity=mo; dhM.style.transform=mt;
-                if(dHArm && dRM){ dRM.style.opacity=mo; dRM.style.transform=mt; }
-              }
-              /* and once it is written, the page owns it again */
-              if(h===1 && !dHDone){
-                dHDone=true;
-                if(dRL) for(var ri=0; ri<dRL.length; ri++) dRL[ri].style.transform='';
-                if(dRM){ dRM.style.opacity=''; dRM.style.transform=''; }
+                var um=Math.max(0,Math.min(1,(h-.62)/.38)); um=1-Math.pow(1-um,3);
+                dhM.style.opacity=um.toFixed(3);
+                dhM.style.transform='translate3d(0,'+((1-um)*20).toFixed(1)+'px,0)';
               }
             }
           }
