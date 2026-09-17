@@ -50,7 +50,10 @@ body{ font-family:var(--sys); color:var(--ink);
    scaled down: heavier, and pulled tight — though nowhere near the
    headline's -.045em, which at 15px would start closing the words up. */
 .brand-l{ font-size:20.5px; font-weight:700; letter-spacing:-.032em; gap:9px; }
-/* the word carries it on its own now — no symbol beside it */
+/* The mark stands beside the word rather than replacing it: the word stays
+   live text, so it keeps the bar's own typography, and a screen reader and
+   a translator both still find it. */
+.brand-l .bmark{ width:23px; height:23px; flex:none; display:block; }
 .gn-links{ gap:4px; }
 .gn-links a{ font-size:15.5px; font-weight:600; letter-spacing:-.024em;
   color:var(--ink-soft); padding:7px 11px; }

@@ -11,14 +11,14 @@
 <meta property="og:description" content="We build and run software for businesses. No agency overhead, no template, and we stay after it goes live. Two systems running right now: spiis.dk and mosedehavnecafe.dk." />
 <meta property="og:image" content="https://gersel1233.github.io/bahahaha/og.jpg" />
 <meta name="twitter:card" content="summary_large_image" />
-<link rel="icon" type="image/svg+xml" href="favicon.svg?v=1" />
-<link rel="mask-icon" href="favicon.svg?v=1" color="#0f9b8e" />
+<link rel="icon" type="image/svg+xml" href="favicon.svg?v=2" />
+<link rel="mask-icon" href="favicon.svg?v=2" color="#1b1714" />
 <link rel="preload" as="font" type="font/woff2" href="fonts/sora-latin-600.woff2" crossorigin />
 <link rel="preload" as="font" type="font/woff2" href="fonts/instrumentserif-italic-400.woff2" crossorigin />
 <link rel="preload" as="font" type="font/woff2" href="fonts/barlow-normal-400.woff2" crossorigin />
 <link rel="stylesheet" href="styles.css?v=45" />
 <link rel="stylesheet" href="lesreg.css?v=56" />
-<link rel="stylesheet" href="bbh.css?v=6" />
+<link rel="stylesheet" href="bbh.css?v=7" />
 <link rel="stylesheet" href="kunder.css?v=5" />
 <link rel="stylesheet" href="telefon.css?v=2" />
 </head>
@@ -33,7 +33,14 @@
 
   <!-- ===================== NAV — lockup · links · one CTA ===================== -->
   <nav class="nav" data-screen-label="nav">
-    <a class="brand-l" href="#top">Lesreg</a>
+    <a class="brand-l" href="#top">
+      <!-- the mark: a leaf of paper with its corner turned, and an L in it.
+           Inline rather than an <img>, so the bar costs no extra request —
+           the file it was drawn from is in brand/, credentials and all. -->
+      <svg class="bmark" viewBox="0 0 128 128" aria-hidden="true" focusable="false">
+        <path d="M0 0H94l34 34v94H0Z" fill="#1b1714"/>
+        <path d="M44 28h18v62h38v18H44Z" fill="#f1eade"/>
+      </svg>Lesreg</a>
     <div class="gn-links">
       <a href="#bbh" data-da="Konceptet">The idea</a>
       <a href="#kunder" data-da="Kunder">Clients</a>
