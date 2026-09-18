@@ -735,7 +735,7 @@ st.ready = true;
    act, and — the part that matters here — makes the loop redraw every
    frame while it runs. Without that the glass only changes when the
    scroll does, and a film on the phone looks scrubbed by the hand. */
-const SCREENS = { 1: 'media/app-1' };   // 1 = gaesteappen, 2 = administrationen, 3 = admin-appen
+const SCREENS = { 1: 'media/app-1', 2: 'media/app-2' };   // 1 = gaesteappen, 2 = administrationen, 3 = admin-appen
 (function attachScreens() {
   const probe = document.createElement('video');
   const webm = !!probe.canPlayType && probe.canPlayType('video/webm; codecs="vp9"') !== '';
