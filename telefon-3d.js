@@ -327,84 +327,10 @@ const notifGeo  = new THREE.PlaneGeometry(NOTIF_PW, NOTIF_PH);
 const NOTIF_Y = SCREEN_H / 2 - ((248 - NOTIF_PAD) / 2622) * SCREEN_H - NOTIF_PH / 2;
 const shadowTex = shadowTexture();
 
-/* ---------- the screens ----------
-   A recording of the real app goes on the glass. It is a texture like any
-   other, so it turns and tilts with the phone and takes the same light.
-
-   The names live here and nowhere else, and a name that is null means
-   there is no recording yet — the phone keeps its dark placeholder. An
-   empty string would still be a request, and a 404 on every single visit
-   is a cost paid for nothing.
-
-   The screen is about three hundred pixels across at its largest, so the
-   file wants to be 540 wide, not 1080: past that the visitor is paying to
-   download detail the glass is too small to show. */
-const SCREENS = {
-  p1a: 'media/app-1',   // den foerste telefon: Mosede Havnecafe og Spiis
-  p1b: null,
-  p2a: null,        // den anden
-  p2b: null,
-};
-
-const vids = [];
-/* The elements have to be in the document. A detached <video> decodes in
-   some browsers and refuses in others — Safari is the strict one — and a
-   screen that plays on the desktop and stays frozen on the phone is the
-   worst of both. So they live in a box that is present and laid out but
-   has no size: display:none would stop playback for the same reason. */
-let vidHolder = null;
-function screenTexture(label, base) {
-  if (!base) return blankScreen(label);
-  if (!vidHolder) {
-    vidHolder = document.createElement('div');
-    vidHolder.setAttribute('aria-hidden', 'true');
-    vidHolder.style.cssText = 'position:fixed;left:0;top:0;width:1px;height:1px;' +
-      'overflow:hidden;opacity:0;pointer-events:none;z-index:-1';
-    document.body.appendChild(vidHolder);
-  }
-  const v = document.createElement('video');
-  /* Set as attributes, not only as properties. A browser deciding whether
-     a video may start without being asked reads the markup, and a muted
-     autoplaying video that only says so in JavaScript is refused by
-     Safari — which is how a screen plays on the desk and stays frozen on
-     the phone. Cheap to write both ways, so both ways it is. */
-  v.muted = true; v.defaultMuted = true; v.loop = true; v.playsInline = true;
-  v.setAttribute('muted', ''); v.setAttribute('playsinline', '');
-  v.setAttribute('webkit-playsinline', ''); v.setAttribute('loop', '');
-  v.setAttribute('autoplay', '');
-  v.disableRemotePlayback = true;
-  /* metadata, not auto: the flight at the top of the page is already
-     downloading five megabytes, and a screen four sections further
-     down has no business competing with it. The observer below starts
-     the fetch a quarter of a window before the stage arrives. */
-  v.preload = 'metadata';
-  /* No crossOrigin. The file is served from the same host as the page, so
-     CORS has nothing to say about it — but asking for it turns a plain
-     request into one the server has to answer with a header, and a host
-     that does not is a screen that never loads. */
-  /* Same choice the flight makes: VP9 where it is understood, H.264
-     everywhere else. Written as one source rather than two <source>
-     children, so nothing is fetched that will not be played. */
-  const webm = !!v.canPlayType && v.canPlayType('video/webm; codecs="vp9"') !== '';
-  v.src = base + (webm ? '.webm' : '.mp4') + '?v=2';
-  const t = new THREE.VideoTexture(v);
-  t.colorSpace = THREE.SRGBColorSpace;
-  t.minFilter = THREE.LinearFilter;
-  t.magFilter = THREE.LinearFilter;
-  t.generateMipmaps = false;
-  /* If it cannot be played at all, the glass falls back to the placeholder
-     rather than to a black hole where a screen should be. */
-  v.addEventListener('error', () => { t.image = blankScreen(label).image; t.needsUpdate = true; }, { once: true });
-  vidHolder.appendChild(v);
-  vids.push(v);
-  return t;
-}
-
-
 /* Every phone gets its own materials. Shared, one phone's fade pulls the
    other one down with it, because the opacity lives on the material and
    not on the mesh. */
-function buildPhone(labelA, labelB, srcA, srcB) {
+function buildPhone(labelA, labelB) {
   const g = new THREE.Group();
 
   const titan = new THREE.MeshStandardMaterial({
@@ -424,8 +350,8 @@ function buildPhone(labelA, labelB, srcA, srcB) {
      edge-on halfway through the turn, which is exactly where a lip shows.
      Flush enough to read as one surface, apart enough not to fight for
      depth. */
-  const sA = new THREE.MeshBasicMaterial({ map: screenTexture(labelA, srcA), toneMapped: false, transparent: true });
-  const sB = new THREE.MeshBasicMaterial({ map: screenTexture(labelB, srcB), toneMapped: false, transparent: true, opacity: 0 });
+  const sA = new THREE.MeshBasicMaterial({ map: blankScreen(labelA), toneMapped: false, transparent: true });
+  const sB = new THREE.MeshBasicMaterial({ map: blankScreen(labelB), toneMapped: false, transparent: true, opacity: 0 });
   const screen = new THREE.Mesh(screenGeo, sA), screenB = new THREE.Mesh(screenGeo, sB);
   screen.position.z  = D / 2 + 0.0022;
   screenB.position.z = D / 2 + 0.0030;
@@ -520,48 +446,8 @@ function buildPhone(labelA, labelB, srcA, srcB) {
            shadowMat, sA, sB, notifMat, notif, mix: { a: 1, b: 0, n: 0 }, o: 0 };
 }
 
-const p1 = buildPhone('Gæsteappen', 'Gæsteappen', SCREENS.p1a, SCREENS.p1b);
-const p2 = buildPhone('Administrationen', 'Admin-appen', SCREENS.p2a, SCREENS.p2b);
-
-/* ---------- getting them to actually play ----------
-   A video decodes whether or not anyone can see it, so the recordings run
-   only while the section is on screen. The canvas is the thing to watch:
-   it is exactly as big as the stage, and it is already there.
-
-   But asking once is not enough. play() can be refused, and it is refused
-   quietly — it hands back a promise that rejects and nothing else happens.
-   A screen frozen on its first frame is what that looks like. So it is
-   asked again at every point where the answer might have changed: when the
-   file has enough data, when the tab comes back, and the first time the
-   visitor touches or scrolls the page, because a gesture lifts the refusal
-   in every browser that has one. */
-let wanted = false;
-function nudge() {
-  if (!wanted) return;
-  vids.forEach(v => {
-    if (!v.paused) return;
-    const p = v.play();
-    if (p && p.catch) p.catch(() => {});
-  });
-}
-if (vids.length) {
-  vids.forEach(v => ['loadeddata', 'canplay', 'canplaythrough', 'stalled', 'pause']
-    .forEach(ev => v.addEventListener(ev, nudge)));
-  document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'visible') nudge();
-  });
-  ['pointerdown', 'touchstart', 'keydown', 'wheel', 'scroll'].forEach(ev =>
-    window.addEventListener(ev, nudge, { passive: true }));
-
-  if ('IntersectionObserver' in window) {
-    new IntersectionObserver(es => {
-      wanted = es.some(e => e.isIntersecting);
-      if (wanted) nudge(); else vids.forEach(v => v.pause());
-    }, { rootMargin: '25% 0px' }).observe(canvas);
-  } else {
-    wanted = true; nudge();
-  }
-}
+const p1 = buildPhone('Gæsteappen', 'Gæsteappen');
+const p2 = buildPhone('Administrationen', 'Admin-appen');
 
 /* One fade for the whole phone, with the screens keeping their own
    crossfade underneath it. Set in a single pass, the fade would undo
@@ -766,11 +652,30 @@ window.LesregTelefon = {
   /* 1 = the guest app, 2 = the administration, 3 = the admin app */
   setVideo(which, src) {
     const el = document.createElement('video');
-    el.loop = true; el.muted = true; el.playsInline = true; el.preload = 'none';
-    /* muted and inline are what let a phone play it without being asked */
-    el.setAttribute('playsinline', ''); el.setAttribute('muted', '');
+    el.loop = true; el.muted = true; el.defaultMuted = true;
+    el.playsInline = true; el.preload = 'none';
+    /* muted and inline are what let a phone play it without being asked,
+       and they are written as attributes because that is where a browser
+       looks when it decides whether a video may start on its own */
+    el.setAttribute('playsinline', ''); el.setAttribute('webkit-playsinline', '');
+    el.setAttribute('muted', ''); el.setAttribute('loop', '');
     el.setAttribute('disablepictureinpicture', '');
+    el.disableRemotePlayback = true;
     el.src = src;
+    /* The element has to be in the document. A detached <video> decodes in
+       some browsers and refuses in others — Safari is the strict one — so
+       it lives in a box that is present and laid out but has no size.
+       display:none would stop playback for the same reason. */
+    let hold = document.getElementById('telVids');
+    if (!hold) {
+      hold = document.createElement('div');
+      hold.id = 'telVids';
+      hold.setAttribute('aria-hidden', 'true');
+      hold.style.cssText = 'position:fixed;left:0;top:0;width:1px;height:1px;' +
+        'overflow:hidden;opacity:0;pointer-events:none;z-index:-1';
+      document.body.appendChild(hold);
+    }
+    hold.appendChild(el);
     const tex = new THREE.VideoTexture(el);
     tex.colorSpace = THREE.SRGBColorSpace;
     const target = which === 1 ? p1.sA : which === 2 ? p2.sA : p2.sB;
@@ -810,3 +715,19 @@ window.LesregTelefon = {
   },
 };
 st.ready = true;
+
+/* ---------- the recordings that exist ----------
+   setVideo above does the rest: it holds the file back until its act is
+   nearly up, winds it to the start when the act begins, pauses it off the
+   act, and — the part that matters here — makes the loop redraw every
+   frame while it runs. Without that the glass only changes when the
+   scroll does, and a film on the phone looks scrubbed by the hand. */
+const SCREENS = { 1: 'media/app-1' };   // 1 = gaesteappen, 2 = administrationen, 3 = admin-appen
+(function attachScreens() {
+  const probe = document.createElement('video');
+  const webm = !!probe.canPlayType && probe.canPlayType('video/webm; codecs="vp9"') !== '';
+  Object.keys(SCREENS).forEach(k => {
+    if (!SCREENS[k]) return;
+    window.LesregTelefon.setVideo(+k, SCREENS[k] + (webm ? '.webm' : '.mp4') + '?v=2');
+  });
+})();
