@@ -340,7 +340,7 @@ const shadowTex = shadowTexture();
    file wants to be 540 wide, not 1080: past that the visitor is paying to
    download detail the glass is too small to show. */
 const SCREENS = {
-  p1a: null,        // den foerste telefon
+  p1a: 'media/app-1',   // den foerste telefon: Mosede Havnecafe og Spiis
   p1b: null,
   p2a: null,        // den anden
   p2b: null,
@@ -364,7 +364,12 @@ function screenTexture(label, base) {
   }
   const v = document.createElement('video');
   v.muted = true; v.loop = true; v.playsInline = true;
-  v.setAttribute('playsinline', ''); v.preload = 'auto';
+  v.setAttribute('playsinline', '');
+  /* metadata, not auto: the flight at the top of the page is already
+     downloading five megabytes, and a screen four sections further
+     down has no business competing with it. The observer below starts
+     the fetch a quarter of a window before the stage arrives. */
+  v.preload = 'metadata';
   v.crossOrigin = 'anonymous';
   /* Same choice the flight makes: VP9 where it is understood, H.264
      everywhere else. Written as one source rather than two <source>
