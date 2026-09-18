@@ -327,10 +327,67 @@ const notifGeo  = new THREE.PlaneGeometry(NOTIF_PW, NOTIF_PH);
 const NOTIF_Y = SCREEN_H / 2 - ((248 - NOTIF_PAD) / 2622) * SCREEN_H - NOTIF_PH / 2;
 const shadowTex = shadowTexture();
 
+/* ---------- the screens ----------
+   A recording of the real app goes on the glass. It is a texture like any
+   other, so it turns and tilts with the phone and takes the same light.
+
+   The names live here and nowhere else, and a name that is null means
+   there is no recording yet — the phone keeps its dark placeholder. An
+   empty string would still be a request, and a 404 on every single visit
+   is a cost paid for nothing.
+
+   The screen is about three hundred pixels across at its largest, so the
+   file wants to be 540 wide, not 1080: past that the visitor is paying to
+   download detail the glass is too small to show. */
+const SCREENS = {
+  p1a: null,        // den foerste telefon
+  p1b: null,
+  p2a: null,        // den anden
+  p2b: null,
+};
+
+const vids = [];
+/* The elements have to be in the document. A detached <video> decodes in
+   some browsers and refuses in others — Safari is the strict one — and a
+   screen that plays on the desktop and stays frozen on the phone is the
+   worst of both. So they live in a box that is present and laid out but
+   has no size: display:none would stop playback for the same reason. */
+let vidHolder = null;
+function screenTexture(label, base) {
+  if (!base) return blankScreen(label);
+  if (!vidHolder) {
+    vidHolder = document.createElement('div');
+    vidHolder.setAttribute('aria-hidden', 'true');
+    vidHolder.style.cssText = 'position:fixed;left:0;top:0;width:1px;height:1px;' +
+      'overflow:hidden;opacity:0;pointer-events:none;z-index:-1';
+    document.body.appendChild(vidHolder);
+  }
+  const v = document.createElement('video');
+  v.muted = true; v.loop = true; v.playsInline = true;
+  v.setAttribute('playsinline', ''); v.preload = 'auto';
+  v.crossOrigin = 'anonymous';
+  /* Same choice the flight makes: VP9 where it is understood, H.264
+     everywhere else. Written as one source rather than two <source>
+     children, so nothing is fetched that will not be played. */
+  const webm = !!v.canPlayType && v.canPlayType('video/webm; codecs="vp9"') !== '';
+  v.src = base + (webm ? '.webm' : '.mp4');
+  const t = new THREE.VideoTexture(v);
+  t.colorSpace = THREE.SRGBColorSpace;
+  t.minFilter = THREE.LinearFilter;
+  t.magFilter = THREE.LinearFilter;
+  t.generateMipmaps = false;
+  /* If it cannot be played at all, the glass falls back to the placeholder
+     rather than to a black hole where a screen should be. */
+  v.addEventListener('error', () => { t.image = blankScreen(label).image; t.needsUpdate = true; }, { once: true });
+  vidHolder.appendChild(v);
+  vids.push(v);
+  return t;
+}
+
 /* Every phone gets its own materials. Shared, one phone's fade pulls the
    other one down with it, because the opacity lives on the material and
    not on the mesh. */
-function buildPhone(labelA, labelB) {
+function buildPhone(labelA, labelB, srcA, srcB) {
   const g = new THREE.Group();
 
   const titan = new THREE.MeshStandardMaterial({
@@ -350,8 +407,8 @@ function buildPhone(labelA, labelB) {
      edge-on halfway through the turn, which is exactly where a lip shows.
      Flush enough to read as one surface, apart enough not to fight for
      depth. */
-  const sA = new THREE.MeshBasicMaterial({ map: blankScreen(labelA), toneMapped: false, transparent: true });
-  const sB = new THREE.MeshBasicMaterial({ map: blankScreen(labelB), toneMapped: false, transparent: true, opacity: 0 });
+  const sA = new THREE.MeshBasicMaterial({ map: screenTexture(labelA, srcA), toneMapped: false, transparent: true });
+  const sB = new THREE.MeshBasicMaterial({ map: screenTexture(labelB, srcB), toneMapped: false, transparent: true, opacity: 0 });
   const screen = new THREE.Mesh(screenGeo, sA), screenB = new THREE.Mesh(screenGeo, sB);
   screen.position.z  = D / 2 + 0.0022;
   screenB.position.z = D / 2 + 0.0030;
@@ -446,8 +503,20 @@ function buildPhone(labelA, labelB) {
            shadowMat, sA, sB, notifMat, notif, mix: { a: 1, b: 0, n: 0 }, o: 0 };
 }
 
-const p1 = buildPhone('Gæsteappen', 'Gæsteappen');
-const p2 = buildPhone('Administrationen', 'Admin-appen');
+const p1 = buildPhone('Gæsteappen', 'Gæsteappen', SCREENS.p1a, SCREENS.p1b);
+const p2 = buildPhone('Administrationen', 'Admin-appen', SCREENS.p2a, SCREENS.p2b);
+
+/* A video decodes whether or not anyone can see it, so the recordings
+   only run while the section is on screen. The canvas is the thing to
+   watch: it is exactly as big as the stage, and it is already there. */
+if (vids.length && 'IntersectionObserver' in window) {
+  new IntersectionObserver(es => {
+    const on = es.some(e => e.isIntersecting);
+    vids.forEach(v => { if (on) { const p = v.play(); if (p) p.catch(() => {}); } else v.pause(); });
+  }, { rootMargin: '25% 0px' }).observe(canvas);
+} else {
+  vids.forEach(v => { const p = v.play(); if (p) p.catch(() => {}); });
+}
 
 /* One fade for the whole phone, with the screens keeping their own
    crossfade underneath it. Set in a single pass, the fade would undo
