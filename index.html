@@ -483,7 +483,7 @@
       var dWebm=!!dv.canPlayType && dv.canPlayType('video/webm; codecs="vp9"')!=='';
       var dBase='media/drone-intro'+(dNarrow?'-tel':'');
       dv.poster=dBase+'-poster.jpg?v=17';
-      dv.src=dBase+(dWebm?'.webm':'.mp4')+'?v=18';
+      dv.src=dBase+(dWebm?'.webm':'.mp4')+'?v=19';
       dv.addEventListener('loadedmetadata',function(){ if(dv.duration && isFinite(dv.duration)) dDur=dv.duration; });
       var dSeek=false;
       dv.addEventListener('seeking',function(){ dSeek=true; });
