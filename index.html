@@ -17,10 +17,11 @@
 <link rel="preload" as="font" type="font/woff2" href="fonts/instrumentserif-italic-400.woff2" crossorigin />
 <link rel="preload" as="font" type="font/woff2" href="fonts/barlow-normal-400.woff2" crossorigin />
 <link rel="stylesheet" href="styles.css?v=45" />
-<link rel="stylesheet" href="lesreg.css?v=59" />
+<link rel="stylesheet" href="lesreg.css?v=60" />
 <link rel="stylesheet" href="bbh.css?v=10" />
 <link rel="stylesheet" href="kunder.css?v=8" />
 <link rel="stylesheet" href="telefon.css?v=5" />
+<link rel="stylesheet" href="softwarehus.css?v=2" />
 <link rel="stylesheet" href="kontakt.css?v=2" />
 <link rel="stylesheet" href="mork.css?v=2" />
 <link rel="stylesheet" href="dybde.css?v=1" />
@@ -45,7 +46,7 @@
         <path d="M44 28h18v62h38v18H44Z" fill="#f1eade"/>
       </svg>Lesreg</a>
     <div class="gn-links">
-      <a href="#bbh" data-da="Konceptet">The idea</a>
+      <a href="#softwarehus" data-da="Softwarehus">Software house</a>
       <a href="#kunder" data-da="Kunder">Clients</a>
       <a href="#contact" data-da="Kontakt">Contact</a>
     </div>
@@ -101,33 +102,76 @@
     </div>
   </header>
 
-  <!-- ===================== THE IDEA — one stage, moved entirely by the scroll =====================
-       The section is a long sticky stage: the camera dollies in, the headline
-       writes itself word by word, then steps back as the three cards rise
-       through it. Every value comes from the scroll, so it can be read at any
-       speed and in both directions. -->
-  <section class="scene" id="bbh" data-screen-label="idea">
+  <!-- ===================== SOFTWAREHUS — the question before the rest =====================
+       What a software house is, and why it matters to a business. Three
+       acts on one pinned stage: the trade written out, three suppliers
+       becoming one, and why this house in particular. It waits until it is
+       asked — the button is the whole opening gesture — and then plays
+       itself through on a clock. -->
+  <section class="scene sw" id="softwarehus" data-screen-label="software-house">
     <div class="stage">
-      <div class="glow" aria-hidden="true"></div>
-      <div class="inner">
-        <h1 data-split data-da="Tre ord. Ingen omsvøb.">Three words. Nothing wrapped up.</h1>
-        <p class="lede" data-da="Vi bygger og driver software for virksomheder. Det er <b>hele forretningen</b> &mdash; og derfor kan de tre ord lade sig g&oslash;re.">We build and run software for businesses. That is <b>the whole business</b> &mdash; and it is why the three words hold.</p>
-        <div class="cards">
-          <article class="card">
-            <h2 data-split data-da="Bedre">Better</h2>
-            <p data-da="Vi designer, bygger og driver det hele selv. Ingen underleverand&oslash;rer, ingen skabelon &mdash; og <b>vi retter, til det er, som I vil have det.</b>">We design, build and run all of it ourselves. No subcontractors, no template &mdash; and <b>we keep fixing until it is the way you want it.</b></p>
-          </article>
-          <article class="card">
-            <h2 data-split data-da="Billigere">Cheaper</h2>
-            <p data-da="Der er ingen bureau-overhead at betale for. <b>&Eacute;n fast pris, aftalt p&aring; forh&aring;nd</b> &mdash; og ingen kommission af jeres oms&aelig;tning.">There is no agency overhead to pay for. <b>One fixed price, agreed up front</b> &mdash; and no commission on your revenue.</p>
-          </article>
-          <article class="card">
-            <h2 data-split data-da="Hurtigere">Faster</h2>
-            <p data-da="I taler direkte med den, der bygger det. Der er ingen led imellem, s&aring; <b>en rettelse tager timer, ikke uger.</b>">You talk straight to the person building it. Nothing sits in between, so <b>a change takes hours, not weeks.</b></p>
-          </article>
+      <span class="sw-glow" id="swGlow" aria-hidden="true"></span>
+      <span class="sw-plate" id="swPlate" aria-hidden="true"></span>
+      <span class="sw-veil" id="swVeil" aria-hidden="true"></span>
+      <span class="sw-vign" aria-hidden="true"></span>
+
+      <div class="sw-deck">
+
+        <div class="sw-hook" id="swHook">
+          <h2 data-da="Hvad er et softwarehus?">What is a software house?</h2>
+          <p data-da="Og hvorfor det betyder noget for jeres forretning.">And why it matters to your business.</p>
+          <button class="sw-play" id="swPlay" type="button">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5 19 12 8 18.5Z"/></svg>
+            <span data-da="Lad mig forklare">Let me explain</span>
+          </button>
         </div>
+
+        <div class="sw-act sw-split" data-sw-act="1">
+          <div>
+            <div class="sw-kicker" data-da="Hvad er et softwarehus">What a software house is</div>
+            <p class="sw-bio"><span id="swTyped"></span><i class="sw-caret" id="swCaret" aria-hidden="true"></i></p>
+          </div>
+          <div class="sw-shot port">
+            <img src="photos/lesreg-bord.jpg?v=2" alt="" loading="lazy" decoding="async" width="880" height="1100" />
+          </div>
+        </div>
+        <!-- the text of act one lives here so the language switch can reach
+             it; the act reads it a character at a time -->
+        <p class="sw-bio-src" id="swBio" hidden data-da="Et softwarehus tegner, bygger og passer software under samme tag.&#10;&#10;Ikke et bureau der sender arbejdet videre. Ikke en udvikler der afleverer og forsvinder.&#10;&#10;Lesreg er s&aring;dan et hus &mdash; og huset er &eacute;n mand.">A software house draws, builds and looks after software under one roof.&#10;&#10;Not an agency that passes the work on. Not a developer who hands it over and disappears.&#10;&#10;Lesreg is a house like that &mdash; and the house is one man.</p>
+
+        <div class="sw-act sw-mid" data-sw-act="2">
+          <div class="sw-kicker" data-da="Hvorfor det betyder noget for jer">Why it matters to you</div>
+          <h3 data-sw-split data-da="Normalt skal I hyre tre.">Normally you hire three.</h3>
+          <div class="sw-merge">
+            <div class="sw-sup"><b data-da="Designbureau">Design agency</b><s data-da="tegner det">draws it</s></div>
+            <div class="sw-sup"><b data-da="Udvikler">Developer</b><s data-da="bygger det">builds it</s></div>
+            <div class="sw-sup"><b data-da="Driftleverand&oslash;r">Hosting supplier</b><s data-da="holder det i luften">keeps it up</s></div>
+            <div class="sw-house" id="swHouse"><b>Lesreg</b><s data-da="alle tre">all three</s></div>
+          </div>
+          <p class="sw-lede" data-da="Tre aftaler, tre regninger, og <b>ingen der har ansvaret</b> n&aring;r noget ikke virker. Et softwarehus er &eacute;t sted at g&aring; hen.">Three contracts, three invoices, and <b>nobody who carries the responsibility</b> when something stops working. A software house is one place to go.</p>
+        </div>
+
+        <div class="sw-act sw-split" data-sw-act="3">
+          <div>
+            <div class="sw-kicker" data-da="Hvorfor Lesreg">Why Lesreg</div>
+            <h3 data-sw-split data-da="Fordi huset er &eacute;n mand.">Because the house is one man.</h3>
+            <ul class="sw-claims">
+              <li data-da="Ingen overhead at betale for<s>&Eacute;n fast pris, aftalt inden vi starter &mdash; og ingen kommission af jeres oms&aelig;tning.</s>">No overhead to pay for<s>One fixed price, agreed before we start &mdash; and no commission on your revenue.</s></li>
+              <li data-da="Ingen led imellem<s>I taler med den, der bygger det. En rettelse tager timer, ikke uger.</s>">Nothing sitting in between<s>You talk to the person building it. A change takes hours, not weeks.</s></li>
+              <li data-da="Ingen der forsvinder bagefter<s>Samme h&aelig;nder passer det, n&aring;r det er i drift.</s>">Nobody who disappears afterwards<s>The same hands look after it once it is running.</s></li>
+            </ul>
+          </div>
+          <div class="sw-shot">
+            <img src="media/spiis-mac.jpg" alt="" loading="lazy" decoding="async" width="1600" height="1200" />
+          </div>
+        </div>
+
+        <button class="sw-again" id="swAgain" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.4-5.7"/><path d="M20 4v4h-4"/></svg>
+          <span data-da="Spil igen">Play again</span>
+        </button>
+
       </div>
-      <div class="veil" aria-hidden="true"></div>
     </div>
   </section>
 
@@ -269,39 +313,6 @@
     </div>
   </section>
 
-  <!-- the two cases land on the same offer -->
-  <div class="closer" data-screen-label="closer">
-    <h2 class="reveal" data-da="Det samme kan bygges <i>til jer.</i>">The same can be built <i>for you.</i></h2>
-    <div class="cta reveal d1">
-      <span class="mag" data-magnet="90,7"><a class="abtn spruce big" href="mailto:mgersel@lesreg.com"><span data-da="Skriv til os">Talk to us</span>
-        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg>
-      </a></span>
-    </div>
-  </div>
-
-  <!-- ===================== HOW WE WORK — said plainly, because that is the point ===================== -->
-  <section class="s way center" data-screen-label="way">
-    <div class="s-inner">
-      <p class="gk reveal" data-da="Holdet">The team</p>
-      <h2 class="sec-h reveal" data-da="Vi pakker det ikke ind.">We don't wrap it up.</h2>
-      <p class="sec-p reveal d1" data-da="Et lille hold, der siger tingene som de er, og bliver ved til det virker.">A small team that says things as they are, and stays until it works.</p>
-
-      <ul class="way-list">
-        <li class="reveal">
-          <b data-da="Vi siger det lige ud">We say it straight</b>
-          <p data-da="Ogs&aring; n&aring;r svaret er, at I ikke skal bygge det, I kom for &mdash; eller at det bliver dyrere, end I h&aring;bede. I h&oslash;rer det f&oslash;r, ikke efter.">Also when the answer is that you shouldn't build the thing you came for &mdash; or that it will cost more than you hoped. You hear it before, not after.</p>
-        </li>
-        <li class="reveal d1">
-          <b data-da="Alt bliver skr&aelig;ddersyet">Everything is made to fit</b>
-          <p data-da="Uanset behov, m&aring;l eller problem bygger vi til jer. Ingen skabelon, ingen moduler I skal rette jer efter &mdash; systemet f&oslash;lger jeres m&aring;de at arbejde p&aring;.">Whatever the need, the goal or the problem, we build for you. No template, no modules you have to bend around &mdash; the system follows the way you already work.</p>
-        </li>
-        <li class="reveal d2">
-          <b data-da="Vi retter, til I er tilfredse">We fix until you're happy</b>
-          <p data-da="Ikke til timerne er brugt. Og n&aring;r det er i luften, bliver vi &mdash; vi driver det, holder &oslash;je med det og retter fejl uden regning.">Not until the hours are spent. And once it is up, we stay &mdash; we run it, watch it, and fix faults without a bill.</p>
-        </li>
-      </ul>
-    </div>
-  </section>
 
   <!-- ===================== CONTACT — the letter =====================
        Not a form and not a card with a button in it: a letter that writes
@@ -769,7 +780,15 @@
           if(o.auto){
             var live = (y + vh*0.72) > o.top && y < (o.top + o.h - vh*0.28);
             if(live!==o.live){ o.live=live; o.el.classList.toggle('live', live); }
-            if(!live){ o.t0=null; if(o.last!==0){ o.last=0; o.paint(0); } continue; }
+            /* A manual scene waits to be asked. The scroll still decides
+               whether it MAY run — leaving the section puts it back to the
+               start, so nobody arrives at it halfway through something they
+               never started. */
+            if(!live || (o.manual && !o.playing)){
+              o.t0=null; if(o.manual) o.playing=false;
+              if(o.last!==0){ o.last=0; o.paint(0); }
+              continue;
+            }
             if(o.t0==null) o.t0=now;
             var a=Math.min(1,(now-o.t0)/o.dur);
             if(Math.abs(a-o.last)>0.0004){ o.last=a; o.paint(a); }
@@ -800,7 +819,7 @@
         add:function(o){
           o.stage=o.el.querySelector('.stage');
           o.sm=0; o.last=-1; o.introOn=null; o.top=0; o.h=0; o.span=1; o.lead=0; o.live=null;
-          o.t0=null;
+          o.t0=null; o.playing=false;
 
           scenes.push(o);
           o.build(); o.base();
@@ -842,86 +861,159 @@
             requestAnimationFrame(loop);
           }
         },
-        measure:measure
+        measure:measure,
+        /* start a manual scene, or start it again from the top */
+        go:function(el){
+          for(var i=0;i<scenes.length;i++){
+            if(scenes[i].el===el){ scenes[i].playing=true; scenes[i].t0=null; scenes[i].last=-1; }
+          }
+        }
       };
     })();
 
-    /* ---------- KONCEPTET — three words, and what stands behind them ---------- */
-    var scn=document.getElementById('bbh');
-    if(scn){
-      var inr=scn.querySelector('.inner'), glw=scn.querySelector('.glow'),
-          vei=scn.querySelector('.veil'), sHd=scn.querySelector('h1'),
-          sLe=scn.querySelector('.lede'),
-          sCd=[].slice.call(scn.querySelectorAll('.card'));
-      var sW=[], sCW=[], sCP=[];
+    /* ---------- SOFTWAREHUS — the question before the rest ----------
+       The one scene on the page that waits to be asked. The scroll only
+       decides whether it MAY run; the button decides whether it does, and
+       from then on a clock owns it. Forty-two seconds is what the three
+       acts need to be read once, and a scroll cannot set a reading speed.
+
+       Leaving the section puts it back to the hook, so nobody arrives at
+       it halfway through something they never started. */
+    var swEl=document.getElementById('softwarehus');
+    if(swEl){
+      var swHook=document.getElementById('swHook'), swPlay=document.getElementById('swPlay'),
+          swAgain=document.getElementById('swAgain'), swPlate=document.getElementById('swPlate'),
+          swVeil=document.getElementById('swVeil'), swGlow=document.getElementById('swGlow'),
+          swTyped=document.getElementById('swTyped'), swCaret=document.getElementById('swCaret'),
+          swBio=document.getElementById('swBio'), swHouse=document.getElementById('swHouse'),
+          swDeck=swEl.querySelector('.sw-deck');
+      var swA=[1,2,3].map(function(n){
+        var el=swEl.querySelector('[data-sw-act="'+n+'"]');
+        return { el:el, kick:el.querySelector('.sw-kicker'),
+                 hd:el.querySelector('[data-sw-split]'), w:[],
+                 shot:el.querySelector('.sw-shot'), lede:el.querySelector('.sw-lede'),
+                 sups:[].slice.call(el.querySelectorAll('.sw-sup')),
+                 claims:[].slice.call(el.querySelectorAll('.sw-claims li')) };
+      });
+      var swBack=function(t){ var c=1.4, u=t-1; return 1+(c+1)*u*u*u+c*u*u; };
+      var swSrc='', swN=-1, swSpread=[-1,0,1];
+
+      /* one act: in from the depth, held, pushed back out */
+      function swAct(a, from, to, s, hold){
+        var len=to-from,
+            inn=SC.film(SC.seg(s,from,from+len*.34)),
+            /* The last act is not pushed back out. It dissolved at the very
+               end and left a blurred room and a replay button where the
+               three reasons had just been — the one thing anyone is meant
+               to leave with. It stays up. */
+            ex=hold ? 0 : SC.io(SC.seg(s,to-len*.2,to));
+        var vis = inn>.002 && ex<.998;
+        if(a.vis!==vis){ a.vis=vis; a.el.style.visibility = vis?'visible':'hidden'; }
+        if(!vis) return false;
+        SC.set(a.el,
+          'translate3d(0,'+((1-inn)*4-ex*7).toFixed(2)+'vh,'+(-520*(1-inn)-ex*300).toFixed(1)+'px) scale('+(.94+inn*.06).toFixed(4)+')',
+          (inn*(1-ex)).toFixed(3), SC.blur((1-inn)*14+ex*11));
+        var pk=SC.out(SC.seg(s,from,from+len*.16));
+        SC.set(a.kick,'translate3d(0,'+((1-pk)*10).toFixed(2)+'px,0)', pk.toFixed(3));
+        return true;
+      }
+      function swWords(ws, from, to, s){
+        for(var i=0;i<ws.length;i++){
+          var t=SC.film(SC.seg(s,from+i*.016,to+i*.016));
+          SC.set(ws[i],
+            'translate3d(0,'+((1-t)*.5).toFixed(3)+'em,0) rotateX('+(-46*(1-t)).toFixed(2)+'deg)',
+            t.toFixed(3), SC.blur(9*(1-t)));
+        }
+      }
+      function swShot(el, from, to, dx, s){
+        var t=SC.film(SC.seg(s,from,to));
+        SC.set(el,
+          'translate3d('+((1-t)*dx).toFixed(2)+'vw,0,'+(-360*(1-t)).toFixed(1)+'px) rotateY('+((1-t)*dx*1.1).toFixed(2)+'deg) scale('+(.94+t*.06).toFixed(4)+')',
+          t.toFixed(3), SC.blur(12*(1-t)));
+      }
+
       SC.add({
-        el:scn,
-        /* The lead starts a scene's timeline before its stage reaches the
-           top of the window — which means the dolly-in runs while the
-           section is still scrolling normally, and the two motions add up.
-           Measured at 1440x900: the headline moved 1.49 pixels for every
-           pixel scrolled through that overlap, then stopped dead for 250
-           more once the stage pinned. Scroll, overshoot, freeze. Nothing
-           to do with frame rate, and it is what a hand feels as a stutter.
-           At zero the scene starts exactly when it pins: the page moves at
-           one to one, hands over, and the scene plays in place. */
-        leadF:0,
-        build:function(){
-          sW=SC.split(sHd);
-          sCW=sCd.map(function(c){ return SC.split(c.querySelector('h2')); });
-          sCP=sCd.map(function(c){ return c.querySelector('p'); });
-        },
+        el:swEl, leadF:0, auto:true, manual:true, dur:42000,
+        build:function(){ swA.forEach(function(a){ if(a.hd) a.w=SC.split(a.hd); }); },
         base:function(){
-          var all=[sLe].concat(sW, sCd, sCP);
-          sCW.forEach(function(a){ all=all.concat(a); });
-          SC.plain(all); SC.plain([inr]);
+          swSrc=(swBio.firstChild && swBio.firstChild.nodeValue)||'';
+          swTyped.textContent=swSrc;
+          var all=[];
+          swA.forEach(function(a){
+            all=all.concat([a.el,a.kick,a.shot,a.lede]).concat(a.w).concat(a.claims).concat(a.sups);
+            a.el.style.visibility='visible'; a.vis=true;
+          });
+          SC.plain(all.concat([swHook,swHouse,swDeck]));
+          swHouse.style.transform='translate(-50%,-50%)';
+          swCaret.style.display='none';
         },
         paint:function(s){
-          /* the camera moves in once, at the very start */
-          var d=SC.film(SC.seg(s,0,.16));
-          SC.set(inr,'translate3d(0,'+((1-d)*24).toFixed(2)+'px,0) translateZ('+(-320*(1-d)).toFixed(1)+'px)',null);
+          var src=(swBio.firstChild && swBio.firstChild.nodeValue)||'';
+          if(src!==swSrc){ swSrc=src; swN=-1; }
 
-          /* and the headline steps back out of the way as the cards arrive */
-          var r=SC.io(SC.seg(s,.40,.78));
-          SC.set(sHd,'translate3d(0,'+(-5*r).toFixed(3)+'vh,0) scale('+(1-.09*r).toFixed(4)+')',(1-.32*r).toFixed(3));
+          /* the hook draws back into the depth as the first act arrives */
+          var hx=SC.io(SC.seg(s,0,.045));
+          SC.set(swHook,'translateZ('+(-260*hx).toFixed(1)+'px) scale('+(1-hx*.08).toFixed(4)+')',
+            (1-hx).toFixed(3), SC.blur(14*hx));
+          swHook.style.pointerEvents = hx>0.99 ? 'none' : 'auto';
 
-          for(var i=0;i<sW.length;i++){
-            var t=SC.film(SC.seg(s,.04+i*.025,.22+i*.025));
-            SC.set(sW[i],
-              'translate3d(0,'+((1-t)*.9).toFixed(3)+'em,0) rotateX('+(-58*(1-t)).toFixed(2)+'deg) scale('+(.91+.09*t).toFixed(4)+')',
-              t.toFixed(3), SC.blur(10*(1-t)));
+          /* the room comes up behind the glass, and steps back under the
+             three suppliers so they have the stage to themselves */
+          var pIn=SC.film(SC.seg(s,.01,.12)), pMid=SC.io(SC.seg(s,.30,.42)), pBack=SC.out(SC.seg(s,.66,.80));
+          SC.set(swPlate,'scale('+(1.05+s*.12).toFixed(4)+') translate3d('+(2-s*5).toFixed(2)+'vw,'+(-1+s*3).toFixed(2)+'vh,0)',
+            (pIn*(.92-pMid*.6+pBack*.46)).toFixed(3));
+          SC.set(swVeil,null,(pIn*(1+pMid*.12)).toFixed(3));
+          SC.set(swGlow,'translate3d(0,'+(s*-10).toFixed(2)+'vh,0) scale('+(1+s*.28).toFixed(4)+')',
+            (.6-s*.26).toFixed(3));
+
+          /* act one — the trade, written out a character at a time */
+          if(swAct(swA[0],.02,.36,s)){
+            var tp=SC.seg(s,.055,.28), n=Math.round(tp*swSrc.length);
+            if(n!==swN){ swN=n; swTyped.textContent=swSrc.slice(0,n); }
+            var writing = tp>0 && tp<1;
+            if(writing !== (swCaret.style.display==='')) swCaret.style.display = writing?'':'none';
+            swShot(swA[0].shot,.10,.24,7,s);
           }
 
-          var lt=SC.out(SC.seg(s,.24,.38));
-          SC.set(sLe,'translate3d(0,'+((1-lt)*24).toFixed(2)+'px,0)',
-            (lt*(1-.8*r)).toFixed(3), SC.blur(4*r));
-
-          /* The three cards are staggered close enough that the last one has
-             landed before the section lets go — a card still rising while the
-             stage unsticks is the one thing that reads as broken. */
-          for(i=0;i<sCd.length;i++){
-            var ct=SC.io(SC.seg(s,.42+i*.06,.76+i*.06));
-            SC.set(sCd[i],
-              'translate3d(0,'+((1-ct)*90).toFixed(2)+'px,0) rotateX('+(12*(1-ct)).toFixed(2)+'deg) scale('+(.93+.07*ct).toFixed(4)+')',
-              ct.toFixed(3), SC.blur(6*(1-ct)));
-            var ws=sCW[i]||[];
-            for(var j=0;j<ws.length;j++){
-              var wt=SC.film(SC.seg(s,.48+i*.06,.74+i*.06));
-              SC.set(ws[j],
-                'translate3d(0,'+((1-wt)*.62).toFixed(3)+'em,0) rotateX('+(-52*(1-wt)).toFixed(2)+'deg)',
-                wt.toFixed(3), SC.blur(6*(1-wt)));
+          /* act two — three become one */
+          if(swAct(swA[1],.32,.66,s)){
+            swWords(swA[1].w,.34,.46,s);
+            var inS=SC.out(SC.seg(s,.38,.48)), join=SC.io(SC.seg(s,.48,.58)),
+                hb=swBack(SC.seg(s,.545,.62)), narrow=window.innerWidth<900;
+            for(var i=0;i<swA[1].sups.length;i++){
+              var x=swSpread[i]*(1-join)*(narrow?38:30), y=(narrow?(i-1)*30:0)*(1-join);
+              SC.set(swA[1].sups[i],
+                'translate(-50%,-50%) translate3d('+x.toFixed(2)+'vh,'+y.toFixed(2)+'vh,0) scale('+((.9+inS*.1)*(1-join*.28)).toFixed(4)+')',
+                (inS*(1-Math.min(1,join*1.35))).toFixed(3), SC.blur((1-inS)*9+join*7));
             }
-            var pt=SC.out(SC.seg(s,.52+i*.06,.80+i*.06));
-            SC.set(sCP[i],'translate3d(0,'+((1-pt)*14).toFixed(2)+'px,0)',pt.toFixed(3));
+            SC.set(swHouse,'translate(-50%,-50%) scale('+(.3+hb*.7).toFixed(4)+')',
+              Math.min(1,SC.seg(s,.535,.575)*3).toFixed(3),
+              SC.blur((1-Math.min(1,SC.seg(s,.535,.60)*1.4))*12));
+            var pl=SC.out(SC.seg(s,.585,.65));
+            SC.set(swA[1].lede,'translate3d(0,'+((1-pl)*16).toFixed(2)+'px,0)', pl.toFixed(3));
           }
 
-          /* the light behind it all drifts up and opens out the whole way */
-          SC.set(glw,'translate3d(-50%,'+(-14*s).toFixed(3)+'vh,0) scale('+(1+.26*s).toFixed(4)+')',
-            (.9-.5*s).toFixed(3));
-          /* and the last stretch closes the stage into the next section */
-          SC.set(vei,null,SC.seg(s,.90,1).toFixed(3));
+          /* act three — why this house */
+          if(swAct(swA[2],.63,1.001,s,true)){
+            swWords(swA[2].w,.65,.78,s);
+            swShot(swA[2].shot,.70,.84,-7,s);
+            for(var j=0;j<swA[2].claims.length;j++){
+              var ct=SC.out(SC.seg(s,.76+j*.045,.87+j*.045));
+              SC.set(swA[2].claims[j],'translate3d(0,'+((1-ct)*18).toFixed(2)+'px,0)', ct.toFixed(3));
+            }
+          }
+
+          var over = s>=0.999;
+          if(over !== (swAgain.style.opacity==='1')){
+            swAgain.style.opacity = over?'1':'0';
+            swAgain.style.pointerEvents = over?'auto':'none';
+          }
         }
       });
+      if(!reduce){
+        swPlay.addEventListener('click', function(){ SC.go(swEl); });
+        swAgain.addEventListener('click', function(){ SC.go(swEl); });
+      }
     }
 
     /* ---------- KUNDER — the line into the two cases ---------- */
@@ -1252,6 +1344,6 @@
   </script>
   <script type="module" src="telefon-3d.js?v=21"></script>
 
-  <script src="site.js?v=47" defer></script>
+  <script src="site.js?v=48" defer></script>
 </body>
 </html>

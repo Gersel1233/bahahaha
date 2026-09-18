@@ -28,7 +28,7 @@ body{ background:var(--ax-bg); color:var(--ax-ink); font-family:'Barlow',var(--u
 body::after{ content:none; }
 ::selection{ background:rgba(31,133,122,.3); color:var(--ax-ink); }
 .site-reveal{ position:relative; z-index:1; }
-#kunder,#contact{ scroll-margin-top:76px; }
+#softwarehus,#kunder,#contact{ scroll-margin-top:76px; }
 
 /* ============================================================
    NAV — clean Anthropic bar: lockup · links · one CTA
