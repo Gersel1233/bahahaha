@@ -59,9 +59,11 @@ function envTexture() {
   const g = x.createLinearGradient(0, 0, 0, 128);
   /* Polished metal is mostly a picture of the room, so the floor of this
      gradient is the phone's own colour. Almost black down there and the
-     titanium came out brown — the device is a light silver. */
-  g.addColorStop(0, '#fffaf2'); g.addColorStop(0.42, '#f2e8d9');
-  g.addColorStop(0.72, '#a9a091'); g.addColorStop(1, '#443c33');
+     titanium came out brown — the device is a light silver. The room is
+     cool now, to match the page, but the floor stays well off black for
+     the same reason it always did. */
+  g.addColorStop(0, '#ffffff'); g.addColorStop(0.42, '#dde5ee');
+  g.addColorStop(0.72, '#8e9aa8'); g.addColorStop(1, '#414954');
   x.fillStyle = g; x.fillRect(0, 0, 32, 128);
   const t = new THREE.CanvasTexture(c);
   t.mapping = THREE.EquirectangularReflectionMapping;
@@ -70,10 +72,21 @@ function envTexture() {
 }
 scene.environment = envTexture();
 
-scene.add(new THREE.AmbientLight(0xfff3e4, 0.45));
-const key  = new THREE.DirectionalLight(0xfff6ea, 2.1);  key.position.set(-1.6, 2.2, 2.6);
-const rim  = new THREE.DirectionalLight(0xbfd6ee, 1.25); rim.position.set(2.4, -0.6, -1.4);
-const fill = new THREE.DirectionalLight(0xf6e3cd, 0.7);  fill.position.set(1.4, -1.8, 2);
+/* The lamps were warm, because the room was. On the dark page a warm key
+   turns the titanium to brass, so they all step across to the page's own
+   cool white.
+
+   They also had to come up, not down. The instinct on a dark page is to
+   dim the room, and dimming it is what made the phone disappear: a light
+   silver body with nothing on it is a grey shape on a black ground, and
+   the only thing that separates the two is light caught along the edge.
+   So the rim does most of the work now — it is the lamp that draws the
+   chamfer — and the key stays strong enough to keep a lit face on the
+   side that turns towards the reader. */
+scene.add(new THREE.AmbientLight(0xdfe8f2, 0.5));
+const key  = new THREE.DirectionalLight(0xf4f8fc, 2.6);  key.position.set(-1.6, 2.2, 2.6);
+const rim  = new THREE.DirectionalLight(0xd4e6fa, 2.3);  rim.position.set(2.4, -0.6, -1.4);
+const fill = new THREE.DirectionalLight(0xaec2d8, 0.85); fill.position.set(1.4, -1.8, 2);
 scene.add(key, rim, fill);
 
 /* ---------- the parts ---------- */
@@ -95,9 +108,12 @@ function blankScreen(label) {
   c.width = 540; c.height = 1170;
   const x = c.getContext('2d');
   const g = x.createLinearGradient(0, 0, 0, 1170);
-  g.addColorStop(0, '#f7f0e4'); g.addColorStop(1, '#e9e0d1');
+  /* A dark screen is not an off screen: a display that is on lifts away
+     from the black glass around it, and that difference is what stops
+     the phone reading as a slab. */
+  g.addColorStop(0, '#242b34'); g.addColorStop(0.5, '#1a2028'); g.addColorStop(1, '#12171d');
   x.fillStyle = g; x.fillRect(0, 0, 540, 1170);
-  x.fillStyle = 'rgba(27,23,20,.28)';
+  x.fillStyle = 'rgba(238,243,248,.34)';
   x.font = '600 26px -apple-system, "SF Pro Text", Helvetica, sans-serif';
   x.textAlign = 'center';
   x.fillText(label, 270, 600);
@@ -183,17 +199,24 @@ function notificationTexture() {
   for (const p of plan) {
     x.save();
     x.translate(NOTIF_PAD, oy);
-    x.shadowColor = 'rgba(0,0,0,.42)'; x.shadowBlur = 40; x.shadowOffsetY = 14;
-    x.fillStyle = 'rgba(23,24,20,.94)';
+    x.shadowColor = 'rgba(0,0,0,.55)'; x.shadowBlur = 40; x.shadowOffsetY = 14;
+    /* The card used to be near-black, because the app behind it was
+       light. The app is dark now, and a black card on a black screen is
+       not a card — so it becomes the lit surface instead: the grey a
+       frosted pane comes out as with a dark room behind it, with a rim
+       along the edge so it still reads as glass and not as a box. */
+    x.fillStyle = 'rgba(62,69,80,.93)';
     x.beginPath(); x.roundRect(0, 0, CARD_W, p.h, 66); x.fill();
     x.shadowColor = 'transparent';
+    x.strokeStyle = 'rgba(232,238,244,.16)'; x.lineWidth = 3;
+    x.beginPath(); x.roundRect(1.5, 1.5, CARD_W - 3, p.h - 3, 65); x.stroke();
 
     // the app icon: a squircle with the same hat in it
     x.fillStyle = 'rgb(196,107,54)';
     x.beginPath(); x.roundRect(40, (p.h - 113) / 2, 113, 113, 26); x.fill();
     hat(96.5, p.h / 2, 1.5, '#fff', 'rgba(196,107,54,.92)');
 
-    hat(TX + 21, B1 - 14, 0.62, 'rgba(255,255,255,.95)', 'rgba(23,24,20,.95)');
+    hat(TX + 21, B1 - 14, 0.62, 'rgba(255,255,255,.95)', 'rgba(62,69,80,.95)');
     x.fillStyle = 'rgba(255,255,255,.95)';
     x.font = '600 44px ' + F;
     x.fillText('Ny bestilling', TX + 52, B1);
@@ -225,8 +248,8 @@ function shadowTexture() {
   c.width = c.height = 256;
   const x = c.getContext('2d');
   const g = x.createRadialGradient(128, 128, 0, 128, 128, 128);
-  g.addColorStop(0, 'rgba(60,44,30,.34)'); g.addColorStop(0.55, 'rgba(60,44,30,.12)');
-  g.addColorStop(1, 'rgba(60,44,30,0)');
+  g.addColorStop(0, 'rgba(0,0,0,.52)'); g.addColorStop(0.55, 'rgba(0,0,0,.2)');
+  g.addColorStop(1, 'rgba(0,0,0,0)');
   x.fillStyle = g; x.fillRect(0, 0, 256, 256);
   return new THREE.CanvasTexture(c);
 }
@@ -347,7 +370,7 @@ function buildPhone(labelA, labelB) {
 
   /* ---- the back ---- */
   const backMat = new THREE.MeshStandardMaterial({
-    color: 0xf0ece6, metalness: 0.15, roughness: 0.55, envMapIntensity: 1.0, transparent: true,
+    color: 0xe4eaf1, metalness: 0.15, roughness: 0.55, envMapIntensity: 1.0, transparent: true,
   });
   const back = new THREE.Mesh(backGeo, backMat);
   back.position.set(0, -H * 0.10, ZBACK - 0.0008);
@@ -368,7 +391,7 @@ function buildPhone(labelA, labelB) {
     color: 0x0a0b0d, metalness: 0.6, roughness: 0.06, envMapIntensity: 2.4, transparent: true,
   });
   const flashMat = new THREE.MeshStandardMaterial({
-    color: 0xfdf2df, metalness: 0.1, roughness: 0.3, transparent: true,
+    color: 0xf3f7fb, metalness: 0.1, roughness: 0.3, transparent: true,
   });
 
   /* A lens is a barrel standing off the plateau with the glass set down

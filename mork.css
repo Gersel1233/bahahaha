@@ -1,0 +1,206 @@
+/* ============================================================
+   LESREG — det moerke tema.
+
+   Loaded last, so it is the last word on colour. Everything before it
+   still owns the layout, the type and the motion: this sheet only
+   changes what the page is made of.
+
+   The palette is the logo's own. The mark is a sheet of near-black
+   paper with a light letter cut out of it, and that is the whole page
+   now — a deep, slightly cool ground with silver on top, and surfaces
+   that read as glass rather than as cards.
+
+   Most of the page follows on its own, because the sheets before this
+   one paint from tokens. What is written out below is the handful of
+   places where a colour was set by hand, and those all had to be
+   turned over one at a time.
+   ============================================================ */
+
+:root{
+  /* the ground */
+  --deep:#0c0e11; --deep-2:#14171b; --deep-3:#07090b;
+  --silver:#c3ccd6; --silver-lys:#e8eef4;
+  --edge:rgba(232,238,244,.18);
+
+  /* the tokens the rest of the page is painted from */
+  --paper-1:#0c0e11; --paper-2:#14171b; --paper:#0c0e11;
+  /* --peach is the lift behind every headline. Warm light on a cool
+     ground reads as a stain, so it is the same blue-grey as the auras. */
+  --peach:#1b212a;
+  --ink:#eef3f8;
+  --ink-soft:rgba(238,243,248,.72);
+  /* The faint tone carries the small uppercase labels — the kickers, the
+     tags, the line under the footer. At the light theme's weight it came
+     out at 4.3 against this ground, which is under the 4.5 those sizes
+     want, so it goes up a step. Measured after: 4.9. */
+  --ink-faint:rgba(238,243,248,.52);
+  /* --dark was the black pill. On a black page the strong element is
+     the light one, so it turns over with everything else. */
+  --dark:#e8eef4; --dark-2:#dbe3ec; --dark-3:#c3ccd6;
+
+  /* The accent was spruce green. The mark has no colour in it at all,
+     and a single green note on a silver page reads as a leftover from
+     another design, so the accent is light itself. --accent is the
+     quiet silver, so the things that used it still sit a step back
+     from the type around them. */
+  --accent:#c3ccd6; --accent-deep:#96a3b2; --accent-tint:#eef3f8;
+  --terra:#c3ccd6; --terra-deep:#96a3b2; --teal:#c3ccd6;
+
+  /* the older sheet's names, pointed at the same ground */
+  --ax-bg:#0c0e11; --ax-card:#14171b; --ax-ink:#eef3f8;
+  --ax-soft:rgba(238,243,248,.72); --ax-faint:rgba(238,243,248,.52);
+  --ax-line:rgba(232,238,244,.16); --ax-spruce:#c3ccd6;
+}
+
+html, body{ background:var(--deep); color:var(--ink); }
+::selection{ background:rgba(232,238,244,.22); color:#fff; }
+
+/* ---------- the bar ----------
+   It stays solid. A backdrop-filter across a fixed full-width strip was
+   measured as the most expensive thing on the page and taken out; a
+   darker page is no reason to put it back. This is the glass colour
+   the blur would have produced, painted once. */
+.nav{ background:#101318;
+  border-bottom:1px solid rgba(232,238,244,.10); }
+.nav.scrolled{ background:#101318;
+  border-bottom-color:rgba(232,238,244,.13); }
+
+/* The mark is a cut-out, so on a dark page it turns over: the paper is
+   the light, the letter is the ground. Same drawing, read the other way. */
+.brand-l .bmark path:first-child{ fill:#e8eef4; }
+.brand-l .bmark path:last-child{ fill:#0c0e11; }
+
+.gn-links a:hover{ background:rgba(232,238,244,.08); color:var(--ink); }
+
+/* the one strong element in the corner — now the light one */
+.gn-cta{ background:rgba(232,238,244,.94); color:#0c0e11;
+  box-shadow:inset 0 1px 1px rgba(255,255,255,.9), inset 0 0 0 1px rgba(232,238,244,.5); }
+.gn-cta::after{ background:linear-gradient(115deg, transparent 32%, rgba(12,14,17,.10) 46%,
+  rgba(12,14,17,.18) 50%, rgba(12,14,17,.10) 54%, transparent 68%); }
+.gn-cta:hover{ background:#fff;
+  box-shadow:inset 0 1px 1px rgba(255,255,255,1), 0 10px 24px -12px rgba(0,0,0,.8),
+    0 0 0 5px rgba(232,238,244,.10); }
+
+/* ---------- the language switch ----------
+   The track recedes into the glass and the thumb is the lit surface, the
+   same way round as before — it is only which of the two is the light
+   one that changes. */
+.langsw{ background:rgba(232,238,244,.08);
+  box-shadow:inset 0 1px 2px rgba(0,0,0,.4), inset 0 0 0 1px rgba(232,238,244,.09); }
+.lang-thumb{ background:linear-gradient(168deg,#f4f8fc,#d5dfea);
+  box-shadow:0 1px 2px rgba(0,0,0,.5), 0 3px 8px -3px rgba(0,0,0,.6),
+    inset 0 1px 0 rgba(255,255,255,1), inset 0 0 0 .5px rgba(12,14,17,.12); }
+.langsw button.on{ color:#0c0e11; }
+
+/* the reading line */
+#sprog i{ background:linear-gradient(90deg,#eef3f8,#8c98a8); }
+
+/* ---------- the flight ----------
+   The film dissolves into the page it hands over to, so the fade is the
+   page's own ground. It follows --ax-bg on its own; the sticky frame
+   behind it was set by hand and did not. */
+.dro-stick{ background:#0c0e11; }
+
+/* ---------- Konceptet ----------
+   The three cards were paper. They are glass now: a pane lit along its
+   top edge, with the ground showing through it. */
+.card, .way-list li{
+  background:linear-gradient(150deg, rgba(232,238,244,.12), rgba(232,238,244,.04) 46%, rgba(232,238,244,.08));
+  border:1px solid var(--edge);
+  box-shadow:0 40px 90px -46px rgba(0,0,0,.85), inset 0 1px 0 rgba(255,255,255,.22); }
+
+/* ---------- Kunderne ----------
+   The two customers keep a colour of their own, because the whole point
+   of that pair of scenes is that they are two places and not two cards.
+   The colours are theirs, lifted to where they can be read on a dark
+   ground — the same hue, not a different one. */
+.scene.case{ --brand:#e8834f; --cream:#14171b; }
+.scene.case[data-brand="mosede"]{ --brand:#f0717a; --cream:#14171b; }
+
+/* The two devices were photographed in a light room. Their shells are
+   metal either way, but the highlights have to come down or they glow. */
+.mac .lid{ background:linear-gradient(158deg,#767d86,#4d535b 36%,#33383f 64%,#5e656e);
+  box-shadow:inset 0 0 0 1px rgba(232,238,244,.22),
+    0 44px 80px -44px rgba(0,0,0,.9), 0 4px 14px -8px rgba(0,0,0,.7); }
+.mac .foot{ background:linear-gradient(180deg,#6e747d,#474d55 46%,#2f343a);
+  box-shadow:0 18px 26px -18px rgba(0,0,0,.8); }
+.iphone .inn{ box-shadow:0 34px 54px -30px rgba(0,0,0,.9),
+  inset 0 0 0 .18cqw rgba(232,238,244,.2); }
+
+/* ---------- the phone ----------
+   The canvas is drawn with a transparent background, so on paper the
+   phone had a page to stand against and here it has none: a silver body
+   against black is a grey shape with nothing behind it. The stage's own
+   glow becomes the light it stands in — enough to separate the body from
+   the ground, not enough to look like a spotlight. */
+.scene.tel .glow{
+  background:radial-gradient(48% 46% at 42% 48%, rgba(152,176,206,.17) 0%,
+    rgba(152,176,206,.06) 46%, transparent 72%); }
+
+/* ---------- the closer and the finale ----------
+   The closer's pill was written flat, to take the green out of it on a
+   page that had green elsewhere. There is none anywhere now, so it goes
+   back to being the same pill as the one in the finale — a page with two
+   calls to action on it should not have two different buttons. */
+.closer .abtn.spruce{
+  background:linear-gradient(168deg, rgba(244,248,252,.97), rgba(197,208,221,.96));
+  box-shadow:inset 0 1px 1px rgba(255,255,255,1), inset 0 0 0 1px rgba(232,238,244,.5),
+    0 18px 40px -16px rgba(0,0,0,.85), 0 2px 6px -3px rgba(0,0,0,.6); }
+
+.fin-card{
+  background:linear-gradient(150deg, rgba(232,238,244,.13), rgba(232,238,244,.04) 44%, rgba(232,238,244,.09));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.3), inset 0 0 0 1px var(--edge),
+    0 50px 110px -56px rgba(0,0,0,.9); }
+/* the light behind the glass, in the page's own two greys */
+.fin-aura.a{ background:radial-gradient(circle, rgba(168,188,210,.26), transparent 66%); }
+.fin-aura.b{ background:radial-gradient(circle, rgba(120,140,166,.24), transparent 68%); }
+/* the second line of the headline was a green gradient; it is light now */
+.fin-h em{ background:linear-gradient(96deg,#ffffff,#c3ccd6 60%,#e8eef4);
+  -webkit-background-clip:text; background-clip:text; color:transparent; }
+.fin-steps li{ background:rgba(232,238,244,.07);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.18), inset 0 0 0 1px rgba(232,238,244,.12),
+    0 10px 26px -18px rgba(0,0,0,.8); }
+.fs-n{ color:#0c0e11; background:linear-gradient(158deg,#f4f8fc,#c3ccd6);
+  box-shadow:0 6px 14px -8px rgba(0,0,0,.8); }
+
+/* ---------- the buttons ----------
+   .spruce is the page's one call to action. On a dark page the loudest
+   thing is the lightest, so the pill turns over: silver glass, dark
+   label. The sweep across it has to turn over with it, or it sweeps
+   white light across a white surface and does nothing. */
+.abtn.spruce{ color:#0c0e11; text-shadow:none;
+  background:linear-gradient(168deg, rgba(244,248,252,.97), rgba(197,208,221,.96));
+  box-shadow:inset 0 1px 1px rgba(255,255,255,1), inset 0 0 0 1px rgba(232,238,244,.5),
+    0 18px 40px -16px rgba(0,0,0,.85), 0 2px 6px -3px rgba(0,0,0,.6); }
+.abtn.spruce::before{ background:linear-gradient(163deg, rgba(255,255,255,.7), transparent 46%); }
+.abtn.spruce::after{ background:linear-gradient(115deg, transparent 32%, rgba(12,14,17,.08) 46%,
+  rgba(12,14,17,.16) 50%, rgba(12,14,17,.08) 54%, transparent 68%); }
+@media(hover:hover){
+  .abtn.spruce:hover{
+    background:linear-gradient(168deg, #ffffff, rgba(214,223,234,.98));
+    box-shadow:inset 0 1px 1px rgba(255,255,255,1), inset 0 0 0 1px rgba(232,238,244,.7),
+      0 26px 50px -16px rgba(0,0,0,.9), 0 0 0 6px rgba(232,238,244,.09); }
+}
+.abtn.glass{ color:var(--ink);
+  background:linear-gradient(168deg, rgba(232,238,244,.18), rgba(232,238,244,.06));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.3), inset 0 0 0 1px var(--edge),
+    0 8px 22px -10px rgba(0,0,0,.8); }
+.abtn.glass::before{ background:linear-gradient(163deg, rgba(255,255,255,.22), transparent 48%); }
+.abtn.ink{ background:linear-gradient(158deg, rgba(232,238,244,.16), rgba(232,238,244,.06));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.26), inset 0 0 0 1px var(--edge),
+    0 12px 30px -12px rgba(0,0,0,.8); }
+.alink.quiet:hover, .fin-card .alink.quiet:hover{ color:#ffffff; }
+
+/* The old sheet's glass buttons are not on the front page, but they are
+   one class away from being, and a white pill would land on a black page. */
+.btn{ color:var(--ink); background:rgba(232,238,244,.10);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.26), inset 0 0 0 1px var(--edge),
+    0 6px 18px -8px rgba(0,0,0,.8); }
+.btn-primary{ color:#0c0e11; text-shadow:none;
+  background:linear-gradient(158deg, rgba(244,248,252,.97), rgba(197,208,221,.96));
+  box-shadow:inset 0 1px 1px rgba(255,255,255,1), inset 0 0 0 1px rgba(232,238,244,.5),
+    0 10px 26px -8px rgba(0,0,0,.8); }
+
+/* ---------- what the browser paints around the page ---------- */
+@media (prefers-color-scheme: light){ :root{ color-scheme:dark; } }
+:root{ color-scheme:dark; }
