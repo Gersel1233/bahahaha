@@ -363,19 +363,30 @@ function screenTexture(label, base) {
     document.body.appendChild(vidHolder);
   }
   const v = document.createElement('video');
-  v.muted = true; v.loop = true; v.playsInline = true;
-  v.setAttribute('playsinline', '');
+  /* Set as attributes, not only as properties. A browser deciding whether
+     a video may start without being asked reads the markup, and a muted
+     autoplaying video that only says so in JavaScript is refused by
+     Safari — which is how a screen plays on the desk and stays frozen on
+     the phone. Cheap to write both ways, so both ways it is. */
+  v.muted = true; v.defaultMuted = true; v.loop = true; v.playsInline = true;
+  v.setAttribute('muted', ''); v.setAttribute('playsinline', '');
+  v.setAttribute('webkit-playsinline', ''); v.setAttribute('loop', '');
+  v.setAttribute('autoplay', '');
+  v.disableRemotePlayback = true;
   /* metadata, not auto: the flight at the top of the page is already
      downloading five megabytes, and a screen four sections further
      down has no business competing with it. The observer below starts
      the fetch a quarter of a window before the stage arrives. */
   v.preload = 'metadata';
-  v.crossOrigin = 'anonymous';
+  /* No crossOrigin. The file is served from the same host as the page, so
+     CORS has nothing to say about it — but asking for it turns a plain
+     request into one the server has to answer with a header, and a host
+     that does not is a screen that never loads. */
   /* Same choice the flight makes: VP9 where it is understood, H.264
      everywhere else. Written as one source rather than two <source>
      children, so nothing is fetched that will not be played. */
   const webm = !!v.canPlayType && v.canPlayType('video/webm; codecs="vp9"') !== '';
-  v.src = base + (webm ? '.webm' : '.mp4');
+  v.src = base + (webm ? '.webm' : '.mp4') + '?v=2';
   const t = new THREE.VideoTexture(v);
   t.colorSpace = THREE.SRGBColorSpace;
   t.minFilter = THREE.LinearFilter;
@@ -388,6 +399,7 @@ function screenTexture(label, base) {
   vids.push(v);
   return t;
 }
+
 
 /* Every phone gets its own materials. Shared, one phone's fade pulls the
    other one down with it, because the opacity lives on the material and
@@ -511,16 +523,44 @@ function buildPhone(labelA, labelB, srcA, srcB) {
 const p1 = buildPhone('Gæsteappen', 'Gæsteappen', SCREENS.p1a, SCREENS.p1b);
 const p2 = buildPhone('Administrationen', 'Admin-appen', SCREENS.p2a, SCREENS.p2b);
 
-/* A video decodes whether or not anyone can see it, so the recordings
-   only run while the section is on screen. The canvas is the thing to
-   watch: it is exactly as big as the stage, and it is already there. */
-if (vids.length && 'IntersectionObserver' in window) {
-  new IntersectionObserver(es => {
-    const on = es.some(e => e.isIntersecting);
-    vids.forEach(v => { if (on) { const p = v.play(); if (p) p.catch(() => {}); } else v.pause(); });
-  }, { rootMargin: '25% 0px' }).observe(canvas);
-} else {
-  vids.forEach(v => { const p = v.play(); if (p) p.catch(() => {}); });
+/* ---------- getting them to actually play ----------
+   A video decodes whether or not anyone can see it, so the recordings run
+   only while the section is on screen. The canvas is the thing to watch:
+   it is exactly as big as the stage, and it is already there.
+
+   But asking once is not enough. play() can be refused, and it is refused
+   quietly — it hands back a promise that rejects and nothing else happens.
+   A screen frozen on its first frame is what that looks like. So it is
+   asked again at every point where the answer might have changed: when the
+   file has enough data, when the tab comes back, and the first time the
+   visitor touches or scrolls the page, because a gesture lifts the refusal
+   in every browser that has one. */
+let wanted = false;
+function nudge() {
+  if (!wanted) return;
+  vids.forEach(v => {
+    if (!v.paused) return;
+    const p = v.play();
+    if (p && p.catch) p.catch(() => {});
+  });
+}
+if (vids.length) {
+  vids.forEach(v => ['loadeddata', 'canplay', 'canplaythrough', 'stalled', 'pause']
+    .forEach(ev => v.addEventListener(ev, nudge)));
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') nudge();
+  });
+  ['pointerdown', 'touchstart', 'keydown', 'wheel', 'scroll'].forEach(ev =>
+    window.addEventListener(ev, nudge, { passive: true }));
+
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(es => {
+      wanted = es.some(e => e.isIntersecting);
+      if (wanted) nudge(); else vids.forEach(v => v.pause());
+    }, { rootMargin: '25% 0px' }).observe(canvas);
+  } else {
+    wanted = true; nudge();
+  }
 }
 
 /* One fade for the whole phone, with the screens keeping their own
