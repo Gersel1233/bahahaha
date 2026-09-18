@@ -593,9 +593,22 @@ function resize() {
    they arrived. Off the act it is paused, which costs nothing while
    someone reads the rest of the page. */
 const clips = [];
+/* The scroll progress is zero both above the section and at the very start
+   of it, so it cannot on its own say whether the stage is coming. The
+   canvas can: it is exactly as big as the stage. Without this the first
+   clip's act begins at 0.02, "nearly up" is true from the first frame of
+   the page, and a megabyte and a half is fetched at load — in the same
+   queue as the flight at the top, which is the one thing that must not
+   wait. */
+let sectionNear = false;
+if ('IntersectionObserver' in window) {
+  new IntersectionObserver(es => { sectionNear = es.some(e => e.isIntersecting); },
+    { rootMargin: '40% 0px' }).observe(canvas);
+} else { sectionNear = true; }
+
 function driveClips(s) {
   for (let i = 0; i < clips.length; i++) {
-    const v = clips[i], near = s > v.at - 0.12;
+    const v = clips[i], near = sectionNear && s > v.at - 0.12;
     if (near && v.el.preload === 'none') { v.el.preload = 'auto'; v.el.load(); }
     if (near && v.el.paused) v.el.play().catch(() => {});
     else if (!near && !v.el.paused) v.el.pause();
