@@ -227,16 +227,3 @@ body{ font-family:var(--sys); color:var(--ink);
 .scene:not(.live) *{ will-change:auto !important; }
 /* and the flight's own full-window layers go when the flight is over */
 .dro-track.dro-done *{ will-change:auto !important; }
-
-/* ---------- phones: sections are blocks, and they play ----------
-   The pinned stage is what makes one section three screens of scrolling,
-   and the whole timeline hangs off how far through that scroll you are.
-   On a phone the section is an ordinary block at its own height, and the
-   engine runs the same timeline on a clock when the block arrives. The
-   layout below is the one the reduced-motion path already uses; what it
-   does not borrow is that path's forcing everything visible, because here
-   the animation is the point. */
-html.tap .scene{ height:auto; }
-html.tap .stage{ position:static; height:auto; padding:12vh 0; perspective:none; }
-html.tap .veil{ display:none; }
-html.tap .glow{ opacity:.5; }

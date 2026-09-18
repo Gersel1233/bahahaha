@@ -17,10 +17,10 @@
 <link rel="preload" as="font" type="font/woff2" href="fonts/instrumentserif-italic-400.woff2" crossorigin />
 <link rel="preload" as="font" type="font/woff2" href="fonts/barlow-normal-400.woff2" crossorigin />
 <link rel="stylesheet" href="styles.css?v=45" />
-<link rel="stylesheet" href="lesreg.css?v=58" />
-<link rel="stylesheet" href="bbh.css?v=9" />
-<link rel="stylesheet" href="kunder.css?v=6" />
-<link rel="stylesheet" href="telefon.css?v=4" />
+<link rel="stylesheet" href="lesreg.css?v=59" />
+<link rel="stylesheet" href="bbh.css?v=10" />
+<link rel="stylesheet" href="kunder.css?v=7" />
+<link rel="stylesheet" href="telefon.css?v=5" />
 </head>
 <body>
 
@@ -403,8 +403,11 @@
        than winding it. On a phone a section arrives and its animation
        plays. Decided once, in one place, and written to the document so
        the stylesheets read the same answer as the engine. */
+    /* Narrow enough for the portrait cut of the film. It chooses a file,
+       nothing else: the sections are driven by the scroll on a phone the
+       same as on a desktop, because that is what makes a page feel placed
+       rather than played at you. */
     var TAP = window.matchMedia('(max-width:760px)').matches;
-    document.documentElement.classList.toggle('tap', TAP);
 
     function go(){ if(hero) requestAnimationFrame(function(){ hero.classList.add('go'); }); }
 
@@ -413,51 +416,7 @@
        brand fades out as the flight starts, and the film ends on the front
        page itself, which the real one then takes over from unchanged. */
     var dtr=document.getElementById('droTrack');
-    if(dtr && !reduce && TAP){
-      /* It plays. Nothing here touches currentTime, so there is no seeking
-         at all — the one job a phone does badly is simply not asked for.
-         The film dissolves to paper on its own clock as it ends, and the
-         headline below rises when it is scrolled to, like every other
-         section on the page. */
-      var pv=document.getElementById('droVid'), pbr=document.getElementById('droBrand'),
-          pfa=document.getElementById('droFade');
-      document.documentElement.classList.add('dro-tall');
-      pv.poster='media/drone-intro-tel-poster.jpg?v=16';
-      pv.src='media/drone-intro-tel.mp4?v=16';
-      pv.muted=true; pv.playsInline=true;
-      pv.setAttribute('playsinline',''); pv.setAttribute('muted','');
-      pv.preload='auto'; pv.loop=false;
-      document.body.classList.add('dro-on');
-      var pEnd=false;
-      function pFinish(){ if(pEnd) return; pEnd=true;
-        if(pfa) pfa.style.opacity='1';
-        document.body.classList.remove('dro-on'); }
-      pv.addEventListener('timeupdate',function(){
-        var d=pv.duration||14, t=pv.currentTime;
-        if(pbr) pbr.style.opacity=(t>0.7?'0':'1');
-        if(pfa && !pEnd){
-          var f=Math.max(0,Math.min(1,(t-(d-1.7))/1.3));
-          pfa.style.opacity=f.toFixed(3);
-          if(f>=1) pFinish();
-        }
-      },{passive:true});
-      pv.addEventListener('ended',pFinish);
-      /* autoplay is allowed for a muted inline video, but not promised —
-         a first touch is the fallback, and the film is never a gate: if it
-         never plays at all, the page below is still there to scroll to */
-      var pTry=function(){ var r=pv.play(); if(r&&r.catch) r.catch(function(){}); };
-      pTry();
-      window.addEventListener('touchstart',pTry,{passive:true,once:true});
-      setTimeout(function(){ if(pv.paused && pv.currentTime===0) pFinish(); },6000);
-      /* the headline rises when it is reached, on its own CSS transition —
-         the same one it had before the flight was ever built */
-      if(hero && 'IntersectionObserver' in window){
-        var hio=new IntersectionObserver(function(es){
-          if(es[0].isIntersecting){ hio.disconnect(); go(); }
-        },{rootMargin:'0px 0px -20% 0px'});
-        hio.observe(hero);
-      } else go();
-    } else if(dtr && !reduce){
+    if(dtr && !reduce){
       var dv=document.getElementById('droVid'), dbr=document.getElementById('droBrand'),
           dfa=document.getElementById('droFade'), dst=document.getElementById('droStick'),
           dnm=document.getElementById('droName');
@@ -504,11 +463,18 @@
          The class is set here rather than in a media query so the two can
          never disagree — a portrait file in a landscape box would be the
          same crop all over again. */
+      /* Two decisions, and neither is a guess about the device. Shape: a
+         phone gets the portrait cut, which is 498x1080 taken out of the
+         1920x1080 master and very nearly the exact shape of a phone screen,
+         so it fills it with almost nothing cropped and nothing invented.
+         Codec: whatever the browser says it can play. VP9 carries the full
+         frame in 5.2MB where H.264 needs 7.0, and Safari — which cannot
+         take the first — is handed the second. */
       var dNarrow=Math.max(screen.width||0, window.innerWidth||0) < 760;
-      var dSlow=dCon.saveData===true || /(^|-)2g$/.test(dCon.effectiveType||'');
-      document.documentElement.classList.toggle('dro-tall', dNarrow);
-      if(dNarrow) dv.poster='media/drone-intro-tel-poster.jpg?v=16';
-      dv.src='media/drone-intro'+(dNarrow?'-tel':dSlow?'-sd':'')+'.mp4?v=16';
+      var dWebm=!!dv.canPlayType && dv.canPlayType('video/webm; codecs="vp9"')!=='';
+      var dBase='media/drone-intro'+(dNarrow?'-tel':'');
+      dv.poster=dBase+'-poster.jpg?v=17';
+      dv.src=dBase+(dWebm?'.webm':'.mp4')+'?v=17';
       dv.addEventListener('loadedmetadata',function(){ if(dv.duration && isFinite(dv.duration)) dDur=dv.duration; });
       var dSeek=false;
       dv.addEventListener('seeking',function(){ dSeek=true; });
@@ -783,14 +749,6 @@
         var y=window.scrollY||window.pageYOffset;
         for(var i=0;i<scenes.length;i++){
           var o=scenes[i];
-          if(TAP){
-            /* started by the section coming into view, then it runs on its
-               own — the scroll is the visitor's again */
-            var ts=o.t0===null ? 0 : Math.min(1,(now-o.t0)/o.dur);
-            if(o.live!==true){ o.live=true; o.el.classList.add('live'); }
-            if(Math.abs(ts-o.last)>0.0004 || (ts===1&&o.last!==1)){ o.last=ts; o.paint(ts); }
-            continue;
-          }
           var praw=(y-o.top+o.lead)/(o.span+o.lead);
           var p=Math.max(0,Math.min(1,praw));
           /* Only the scene the scroll is in keeps its composited layers —
@@ -811,20 +769,12 @@
       }
       return {
         out:out, io:io, film:film, seg:seg, set:set, split:split, plain:plain, blur:blur,
-        tap:TAP,
         /* the stage starts hidden in CSS, so it must never be left to the
            loop alone — base() is the state it falls back to */
         add:function(o){
           o.stage=o.el.querySelector('.stage');
           o.sm=0; o.last=-1; o.introOn=null; o.top=0; o.span=1; o.lead=0; o.live=null;
-          o.t0=null; o.dur=o.dur||2800;
-          if(TAP && 'IntersectionObserver' in window){
-            new IntersectionObserver(function(es){
-              for(var k=0;k<es.length;k++){
-                if(es[k].isIntersecting && o.t0===null){ o.t0=performance.now(); }
-              }
-            },{rootMargin:'0px 0px -22% 0px'}).observe(o.el);
-          }
+
           scenes.push(o);
           o.build(); o.base();
           if(reduce) return;
@@ -895,7 +845,7 @@
           SC.set(inr,'translate3d(0,'+((1-d)*24).toFixed(2)+'px,0) translateZ('+(-320*(1-d)).toFixed(1)+'px)',null);
 
           /* and the headline steps back out of the way as the cards arrive */
-          var r=SC.tap ? 0 : SC.io(SC.seg(s,.40,.78));
+          var r=SC.io(SC.seg(s,.40,.78));
           SC.set(sHd,'translate3d(0,'+(-5*r).toFixed(3)+'vh,0) scale('+(1-.09*r).toFixed(4)+')',(1-.32*r).toFixed(3));
 
           for(var i=0;i<sW.length;i++){
@@ -932,7 +882,7 @@
           SC.set(glw,'translate3d(-50%,'+(-14*s).toFixed(3)+'vh,0) scale('+(1+.26*s).toFixed(4)+')',
             (.9-.5*s).toFixed(3));
           /* and the last stretch closes the stage into the next section */
-          SC.set(vei,null,SC.tap ? '0' : SC.seg(s,.90,1).toFixed(3));
+          SC.set(vei,null,SC.seg(s,.90,1).toFixed(3));
         }
       });
     }
@@ -952,7 +902,7 @@
 
           /* the whole line leaves together at the end, so the first case
              arrives on a clear stage rather than over a leftover sentence */
-          var x=SC.tap ? 0 : SC.io(SC.seg(s,.62,1));
+          var x=SC.io(SC.seg(s,.62,1));
           SC.set(kHd,'translate3d(0,'+(-7*x).toFixed(3)+'vh,0) scale('+(1-.10*x).toFixed(4)+')',
             (1-.85*x).toFixed(3), SC.blur(9*x));
 
@@ -989,7 +939,7 @@
         build:function(){ nw=SC.split(name); },
         base:function(){ SC.plain(nw.concat(facts, [kick,url,blurb,col,dev,phone])); },
         paint:function(q){
-          var ex=SC.tap ? 0 : SC.io(SC.seg(q,.84,1));
+          var ex=SC.io(SC.seg(q,.84,1));
 
           var kt=SC.out(SC.seg(q,0,.10));
           SC.set(kick,'translate3d(0,'+((1-kt)*14).toFixed(2)+'px,0)',kt.toFixed(3));
@@ -1063,8 +1013,7 @@
           window.__lesreg.s=s;
           for(var i=0;i<tA.length;i++){
             var b=tBand[i];
-            var into=SC.out(SC.seg(s,b[0],b[1])),
-                away=SC.tap ? 0 : SC.io(SC.seg(s,b[2],b[3]));
+            var into=SC.out(SC.seg(s,b[0],b[1])), away=SC.io(SC.seg(s,b[2],b[3]));
             SC.set(tA[i],'translate3d(0,'+((1-into)*20-away*28).toFixed(1)+'px,0)',
               (into*(1-away)).toFixed(3));
             var ws=tW[i]||[];

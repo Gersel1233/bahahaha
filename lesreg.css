@@ -640,13 +640,10 @@ body::after{ content:none; }
    carries a move of its own — the copy's lines are placed by the scroll */
 .khero.no-rise .khl i, .khero.no-rise .kmeta{ transition:none; }
 .dro-vid{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
-/* On a phone the film is its own shape rather than a slice of one: a 9:16
-   block across the full width, centred, with the stage's own dark field
-   above and below it — which is where the lockup and the name card already
-   sit. It reads as full screen on a dark stage, and nothing is cropped,
-   because the file is cut to exactly this frame. */
-.dro-tall .dro-vid{ inset:50% 0 auto 0; height:auto; aspect-ratio:9/16;
-  transform:translateY(-50%); }
+/* No rule for the phone. The portrait cut is 498x1080 — 9:19.52 against a
+   phone's 9:19.5 — so cover crops two thousandths of it and it fills the
+   screen edge to edge at the file's own resolution. */
+
 .dro-brand{ position:absolute; inset:0; display:flex; flex-direction:column; align-items:center;
   justify-content:center; pointer-events:none; will-change:opacity; }
 .dro-word{ font-family:var(--sora,'Sora'),sans-serif; font-weight:600; letter-spacing:-.02em;
@@ -701,8 +698,3 @@ body.dro-on .nav{ opacity:0; pointer-events:none; }
 @media (prefers-reduced-motion: reduce){
   .dro-track{ display:none; }
 }
-
-/* the flight is one screen on a phone, and it plays rather than scrubs */
-html.tap .dro-track{ height:100vh; height:100svh; margin-bottom:0; }
-html.tap .dro-stick{ position:static; height:100vh; height:100svh; }
-html.tap .dro-hint{ display:none; }

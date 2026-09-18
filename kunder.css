@@ -155,7 +155,3 @@
   .scene h1 .w > i{ opacity:1 !important; transform:none !important; filter:none !important; }
   .wrap{ padding:6vh 0; }
 }
-
-html.tap .scene.intro, html.tap .scene.case{ height:auto; }
-html.tap .wrap{ padding:6vh 0; }
-html.tap .devices{ --lidmax:44vh; }
