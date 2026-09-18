@@ -11,11 +11,13 @@
    of the site already uses for something else.
    ============================================================ */
 
-/* His drawing runs 720vh, and that is what it needs: four acts, one of
-   which is a hundred and twenty characters typing themselves out. The
-   stage takes a nav's worth of room off the top so nothing can land
-   under the bar. */
-.scene.kt{ height:720vh; }
+/* It ran 720vh while the scroll was winding it, because a hundred and
+   twenty characters typing themselves out take that much hand. It plays
+   on its own clock now, so the height is only the room it needs to be
+   watched in: one screen of stage, and a little over one more of pinning
+   so the letter is not scrolled off the moment it starts. The stage
+   takes a nav's worth off the top, so nothing lands under the bar. */
+.scene.kt{ height:230vh; }
 .scene.kt .stage{ perspective:1500px; perspective-origin:50% 44%;
   box-sizing:border-box; padding-top:var(--nav); }
 
@@ -124,7 +126,7 @@
   font-size:12.5px; letter-spacing:.02em; color:rgba(238,243,248,.58); }
 
 @media(max-width:900px){
-  .scene.kt{ height:880vh; }
+  .scene.kt{ height:270vh; }
   .kt-card{ border-radius:20px; }
 }
 /* On a phone the header line is wider than the card it sits in: the

@@ -1,0 +1,95 @@
+/* ============================================================
+   LESREG — dybden.
+
+   The contact scene got something the rest of the page did not: light
+   with a position in it. Two soft discs behind the glass and a vignette
+   closing the corners, so the content sits inside a room instead of on
+   a flat field. On a dark page that is most of the difference between
+   "black background" and "lit from somewhere".
+
+   This puts the same three layers under every section. It is written
+   with gradients rather than a blur: the contact scene can afford
+   filter:blur(74px) on two big discs because there is one of it, and
+   the same thing on six sections at once is six full-window layers
+   being rasterised. A radial gradient with a long falloff is the same
+   picture for none of the cost.
+
+   And nothing drifts unless it is being looked at — the drift is tied
+   to the .live class the engine already hands out, so only the section
+   the scroll is actually in is running an animation.
+   ============================================================ */
+
+/* ---------- the room, on every pinned stage ----------
+   ::before is the light, ::after closes the corners. Both are absolute,
+   or they would become flex items on a stage that centres its content.
+   The contact scene brings its own and is left alone. */
+.scene:not(.kt) .stage::before{
+  content:""; position:absolute; left:50%; top:44%;
+  width:120vw; height:120vh; transform:translate(-50%,-50%);
+  pointer-events:none; border-radius:50%;
+  background:
+    radial-gradient(38% 34% at 42% 40%, rgba(162,186,214,.13) 0%, rgba(162,186,214,.05) 42%, transparent 68%),
+    radial-gradient(30% 28% at 62% 62%, rgba(116,138,168,.10) 0%, transparent 66%); }
+.scene:not(.kt) .stage::after{
+  content:""; position:absolute; inset:0; pointer-events:none;
+  /* Wider in the middle than the contact scene's, because two of these
+     sections put their words at the left edge rather than in the centre
+     — a vignette tight enough to shape a card sits on top of a headline. */
+  background:radial-gradient(88% 78% at 50% 44%, transparent 48%, rgba(4,5,7,.6)); }
+
+/* only the scene being looked at is running anything */
+.scene.live:not(.kt) .stage::before{ animation:dybA 26s ease-in-out infinite; }
+@keyframes dybA{
+  0%,100%{ transform:translate(-50%,-50%) scale(1); }
+  50%    { transform:translate(-46%,-53%) scale(1.09); } }
+
+/* The lift that was already behind the headlines. It was a warm stain
+   inherited from the paper page; on this ground it is the brightest
+   part of the room, and it is the thing the type stands in front of. */
+.glow{ background:radial-gradient(52% 48% at 50% 40%,
+  rgba(176,198,224,.16) 0%, rgba(176,198,224,.05) 46%, transparent 74%); }
+
+/* ---------- the sections that are not stages ----------
+   The hero, the closer, the team and the footer are ordinary blocks, so
+   they need a box of their own to hang the light in. overflow:hidden
+   keeps the discs inside the section they belong to. */
+.khero, .closer, .s.way, .footer{ position:relative; overflow:hidden; }
+.khero::before, .closer::before, .s.way::before, .footer::before{
+  content:""; position:absolute; left:50%; top:46%; z-index:0;
+  width:130vw; height:150%; transform:translate(-50%,-50%);
+  pointer-events:none; border-radius:50%;
+  background:
+    radial-gradient(36% 40% at 44% 42%, rgba(162,186,214,.12) 0%, rgba(162,186,214,.04) 44%, transparent 68%),
+    radial-gradient(28% 32% at 64% 64%, rgba(116,138,168,.09) 0%, transparent 66%); }
+.khero::after, .closer::after, .s.way::after, .footer::after{
+  content:""; position:absolute; inset:0; z-index:0; pointer-events:none;
+  background:radial-gradient(90% 80% at 50% 46%, transparent 50%, rgba(4,5,7,.55)); }
+/* the content has to sit above its own light */
+.khero > *, .closer > *, .s.way > .s-inner, .footer > .footer-inner{
+  position:relative; z-index:1; }
+
+/* The footer is the bottom of the room, not another lit stage: the light
+   in it leans low and the corners stay closed. */
+.footer::before{ top:96%; opacity:.7; }
+
+/* ---------- the glass, one shade deeper ----------
+   The cards were a flat wash of white at low opacity. The contact cards
+   are lit along one diagonal and fall away along the other, which is
+   what makes them read as a pane with a thickness rather than a tint,
+   and it costs nothing to give the rest of the page the same. */
+.card, .way-list li, .fin-steps li{
+  background:linear-gradient(150deg, rgba(232,238,244,.15), rgba(232,238,244,.05) 44%, rgba(232,238,244,.1));
+  border:1px solid var(--edge);
+  box-shadow:0 40px 90px -42px rgba(0,0,0,.8), inset 0 1px 0 rgba(255,255,255,.3); }
+/* and the same travelling highlight the letter has, held still — a lit
+   edge running across the pane rather than a border all the way round */
+.card, .way-list li{ position:relative; overflow:hidden; }
+.card::after, .way-list li::after{
+  content:""; position:absolute; inset:0; border-radius:inherit;
+  pointer-events:none; mix-blend-mode:screen;
+  background:linear-gradient(105deg, transparent 34%, rgba(255,255,255,.1) 50%, transparent 64%); }
+.card > *, .way-list li > *{ position:relative; z-index:1; }
+
+@media (prefers-reduced-motion: reduce){
+  .scene.live:not(.kt) .stage::before{ animation:none; }
+}
