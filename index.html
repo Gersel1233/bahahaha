@@ -21,7 +21,8 @@
 <link rel="stylesheet" href="bbh.css?v=10" />
 <link rel="stylesheet" href="kunder.css?v=8" />
 <link rel="stylesheet" href="telefon.css?v=5" />
-<link rel="stylesheet" href="mork.css?v=1" />
+<link rel="stylesheet" href="kontakt.css?v=1" />
+<link rel="stylesheet" href="mork.css?v=2" />
 </head>
 <body>
 
@@ -301,42 +302,49 @@
     </div>
   </section>
 
-  <!-- ===================== THE STUDIO / CONTACT ===================== -->
-  <section class="s abts" id="contact" data-screen-label="contact">
-    <div class="s-inner">
-      <div class="fin-card reveal" id="finCard">
-        <span class="fin-aura a" aria-hidden="true"></span>
-        <span class="fin-aura b" aria-hidden="true"></span>
-        <p class="gk" data-da="Kontakt">Contact</p>
-        <h2 class="fin-h" data-da="Har I noget, der driller?<br><em>Lad os bygge det.</em>">Got something that isn&rsquo;t working?<br><em>Let&rsquo;s build it.</em></h2>
-        <p class="fin-p" data-da="Du beh&oslash;ver ikke have det hele p&aring; plads. Fort&aelig;l os hvad der driller, s&aring; finder vi ud af resten sammen.">You don&rsquo;t need to have it all figured out. Tell us what&rsquo;s not working, and we&rsquo;ll figure out the rest together.</p>
+  <!-- ===================== CONTACT — the letter =====================
+       Not a form and not a card with a button in it: a letter that writes
+       itself, is sent, is answered, and hands the question back. Four acts
+       on one pinned stage, on the same engine as every other scene. -->
+  <section class="scene kt" id="contact" data-screen-label="contact">
+    <div class="stage">
+      <span class="kt-aura a1" id="ktA1" aria-hidden="true"></span>
+      <span class="kt-aura a2" id="ktA2" aria-hidden="true"></span>
+      <span class="kt-vign" aria-hidden="true"></span>
 
-        <!-- three plain steps — what actually happens if you write to us -->
-        <ol class="fin-steps">
-          <li>
-            <span class="fs-n">1</span>
-            <b data-da="Du skriver">You write</b>
-            <p data-da="Et par linjer om idéen eller problemet. Ingen kravspecifikation n&oslash;dvendig.">A couple of lines about the idea or the problem. No spec sheet needed.</p>
-          </li>
-          <li>
-            <span class="fs-n">2</span>
-            <b data-da="Vi snakker om det">We talk it through</b>
-            <p data-da="En uforpligtende samtale, hvor vi siger &aelig;rligt hvad vi vil bygge &mdash; og hvad det koster.">An honest, no-obligation conversation about what we&rsquo;d build &mdash; and what it costs.</p>
-          </li>
-          <li>
-            <span class="fs-n">3</span>
-            <b data-da="Vi bygger og driver det">We build it and run it</b>
-            <p data-da="Vi bygger det, s&aelig;tter det i drift &mdash; og bliver ved, ogs&aring; efter det er live.">We build it, put it into production &mdash; and stay, also after it goes live.</p>
-          </li>
-        </ol>
+      <div class="kt-rig" id="ktRig">
 
-        <div class="ac-cta center">
-          <span class="mag" data-magnet="90,7"><a class="abtn spruce big" href="mailto:mgersel@lesreg.com"><span data-da="Skriv til os">Start a project</span>
-            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg>
-          </a></span>
+        <article class="kt-card kt-ask" id="ktAsk">
+          <div class="kt-meta"><b data-da="Til">To</b> mgersel@lesreg.com<em></em><span class="kt-tag" data-da="Ny besked">New message</span></div>
+          <p class="kt-msg"><span id="ktTyped"></span><i class="kt-caret" id="ktCaret" aria-hidden="true"></i></p>
+        </article>
+        <!-- the letter itself lives here so the language switch can reach it;
+             the act above reads it a character at a time -->
+        <p class="kt-letter" id="ktLetter" data-da="Hej Mikkel. Vi har en caf&eacute; p&aring; havnen, og vi bruger for lang tid p&aring; telefonen. Kan I bygge noget, vi selv kan styre?">Hi Mikkel. We run a caf&eacute; down by the harbour, and we spend far too long on the phone. Could you build us something we can run ourselves?</p>
+
+        <div class="kt-sent" id="ktSent" aria-hidden="true">
+          <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg>
+          <span data-da="Sendt">Sent</span>
         </div>
-        <a class="alink quiet" href="mailto:mgersel@lesreg.com">mgersel@lesreg.com</a>
-        <p class="fin-re" data-da="Uforpligtende &middot; du taler med dem der bygger det &middot; dansk">No obligation &middot; you talk to the people who build it &middot; based in Denmark</p>
+
+        <article class="kt-card kt-reply" id="ktReply">
+          <div class="kt-meta"><b data-da="Svar">Reply</b> <span data-da="efter 14 minutter">after 14 minutes</span><em></em><span class="kt-tag">Mikkel</span></div>
+          <p class="kt-msg" data-da="Ja. Det kan vi bygge.<s>Jeg ringer i morgen formiddag, s&aring; gennemg&aring;r vi det hele &mdash; og I f&aring;r en plan med fast pris inden weekenden.</s>">Yes. We can build that.<s>I&rsquo;ll call tomorrow morning and we&rsquo;ll go through all of it &mdash; and you&rsquo;ll have a plan with a fixed price before the weekend.</s></p>
+          <div class="kt-from">
+            <svg viewBox="0 0 128 128" aria-hidden="true"><path d="M0 0H94l34 34v94H0Z" fill="#e8eef4"/><path d="M44 28h18v62h38v18H44Z" fill="#0c0e11"/></svg>
+            <div><b>Mikkel Ste Gersel</b><s data-da="Lesreg &middot; softwarehus">Lesreg &middot; software house</s></div>
+          </div>
+        </article>
+
+        <div class="kt-finale" id="ktFin">
+          <h2 data-split data-da="Har I noget p&aring; hjernen?">Got something on your mind?</h2>
+          <a class="kt-mail" href="mailto:mgersel@lesreg.com">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="4.5" width="19" height="15" rx="2.5"/><path d="M3 6.5 12 13.5 21 6.5"/></svg>
+            mgersel@lesreg.com
+          </a>
+          <span class="kt-note" data-da="Alt bliver besvaret.">Everything gets an answer.</span>
+        </div>
+
       </div>
     </div>
   </section>
@@ -1036,6 +1044,117 @@
           }
         }
       });
+    }
+
+    /* ---------- KONTAKT — the letter ----------
+       Four acts on one stage: the message writes itself, it is sent, an
+       answer lands, and the question is handed back to the reader.
+
+       It arrived as a page of its own with a rAF loop of its own. A
+       second loop is the thing the rest of this page was rebuilt to
+       avoid — two clocks reading the same scroll drift apart, and every
+       frame pays for both — so the acts are folded into the one engine
+       and read the same progress as everything else.
+
+       back() is the only easing this page did not already have: the
+       overshoot on the reply, so it lands rather than arrives. */
+    var kt=document.getElementById('contact');
+    if(kt){
+      var ktAsk=document.getElementById('ktAsk'),
+          ktTyped=document.getElementById('ktTyped'),
+          ktCaret=document.getElementById('ktCaret'),
+          ktLetter=document.getElementById('ktLetter'),
+          ktSent=document.getElementById('ktSent'),
+          ktReply=document.getElementById('ktReply'),
+          ktFin=document.getElementById('ktFin'),
+          ktRig=document.getElementById('ktRig'),
+          ktA1=document.getElementById('ktA1'), ktA2=document.getElementById('ktA2'),
+          ktHd=ktFin.querySelector('h2'), ktW=[];
+      var back=function(t){ var c=1.4, u=t-1; return 1+(c+1)*u*u*u+c*u*u; };
+      /* The three stacked pieces are absolutely placed, so each is centred
+         once by its own height rather than measured every frame. */
+      function ktCentre(el){ el.style.top='50%'; el.style.marginTop=(-el.offsetHeight/2)+'px'; }
+      /* On the reduced-motion path the three pieces come out of absolute and
+         stack as an ordinary column. Centring them there pulls each one half
+         its own height upwards, straight through the one above it — so the
+         placing only happens when there is a stage to place them on. */
+      function ktLayout(){ if(reduce) return; [ktAsk,ktReply,ktFin].forEach(ktCentre); }
+      /* The letter is read out of the page rather than held as a string in
+         here, so switching language switches the letter too. nodeValue is
+         a straight read of the one text node — cheap enough per frame, and
+         it is the only way to notice the swap without watching for it. */
+      var ktSrc='', ktN=-1;
+      SC.add({
+        el:kt, leadF:0,
+        /* build() runs again when the language is switched, and the Danish
+           reply is a different height from the English one, so the cards
+           have to be re-centred on the same beat as the words. */
+        build:function(){ ktW=SC.split(ktHd); ktLayout(); },
+        base:function(){
+          ktSrc=(ktLetter.firstChild && ktLetter.firstChild.nodeValue)||'';
+          ktTyped.textContent=ktSrc;
+          SC.plain([ktAsk,ktReply,ktFin,ktRig].concat(ktW));
+          ktCaret.style.display='none';
+          SC.set(ktSent,null,'0');
+          ktLayout();
+        },
+        paint:function(s){
+          var L=(ktLetter.firstChild && ktLetter.firstChild.nodeValue)||'';
+          if(L!==ktSrc){ ktSrc=L; ktN=-1; ktLayout(); }
+
+          /* act one — the message writes itself */
+          var arrive=SC.film(SC.seg(s,0,.12)),
+              typeP=SC.seg(s,.06,.40),
+              leave=SC.io(SC.seg(s,.44,.56));
+          var n=Math.round(typeP*ktSrc.length);
+          if(n!==ktN){ ktN=n; ktTyped.textContent=ktSrc.slice(0,n); }
+          var writing = typeP>0 && typeP<1 && leave<.02;
+          if(writing !== (ktCaret.style.display===''))
+            ktCaret.style.display = writing ? '' : 'none';
+          SC.set(ktAsk,
+            'translate3d(0,'+((1-arrive)*4-leave*16).toFixed(2)+'vh,'+
+              (-560*(1-arrive)-leave*360).toFixed(1)+'px) rotateX('+
+              ((1-arrive)*9-leave*7).toFixed(2)+'deg) scale('+(.94+arrive*.06).toFixed(4)+')',
+            (arrive*(1-leave)).toFixed(3), SC.blur((1-arrive)*14+leave*12));
+          ktAsk.style.setProperty('--sx',(SC.seg(s,0,.44)*150-40).toFixed(1)+'%');
+
+          /* act two — the receipt, in the gap the letter leaves behind */
+          var sp=SC.seg(s,.47,.60);
+          SC.set(ktSent,
+            'translate(-50%,-50%) scale('+(.86+SC.io(Math.min(1,sp*1.6))*.14).toFixed(4)+')',
+            (Math.sin(sp*Math.PI)*.95).toFixed(3));
+
+          /* act three — the answer comes in from above and lands */
+          var rp=SC.seg(s,.58,.76), rb=back(rp), rOut=SC.io(SC.seg(s,.80,.90));
+          SC.set(ktReply,
+            'translate3d(0,'+((1-rb)*-12-rOut*12).toFixed(2)+'vh,'+
+              (-420*(1-rb)-rOut*300).toFixed(1)+'px) rotateX('+
+              ((1-rb)*-10+rOut*6).toFixed(2)+'deg) scale('+(.9+rb*.1).toFixed(4)+')',
+            (Math.min(1,rp*3)*(1-rOut)).toFixed(3),
+            SC.blur((1-Math.min(1,rp*1.3))*14+rOut*12));
+          ktReply.style.setProperty('--sx',(SC.seg(s,.58,.9)*150-40).toFixed(1)+'%');
+
+          /* act four — the question goes back to the reader */
+          var fp=SC.out(SC.seg(s,.86,.96));
+          SC.set(ktFin,'translateZ('+(-300*(1-fp)).toFixed(1)+'px) scale('+(.94+fp*.06).toFixed(4)+')',
+            fp.toFixed(3), SC.blur((1-fp)*12));
+          for(var i=0;i<ktW.length;i++){
+            var t=SC.film(SC.seg(s,.86+i*.012,.95+i*.012));
+            SC.set(ktW[i],
+              'translate3d(0,'+((1-t)*.55).toFixed(3)+'em,0) rotateX('+(-46*(1-t)).toFixed(2)+'deg)',
+              t.toFixed(3), SC.blur(9*(1-t)));
+          }
+
+          /* the room: the rig dollies in once, and the light drifts */
+          var dolly=SC.film(SC.seg(s,0,.16));
+          SC.set(ktRig,'translateZ('+(-200*(1-dolly)).toFixed(1)+'px)',null);
+          SC.set(ktA1,'translate3d('+(-16+s*26).toFixed(2)+'vw,'+
+            (-4+Math.sin(s*3)*6).toFixed(2)+'vh,0)',(.6-s*.08).toFixed(3));
+          SC.set(ktA2,'translate3d('+(22-s*30).toFixed(2)+'vw,'+
+            (12-s*20).toFixed(2)+'vh,0)',(.32+s*.2).toFixed(3));
+        }
+      });
+      if(!reduce) window.addEventListener('resize', ktLayout, {passive:true});
     }
 
     /* statements light up character by character with the scroll —

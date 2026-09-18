@@ -1,0 +1,167 @@
+/* ============================================================
+   LESREG — Kontakt.
+
+   Not a form and not a card with a button in it: a letter that writes
+   itself, is sent, is answered, and then hands the question back to the
+   person reading it. Four acts on one pinned stage, moved entirely by
+   the scroll, on the same engine as every other scene on the page.
+
+   Everything here is prefixed kt-, because this section arrived as a
+   page of its own and its names — card, meta, msg — are names the rest
+   of the site already uses for something else.
+   ============================================================ */
+
+/* His drawing runs 720vh, and that is what it needs: four acts, one of
+   which is a hundred and twenty characters typing themselves out. The
+   stage takes a nav's worth of room off the top so nothing can land
+   under the bar. */
+.scene.kt{ height:720vh; }
+.scene.kt .stage{ perspective:1500px; perspective-origin:50% 44%;
+  box-sizing:border-box; padding-top:var(--nav); }
+
+/* ---------- the light in the room ----------
+   Two soft discs drifting behind the glass, and a vignette that closes
+   the corners so the cards sit in the middle of something rather than
+   on a flat field. */
+.kt-aura{ position:absolute; border-radius:50%; filter:blur(74px);
+  pointer-events:none; will-change:transform,opacity; }
+.kt-aura.a1{ width:58vw; height:58vw;
+  background:radial-gradient(circle, rgba(168,188,210,.5), transparent 66%); }
+.kt-aura.a2{ width:44vw; height:44vw;
+  background:radial-gradient(circle, rgba(120,140,166,.44), transparent 68%); }
+.kt-vign{ position:absolute; inset:0; pointer-events:none;
+  background:radial-gradient(72% 64% at 50% 44%, transparent 40%, rgba(6,7,9,.76)); }
+
+.kt-rig{ position:relative; z-index:1; width:min(760px,92vw); max-height:100%;
+  transform-style:preserve-3d; will-change:transform; }
+.kt-letter{ display:none; }
+
+/* ---------- the two cards ----------
+   The same pane of glass twice: a lit top edge, the room showing
+   through, and a slow highlight travelling across the surface as the
+   card turns. */
+.kt-card{ position:absolute; left:0; right:0; padding:clamp(20px,2.6vw,34px);
+  border-radius:26px; overflow:hidden; transform-style:preserve-3d;
+  background:linear-gradient(150deg, rgba(232,238,244,.15), rgba(232,238,244,.05) 44%, rgba(232,238,244,.1));
+  -webkit-backdrop-filter:blur(24px) saturate(180%); backdrop-filter:blur(24px) saturate(180%);
+  border:1px solid var(--edge);
+  box-shadow:0 40px 90px -42px rgba(0,0,0,.76), inset 0 1px 0 rgba(255,255,255,.34);
+  will-change:transform,opacity,filter;
+  /* The four acts are stacked on the same spot, so by the finale both
+     cards are still lying over the mail address at zero opacity — and an
+     invisible element still catches the click. Nothing in them is meant
+     to be pressed, so nothing in them takes a press. */
+  pointer-events:none; }
+.kt-card::before{ content:""; position:absolute; inset:0; border-radius:inherit;
+  pointer-events:none; mix-blend-mode:screen;
+  background:linear-gradient(105deg, transparent 32%, rgba(255,255,255,.32) 48%, transparent 66%);
+  transform:translateX(var(--sx,-40%)); will-change:transform; }
+
+.kt-meta{ display:flex; align-items:center; gap:10px; font-size:11.5px; font-weight:600;
+  letter-spacing:.18em; text-transform:uppercase; color:rgba(238,243,248,.58); }
+.kt-meta b{ color:var(--ink); font-weight:600; }
+.kt-meta em{ flex:1; height:1px; background:rgba(232,238,244,.2); font-style:normal; }
+
+/* The message box is held at three and a bit lines whatever is in it, so
+   the card does not grow a line at a time while the letter types — a
+   card that changes height mid-sentence drags everything under it. */
+.kt-msg{ margin:clamp(14px,2vh,20px) 0 0; min-height:3.2em; text-wrap:pretty;
+  font-size:clamp(15px,1.5vw,23px); line-height:1.45; letter-spacing:-.018em; }
+.kt-caret{ display:inline-block; width:2px; height:1.05em; margin-left:2px;
+  vertical-align:-.16em; background:#fff; font-style:normal;
+  animation:ktBlink .94s steps(1,end) infinite; }
+@keyframes ktBlink{ 0%,49%{ opacity:1; } 50%,100%{ opacity:.22; } }
+
+.kt-reply .kt-meta b{ color:#fff; }
+.kt-reply .kt-msg{ font-weight:600; letter-spacing:-.028em;
+  font-size:clamp(16px,1.7vw,26px); }
+.kt-reply .kt-msg s{ display:block; text-decoration:none; margin-top:10px;
+  font-weight:400; font-size:clamp(13.5px,1.05vw,16.5px); line-height:1.55;
+  letter-spacing:-.006em; color:rgba(238,243,248,.76); }
+.kt-from{ display:flex; align-items:center; gap:11px;
+  margin-top:clamp(16px,2.2vh,22px); padding-top:clamp(14px,2vh,18px);
+  border-top:1px solid rgba(232,238,244,.14); }
+.kt-from svg{ display:block; width:26px; height:26px; flex:none; }
+.kt-from b{ font-size:13.5px; font-weight:600; letter-spacing:-.02em; }
+.kt-from s{ display:block; text-decoration:none; font-size:11px; letter-spacing:.14em;
+  text-transform:uppercase; color:rgba(238,243,248,.52); }
+
+/* ---------- the receipt ----------
+   One beat, in the gap the letter leaves behind. */
+.kt-sent{ position:absolute; left:50%; top:50%; opacity:0;
+  transform:translate(-50%,-50%); display:flex; align-items:center; gap:11px;
+  padding:12px 22px; border-radius:999px; white-space:nowrap;
+  background:rgba(232,238,244,.11); border:1px solid var(--edge);
+  -webkit-backdrop-filter:blur(18px); backdrop-filter:blur(18px);
+  font-size:12.5px; font-weight:600; letter-spacing:.16em; text-transform:uppercase;
+  pointer-events:none; will-change:transform,opacity; }
+.kt-sent svg{ display:block; width:16px; height:16px; flex:none;
+  stroke:#fff; fill:none; }
+
+/* ---------- the finale ---------- */
+.kt-finale{ position:absolute; left:0; right:0; text-align:center;
+  transform-style:preserve-3d; will-change:transform,opacity,filter; }
+.kt-finale h2{ margin:0; font-weight:700; color:var(--ink);
+  font-size:clamp(30px,5vw,76px); line-height:.98; letter-spacing:-.05em; }
+.kt-finale h2 .w{ display:inline-block; white-space:pre; }
+.kt-finale h2 .w > span{ display:inline-block; opacity:0;
+  will-change:transform,opacity,filter; }
+.kt-mail{ display:inline-flex; align-items:center; gap:clamp(10px,1.3vw,16px);
+  margin-top:clamp(20px,3.2vh,38px); line-height:1;
+  font-size:clamp(18px,2.8vw,42px); font-weight:600; letter-spacing:-.04em;
+  padding:clamp(12px,1.6vh,20px) clamp(20px,2.6vw,36px); border-radius:999px;
+  background:linear-gradient(180deg, rgba(232,238,244,.2), rgba(232,238,244,.07));
+  border:1px solid rgba(232,238,244,.26);
+  box-shadow:0 30px 60px -28px rgba(0,0,0,.72), inset 0 1px 0 rgba(255,255,255,.36);
+  -webkit-backdrop-filter:blur(20px) saturate(170%); backdrop-filter:blur(20px) saturate(170%);
+  transition:transform .4s cubic-bezier(.2,.8,.2,1), box-shadow .4s ease; }
+.kt-mail svg{ display:block; flex:none;
+  width:clamp(15px,1.7vw,25px); height:clamp(15px,1.7vw,25px); }
+@media(hover:hover){
+  .kt-mail:hover{ color:#fff; transform:translateY(-2px);
+    box-shadow:0 40px 70px -28px rgba(0,0,0,.78), inset 0 1px 0 rgba(255,255,255,.4); } }
+.kt-note{ display:block; margin-top:clamp(12px,1.8vh,18px);
+  font-size:12.5px; letter-spacing:.02em; color:rgba(238,243,248,.58); }
+
+@media(max-width:900px){
+  .scene.kt{ height:880vh; }
+  .kt-card{ border-radius:20px; }
+}
+/* On a phone the header line is wider than the card it sits in: the
+   address is twenty characters of tracked-out capitals, and the label on
+   the right wrapped onto two lines with the rule between them squeezed
+   to nothing. The tracking comes in, and on the narrowest screens the
+   label goes — the address is the part that says what this is. */
+@media(max-width:600px){
+  .kt-meta{ gap:8px; font-size:10px; letter-spacing:.1em; flex-wrap:nowrap; }
+  .kt-meta em{ min-width:14px; }
+}
+@media(max-width:440px){
+  .kt-tag{ display:none; }
+  .kt-meta em{ min-width:0; }
+}
+/* On a short window the reply's second paragraph and the line under the
+   mail are the two things that push the cards past the glass. */
+@media(max-height:740px){
+  .kt-reply .kt-msg s{ display:none; }
+  .kt-note{ display:none; }
+}
+
+/* The stage does its own placing, so nothing here answers to a viewer.
+   The cards have to come out of absolute, or all four acts stack on the
+   same line. */
+@media (prefers-reduced-motion: reduce){
+  .scene.kt{ height:auto; }
+  .scene.kt .stage{ position:static; height:auto; padding:12vh 0; display:block;
+    perspective:none; }
+  .kt-rig{ width:min(760px,92vw); margin:0 auto; display:grid; gap:20px; }
+  .kt-card{ position:relative; pointer-events:auto; opacity:1 !important;
+    transform:none !important; filter:none !important; }
+  .kt-card::before{ display:none; }
+  .kt-sent{ display:none; }
+  .kt-caret{ display:none; }
+  .kt-finale{ position:relative; margin-top:26px; opacity:1 !important;
+    transform:none !important; filter:none !important; }
+  .kt-finale h2 .w > span{ opacity:1 !important; }
+  .kt-aura{ display:none; }
+}
