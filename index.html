@@ -829,6 +829,16 @@
       var sW=[], sCW=[], sCP=[];
       SC.add({
         el:scn,
+        /* The lead starts a scene's timeline before its stage reaches the
+           top of the window — which means the dolly-in runs while the
+           section is still scrolling normally, and the two motions add up.
+           Measured at 1440x900: the headline moved 1.49 pixels for every
+           pixel scrolled through that overlap, then stopped dead for 250
+           more once the stage pinned. Scroll, overshoot, freeze. Nothing
+           to do with frame rate, and it is what a hand feels as a stutter.
+           At zero the scene starts exactly when it pins: the page moves at
+           one to one, hands over, and the scene plays in place. */
+        leadF:0,
         build:function(){
           sW=SC.split(sHd);
           sCW=sCd.map(function(c){ return SC.split(c.querySelector('h2')); });
@@ -893,7 +903,7 @@
       var kInr=kin.querySelector('.inner'), kGlw=kin.querySelector('.glow'),
           kHd=kin.querySelector('h1'), kLe=kin.querySelector('.lede'), kW=[];
       SC.add({
-        el:kin,
+        el:kin, leadF:0,
         build:function(){ kW=SC.split(kHd); },
         base:function(){ SC.plain(kW.concat([kLe, kInr, kHd])); },
         paint:function(s){
@@ -935,7 +945,7 @@
           url=cs.querySelector('.curl'), blurb=cs.querySelector('.blurb'),
           facts=[].slice.call(cs.querySelectorAll('.facts li')), nw=[];
       SC.add({
-        el:cs,
+        el:cs, leadF:0,
         build:function(){ nw=SC.split(name); },
         base:function(){ SC.plain(nw.concat(facts, [kick,url,blurb,col,dev,phone])); },
         paint:function(q){
