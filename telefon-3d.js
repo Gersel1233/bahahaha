@@ -532,12 +532,19 @@ function pose(s) {
      3 — the screen changes from the inside, the notification drops onto
      the glass, and the phone buzzes under it. */
   const e2 = io(seg(s, 0.36, 0.56));
-  const bz = seg(s, 0.855, 0.96);
+  const bz = seg(s, 0.885, 0.985);   // follows the notification, as before
   const buzz = (bz > 0 && bz < 1) ? Math.sin(bz * Math.PI * 13) * (1 - bz) : 0;
-  const sw = io(seg(s, 0.68, 0.82));
+  /* The swap to the second screen used to start at 0.68. Between the phone
+     landing and that moment there were about six hundred pixels of scroll,
+     which is two or three seconds of an ordinary hand — less than the
+     recording is long, so the administration was never seen through to the
+     end. The swap waits until 0.76 now, and the notification follows it
+     down. The screens keep the room they had; it is the reading of the
+     first one that got longer. */
+  const sw = io(seg(s, 0.76, 0.86));
   p2.mix.a = 1 - sw;
   p2.mix.b = sw;
-  p2.mix.n = out(seg(s, 0.82, 0.90));
+  p2.mix.n = out(seg(s, 0.86, 0.93));
   p2.g.scale.setScalar(L.s2);
   p2.g.position.set(3.4 + (L.x2 - 3.4) * e2 + buzz * 0.012, L.y2, -0.7 + 0.7 * e2);
   /* A buzzing phone shifts a hair and tips barely at all. Read at the
@@ -693,7 +700,13 @@ window.LesregTelefon = {
     tex.colorSpace = THREE.SRGBColorSpace;
     const target = which === 1 ? p1.sA : which === 2 ? p2.sA : p2.sB;
     target.map = tex; target.needsUpdate = true;
-    clips.push({ el, at: which === 1 ? 0.02 : which === 2 ? 0.38 : 0.70, armed: false });
+    /* A clip is wound back when its act begins, and "begins" has to mean
+       the moment the phone is standing still and facing the visitor — not
+       the moment it starts flying in. The second phone comes from off the
+       right edge and does not land until a little past half way, so a
+       rewind at 0.38 spent the recording's first seconds on a phone that
+       was not there to be read. */
+    clips.push({ el, at: which === 1 ? 0.10 : which === 2 ? 0.50 : 0.70, armed: false });
     pending = true;
     return el;
   },
@@ -741,6 +754,6 @@ const SCREENS = { 1: 'media/app-1', 2: 'media/app-2' };   // 1 = gaesteappen, 2 
   const webm = !!probe.canPlayType && probe.canPlayType('video/webm; codecs="vp9"') !== '';
   Object.keys(SCREENS).forEach(k => {
     if (!SCREENS[k]) return;
-    window.LesregTelefon.setVideo(+k, SCREENS[k] + (webm ? '.webm' : '.mp4') + '?v=2');
+    window.LesregTelefon.setVideo(+k, SCREENS[k] + (webm ? '.webm' : '.mp4') + '?v=3');
   });
 })();
