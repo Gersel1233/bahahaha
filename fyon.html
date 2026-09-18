@@ -78,7 +78,7 @@
   <div id="sprog" aria-hidden="true"><i></i></div>
 
   <!-- the Lesreg intro lives on the company page (index) — Fyon reveals instantly -->
-  <script>document.documentElement.classList.add('fyon-loaded');</script>
+  <script>document.documentElement.classList.add('site-ready');</script>
 
   <!-- ===================== NAV ===================== -->
   <nav class="nav" data-screen-label="nav">
@@ -92,7 +92,7 @@
     <a class="btn" href="https://fyon.ai" target="_blank" rel="noopener">Try Fyon</a>
   </nav>
 
-  <div class="fyon-reveal">
+  <div class="site-reveal">
 
   <!-- ===================== HERO ===================== -->
   <div id="fyon-hero">
@@ -113,8 +113,8 @@
     var hero=document.querySelector('.fh-hero'); if(!hero) return;
     var done=false;
     function go(){ if(done) return; done=true; requestAnimationFrame(function(){ hero.classList.add('go'); }); }
-    if(document.documentElement.classList.contains('fyon-loaded')){ go(); return; }
-    var t=setInterval(function(){ if(document.documentElement.classList.contains('fyon-loaded')){ clearInterval(t); go(); } }, 80);
+    if(document.documentElement.classList.contains('site-ready')){ go(); return; }
+    var t=setInterval(function(){ if(document.documentElement.classList.contains('site-ready')){ clearInterval(t); go(); } }, 80);
     setTimeout(function(){ clearInterval(t); go(); }, 9000);
   })();
   </script>
@@ -335,7 +335,7 @@
       <span class="foot-legal">Fyon · live · strictly 18+</span>
     </div>
   </footer>
-  </div><!-- /.fyon-reveal -->
+  </div><!-- /.site-reveal -->
 
   <!-- persistent mobile CTA — most of our traffic is phones -->
   <a class="fab-partner" id="fabPartner" href="#partners" aria-label="Earn money with Fyon">
@@ -369,8 +369,8 @@
     var h=document.getElementById('headline');
     if(h){ splitWords(h);
       var goH=function(){ requestAnimationFrame(function(){ h.classList.add('bt-go'); }); };
-      if(reduce || document.documentElement.classList.contains('fyon-loaded')){ goH(); }
-      else{ var t=setInterval(function(){ if(document.documentElement.classList.contains('fyon-loaded')){ clearInterval(t); goH(); } },80);
+      if(reduce || document.documentElement.classList.contains('site-ready')){ goH(); }
+      else{ var t=setInterval(function(){ if(document.documentElement.classList.contains('site-ready')){ clearInterval(t); goH(); } },80);
         setTimeout(function(){ clearInterval(t); goH(); },9000); }
     }
 

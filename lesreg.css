@@ -27,8 +27,8 @@ html{ background:var(--ax-bg); }
 body{ background:var(--ax-bg); color:var(--ax-ink); font-family:'Barlow',var(--ui),sans-serif; }
 body::after{ content:none; }
 ::selection{ background:rgba(31,133,122,.3); color:var(--ax-ink); }
-.fyon-reveal{ position:relative; z-index:1; }
-#fyon,#kunder,#contact{ scroll-margin-top:76px; }
+.site-reveal{ position:relative; z-index:1; }
+#kunder,#contact{ scroll-margin-top:76px; }
 
 /* ============================================================
    NAV — clean Anthropic bar: lockup · links · one CTA
@@ -122,11 +122,11 @@ body::after{ content:none; }
 .kscroll{ font-size:12.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--ax-faint); }
 
 /* ============================================================
-   LATEST PRODUCTION — the mark assembles, then: Introducing Fyon
+   LATEST PRODUCTION — the mark assembles, then the introduction
    ============================================================ */
 .lpro .s-inner{ padding-top:clamp(70px,11vw,150px); padding-bottom:clamp(60px,9vw,130px); }
 .lp-inner{ display:flex; flex-direction:column; align-items:center; text-align:center; }
-/* the Fyon mark — teal glass tile, double chevron (this IS Fyon, not Lesreg) */
+/* the product mark — teal glass tile, double chevron (not the Lesreg mark) */
 .fmk{ position:relative; --s:clamp(84px,11vw,124px); width:var(--s); height:var(--s);
   margin-bottom:clamp(24px,4vw,40px); border-radius:24%; display:grid; place-items:center;
   background:linear-gradient(150deg,#34a596,#13635a);
@@ -167,7 +167,7 @@ body::after{ content:none; }
   0%{ stroke-dashoffset:27; opacity:0; transform:translateY(5px); }
   30%{ opacity:.5; }
   100%{ stroke-dashoffset:0; opacity:.5; transform:translateY(0); } }
-/* idle — the chevrons breathe upward in turn (the Fyon pulse) */
+/* idle — the chevrons breathe upward in turn */
 .fmk.bm-anim .fm-chev-1{ animation:bmBreathA 4.4s cubic-bezier(.45,0,.55,1) infinite; }
 .fmk.bm-anim .fm-chev-2{ animation:bmBreathB 4.4s cubic-bezier(.45,0,.55,1) infinite; }
 @keyframes bmBreathA{ 0%,100%{ transform:translateY(.4px); opacity:.95 } 50%{ transform:translateY(-1px); opacity:1 } }
@@ -178,7 +178,7 @@ body::after{ content:none; }
    ============================================================ */
 .ac-cta{ margin-top:auto; display:flex; align-items:center; gap:20px; flex-wrap:wrap; }
 .ac-cta.center{ margin-top:0; justify-content:center; }
-/* liquid glass — Fyon's button language: bevel, blur, shine sweep, glow ring */
+/* liquid glass — the button language: bevel, blur, shine sweep, glow ring */
 .abtn{ position:relative; isolation:isolate; overflow:hidden; display:inline-flex; align-items:center; gap:8px;
   border-radius:999px; padding:13px 24px; font-size:14.5px; font-weight:600; color:#fff;
   letter-spacing:-.005em; line-height:1;

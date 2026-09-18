@@ -6,13 +6,13 @@
 (function(){
   var html = document.documentElement;
   var intro = document.getElementById('lg-intro');
-  if(!intro){ html.classList.add('fyon-loaded'); return; }
+  if(!intro){ html.classList.add('site-ready'); return; }
 
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   // Reduced-motion: no splash, reveal the site immediately.
   if(reduced){
-    html.classList.add('lg-instant', 'fyon-loaded');
+    html.classList.add('lg-instant', 'site-ready');
     if(intro.parentNode) intro.remove();
     return;
   }
@@ -25,7 +25,7 @@
   function finish(rush){
     if(done) return; done = true;
     if(rush) html.classList.add('lg-rush');
-    html.classList.add('fyon-loaded');                 // fade splash, reveal site
+    html.classList.add('site-ready');                 // fade splash, reveal site
     setTimeout(function(){ if(intro && intro.parentNode) intro.remove(); }, rush ? 380 : 620);
   }
 

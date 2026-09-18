@@ -35,7 +35,7 @@ jobs:
       # Deployet lagger hele mappen op, saa de fjernes her - kun fra
       # kopien paa byggeserveren, aldrig fra selve repoet.
       - name: Fjern udviklingsfiler
-        run: rm -rf .claude CLAUDE.md .github archive GUIDE.md README.md server.js package.json gersel-intro.html lesreg-brand.html fyon-glass-buttons.html
+        run: rm -rf .claude CLAUDE.md .github archive GUIDE.md README.md server.js package.json gersel-intro.html lesreg-brand.html fyon-glass-buttons.html fyon.html fyon.css fyon-film.js media/fyon-flow.mp4
 
       - name: Upload site
         uses: actions/upload-pages-artifact@v3
