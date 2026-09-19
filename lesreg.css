@@ -650,11 +650,14 @@ body::after{ content:none; }
 .khero{ background-image:url("photos/glas-bred.jpg?v=2");
   background-size:cover; background-position:50% 50%;
   background-repeat:no-repeat; background-color:var(--paper-1); }
-.dro-hero .khero{ background-image:none; }
+/* The copy has to be see-through, not merely picture-less: it was losing
+   the image and keeping the colour, and an opaque colour laid over the
+   layer the film dissolves into is the layer nobody could see. */
+.dro-hero .khero{ background:none; }
 @media(max-width:820px){
   .khero{ background-image:url("photos/glas-hoej.jpg?v=2");
     background-position:50% 16%; }
-  .dro-hero .khero{ background-image:none; }
+  .dro-hero .khero{ background:none; }
 }
 /* the flight is the headline's entrance, so neither the real one nor the copy
    carries a move of its own — the copy's lines are placed by the scroll */
@@ -701,7 +704,31 @@ body::after{ content:none; }
   .dn-rule{ margin-bottom:11px; }
   .dro-name{ bottom:calc(64px + env(safe-area-inset-bottom)); }
 }
-.dro-fade{ position:absolute; inset:0; background:var(--ax-bg); opacity:0; pointer-events:none; will-change:opacity; }
+/* The layer the film dissolves into. Its whole job is to be the paper the
+   flight lands on — "beige laid on beige", as this used to be, because the
+   page behind it was a flat colour. The page behind it is a picture now,
+   so this has to be the same picture, in the same box, at the same size:
+   the stick is one viewport tall and so is the header underneath it, so
+   cover lands both on the same frame.
+
+   Without this the glass was only ever on the real header — and the real
+   header is not what anybody sees. The copy of the headline that the
+   flight writes is what fills the screen for the whole landing, and it sat
+   on flat black. The picture arrived, if you were still looking, at the
+   moment the film layer was switched off. */
+/* Longhands, not the shorthand. A var() inside a background shorthand is
+   resolved at computed-value time, and if it does not resolve the whole
+   declaration falls back to the initial value — no colour and no picture —
+   rather than to the rule above it. That is exactly what happened here:
+   the layer came out empty and the glass only appeared at the frame the
+   film was switched off. */
+.dro-fade{ position:absolute; inset:0; opacity:0; pointer-events:none; will-change:opacity;
+  background-color:var(--ax-bg);
+  background-image:url("photos/glas-bred.jpg?v=2");
+  background-size:cover; background-position:50% 50%; background-repeat:no-repeat; }
+@media(max-width:820px){
+  .dro-fade{ background-image:url("photos/glas-hoej.jpg?v=2"); background-position:50% 16%; }
+}
 /* the headline on the film's own paper — exactly where the real one will be
    standing when the film goes, so the two are never in different places */
 .dro-hero{ position:absolute; inset:0; opacity:0; pointer-events:none;
