@@ -170,50 +170,40 @@
    The light that runs across it once as it settles is held on a custom
    property, so the loop can move it without touching layout. */
 .sw-house{ box-sizing:border-box; align-content:center;
-  width:min(780px, 88vw); gap:clamp(10px,1.6vh,20px);
-  padding:clamp(26px,4vh,52px) clamp(24px,4vw,62px);
-  border-radius:clamp(14px,1.5vw,20px);
-  border:1px solid rgba(255,255,255,.66);
-  /* a milled face: a fine vertical brush, then light-dark-light down the
-     height, which is what a turned metal surface does under one lamp */
+  width:min(640px, 84vw); gap:clamp(9px,1.4vh,17px);
+  padding:clamp(22px,3.2vh,42px) clamp(22px,3.4vw,54px);
+  border-radius:clamp(15px,1.6vw,22px);
+  border:1px solid rgba(255,255,255,.7);
+  /* A milled face: a fine vertical brush, then light-dark-light down the
+     height, which is what a turned metal surface does under one lamp.
+     Held deliberately narrow in range — the first cut ran from near white
+     to a slate that was almost a shadow, and metal that dark at the
+     bottom stops being metal and starts being a gradient. */
   background:
-    repeating-linear-gradient(90deg, rgba(255,255,255,.05) 0 1px, rgba(0,0,0,.012) 1px 3px),
-    linear-gradient(176deg, #fcfdfe 0%, #eaeff5 26%, #c7d1dd 58%, #eef2f7 84%, #b4bfcd 100%);
-  box-shadow:0 60px 120px -40px rgba(0,0,0,.92), 0 18px 48px -24px rgba(0,0,0,.7),
-    inset 0 2px 0 rgba(255,255,255,1), inset 0 -2px 0 rgba(0,0,0,.1),
-    inset 0 0 0 1px rgba(255,255,255,.45);
+    repeating-linear-gradient(90deg, rgba(255,255,255,.045) 0 1px, rgba(0,0,0,.01) 1px 3px),
+    linear-gradient(174deg, #fdfdfe 0%, #f1f4f8 22%, #dae1ea 52%, #f3f6f9 78%, #ccd5e0 100%);
+  /* the resting shadow — the loop writes over this while the act plays,
+     and base() wipes what the loop wrote, so this is what it falls to */
+  box-shadow:0 56px 140px -40px rgba(0,0,0,.9), 0 16px 42px -24px rgba(0,0,0,.66),
+    0 0 130px -18px rgba(158,196,255,.28),
+    inset 0 2px 0 rgba(255,255,255,1), inset 0 -2px 0 rgba(0,0,0,.09),
+    inset 0 0 0 1px rgba(255,255,255,.66);
   -webkit-backdrop-filter:none; backdrop-filter:none;
   overflow:hidden; }
 /* cut into the face rather than printed on it */
-.sw-house b{ font-size:clamp(46px,7.4vw,118px); font-weight:700; letter-spacing:-.055em;
-  line-height:.9; color:#0a0c0f; text-shadow:0 1px 0 rgba(255,255,255,.9); }
-.sw-house s{ position:relative; padding-top:clamp(10px,1.6vh,20px);
-  font-size:clamp(10.5px,1.02vw,15px); font-weight:600; letter-spacing:.26em;
-  color:rgba(12,14,17,.5); text-shadow:0 1px 0 rgba(255,255,255,.7); }
+.sw-house b{ font-size:clamp(38px,6vw,92px); font-weight:700; letter-spacing:-.055em;
+  line-height:.9; color:#0a0c0f; text-shadow:0 1px 0 rgba(255,255,255,.92); }
+.sw-house s{ position:relative; padding-top:clamp(9px,1.4vh,17px);
+  font-size:clamp(10px,.92vw,13.5px); font-weight:600; letter-spacing:.28em;
+  color:rgba(12,14,17,.48); text-shadow:0 1px 0 rgba(255,255,255,.7); }
 .sw-house s::before{ content:""; position:absolute; left:50%; top:0;
-  transform:translateX(-50%); width:min(300px,62%); height:1px;
-  background:linear-gradient(90deg, transparent, rgba(12,14,17,.22), transparent); }
+  transform:translateX(-50%); width:min(260px,58%); height:1px;
+  background:linear-gradient(90deg, transparent, rgba(12,14,17,.2), transparent); }
 .sw-house::before{ content:""; position:absolute; inset:0; border-radius:inherit;
   pointer-events:none;
   background:linear-gradient(105deg, transparent 30%, rgba(255,255,255,.85) 50%, transparent 70%);
   transform:translateX(var(--sx,-80%)); will-change:transform; }
 .sw-house > b, .sw-house > s{ position:relative; z-index:1; }
-
-/* ---------- the frame the three turn into ----------
-   Three panes swinging edge-on end as one line of light, and that line is
-   what opens out into the block. Nothing merges in a flare here: the
-   flare IS the merge, for a fifth of a second, and then it is gone. */
-.sw-seam{ position:absolute; left:50%; top:50%; z-index:3; opacity:0;
-  width:3px; height:clamp(128px,17vh,178px); border-radius:3px;
-  transform:translate(-50%,-50%); pointer-events:none;
-  /* Opaque from end to end. A bar whose ends fade out has no glow at the
-     ends either — an outer box-shadow is clipped to the outside of the box
-     — so the tips came out as two grey caps on a white light. And the halo
-     is kept under a hundred pixels of blur: past that the compositor
-     draws it a tile at a time and the joins show as a grid. */
-  background:linear-gradient(180deg, #c9dcff 0%, #fff 16%, #fff 84%, #c9dcff 100%);
-  box-shadow:0 0 30px 6px rgba(232,242,255,.88), 0 0 92px 24px rgba(158,196,255,.5);
-  will-change:transform,opacity; }
 
 /* ---------- the way in ----------
    The section explained the trade and then stopped. One line of what is
@@ -271,7 +261,6 @@
   .sw-sup::before{ font-size:9.5px; letter-spacing:.2em; }
   .sw-sup b{ font-size:clamp(15px,4.2vw,19px); }
   .sw-sup s{ display:none; }
-  .sw-seam{ height:clamp(70px,9.4vh,94px); }
   .sw-house s{ letter-spacing:.18em; line-height:1.7; }
 }
 @media(max-height:760px){
@@ -301,5 +290,5 @@
   .sw-merge{ height:auto; display:grid; gap:10px; justify-items:center; }
   .sw-sup, .sw-house{ position:relative; left:auto; top:auto; opacity:1 !important;
     transform:none !important; filter:none !important; }
-  .sw-sup, .sw-seam{ display:none; }
+  .sw-sup{ display:none; }
 }

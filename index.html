@@ -21,7 +21,7 @@
 <link rel="stylesheet" href="bbh.css?v=10" />
 <link rel="stylesheet" href="kunder.css?v=16" />
 <link rel="stylesheet" href="telefon.css?v=6" />
-<link rel="stylesheet" href="softwarehus.css?v=11" />
+<link rel="stylesheet" href="softwarehus.css?v=12" />
 <link rel="stylesheet" href="kontakt.css?v=4" />
 <link rel="stylesheet" href="mork.css?v=4" />
 <link rel="stylesheet" href="dybde.css?v=3" />
@@ -158,7 +158,6 @@
           <div class="sw-kicker" data-da="Hvorfor det betyder noget for jer">Why it matters to you</div>
           <h3 data-sw-split data-da="Normalt skal I hyre tre.">Normally you hire three.</h3>
           <div class="sw-merge">
-            <span class="sw-seam" id="swSeam" aria-hidden="true"></span>
             <div class="sw-sup"><b data-da="Designbureau">Design agency</b><s data-da="tegner det">draws it</s></div>
             <div class="sw-sup"><b data-da="Udvikler">Developer</b><s data-da="bygger det">builds it</s></div>
             <div class="sw-sup"><b data-da="Driftleverand&oslash;r">Hosting supplier</b><s data-da="holder det i luften">keeps it up</s></div>
@@ -917,8 +916,7 @@
           swVeil=document.getElementById('swVeil'), swGlow=document.getElementById('swGlow'),
           swTyped=document.getElementById('swTyped'), swCaret=document.getElementById('swCaret'),
           swBio=document.getElementById('swBio'), swHouse=document.getElementById('swHouse'),
-          swDeck=swEl.querySelector('.sw-deck'), swMerge=swEl.querySelector('.sw-merge'),
-          swSeam=document.getElementById('swSeam');
+          swDeck=swEl.querySelector('.sw-deck'), swMerge=swEl.querySelector('.sw-merge');
       /* There used to be a measuring pass here: the three cards were three
          different widths, so something had to read the layout and work out
          what each one had to be scaled by to end on the same footprint.
@@ -994,10 +992,8 @@
           /* the shadow is written straight onto the block, so the state it
              falls back to has to be written back off it */
           swHouse.style.boxShadow=''; swHouseSh=-1;
-          SC.plain(all.concat([swHook,swHouse,swDeck,swSeam]));
+          SC.plain(all.concat([swHook,swHouse,swDeck]));
           swHouse.style.transform='translate(-50%,-50%)';
-          if(swSeam){ swSeam.style.opacity='0'; swSeam._op='0';
-            swSeam.style.transform='translate(-50%,-50%)'; swSeam._tr='translate(-50%,-50%)'; }
           swCaret.style.display='none';
         },
         paint:function(s){
@@ -1019,22 +1015,18 @@
              the camera, not a lamp. And the light in the room jumps on the
              contact frame and falls away fast, the way it does when
              something in the room catches it. */
-          /* And the room goes down before it comes up. The light used to
-             jump on the frame of contact and nothing before it, which is a
-             lamp being switched on; a room that dims while the three swing
-             shut and then flares is the light being pulled into the thing
-             that is about to happen. The dip is what makes the flare
-             read — you cannot brighten a room that was already bright. */
-          var dim=SC.io(SC.seg(s,.470,.508)),
-              kt=SC.seg(s,.514,.588),
-              punch=(s>=.506) ? (kt<=0 ? 1 : Math.exp(-5.2*kt)*Math.cos(Math.PI*2*1.55*kt)) : 0,
-              gl=SC.seg(s,.506,.574),
-              glow=(gl>0&&gl<1) ? Math.pow(1-gl,2.4)*.62 : 0;
-          SC.set(swPlate,'scale('+(1.05+s*.12+punch*.028).toFixed(4)+') translate3d('+(2-s*5).toFixed(2)+'vw,'+(-1+s*3+punch*.6).toFixed(2)+'vh,0)',
-            Math.max(0,(pIn*(.92-pMid*.6+pBack*.46)*(1-dim*.62)+glow*.14)).toFixed(3));
-          SC.set(swVeil,null,(pIn*(1+pMid*.12+dim*.2)-glow*.2).toFixed(3));
-          SC.set(swGlow,'translate3d(0,'+(s*-10).toFixed(2)+'vh,0) scale('+(1+s*.28+glow*.6).toFixed(4)+')',
-            Math.max(0,Math.min(1,(.6-s*.26)*(1-dim*.7)+glow)).toFixed(3));
+          /* The room used to take a hit here: a dip while the three closed
+             and a flare on the frame they met. Both of them were there to
+             sell an impact, and there is no impact any more — so the room
+             does one slow thing instead. It lifts while the block comes
+             up, and it stays lifted. A bloom you cannot see the beginning
+             of is the difference between a lit room and a lamp. */
+          var bloom=SC.io(SC.seg(s,.500,.604));
+          SC.set(swPlate,'scale('+(1.05+s*.12).toFixed(4)+') translate3d('+(2-s*5).toFixed(2)+'vw,'+(-1+s*3).toFixed(2)+'vh,0)',
+            Math.max(0,(pIn*(.92-pMid*.6+pBack*.46)+bloom*.1)).toFixed(3));
+          SC.set(swVeil,null,(pIn*(1+pMid*.12)-bloom*.1).toFixed(3));
+          SC.set(swGlow,'translate3d(0,'+(s*-10).toFixed(2)+'vh,0) scale('+(1+s*.28+bloom*.16).toFixed(4)+')',
+            Math.max(0,Math.min(1,(.6-s*.26)+bloom*.34)).toFixed(3));
 
           /* act one — the trade, written out a character at a time */
           if(swAct(swA[0],.02,.34,s)){
@@ -1047,138 +1039,72 @@
 
           /* act two — three become one.
 
-             Two earlier goes at this were explosions — a shockwave, a
-             whiteout, a flare — and both were the same mistake at
-             different strengths: the event was happening TO the cards
-             rather than being made OF them. A third was a stack: three
-             panes sliding into register. It was clean and it was nothing,
-             because three things ending up on top of each other is a
-             dissolve however brightly it is lit.
+             This is the first version of this move, brought back. In
+             between it was an explosion, then a shockwave, then a stack of
+             glass sliding into register, then three panes swinging onto
+             their own edge and a line of light. Every one of those was
+             louder than the one before it, and every one of them was
+             wrong for the same reason: a section that explains what a
+             software house is does not need a collision. It needs three
+             things quietly becoming one thing.
 
-             This one is a turn. The three stand still — a real beat of
-             nothing, which is the only thing that makes a snap land — and
-             then they swing, all to the same side, all the way to their
-             own edge, and slide together while they do it. Edge on, three
-             panes are one line of light: nothing overlaps, so nothing can
-             step, and the seam the last three attempts kept drawing has
-             no surface to draw itself on.
-
-             Then the line opens back out, the other way, and what comes
-             round to face you is not one of the three. It is four times
-             their width with the name cut into it. The whole move is one
-             piece of choreography with one idea in it — three became
-             this — and the size of the thing that turns round is the
-             point of the section. */
+             So nothing snaps here. The three come up together, they are
+             drawn to the middle on one long ease that is slowest at both
+             ends, they give up their size and their focus on the way in,
+             and what is left standing comes up out of the same point and
+             settles a hair past itself. Every window overlaps the next
+             one, so there is no frame anywhere in it where one thing has
+             finished and the next has not started — which is the whole of
+             what smooth means. */
           if(swAct(swA[1],.30,.67,s)){
             swWords(swA[1].w,.315,.405,s);
             /* On a phone they stack instead of standing side by side —
-               the deck is one column wide there — so the spread that is
-               horizontal on a desk is vertical on a phone. */
-            var narrow=window.innerWidth<900, rest=narrow?0:30, vgap=narrow?11:0;
-
-            /* REGISTER is the frame everything is written against: the
-               frame the three are edge on and the line exists. The beats
-               that have to land together are the ones you can see are
-               wrong when they do not, so they all read one number. */
-            var REG=.508,
-                /* the swing. A power of 2.4 is almost nothing for the
-                   first half of the window and everything in the last
-                   quarter: they do not drift shut, they are shut. */
-                turn=SC.seg(s,.490,REG), tk=Math.pow(turn,2.4),
-                /* the breath before it: the last card lands, the room
-                   dims, and the three draw back a hair — the inhale that
-                   makes the swing read as a swing and not a slide */
-                hush=SC.io(SC.seg(s,.472,.492)),
-                /* and the open, on a damped spring — round past flat,
-                   back under, and still. The rotation carries the
-                   overshoot and the width does not: a plate that lands
-                   ten degrees past itself reads as weight, a plate that
-                   lands ten per cent wider than itself reads as rubber. */
-                oc=SC.seg(s,REG+.008,.570),
-                spring=(oc<=0 ? 1 : Math.exp(-5.6*oc)*Math.cos(Math.PI*2*1.3*oc)),
-                ok=(s>=REG+.008) ? 1-spring : 0,
-                land=(s>=REG) ? (oc<=0 ? 1 : spring) : 0,
-                wide=SC.io(SC.seg(s,REG+.008,.552)),
-                lb=SC.io(SC.seg(s,.486,.500));
+               the deck is one column wide there. */
+            var narrow=window.innerWidth<900,
+                /* up together, not one at a time: a stagger is three
+                   arrivals, and three arrivals is three little events
+                   before the one event this act is about */
+                inS=SC.out(SC.seg(s,.372,.462)),
+                join=SC.io(SC.seg(s,.470,.556)),
+                /* the block comes up out of the point they went into, a
+                   touch past its own size and back — a settle, not a
+                   landing. It is already on its way before the last of
+                   the three has finished going. */
+                hb=swBack(SC.seg(s,.512,.592)),
+                soft=Math.min(1,SC.seg(s,.508,.572)*1.4);
 
             for(var i=0;i<swA[1].sups.length;i++){
-              /* Tight enough that the last one is standing well before the
-                 swing starts. On a wider stagger the third was still on
-                 its way in when the first two began to turn, which is not
-                 three things being still and then moving — it is one long
-                 shuffle with no beat anywhere in it. */
-              var q=SC.out(SC.seg(s,.392+i*.014,.446+i*.014)),
-                  sp=swSpread[i],
-                  /* in from off the side each one will later fall through,
-                     and from a long way behind the glass */
-                  x=sp*rest*(1-tk) + sp*(1-q)*(narrow?30:86),
-                  y=sp*vgap*(1-tk),
-                  z=-470*(1-q) - hush*(1-tk)*30 + tk*46,
-                  /* they arrive turned a little towards the middle, and
-                     they leave turned all the way onto their own edge */
-                  ry=(1-q)*sp*-15*(1-tk) + tk*86;
+              var x=swSpread[i]*(1-join)*(narrow?0:30),
+                  y=(narrow?swSpread[i]*11:0)*(1-join);
               SC.set(swA[1].sups[i],
-                'translate(-50%,-50%) translate3d('+x.toFixed(2)+'vh,'+y.toFixed(2)+'vh,'+z.toFixed(0)+'px) rotateY('+ry.toFixed(2)+'deg)',
-                (q*(1-SC.io(SC.seg(s,.500,REG+.001)))).toFixed(3),
-                SC.blur((1-q)*13));
-              /* What is written on them goes before they do. Three panes
-                 still carrying three job titles as they swing shut are
-                 three things being hidden; three blank sheets of glass
-                 turning onto their edge are three things becoming one. */
-              for(var m=0;m<swA[1].supTxt[i].length;m++)
-                SC.set(swA[1].supTxt[i][m],null,(q*(1-lb)).toFixed(3));
+                'translate(-50%,-50%) translate3d('+x.toFixed(2)+'vh,'+y.toFixed(2)+'vh,0) scale('+((.9+inS*.1)*(1-join*.3)).toFixed(4)+')',
+                (inS*(1-Math.min(1,join*1.3))).toFixed(3), SC.blur((1-inS)*9+join*8));
             }
-            /* the numbers are drawn by the stylesheet, so they cannot be
-               written to one by one — they read an inherited property off
-               the row instead, which is one write a frame for all three */
+            /* and what is written on them goes a little ahead of them, so
+               the last thing to leave is glass and not words */
+            var lb=Math.min(1,join*1.6);
+            for(var i2=0;i2<swA[1].supTxt.length;i2++)
+              for(var m=0;m<swA[1].supTxt[i2].length;m++)
+                SC.set(swA[1].supTxt[i2][m],null,(inS*(1-lb)).toFixed(3));
             if(swMerge) swMerge.style.setProperty('--lb',(1-lb).toFixed(3));
 
-            /* The block takes the hit: down hard on the frame the line
-               exists, then back up on the same spring the plate opens on
-               — the two are one body. */
-            SC.set(swMerge,'translate3d(0,'+(Math.max(0,land)*10).toFixed(2)+'px,0)', null);
-
-            /* The line. It is on for about a fifth of a second, and the
-               first frame of it is the loudest thing in the section: three
-               panes' worth of surface has nowhere to go but into light, so
-               it arrives four times its own width and too tall, thins to a
-               hairline while the room is still flaring, and is gone before
-               the plate is a third of the way round. A line that merely
-               fades up is a hairline somebody drew. */
-            if(swSeam){
-              /* it comes up under the last of the squeeze, not after it —
-                 there was a black frame between the panes going and the
-                 light arriving, and a gap in the middle of a collision is
-                 the one thing the whole move cannot have */
-              var hit=SC.io(SC.seg(s,REG-.0015,REG+.009)),
-                  sOut=SC.seg(s,REG+.009,REG+.040),
-                  sOp=SC.io(SC.seg(s,.4985,REG))*(1-SC.io(sOut)),
-                  sY=1+.5*(1-hit),
-                  sX=(1+4.2*(1-hit)) * (1+Math.max(0,ok)*14);
-              SC.set(swSeam,'translate(-50%,-50%) scaleX('+sX.toFixed(2)+') scaleY('+sY.toFixed(3)+')',
-                sOp.toFixed(3), null);
-            }
-
-            /* The one that is left. It comes round from its own edge,
-               opening as it turns, and it is four times the width of the
-               things it came out of. That difference in size is the whole
-               argument of the section, so nothing here is allowed to make
-               it look like another card. */
-            SC.set(swHouse,
-              'translate(-50%,-50%) translate3d(0,'+(Math.max(0,land)*7).toFixed(2)+'px,0) rotateY('+(86*(1-ok)).toFixed(2)+'deg) scaleX('+(.05+.95*wide).toFixed(4)+')',
-              (s>=REG+.003?1:0).toFixed(0), SC.blur(0));
-            /* its shadow is deepest on the frame it lands and settles with it */
-            var hsh=+Math.max(0,land).toFixed(2);
-            if(hsh!==swHouseSh){
-              swHouseSh=hsh;
-              swHouse.style.boxShadow='0 '+(60+34*hsh).toFixed(0)+'px '+(120+70*hsh).toFixed(0)+'px -40px rgba(0,0,0,'+(.92+.08*hsh).toFixed(2)+'), 0 18px 48px -24px rgba(0,0,0,.7), inset 0 2px 0 rgba(255,255,255,1), inset 0 -2px 0 rgba(0,0,0,.1), inset 0 0 0 1px rgba(255,255,255,'+(.45+.4*hsh).toFixed(2)+')';
+            SC.set(swHouse,'translate(-50%,-50%) scale('+(.34+hb*.66).toFixed(4)+')',
+              Math.min(1,SC.seg(s,.508,.548)*3).toFixed(3),
+              SC.blur((1-soft)*12));
+            /* the light under it comes up with it and stays — the only
+               thing in the section that is allowed to be bright, and it
+               gets there without a flash */
+            var seat=+SC.io(SC.seg(s,.520,.606)).toFixed(2);
+            if(seat!==swHouseSh){
+              swHouseSh=seat;
+              swHouse.style.boxShadow='0 '+(44+26*seat).toFixed(0)+'px '+(96+54*seat).toFixed(0)+'px -40px rgba(0,0,0,'+(.86+.1*seat).toFixed(2)+'), 0 16px 42px -24px rgba(0,0,0,.66), 0 0 '+(70+70*seat).toFixed(0)+'px -18px rgba(158,196,255,'+(.3*seat).toFixed(2)+'), inset 0 2px 0 rgba(255,255,255,1), inset 0 -2px 0 rgba(0,0,0,.09), inset 0 0 0 1px rgba(255,255,255,'+(.42+.3*seat).toFixed(2)+')';
             }
             /* and the light runs across the face once, on the settle */
-            var sw2=SC.seg(s,REG+.014,.606);
+            var sw2=SC.seg(s,.536,.626);
             swHouse.style.setProperty('--sx',
               (sw2>0 && sw2<1 ? (-80+160*SC.io(sw2)).toFixed(1) : -80) + '%');
 
-            var pl=SC.out(SC.seg(s,.556,.606));
+            var pl=SC.out(SC.seg(s,.558,.616));
             SC.set(swA[1].lede,'translate3d(0,'+((1-pl)*16).toFixed(2)+'px,0)', pl.toFixed(3));
           }
           /* act three — why this house */
