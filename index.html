@@ -17,11 +17,11 @@
 <link rel="preload" as="font" type="font/woff2" href="fonts/instrumentserif-italic-400.woff2" crossorigin />
 <link rel="preload" as="font" type="font/woff2" href="fonts/barlow-normal-400.woff2" crossorigin />
 <link rel="stylesheet" href="styles.css?v=45" />
-<link rel="stylesheet" href="lesreg.css?v=69" />
+<link rel="stylesheet" href="lesreg.css?v=70" />
 <link rel="stylesheet" href="bbh.css?v=10" />
 <link rel="stylesheet" href="kunder.css?v=16" />
 <link rel="stylesheet" href="telefon.css?v=6" />
-<link rel="stylesheet" href="softwarehus.css?v=19" />
+<link rel="stylesheet" href="softwarehus.css?v=20" />
 <link rel="stylesheet" href="kontakt.css?v=5" />
 <link rel="stylesheet" href="mork.css?v=4" />
 <link rel="stylesheet" href="dybde.css?v=3" />
@@ -728,7 +728,7 @@
        Only transform, opacity and filter are ever written, so no frame in
        here can cost a layout. */
     var SC = (function(){
-      var scenes=[], t0=null, started=false;
+      var scenes=[], t0=null, started=false, prev=null;
       var out =function(t){ return 1-Math.pow(1-t,3); },
           io  =function(t){ return t<.5 ? 4*t*t*t : 1-Math.pow(-2*t+2,3)/2; },
           film=function(t){ return 1-Math.pow(1-t,4.2); };   /* quick off the mark, long tail */
@@ -796,8 +796,22 @@
       function loop(now){
         requestAnimationFrame(loop);
         /* a hidden tab gets no work at all, and no stale clock on return */
-        if(document.visibilityState!=='visible'){ t0=null; return; }
+        if(document.visibilityState!=='visible'){ t0=null; prev=null; return; }
         if(t0===null) t0=now;
+        /* How much of the gap to the scroll's real position to close on
+           this frame. It used to be a flat fourteen per cent, which is a
+           different speed on every machine: a frame that arrives late
+           closes the same fourteen per cent as one that arrives on time,
+           so a dropped frame does not just skip, it lands short — and a
+           run of them reads as a stutter rather than as a slow patch.
+           Measured against the clock instead, a long frame catches up
+           exactly as far as it should have, and the section moves at the
+           same speed whether the browser is managing sixty frames or
+           thirty. A hair gentler than it was, too: this stage carries a
+           laptop and a phone, and weight wants a longer glide. */
+        var dt = (prev===null) ? (1/60) : Math.min(.06,(now-prev)/1000);
+        prev=now;
+        var chase = 1 - Math.pow(1-0.115, dt*60);
         var intro=out(Math.min(1,(now-t0)/900));
         var y=window.scrollY||window.pageYOffset, vh=window.innerHeight;
         for(var i=0;i<scenes.length;i++){
@@ -850,7 +864,7 @@
              the layers exist before they are needed and outlast the exit. */
           var lv=praw>-0.25 && praw<1.25;
           if(lv!==o.live){ o.live=lv; o.el.classList.toggle('live', lv); }
-          o.sm+=(p-o.sm)*0.14;
+          o.sm+=(p-o.sm)*chase;
           if(Math.abs(p-o.sm)<0.0004) o.sm=p;
           /* The opening beat plays by itself only for someone who lands
              inside the section — a reload, or a link straight to it. Arriving
@@ -982,15 +996,24 @@
       var swBack=function(t){ var c=1.4, u=t-1; return 1+(c+1)*u*u*u+c*u*u; };
       var swSrc='', swN=-1, swSpread=[-1,0,1];
 
-      /* one act: in from the depth, held, pushed back out */
-      function swAct(a, from, to, s, hold){
+      /* one act: in from the depth, held, pushed back out.
+
+         How long it takes to leave is its own business. A fifth of the
+         act is right for a short one; the middle act runs four and a half
+         screens' worth of reading, and a fifth of that is nearly three
+         seconds of a block dissolving while the next headline writes
+         itself over the top of it. Two things half-there at once is not a
+         transition, it is a mess. It leaves in a second and a half now,
+         and the act after it starts where the act before this one started
+         relative to its own exit — the same cut, twice. */
+      function swAct(a, from, to, s, hold, exF){
         var len=to-from,
             inn=SC.film(SC.seg(s,from,from+len*.34)),
             /* The last act is not pushed back out. It dissolved at the very
                end and left a blurred room and a replay button where the
                three reasons had just been — the one thing anyone is meant
                to leave with. It stays up. */
-            ex=hold ? 0 : SC.io(SC.seg(s,to-len*.2,to));
+            ex=hold ? 0 : SC.io(SC.seg(s,to-len*(exF==null?.2:exF),to));
         var vis = inn>.002 && ex<.998;
         if(a.vis!==vis){ a.vis=vis; a.el.style.visibility = vis?'visible':'hidden'; }
         if(!vis) return false;
@@ -1144,7 +1167,7 @@
              the block comes up, and stays lifted: a bloom you cannot see
              the beginning of is the difference between a lit room and a
              lamp being switched on. */
-          var pIn=SC.film(SC.seg(s,.0092,.1102)), pMid=SC.io(SC.seg(s,.2662,.3672)), pBack=SC.out(SC.seg(s,.6879,.8164)),
+          var pIn=SC.film(SC.seg(s,.0092,.1102)), pMid=SC.io(SC.seg(s,.2662,.3672)), pBack=SC.out(SC.seg(s,.735,.86)),
               jk=SC.seg(s,.47,.5031),
               jolt=(s>=.47) ? (jk<=0 ? 0 : Math.exp(-7.5*jk)*Math.sin(Math.PI*2*1.7*jk)) : 0,
               bloom=SC.io(SC.seg(s,.459,.5545)),
@@ -1217,7 +1240,7 @@
              on a spring, and take one pass of light across the face —
              which is a specular on metal, and the one piece of light in
              the whole act that an actual object could have made. */
-          if(swAct(swA[1],.2754,.7515,s)){
+          if(swAct(swA[1],.2754,.7515,s,false,.10)){
             swWords(swA[1].w,.2892,.3718,s);
             /* On a phone the three are rows, so they dock downwards and
                the material sweeps out top and bottom instead. */
@@ -1232,15 +1255,15 @@
                 pull=SC.seg(s,.4443,.47), kk=Math.pow(pull,2.7),
                 /* contact. The row takes it and gives it back — a short,
                    hard-damped recoil, no bounce anyone could count. */
-                rc=SC.seg(s,.512,.548),
-                kick=(s>=.512) ? (rc<=0 ? 0 : Math.exp(-7.5*rc)*Math.sin(Math.PI*2*1.7*rc)) : 0,
+                rc=SC.seg(s,.47,.5031),
+                kick=(s>=.47) ? (rc<=0 ? 0 : Math.exp(-7.5*rc)*Math.sin(Math.PI*2*1.7*rc)) : 0,
                 /* the material, out of the middle */
-                seal=SC.out(SC.seg(s,.4719,.5031)),
+                seal=SC.io(SC.seg(s,.4719,.5085)),
                 /* the block breathes out to its own height */
-                grow=SC.io(SC.seg(s,.5031,.5435)),
+                grow=SC.io(SC.seg(s,.5085,.5520)),
                 /* and settles */
-                stl=SC.seg(s,.5031,.5765),
-                settle=(s>=.5031) ? (stl<=0 ? 0 : Math.exp(-5.4*stl)*Math.cos(Math.PI*2*1.15*stl)) : 0,
+                stl=SC.seg(s,.5085,.5860),
+                settle=(s>=.5085) ? (stl<=0 ? 0 : Math.exp(-5.4*stl)*Math.cos(Math.PI*2*1.15*stl)) : 0,
                 /* the camera leans in for the dock and comes back off it
                    once the thing is standing — the only move on the page
                    that belongs to the viewer and not to the objects */
@@ -1287,19 +1310,19 @@
               (s>=.471?Math.min(1,seal*1.6):0).toFixed(3));
 
             /* and the light runs across the face once, on the settle */
-            var sw2=SC.seg(s,.5104,.5857);
+            var sw2=SC.seg(s,.5180,.6240);
             swHouse.style.setProperty('--sx',
               (sw2>0 && sw2<1 ? (-80+160*SC.io(sw2)).toFixed(1) : -80) + '%');
 
-            var pl=SC.out(SC.seg(s,.5251,.5747));
+            var pl=SC.out(SC.seg(s,.5470,.5990));
             SC.set(swA[1].lede,'translate3d(0,'+((1-pl)*16).toFixed(2)+'px,0)', pl.toFixed(3));
           }
           /* act three — why this house */
-          if(swAct(swA[2],.6695,1.001,s,true)){
-            swWords(swA[2].w,.6879,.798,s);
-            swPop(swA[2].shot,.7108,.8852,0,s,1.0);
+          if(swAct(swA[2],.7295,1.001,s,true)){
+            swWords(swA[2].w,.740,.840,s);
+            swPop(swA[2].shot,.758,.905,0,s,1.0);
             for(var j=0;j<swA[2].claims.length;j++){
-              var ct=SC.out(SC.seg(s,.7843+j*.0386,.8852+j*.0386));
+              var ct=SC.out(SC.seg(s,.815+j*.037,.893+j*.037));
               SC.set(swA[2].claims[j],'translate3d(0,'+((1-ct)*18).toFixed(2)+'px,0)', ct.toFixed(3));
             }
           }
@@ -1365,11 +1388,17 @@
         /* the cluster swings in from the right and squares up */
         var g=SC.io(SC.seg(q,.24,.72));
         SC.set(c.dev,
-          'translate3d('+(16*(1-g)).toFixed(3)+'vw,'+(4*(1-g)).toFixed(3)+'vh,'+(-420*(1-g)-200*ex).toFixed(1)+'px)'+
+          'translate3d('+(16*(1-g)).toFixed(3)+'vw,'+(4*(1-g)).toFixed(3)+'vh,'+(-560*(1-g)-260*ex).toFixed(1)+'px)'+
           ' rotateY('+(-19*(1-g)+6*ex).toFixed(2)+'deg) rotateX('+(7*(1-g)).toFixed(2)+'deg)'+
           ' scale('+(.93+.07*g).toFixed(4)+')',
           (g*(1-Math.min(1,ex*1.3))).toFixed(3),
-          SC.blur(7*(1-g)+9*ex));
+          /* No blur on the cluster. It is the biggest thing on the page —
+             a laptop lid, a screenshot and a phone — and a blur radius
+             that changes every frame makes the browser draw the whole of
+             it again every frame. That is where the stutter in this
+             section was coming from; the depth it travels through says
+             the same thing and costs nothing. */
+          'none');
 
         /* and the phone comes in late, leaning on its corner */
         var ph=SC.io(SC.seg(q,.44,.84));
