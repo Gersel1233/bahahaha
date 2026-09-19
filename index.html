@@ -21,7 +21,7 @@
 <link rel="stylesheet" href="bbh.css?v=10" />
 <link rel="stylesheet" href="kunder.css?v=14" />
 <link rel="stylesheet" href="telefon.css?v=5" />
-<link rel="stylesheet" href="softwarehus.css?v=7" />
+<link rel="stylesheet" href="softwarehus.css?v=8" />
 <link rel="stylesheet" href="kontakt.css?v=2" />
 <link rel="stylesheet" href="mork.css?v=3" />
 <link rel="stylesheet" href="dybde.css?v=1" />
@@ -128,7 +128,7 @@
             <p class="sw-bio"><span id="swTyped"></span><i class="sw-caret" id="swCaret" aria-hidden="true"></i></p>
           </div>
           <div class="sw-shot wide">
-            <img src="photos/lesreg-hero.jpg?v=2" alt="" loading="lazy" decoding="async" width="1600" height="900" />
+            <img src="photos/lesreg-hero.jpg?v=3" alt="" loading="lazy" decoding="async" width="1600" height="900" />
           </div>
         </div>
         <!-- the text of act one lives here so the language switch can reach
@@ -143,16 +143,6 @@
             <div class="sw-sup"><b data-da="Udvikler">Developer</b><s data-da="bygger det">builds it</s></div>
             <div class="sw-sup"><b data-da="Driftleverand&oslash;r">Hosting supplier</b><s data-da="holder det i luften">keeps it up</s></div>
             <div class="sw-house" id="swHouse"><b>Lesreg</b><s data-da="alle tre">all three</s></div>
-            <!-- The strike. Three cards shrinking into nothing and a fourth
-                 appearing is a dissolve; a merge needs somewhere for the
-                 three to go and something to come out of. The core is the
-                 point they are drawn into, the flash is the frame they
-                 arrive on, and the streak and the ring are what a hit
-                 looks like from the outside. None of them take a click and
-                 none of them are in the layout. -->
-            <span class="sw-flash"  id="swFlash"  aria-hidden="true"></span>
-            <span class="sw-core"   id="swCore"   aria-hidden="true"></span>
-            <span class="sw-streak" id="swStreak" aria-hidden="true"></span>
           </div>
           <p class="sw-lede" data-da="Tre aftaler, tre regninger, og <b>ingen der har ansvaret</b> n&aring;r noget ikke virker. Et softwarehus er &eacute;t sted at g&aring; hen.">Three contracts, three invoices, and <b>nobody who carries the responsibility</b> when something stops working. A software house is one place to go.</p>
         </div>
@@ -890,15 +880,28 @@
           swVeil=document.getElementById('swVeil'), swGlow=document.getElementById('swGlow'),
           swTyped=document.getElementById('swTyped'), swCaret=document.getElementById('swCaret'),
           swBio=document.getElementById('swBio'), swHouse=document.getElementById('swHouse'),
-          swDeck=swEl.querySelector('.sw-deck'), swMerge=swEl.querySelector('.sw-merge'),
-          swCore=document.getElementById('swCore'),
-          swStreak=document.getElementById('swStreak'), swFlash=document.getElementById('swFlash');
+          swDeck=swEl.querySelector('.sw-deck'), swMerge=swEl.querySelector('.sw-merge');
+      /* The three cards end at the fourth one's footprint, so the dissolve
+         between them is a dissolve between the same shape rather than a
+         swap of two different ones. Read once and kept — a width off the
+         layout every frame is a reflow in a loop that has to be free. */
+      var swFit=null;
+      function swFits(){
+        if(swFit) return swFit;
+        var hw=swHouse.offsetWidth;
+        if(!hw) return null;
+        swFit=swA[1].sups.map(function(el){ return hw/(el.offsetWidth||hw); });
+        return swFit;
+      }
+      window.addEventListener('resize', function(){ swFit=null; }, {passive:true});
       var swA=[1,2,3].map(function(n){
         var el=swEl.querySelector('[data-sw-act="'+n+'"]');
         return { el:el, kick:el.querySelector('.sw-kicker'),
                  hd:el.querySelector('[data-sw-split]'), w:[],
                  shot:el.querySelector('.sw-shot'), lede:el.querySelector('.sw-lede'),
                  sups:[].slice.call(el.querySelectorAll('.sw-sup')),
+                 supTxt:[].slice.call(el.querySelectorAll('.sw-sup')).map(function(su){
+                   return [].slice.call(su.children); }),
                  claims:[].slice.call(el.querySelectorAll('.sw-claims li')) };
       });
       var swBack=function(t){ var c=1.4, u=t-1; return 1+(c+1)*u*u*u+c*u*u; };
@@ -953,6 +956,7 @@
           var all=[];
           swA.forEach(function(a){
             all=all.concat([a.el,a.kick,a.shot,a.lede]).concat(a.w).concat(a.claims).concat(a.sups);
+            (a.supTxt||[]).forEach(function(t){ all=all.concat(t); });
             a.el.style.visibility='visible'; a.vis=true;
           });
           SC.plain(all.concat([swHook,swHouse,swDeck]));
@@ -974,18 +978,14 @@
           var pIn=SC.film(SC.seg(s,.01,.12)), pMid=SC.io(SC.seg(s,.29,.40)), pBack=SC.out(SC.seg(s,.66,.80));
           SC.set(swPlate,'scale('+(1.05+s*.12).toFixed(4)+') translate3d('+(2-s*5).toFixed(2)+'vw,'+(-1+s*3).toFixed(2)+'vh,0)',
             (pIn*(.92-pMid*.6+pBack*.46)).toFixed(3));
-          /* The room dips before the strike and comes back after it. A
-             flash on a stage that was already bright is a lamp; a flash
-             out of a room that just got darker is a hit. */
-          var dip=SC.io(SC.seg(s,.430,.502))*(1-SC.seg(s,.506,.560));
-          SC.set(swVeil,null,(pIn*(1+pMid*.12)+dip*.15).toFixed(3));
-          /* the flare on the glass, on the same frame. Fast attack, long
-             fall — light behaves that way, and an even fade in and out
-             would read as a lamp being turned up rather than a hit. */
-          var fl=SC.seg(s,.504,.582),
-              flare=(fl>0 && fl<1) ? Math.pow(1-fl,2.6)*.42 : 0;
-          SC.set(swGlow,'translate3d(0,'+(s*-10).toFixed(2)+'vh,0) scale('+(1+s*.28+flare*.3).toFixed(4)+')',
-            Math.min(1,(.6-s*.26-dip*.18+flare*.9)).toFixed(3));
+          SC.set(swVeil,null,(pIn*(1+pMid*.12)).toFixed(3));
+          /* The room used to dip and then flare. Both were the explosion
+             talking. It lifts a little as the sheets close, the way a room
+             does when something in it catches the light, and that is all. */
+          var fl=SC.seg(s,.494,.575),
+              lift=(fl>0 && fl<1) ? Math.sin(fl*Math.PI)*.16 : 0;
+          SC.set(swGlow,'translate3d(0,'+(s*-10).toFixed(2)+'vh,0) scale('+(1+s*.28+lift*.5).toFixed(4)+')',
+            Math.min(1,(.6-s*.26+lift)).toFixed(3));
 
           /* act one — the trade, written out a character at a time */
           if(swAct(swA[0],.02,.34,s)){
@@ -1017,67 +1017,70 @@
                the deck is one column wide there. */
             var narrow=window.innerWidth<900, rest=narrow?0:30, vgap=narrow?9:0;
 
-            /* HIT is the frame everything is written against. Beats that
-               have to land together are the ones you can see are wrong
-               when they do not, so they all read the same number. */
-            var HIT=.506;
+            /* REGISTER is the frame everything is written against. The
+               beats that have to land together are the ones you can see
+               are wrong when they do not, so they all read one number. */
+            var REG=.506, fit=swFits();
 
-            /* the draw-in. A power of 2.4 means the first half of the
-               travel is almost nothing and the last quarter is a snap */
-            var pull=SC.seg(s,.448,HIT), kk=Math.pow(pull,2.4);
+            /* The merge is made of glass now, not of light. Two goes at
+               this were an explosion — a shockwave, a whiteout, a flare —
+               and both were the same mistake in different strengths: the
+               event was happening to the cards rather than being made of
+               them. Three identical panes shrinking into nothing and a
+               fourth appearing is a dissolve however brightly it is lit.
+
+               So they are not destroyed. They come together, they turn
+               square, they take the fourth one's footprint, and they slide
+               into register as three sheets of the same glass — which,
+               because glass is what they are made of, gets brighter and
+               denser as they stack. That brightness is the material
+               answering, not a lamp being switched on. The stack closes,
+               and what is left standing is one pane with the name on it.
+               The only light in the whole move is the highlight that runs
+               across it once as it settles. */
+            var pull=SC.seg(s,.440,REG), kk=Math.pow(pull,1.85),
+                /* the last of the travel closes the gap between the sheets */
+                shut=SC.io(SC.seg(s,.482,REG));
             for(var i=0;i<swA[1].sups.length;i++){
               var q=SC.out(SC.seg(s,.330+i*.024,.404+i*.024)),
                   sp=swSpread[i],
                   x=sp*rest*(1-kk) + sp*(1-q)*(narrow?34:96),
                   y=sp*vgap*(1-kk),
-                  z=-460*(1-q) - kk*200,
-                  /* stretched along the travel and squeezed across it —
-                     the shape a thing takes when it is moving too fast to
-                     be seen still. The travel is sideways on a desk and
-                     up-and-down on a phone, so the two axes swap. */
-                  base=(.82+q*.18)*(1-kk*.66),
-                  along=1+kk*.62, across=1-kk*.4,
-                  scx=base*(narrow?across:along), scy=base*(narrow?along:across);
+                  /* in from behind the glass, then apart in depth so the
+                     three read as sheets, then shut */
+                  z=-460*(1-q)*(1-kk) + sp*46*kk*(1-shut),
+                  base=.82+q*.18,
+                  sc=fit ? base+(fit[i]-base)*kk : base*(1-kk*.12);
               SC.set(swA[1].sups[i],
-                'translate(-50%,-50%) translate3d('+x.toFixed(2)+'vh,'+y.toFixed(2)+'vh,'+z.toFixed(0)+'px) rotateY('+(sp*(1-q)*-18).toFixed(1)+'deg) scale('+scx.toFixed(4)+','+scy.toFixed(4)+')',
-                /* consumed at the point rather than faded out on the way */
-                (q*(1-SC.seg(s,.488,HIT))).toFixed(3), SC.blur((1-q)*13+kk*7));
+                'translate(-50%,-50%) translate3d('+x.toFixed(2)+'vh,'+y.toFixed(2)+'vh,'+z.toFixed(0)+'px) rotateY('+(sp*(1-q)*-18*(1-kk)).toFixed(1)+'deg) scale('+sc.toFixed(4)+')',
+                (q*(1-SC.seg(s,REG-.004,REG+.012))).toFixed(3),
+                SC.blur((1-q)*13));
+              /* What slides into register is glass, not three labels
+                 piling up on each other. They say what they say while the
+                 cards are apart and let go on the way in. */
+              var lb=1-SC.io(SC.seg(s,.470,.497));
+              for(var m=0;m<swA[1].supTxt[i].length;m++)
+                SC.set(swA[1].supTxt[i][m],null,(lb*q).toFixed(3));
             }
 
-            /* The strike, taken down. It had a shockwave ring, a whiteout
-               and a long bright streak, which between them are the stock
-               parts of every energy-burst anybody has ever generated. The
-               physics stays and the effect goes: the three still arrive at
-               a point, the point still catches the light, and the room
-               still registers it — but as a camera would, not as a poster
-               would. The ring is gone entirely. */
-            var feed=SC.seg(s,.448,HIT), blow=SC.seg(s,HIT,.540);
-            SC.set(swCore,'translate3d(0,0,0) scale('+(.2+feed*feed*.55+blow*2.6).toFixed(3)+')',
-              ((blow>0 ? Math.pow(1-blow,2.4)*.62 : Math.pow(feed,3)*.5)).toFixed(3));
+            /* the recoil the stack closing gives the block — small, and
+               over almost before it is noticed */
+            var sk=SC.seg(s,REG,.534),
+                sh=(sk>0&&sk<1) ? Math.sin(sk*Math.PI*5)*(1-sk)*(1-sk) : 0;
+            SC.set(swMerge,'translate3d(0,'+(sh*-3.5).toFixed(2)+'px,0)', null);
 
-            /* a lens catching light for a frame, not a whiteout */
-            var fw=SC.seg(s,.502,.556);
-            SC.set(swFlash,null,(fw>0&&fw<1 ? Math.pow(1-fw,3.2)*.34 : 0).toFixed(3));
+            /* the one that is left. It comes up on the same footprint the
+               three ended at, so nothing jumps, and settles a few per cent
+               — the weight of three sheets becoming one. */
+            var hs=SC.out(SC.seg(s,REG,.566));
+            SC.set(swHouse,'translate(-50%,-50%) scale('+(1+.055*Math.pow(1-hs,2.2)).toFixed(4)+')',
+              SC.seg(s,REG-.004,REG+.012).toFixed(3), SC.blur(0));
+            /* and the light runs across it once */
+            var sw2=SC.seg(s,REG,.588);
+            swHouse.style.setProperty('--sx',
+              (sw2>0 && sw2<1 ? (-80+160*SC.io(sw2)).toFixed(1) : -80) + '%');
 
-            /* and the flare along it, short and thin */
-            var st=SC.seg(s,.503,.552), stw=SC.out(SC.seg(s,.503,.520));
-            SC.set(swStreak,'translate3d(0,0,0) scale('+(.2+stw*.8).toFixed(3)+','+(1-st*.6).toFixed(3)+')',
-              (st>0&&st<1 ? Math.pow(1-st,2.2)*.5 : 0).toFixed(3));
-
-            /* the recoil. Nine beats, dying — a knock, not a wobble */
-            var sk=SC.seg(s,HIT,.544),
-                sh=(sk>0&&sk<1) ? Math.sin(sk*Math.PI*7)*(1-sk)*(1-sk) : 0;
-            SC.set(swMerge,'translate3d('+(sh*4.5).toFixed(2)+'px,'+(sh*-2.5).toFixed(2)+'px,0)', null);
-
-            /* the house is not grown. It is there on the frame of the
-               flash, too big, and settles — which is what something
-               arriving under its own weight looks like. */
-            var hs=SC.out(SC.seg(s,HIT,.578));
-            SC.set(swHouse,'translate(-50%,-50%) scale('+(1+.17*Math.pow(1-hs,2.4)).toFixed(4)+')',
-              (s>=HIT?1:0).toFixed(0),
-              SC.blur((1-Math.min(1,SC.seg(s,HIT,.534)*2.2))*9));
-
-            var pl=SC.out(SC.seg(s,.548,.600));
+            var pl=SC.out(SC.seg(s,.540,.594));
             SC.set(swA[1].lede,'translate3d(0,'+((1-pl)*16).toFixed(2)+'px,0)', pl.toFixed(3));
           }
 
@@ -1122,8 +1125,13 @@
                  blurb:w.querySelector('.blurb'),
                  facts:[].slice.call(w.querySelectorAll('.facts li')), nw:[] };
       });
-      function kPaint(c, q){
-        var ex=SC.io(SC.seg(q,.84,1));
+      function kPaint(c, q, last){
+        /* The last customer is not pushed back out. There is nothing
+           behind it to clear the stage for, so it faded to nothing and
+           left a screen of empty room between the second café and the
+           phone. It stays lit and the stage carries it off, which is what
+           the end of a section looks like anywhere else on the page. */
+        var ex=last ? 0 : SC.io(SC.seg(q,.84,1));
 
         var kt=SC.out(SC.seg(q,0,.10));
         SC.set(c.kick,'translate3d(0,'+((1-kt)*14).toFixed(2)+'px,0)',kt.toFixed(3));
@@ -1170,7 +1178,7 @@
           (SC.seg(q,0,.02)*(1-Math.min(1,ex*1.35))).toFixed(3), SC.blur(9*ex));
         /* nothing of a customer that has not started, or has finished, is
            left where the other one is standing */
-        var on = q>.0005 && q<.9995;
+        var on = q>.0005 && (last || q<.9995);
         if(c.on!==on){ c.on=on; c.w.style.visibility = on?'visible':'hidden'; }
       }
 
@@ -1207,8 +1215,8 @@
              leaving, and the second a little before the first has; the two
              moves cross rather than queue, which is what a cut between
              sections never could */
-          kPaint(kCases[0], SC.seg(raw,KA,KB));
-          if(kCases[1]) kPaint(kCases[1], SC.seg(raw,KM,1));
+          kPaint(kCases[0], SC.seg(raw,KA,KB), kCases.length<2);
+          if(kCases[1]) kPaint(kCases[1], SC.seg(raw,KM,1), true);
 
           SC.set(kGlow,'translate3d(-50%,'+(-12*raw).toFixed(3)+'vh,0) scale('+(1+.22*raw).toFixed(4)+')',
             (.75-.4*raw).toFixed(3));

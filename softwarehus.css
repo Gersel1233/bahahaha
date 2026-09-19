@@ -119,29 +119,16 @@
 .sw-house b{ font-size:clamp(17px,1.9vw,30px); }
 .sw-house s{ color:#fff; }
 
-/* ---------- the strike ----------
-   Three things that only exist for about a third of a second. They are centred on
-   the merge box, so they land exactly where the three cards are drawn to,
-   whatever the window does to the layout around them. Plain alpha rather
-   than a blend mode: an element that blends is an element whose stacking
-   context has to be right, and this one is inside an act that is already
-   being faded and filtered. On a near-black page a bright radial at full
-   alpha reads as light anyway. */
-.sw-core, .sw-streak, .sw-flash{
-  position:absolute; left:50%; top:50%; opacity:0; pointer-events:none;
-  will-change:transform,opacity; }
-/* the point the three go into */
-.sw-core{ width:22px; height:22px; margin:-11px 0 0 -11px; border-radius:50%;
-  background:radial-gradient(circle, #fff 0%, rgba(222,238,255,.96) 24%,
-    rgba(150,190,238,.55) 52%, transparent 74%); }
-/* the anamorphic streak — the cue that says "lens", not "shape" */
-.sw-streak{ width:74vh; height:2px; margin:-1px 0 0 -37vh; filter:blur(1.6px);
-  background:linear-gradient(90deg, transparent 0%, rgba(150,190,238,.34) 34%,
-    rgba(232,242,255,.9) 50%, rgba(150,190,238,.34) 66%, transparent 100%); }
-/* the frame the whole room is lit on */
-.sw-flash{ width:150vw; height:150vh; margin:-75vh 0 0 -75vw;
-  background:radial-gradient(circle at 50% 50%, rgba(226,238,255,.7) 0%,
-    rgba(166,198,238,.2) 22%, rgba(118,156,206,.05) 40%, transparent 58%); }
+/* ---------- the one that is left ----------
+   The light that runs across the pane once as it settles: the same
+   travelling highlight the letter at the bottom of the page uses, held on
+   a custom property so the loop can move it without touching layout. */
+.sw-house{ overflow:hidden; }
+.sw-house::before{ content:""; position:absolute; inset:0; border-radius:inherit;
+  pointer-events:none;
+  background:linear-gradient(105deg, transparent 32%, rgba(255,255,255,.3) 50%, transparent 68%);
+  transform:translateX(var(--sx,-80%)); will-change:transform; }
+.sw-house > b, .sw-house > s{ position:relative; z-index:1; }
 
 /* act three — why this house */
 .sw-claims{ margin:clamp(18px,3vh,34px) 0 0; padding:0; display:grid;
