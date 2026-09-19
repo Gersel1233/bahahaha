@@ -6,17 +6,18 @@
    per section, so the two cases read as two places and not as two cards.
    ============================================================ */
 
-/* ---------- the intro scene ----------
-   A doorway, not a room — but the scene plays itself on a clock now, and a
-   clock needs the stage to still be there when it runs. Wound by the scroll
-   it was a choice between too fast (115vh: the sentence came and went in a
-   hundred and thirty pixels of thumb) and too long (200vh of hand before the
-   first customer). On a clock it is neither, and the track is simply the
-   room the piece needs: the words take about two and a half seconds, and the
-   stage stays pinned for about as long as that takes a hand. Long enough to
-   be locked onto, short enough that it is still a doorway. */
-.scene.intro{ height:180vh; }
-.scene.intro .inner{ max-width:1180px; }
+/* ---------- the line into the two cases ----------
+   It had a section of its own: its own stage, its own pin, its own
+   release. However well it played, the reader met it, watched it leave,
+   and then met the first customer somewhere else — two rooms, and a seam
+   between them. It lives on the first customer's stage now, laid over it
+   and taking the opening quarter of its track, so the sentence and the
+   thing it introduces are one move on one piece of glass. */
+.scene.case .kdoor{ position:absolute; inset:0; z-index:2; pointer-events:none;
+  display:grid; place-items:center; box-sizing:border-box;
+  padding:var(--nav) clamp(24px,6vw,112px) 0; }
+.scene.case .kdoor .inner{ width:min(1180px,100%); text-align:center;
+  transform-style:preserve-3d; will-change:transform,opacity,filter; }
 .scene h1 i, .cname i{ font-style:normal; color:var(--ink-soft); }
 .scene h1 .w > i{ display:inline-block; opacity:0; will-change:transform,opacity,filter; }
 
@@ -25,6 +26,9 @@
    ============================================================ */
 .scene.case{ height:270vh; --brand:#a8431c; --cream:#f7ece1; }
 .scene.case[data-brand="mosede"]{ --brand:#b4242f; --cream:#faf3e8; }
+/* the first case carries the opening line as well, so it gets the
+   track that line used to have as a section of its own */
+.scene.case#kunder{ height:380vh; }
 .scene.case .stage{ perspective:1700px; perspective-origin:64% 50%;
   box-sizing:border-box; padding-top:var(--nav); }
 
@@ -142,8 +146,8 @@
   box-shadow:0 14px 30px -18px rgba(27,23,20,.8); }
 
 @media(max-width:980px){
-  .scene.intro{ height:200vh; }
   .scene.case{ height:310vh; }
+  .scene.case#kunder{ height:430vh; }
   .wrap{ grid-template-columns:1fr; gap:clamp(18px,4vh,34px); }
   .devices{ --lidmax:38vh; width:min(88%, calc(var(--lidmax) * 1.547)); }
   /* the width is the real ratio at every size now — only the overhang moves */
@@ -157,7 +161,11 @@
 }
 
 @media (prefers-reduced-motion: reduce){
-  .scene.intro, .scene.case{ height:auto; }
+  .scene.case{ height:auto; }
+  .scene.case .kdoor{ position:relative; inset:auto; padding:8vh 0 0;
+    opacity:1 !important; transform:none !important; }
+  .scene.case .kdoor .inner{ opacity:1 !important; transform:none !important;
+    filter:none !important; }
   .devices{ --lidmax:52vh; }
   .kicker, .curl, .blurb, .facts li, .cname .w > span, .cname .w > i,
   .scene h1 .w > i{ opacity:1 !important; transform:none !important; filter:none !important; }
