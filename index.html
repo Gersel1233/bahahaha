@@ -19,7 +19,7 @@
 <link rel="stylesheet" href="styles.css?v=45" />
 <link rel="stylesheet" href="lesreg.css?v=60" />
 <link rel="stylesheet" href="bbh.css?v=10" />
-<link rel="stylesheet" href="kunder.css?v=9" />
+<link rel="stylesheet" href="kunder.css?v=10" />
 <link rel="stylesheet" href="telefon.css?v=5" />
 <link rel="stylesheet" href="softwarehus.css?v=3" />
 <link rel="stylesheet" href="kontakt.css?v=2" />
@@ -1023,32 +1023,36 @@
       var kInr=kin.querySelector('.inner'), kGlw=kin.querySelector('.glow'),
           kHd=kin.querySelector('h1'), kLe=kin.querySelector('.lede'), kW=[];
       SC.add({
-        el:kin, leadF:0,
+        /* A doorway should not be a room. Wound by the scroll, this line
+           cost the reader a screen of hand before the first customer — and
+           winding it faster only meant it flew past. It runs on its own
+           clock now, the way the software house and the letter do: the
+           words arrive as the section comes up, in under two seconds, and
+           then they stand. Nobody has to scroll to make them happen, and
+           nobody has to scroll through them afterwards.
+           Nothing leaves at the end either. The line used to be pushed
+           back into the depth to clear the stage for the first case, which
+           is a thing to do when the scroll is holding the section still —
+           here the section simply passes, and the sentence goes with it. */
+        el:kin, leadF:0, auto:true, dur:2600,
         build:function(){ kW=SC.split(kHd); },
         base:function(){ SC.plain(kW.concat([kLe, kInr, kHd])); },
         paint:function(s){
-          var d=SC.film(SC.seg(s,0,.18));
+          var d=SC.film(SC.seg(s,0,.20));
           SC.set(kInr,'translate3d(0,'+((1-d)*24).toFixed(2)+'px,0) translateZ('+(-340*(1-d)).toFixed(1)+'px)',null);
 
-          /* the whole line leaves together at the end, so the first case
-             arrives on a clear stage rather than over a leftover sentence */
-          var x=SC.io(SC.seg(s,.62,1));
-          SC.set(kHd,'translate3d(0,'+(-7*x).toFixed(3)+'vh,0) scale('+(1-.10*x).toFixed(4)+')',
-            (1-.85*x).toFixed(3), SC.blur(9*x));
-
           for(var i=0;i<kW.length;i++){
-            var t=SC.film(SC.seg(s,.03+i*.035,.28+i*.035));
+            var t=SC.film(SC.seg(s,.04+i*.055,.34+i*.055));
             SC.set(kW[i],
               'translate3d(0,'+((1-t)*.82).toFixed(3)+'em,0) rotateX('+(-54*(1-t)).toFixed(2)+'deg) scale('+(.93+.07*t).toFixed(4)+')',
               t.toFixed(3), SC.blur(10*(1-t)));
           }
 
-          var lt=SC.out(SC.seg(s,.30,.48));
-          SC.set(kLe,'translate3d(0,'+((1-lt)*22-7*x*10).toFixed(2)+'px,0)',
-            (lt*(1-x)).toFixed(3), SC.blur(8*x));
+          var lt=SC.out(SC.seg(s,.50,.74));
+          SC.set(kLe,'translate3d(0,'+((1-lt)*22).toFixed(2)+'px,0)', lt.toFixed(3));
 
-          SC.set(kGlw,'translate3d(-50%,'+(-14*s).toFixed(3)+'vh,0) scale('+(1+.26*s).toFixed(4)+')',
-            (.9-.45*s).toFixed(3));
+          SC.set(kGlw,'translate3d(-50%,'+(-9*s).toFixed(3)+'vh,0) scale('+(1+.18*s).toFixed(4)+')',
+            (.9-.22*s).toFixed(3));
         }
       });
     }
