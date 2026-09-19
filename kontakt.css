@@ -64,7 +64,24 @@
   pointer-events:none; mix-blend-mode:screen;
   background:linear-gradient(105deg, transparent 32%, rgba(255,255,255,.32) 48%, transparent 66%);
   transform:translateX(var(--sx,-40%)); will-change:transform; }
+/* ---------- the edge that closes with the shape ----------
+   A clip-path cuts everything the element paints, its border included, so
+   a card being shut down onto the receipt's footprint loses its edge on
+   the first frame of the move and spends the whole close as a soft slab
+   with no outline — and then a bordered pill appears out of nowhere at the
+   end. This is that edge, drawn inside the box at exactly where the clip
+   is, and moved by the same three numbers. It is off while the card is
+   open, so it never doubles the real border. */
+.kt-card::after{ content:""; position:absolute; z-index:2; pointer-events:none;
+  inset:var(--ey,0%) var(--ex,0%); opacity:var(--eo,0);
+  border:1px solid var(--edge); border-radius:var(--er,26px);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.3); }
 
+/* What is printed on the glass is not the glass. The letter's writing
+   goes before the paper closes, and the answer's appears once the paper
+   is open, so each card hands the loop one number for all of its ink. */
+.kt-ask .kt-meta, .kt-ask .kt-msg{ opacity:var(--ink,1); }
+.kt-reply .kt-meta, .kt-reply .kt-msg, .kt-reply .kt-from{ opacity:var(--ro,1); }
 .kt-meta{ display:flex; align-items:center; gap:10px; font-size:11.5px; font-weight:600;
   letter-spacing:.18em; text-transform:uppercase; color:rgba(238,243,248,.58); }
 .kt-meta b{ color:var(--ink); font-weight:600; }
@@ -95,12 +112,20 @@
   text-transform:uppercase; color:rgba(238,243,248,.52); }
 
 /* ---------- the receipt ----------
-   One beat, in the gap the letter leaves behind. */
+   Not a different object. It is the shape the letter closes to, in the
+   same glass, with the same edge and the same shadow — so when it takes
+   over at exactly that size there is nothing to see. Its box is fixed
+   rather than left to its own text, because the two cards are clipped
+   down to it and a footprint that changes with the language is a
+   footprint neither of them can aim at. */
 .kt-sent{ position:absolute; left:50%; top:50%; opacity:0;
-  transform:translate(-50%,-50%); display:flex; align-items:center; gap:11px;
-  padding:12px 22px; border-radius:999px; white-space:nowrap;
-  background:rgba(232,238,244,.11); border:1px solid var(--edge);
-  -webkit-backdrop-filter:blur(18px); backdrop-filter:blur(18px);
+  transform:translate(-50%,-50%); display:flex; align-items:center;
+  justify-content:center; gap:11px; box-sizing:border-box;
+  width:196px; height:52px; padding:0 22px; border-radius:999px; white-space:nowrap;
+  background:linear-gradient(150deg, rgba(232,238,244,.15), rgba(232,238,244,.05) 44%, rgba(232,238,244,.1));
+  border:1px solid var(--edge);
+  box-shadow:0 40px 90px -42px rgba(0,0,0,.76), inset 0 1px 0 rgba(255,255,255,.34);
+  -webkit-backdrop-filter:blur(24px) saturate(180%); backdrop-filter:blur(24px) saturate(180%);
   font-size:12.5px; font-weight:600; letter-spacing:.16em; text-transform:uppercase;
   pointer-events:none; will-change:transform,opacity; }
 .kt-sent svg{ display:block; width:16px; height:16px; flex:none;

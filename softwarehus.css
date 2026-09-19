@@ -108,11 +108,18 @@
   box-shadow:0 34px 70px -34px rgba(0,0,0,.82), inset 0 1px 0 rgba(255,255,255,.22);
   will-change:transform,opacity; }
 .sw-shot.pair img{ display:block; width:100%; height:100%; object-fit:cover; }
+/* They overlap. Apart, with clear air between them, two rectangles on a
+   dark stage are two rectangles on a dark stage — a collage, with a hole
+   in the middle of it. Overlapping by a corner they are two prints lying
+   on top of each other, which is a thing, and the one in front casts onto
+   the one behind so the depth is real rather than implied. */
 /* the screen, set back and up */
-.sw-shot.pair .sh-b{ right:0; top:0; width:78%; aspect-ratio:3/2;
-  filter:brightness(.78) saturate(.85); }
-/* and the code itself, in front and low */
-.sw-shot.pair .sh-f{ left:0; bottom:0; width:70%; aspect-ratio:3/2; }
+.sw-shot.pair .sh-b{ right:0; top:0; width:84%; aspect-ratio:3/2;
+  filter:brightness(.72) saturate(.78); }
+/* and the code itself, in front and low, lying across its corner */
+.sw-shot.pair .sh-f{ left:2%; bottom:10%; width:68%; aspect-ratio:3/2;
+  box-shadow:0 30px 60px -26px rgba(0,0,0,.9), -14px -14px 40px -18px rgba(0,0,0,.7),
+    inset 0 1px 0 rgba(255,255,255,.22); }
 
 /* act one — the text writes itself */
 .sw-bio{ margin:clamp(12px,2vh,22px) 0 0; max-width:30ch; white-space:pre-line;
