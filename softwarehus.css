@@ -88,6 +88,9 @@
   will-change:transform,opacity,filter; }
 .sw-shot img{ display:block; width:100%; height:100%; object-fit:cover; }
 .sw-shot.port{ --shotmax:48vh; max-width:calc(var(--shotmax) * .8); aspect-ratio:4/5; }
+/* A landscape picture in a column that was cut for a portrait one: the
+   height comes down so the wide frame does not push the words aside. */
+.sw-shot.wide{ --shotmax:32vh; max-width:calc(var(--shotmax) * 1.778); aspect-ratio:16/9; }
 
 /* act one — the text writes itself */
 .sw-bio{ margin:clamp(12px,2vh,22px) 0 0; max-width:30ch; white-space:pre-line;
@@ -146,6 +149,8 @@
   .sw-bio{ max-width:none; min-height:10.5em; font-size:clamp(16px,4.4vw,22px); }
   .sw-shot, .sw-shot.port{ --shotmax:30vh; aspect-ratio:16/10;
     max-width:calc(var(--shotmax) * 1.6); }
+  .sw-shot.wide{ --shotmax:26vh; aspect-ratio:16/9;
+    max-width:calc(var(--shotmax) * 1.778); }
   .sw-merge{ height:clamp(170px,34vh,240px); }
   .sw-sup{ padding:11px 15px; border-radius:14px; }
   .sw-sup s{ display:none; }

@@ -143,6 +143,9 @@ const NOTIF_CARDS = [
   { stamp: 'nu',          body: 'Sofie Kragh · kl. 18:00 · 2 pers. · Spiser her' },
   { stamp: '2 t. siden',  body: 'Anders Bay Nielsen · kl. 17:30 · To-go' },
 ];
+/* setImage on the screen these land on turns this off — see the note at
+   the top of act three. */
+let notifDrawn = true;
 
 function notificationTexture() {
   const c = document.createElement('canvas');
@@ -544,7 +547,14 @@ function pose(s) {
   const sw = io(seg(s, 0.76, 0.86));
   p2.mix.a = 1 - sw;
   p2.mix.b = sw;
-  p2.mix.n = out(seg(s, 0.86, 0.93));
+  /* The drawn card only exists while the second screen has nothing real on
+     it. It is a stand-in, measured off the device and filled with names
+     that are not anybody's; put one on top of a photograph of the actual
+     lock screen and the phone has two notification systems at once, which
+     reads as a fault rather than a phone. The moment a picture lands on
+     that screen the stand-in stands down — and the buzz stays, because the
+     buzz is the phone, not the card. */
+  p2.mix.n = notifDrawn ? out(seg(s, 0.86, 0.93)) : 0;
   p2.g.scale.setScalar(L.s2);
   p2.g.position.set(3.4 + (L.x2 - 3.4) * e2 + buzz * 0.012, L.y2, -0.7 + 0.7 * e2);
   /* A buzzing phone shifts a hair and tips barely at all. Read at the
@@ -728,6 +738,7 @@ window.LesregTelefon = {
       tex.needsUpdate = true;
       const target = which === 1 ? p1.sA : which === 2 ? p2.sA : p2.sB;
       target.map = tex; target.needsUpdate = true;
+      if (which === 3) notifDrawn = false;
       pending = true;
     };
     img.src = src;
@@ -782,5 +793,5 @@ const SCREENS = { 1: 'media/app-1', 2: 'media/app-2' };   // 1 = gaesteappen, 2 
   /* The third screen is the one the notification cards drop onto — the
      restaurant's own front page, which is where the order the card is
      announcing came from. */
-  window.LesregTelefon.setImage(3, 'media/app-2-notif.jpg?v=1');
+  window.LesregTelefon.setImage(3, 'media/app-2-notif.jpg?v=2');
 })();
