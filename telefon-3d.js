@@ -623,6 +623,25 @@ if ('IntersectionObserver' in window) {
     { rootMargin: '40% 0px' }).observe(canvas);
 } else { sectionNear = true; }
 
+/* A phone in Low Power Mode, or with auto-play turned off, refuses a
+   play() that nothing asked for — and it refuses it silently, because the
+   promise rejects and there is nobody to tell. The first time the reader
+   touches the page, whatever they touched it for, every clip is asked
+   again. That one gesture is all the permission a browser wants, and it
+   costs nothing on a device that never needed it. */
+let clipsUnlocked = false;
+function unlockClips() {
+  if (clipsUnlocked) return;
+  clipsUnlocked = true;
+  for (let i = 0; i < clips.length; i++) {
+    const v = clips[i];
+    if (v.el.preload === 'none') { v.el.preload = 'auto'; v.el.load(); }
+    v.el.play().catch(() => {});
+  }
+}
+['touchstart', 'pointerdown', 'click', 'keydown'].forEach(t =>
+  window.addEventListener(t, unlockClips, { once: true, passive: true, capture: true }));
+
 function driveClips(s) {
   for (let i = 0; i < clips.length; i++) {
     const v = clips[i], near = sectionNear && s > v.at - 0.12;
@@ -695,14 +714,21 @@ window.LesregTelefon = {
     /* The element has to be in the document. A detached <video> decodes in
        some browsers and refuses in others — Safari is the strict one — so
        it lives in a box that is present and laid out but has no size.
-       display:none would stop playback for the same reason. */
+       display:none would stop playback for the same reason.
+
+       And not at nothing, either. A phone is allowed to stop decoding a
+       video it has decided nobody can see, and opacity:0 on a box one
+       pixel across is a fair description of that. The films played on
+       every desk browser and on none of the phones. It is four pixels and
+       barely-not-zero now: still invisible to a reader, still a video the
+       device is willing to keep painting. */
     let hold = document.getElementById('telVids');
     if (!hold) {
       hold = document.createElement('div');
       hold.id = 'telVids';
       hold.setAttribute('aria-hidden', 'true');
-      hold.style.cssText = 'position:fixed;left:0;top:0;width:1px;height:1px;' +
-        'overflow:hidden;opacity:0;pointer-events:none;z-index:-1';
+      hold.style.cssText = 'position:fixed;left:0;top:0;width:4px;height:4px;' +
+        'overflow:hidden;opacity:0.008;pointer-events:none;z-index:-1';
       document.body.appendChild(hold);
     }
     hold.appendChild(el);
