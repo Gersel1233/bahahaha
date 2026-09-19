@@ -1637,8 +1637,11 @@
                  move with a little weight behind it, the way a stamp does.
                  The reading before it and the wait after it are untouched:
                  what was wrong was never how long it stood still. */
-              inkOut=SC.io(SC.seg(s,.398,.420)),
               shut=SC.io(SC.seg(s,.402,.448)),
+              /* the box gives a little as the shape arrives at the pill —
+                 a fifth of a second of weight, nothing anyone counts */
+              rk=SC.seg(s,.448,.492),
+              recoil=(s>=.448) ? (rk<=0 ? 0 : Math.exp(-8*rk)*Math.sin(Math.PI*2*1.9*rk)) : 0,
               /* the receipt is read while nothing moves */
               open=SC.io(SC.seg(s,.530,.628)),
               rOut=SC.io(SC.seg(s,.905,.95));
@@ -1669,7 +1672,7 @@
           SC.set(ktCard,
             'translate3d(0,'+((1-arrive)*4-rOut*10).toFixed(2)+'vh,'+
               (-560*(1-arrive)-rOut*280).toFixed(1)+'px) rotateX('+
-              ((1-arrive)*9+rOut*6).toFixed(2)+'deg) scale('+(.94+arrive*.06).toFixed(4)+')',
+              ((1-arrive)*9+rOut*6).toFixed(2)+'deg) scale('+((.94+arrive*.06)*(1-recoil*.016)).toFixed(4)+')',
             (arrive*(1-rOut)).toFixed(3),
             SC.blur((1-arrive)*14+rOut*12));
           ktCard.style.setProperty('--sx',(SC.seg(s,0,.38)*150-40).toFixed(1)+'%');
@@ -1681,15 +1684,29 @@
 
           /* and what is printed on it: three faces on the same centre,
              each one up only while its own shape is the shape */
-          SC.set(ktFAsk,null,(1-inkOut).toFixed(3));
-          /* the tick arrives on the last third of the shut, a touch past
-             its own size and back — a confirmation is an event, not a
-             label that happens to fade up */
-          var stamp=ktBack(SC.seg(shut,.66,1)),
-              stampOut=SC.io(SC.seg(open,0,.20));
-          SC.set(ktFSent,'scale('+((.84+.16*stamp)*(1-stampOut*.08)).toFixed(4)+')',
-            (Math.max(0,Math.min(1,SC.seg(shut,.66,1)*1.6))*(1-stampOut)).toFixed(3));
-          SC.set(ktFReply,null,SC.out(SC.seg(open,.56,1)).toFixed(3));
+          /* ---------- and what is written on it goes with the shape ----------
+             All three faces used to arrive and leave on opacity alone. The
+             box did something and the writing on it did nothing, which is
+             why the move never felt like one thing happening: a letter
+             that fades where it stands has not been sent anywhere.
+
+             They are tied to the shape now. The letter is drawn into the
+             point the button forms at — it goes small as the paper closes
+             around it, so what you see is the message being packed into
+             the button and not a message being switched off. The tick
+             grows out of that same point, from half its size, a touch past
+             itself and back. And the answer opens out of the button the
+             same way the box does. Three moves, one line through them. */
+          SC.set(ktFAsk,'scale('+(1-shut*.34).toFixed(4)+')',
+            (1-SC.io(SC.seg(shut,.10,.74))).toFixed(3));
+
+          var stamp=ktBack(SC.seg(shut,.62,1)),
+              stampOut=SC.io(SC.seg(open,0,.22));
+          SC.set(ktFSent,'scale('+((.55+.45*stamp)*(1-stampOut*.26)).toFixed(4)+')',
+            (Math.max(0,Math.min(1,SC.seg(shut,.62,1)*1.8))*(1-stampOut)).toFixed(3));
+
+          var rIn=SC.out(SC.seg(open,.40,1));
+          SC.set(ktFReply,'scale('+(.80+.20*rIn).toFixed(4)+')', rIn.toFixed(3));
 
           /* and the answer is written a shade quicker than the question
              was: the reader has read one of these already and knows what
@@ -1793,7 +1810,7 @@
   <script type="importmap">
   { "imports": { "three": "./vendor/three.module.js?v=0.184.0" } }
   </script>
-  <script type="module" src="telefon-3d.js?v=29"></script>
+  <script type="module" src="telefon-3d.js?v=30"></script>
 
   <script src="site.js?v=48" defer></script>
 </body>
