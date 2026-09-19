@@ -885,7 +885,7 @@
          between them is a dissolve between the same shape rather than a
          swap of two different ones. Read once and kept — a width off the
          layout every frame is a reflow in a loop that has to be free. */
-      var swFit=null, swEdge=-1;
+      var swFit=null, swEdge=-1, swHouseSh=-1;
       function swFits(){
         if(swFit) return swFit;
         var hw=swHouse.offsetWidth, hh=swHouse.offsetHeight;
@@ -964,6 +964,7 @@
             (a.sups||[]).forEach(function(su){ su.style.borderColor=''; su.style.boxShadow=''; });
             a.el.style.visibility='visible'; a.vis=true;
           });
+          swHouse.style.borderColor=''; swHouse.style.boxShadow=''; swHouseSh=-1;
           SC.plain(all.concat([swHook,swHouse,swDeck]));
           swHouse.style.transform='translate(-50%,-50%)';
           swCaret.style.display='none';
@@ -981,16 +982,21 @@
           /* the room comes up behind the glass, and steps back under the
              three suppliers so they have the stage to themselves */
           var pIn=SC.film(SC.seg(s,.01,.12)), pMid=SC.io(SC.seg(s,.29,.40)), pBack=SC.out(SC.seg(s,.66,.80));
-          SC.set(swPlate,'scale('+(1.05+s*.12).toFixed(4)+') translate3d('+(2-s*5).toFixed(2)+'vw,'+(-1+s*3).toFixed(2)+'vh,0)',
-            (pIn*(.92-pMid*.6+pBack*.46)).toFixed(3));
-          SC.set(swVeil,null,(pIn*(1+pMid*.12)).toFixed(3));
-          /* The room used to dip and then flare. Both were the explosion
-             talking. It lifts a little as the sheets close, the way a room
-             does when something in it catches the light, and that is all. */
-          var fl=SC.seg(s,.494,.575),
-              lift=(fl>0 && fl<1) ? Math.sin(fl*Math.PI)*.16 : 0;
-          SC.set(swGlow,'translate3d(0,'+(s*-10).toFixed(2)+'vh,0) scale('+(1+s*.28+lift*.5).toFixed(4)+')',
-            Math.min(1,(.6-s*.26+lift)).toFixed(3));
+          /* The room takes the hit with the block. On the frame the three
+             meet, the whole picture behind the glass pushes in a couple of
+             per cent and comes back on the same spring the pane lands on —
+             the camera, not a lamp. And the light in the room jumps on the
+             contact frame and falls away fast, the way it does when
+             something in the room catches it. */
+          var kt=SC.seg(s,.512,.586),
+              punch=(s>=.504) ? (kt<=0 ? 1 : Math.exp(-5.2*kt)*Math.cos(Math.PI*2*1.55*kt)) : 0,
+              gl=SC.seg(s,.504,.572),
+              glow=(gl>0&&gl<1) ? Math.pow(1-gl,2.4)*.55 : 0;
+          SC.set(swPlate,'scale('+(1.05+s*.12+punch*.028).toFixed(4)+') translate3d('+(2-s*5).toFixed(2)+'vw,'+(-1+s*3+punch*.6).toFixed(2)+'vh,0)',
+            (pIn*(.92-pMid*.6+pBack*.46)+glow*.12).toFixed(3));
+          SC.set(swVeil,null,(pIn*(1+pMid*.12)-glow*.18).toFixed(3));
+          SC.set(swGlow,'translate3d(0,'+(s*-10).toFixed(2)+'vh,0) scale('+(1+s*.28+glow*.6).toFixed(4)+')',
+            Math.min(1,(.6-s*.26+glow)).toFixed(3));
 
           /* act one — the trade, written out a character at a time */
           if(swAct(swA[0],.02,.34,s)){
@@ -1053,54 +1059,53 @@
                identical sheets, and identical sheets have nothing to step
                against. */
             var form=SC.io(SC.seg(s,.434,.478)),
-                pull=SC.seg(s,.482,REG), kk=Math.pow(pull,1.6),
-                /* the last of the travel closes the gap between the sheets */
-                shut=SC.io(SC.seg(s,.492,REG)),
-                /* Identical sheets end clean, but on the way across they
-                   still double where they lap, and doubled glass is
-                   brighter than single glass — a vertical step travelling
-                   with them. They give up most of their own weight while
-                   they cross, and the one they are becoming takes it on at
-                   the same rate, so there is never much left to double. */
-                give=SC.io(SC.seg(s,.486,REG));
+                /* The pull. A power of 2.6 is almost nothing for two thirds
+                   of the window and everything in the last third: they do
+                   not drift into the middle, they are taken there. */
+                pull=SC.seg(s,.478,REG), kk=Math.pow(pull,2.6),
+                shut=SC.io(SC.seg(s,.494,REG)),
+                /* They keep most of their weight on the way in. Doubled glass
+                   is brighter than single glass, and with a snap this fast
+                   the doubling lasts a handful of frames — which is what a
+                   thing moving too fast to see still looks like, not a seam.
+                   A little is given up so the frames do not flare. */
+                give=SC.io(SC.seg(s,.490,REG))*.38,
+                /* the frame of contact, held: nothing moves for a fifth of
+                   a second, which is how a hit is told from a fade */
+                hold=SC.seg(s,REG,REG+.008),
+                /* and then the weight lands — a damped spring, two bounces,
+                   from a tenth over to rest */
+                st=SC.seg(s,REG+.008,.586),
+                spring=Math.exp(-5.2*st)*Math.cos(Math.PI*2*1.55*st),
+                land=(s>=REG) ? (st<=0 ? 1 : spring) : 0;
             for(var i=0;i<swA[1].sups.length;i++){
               var q=SC.out(SC.seg(s,.318+i*.022,.386+i*.022)),
                   sp=swSpread[i],
                   x=sp*rest*(1-kk) + sp*(1-q)*(narrow?34:96),
                   y=sp*vgap*(1-kk),
-                  /* in from behind the glass, then apart in depth so the
-                     three read as sheets, then shut */
-                  z=-460*(1-q)*(1-kk) + sp*46*kk*(1-shut),
+                  /* in from behind the glass, apart in depth so the three read
+                     as sheets, then shut on the frame they meet */
+                  z=-460*(1-q)*(1-kk) + sp*52*kk*(1-shut),
                   base=.82+q*.18,
-                  /* Width to the fourth card's width the whole way in, and
-                     height to its height only over the last of it. The three
-                     are set in different words, so they are different widths
-                     — scaled by width alone they end the same width and three
-                     different heights, and three different heights is three
-                     lines you can see crossing each other. Squaring up on the
-                     other axis as well lands all three on exactly the one box.
-                     It stretches the type to do it, which would be a price if
-                     the type were still there; it has let go by then. */
                   sc=fit ? base+(fit[i].x-base)*form : base,
-                  scy=fit ? sc*(1+(fit[i].y/fit[i].x-1)*form) : sc;
+                  scy=fit ? sc*(1+(fit[i].y/fit[i].x-1)*form) : sc,
+                  /* stretched a little along the travel as they snap — the
+                     shape of speed, sideways on a desk, up and down on a
+                     phone */
+                  smear=kk*(1-shut)*.14,
+                  scx2=sc*(narrow?1-smear*.5:1+smear), scy2=scy*(narrow?1+smear:1-smear*.5);
               SC.set(swA[1].sups[i],
-                'translate(-50%,-50%) translate3d('+x.toFixed(2)+'vh,'+y.toFixed(2)+'vh,'+z.toFixed(0)+'px) rotateY('+(sp*(1-q)*-18*(1-kk)).toFixed(1)+'deg) scale('+sc.toFixed(4)+','+scy.toFixed(4)+')',
-                (q*(1-.78*give)*(1-SC.seg(s,REG-.002,REG+.008))).toFixed(3),
+                'translate(-50%,-50%) translate3d('+x.toFixed(2)+'vh,'+y.toFixed(2)+'vh,'+z.toFixed(0)+'px) rotateY('+(sp*(1-q)*-18*(1-kk)).toFixed(1)+'deg) scale('+scx2.toFixed(4)+','+scy2.toFixed(4)+')',
+                (q*(1-give)*(1-SC.seg(s,REG-.0015,REG+.004))).toFixed(3),
                 SC.blur((1-q)*13));
-              /* What slides into register is glass, not three labels
-                 piling up on each other. They say what they say while the
-                 cards are apart and let go on the way in. */
               var lb=1-SC.io(SC.seg(s,.430,.468));
               for(var m=0;m<swA[1].supTxt[i].length;m++)
                 SC.set(swA[1].supTxt[i][m],null,(lb*q).toFixed(3));
             }
 
-            /* A pane of this glass is drawn with a lit top edge and a hairline
-               all the way round. One pane wants them; three panes sliding
-               through each other are six edges and three highlights, and
-               that is the seam. They let go as the stack closes, so what
-               overlaps is the glass and nothing else — and the one that is
-               left brings its own edge back with it. */
+            /* the sheets' own edges let go before they meet — one pane wants
+               a lit top edge and a hairline, three panes through each other
+               are six edges, and that is a seam */
             var edge=+(1-SC.io(SC.seg(s,.446,.482))).toFixed(2);
             if(edge!==swEdge){
               swEdge=edge;
@@ -1113,20 +1118,28 @@
               }
             }
 
-            /* the recoil the stack closing gives the block — small, and
-               over almost before it is noticed */
-            var sk=SC.seg(s,REG,.534),
-                sh=(sk>0&&sk<1) ? Math.sin(sk*Math.PI*5)*(1-sk)*(1-sk) : 0;
-            SC.set(swMerge,'translate3d(0,'+(sh*-3.5).toFixed(2)+'px,0)', null);
+            /* The block takes the hit. Down hard on contact, held there for
+               the frame, then back up on the same spring the pane lands on
+               — the two are one body. */
+            var jolt=(s>=REG) ? (st<=0 ? 1 : Math.exp(-6*st)*Math.cos(Math.PI*2*1.55*st)) : 0;
+            SC.set(swMerge,'translate3d(0,'+(jolt*9).toFixed(2)+'px,0)', null);
 
-            /* the one that is left. It comes up on the same footprint the
-               three ended at, so nothing jumps, and settles a few per cent
-               — the weight of three sheets becoming one. */
-            var hs=SC.out(SC.seg(s,REG,.566));
-            SC.set(swHouse,'translate(-50%,-50%) scale('+(1+.055*Math.pow(1-hs,2.2)).toFixed(4)+')',
-              SC.io(SC.seg(s,.488,REG+.006)).toFixed(3), SC.blur(0));
-            /* and the light runs across it once */
-            var sw2=SC.seg(s,REG,.588);
+            /* The one that is left. It is there on the frame of contact,
+               a tenth too big, held, and then it lands: over, under, over,
+               still. That is the weight of three sheets becoming one — not
+               a fade-up, a landing. Its shadow is deepest on the frame it
+               hits and settles with it. */
+            var hsc=1+.11*land;
+            SC.set(swHouse,'translate(-50%,-50%) scale('+hsc.toFixed(4)+')',
+              (s>=REG-.0015?1:0).toFixed(0), SC.blur(0));
+            var hsh=+Math.max(0,land).toFixed(2);
+            if(hsh!==swHouseSh){
+              swHouseSh=hsh;
+              swHouse.style.boxShadow='0 '+(40+30*hsh).toFixed(0)+'px '+(76+50*hsh).toFixed(0)+'px -30px rgba(0,0,0,'+(.78+.2*hsh).toFixed(2)+'), inset 0 1px 0 rgba(255,255,255,'+(.36+.5*hsh).toFixed(2)+')';
+              swHouse.style.borderColor='rgba(232,238,244,'+(.28+.5*hsh).toFixed(2)+')';
+            }
+            /* and the light runs across it once, on the settle */
+            var sw2=SC.seg(s,REG+.006,.600);
             swHouse.style.setProperty('--sx',
               (sw2>0 && sw2<1 ? (-80+160*SC.io(sw2)).toFixed(1) : -80) + '%');
 
