@@ -44,44 +44,60 @@
 .kt-letter{ display:none; }
 #ktRSrc{ display:none; }
 
-/* ---------- the two cards ----------
-   The same pane of glass twice: a lit top edge, the room showing
-   through, and a slow highlight travelling across the surface as the
-   card turns. */
+/* ---------- the card ----------
+   One pane of glass. A lit top edge, the room showing through, and a slow
+   highlight travelling across the surface.
+
+   It carries no border and no shadow of its own, and that is the whole
+   point. A clip-path cuts everything an element paints — its border with
+   it — so a card that changes shape either loses its outline for the
+   length of the move or, if a second box is faded in at the right size to
+   cover for it, shows two outlines at once for a handful of frames. Both
+   were happening. The edge is drawn inside, at exactly where the clip is,
+   and moved by the same numbers; the shadow is cast by a box behind. One
+   object, one outline, at every frame of every state. */
 .kt-card{ position:absolute; left:0; right:0; padding:clamp(20px,2.6vw,34px);
-  border-radius:26px; overflow:hidden; transform-style:preserve-3d;
+  border:0; border-radius:26px; overflow:hidden; transform-style:preserve-3d;
   background:linear-gradient(150deg, rgba(232,238,244,.15), rgba(232,238,244,.05) 44%, rgba(232,238,244,.1));
   -webkit-backdrop-filter:blur(24px) saturate(180%); backdrop-filter:blur(24px) saturate(180%);
-  border:1px solid var(--edge);
-  box-shadow:0 40px 90px -42px rgba(0,0,0,.76), inset 0 1px 0 rgba(255,255,255,.34);
   will-change:transform,opacity,filter;
-  /* The four acts are stacked on the same spot, so by the finale both
-     cards are still lying over the mail address at zero opacity — and an
-     invisible element still catches the click. Nothing in them is meant
-     to be pressed, so nothing in them takes a press. */
+  /* nothing in it is meant to be pressed, so nothing in it takes a press */
   pointer-events:none; }
 .kt-card::before{ content:""; position:absolute; inset:0; border-radius:inherit;
-  pointer-events:none; mix-blend-mode:screen;
+  pointer-events:none; mix-blend-mode:screen; z-index:1;
   background:linear-gradient(105deg, transparent 32%, rgba(255,255,255,.32) 48%, transparent 66%);
   transform:translateX(var(--sx,-40%)); will-change:transform; }
-/* ---------- the edge that closes with the shape ----------
-   A clip-path cuts everything the element paints, its border included, so
-   a card being shut down onto the receipt's footprint loses its edge on
-   the first frame of the move and spends the whole close as a soft slab
-   with no outline — and then a bordered pill appears out of nowhere at the
-   end. This is that edge, drawn inside the box at exactly where the clip
-   is, and moved by the same three numbers. It is off while the card is
-   open, so it never doubles the real border. */
-.kt-card::after{ content:""; position:absolute; z-index:2; pointer-events:none;
-  inset:var(--ey,0%) var(--ex,0%); opacity:var(--eo,0);
-  border:1px solid var(--edge); border-radius:var(--er,26px);
+/* the edge, drawn where the clip is */
+.kt-card::after{ content:""; position:absolute; z-index:3; pointer-events:none;
+  inset:var(--ey,0%) var(--ex,0%); border-radius:var(--er,26px);
+  border:1px solid var(--edge);
   box-shadow:inset 0 1px 0 rgba(255,255,255,.3); }
 
-/* What is printed on the glass is not the glass. The letter's writing
-   goes before the paper closes, and the answer's appears once the paper
-   is open, so each card hands the loop one number for all of its ink. */
-.kt-ask .kt-meta, .kt-ask .kt-msg{ opacity:var(--ink,1); }
-.kt-reply .kt-meta, .kt-reply .kt-msg, .kt-reply .kt-from{ opacity:var(--ro,1); }
+/* and the weight, on a box of its own behind it */
+.kt-cast{ position:absolute; left:0; right:0; top:50%; opacity:0;
+  border-radius:26px; pointer-events:none;
+  box-shadow:0 40px 90px -42px rgba(0,0,0,.8), 0 12px 34px -20px rgba(0,0,0,.6);
+  will-change:transform,opacity; }
+
+/* ---------- the three faces ----------
+   The answer is the one in the flow, so the box is the size of the
+   largest state and the other two are clips of it. The other two are laid
+   over the middle of it, so all three read from the same centre. */
+.kt-face{ position:relative; z-index:2; }
+/* Centred by the box and not by a transform. The stage writes transform,
+   opacity and filter onto everything it is given, and the state it falls
+   back to is transform:none — so a face centred with translateY(-50%)
+   lost its centring the first time the scene was reset, and sat half its
+   own height too low for the rest of the page's life. Nothing in here
+   leans on a transform the loop is allowed to touch. */
+.kt-face.f-ask, .kt-face.f-sent{ position:absolute; z-index:2;
+  left:clamp(20px,2.6vw,34px); right:clamp(20px,2.6vw,34px);
+  top:0; bottom:0; display:grid; align-content:center; }
+.kt-face.f-sent{ display:flex; align-items:center; justify-content:center; gap:11px;
+  font-size:12.5px; font-weight:600; letter-spacing:.16em; text-transform:uppercase; }
+.kt-face.f-sent svg{ display:block; width:16px; height:16px; flex:none;
+  stroke:#fff; fill:none; }
+
 .kt-meta{ display:flex; align-items:center; gap:10px; font-size:11.5px; font-weight:600;
   letter-spacing:.18em; text-transform:uppercase; color:rgba(238,243,248,.58); }
 .kt-meta b{ color:var(--ink); font-weight:600; }
@@ -97,10 +113,10 @@
   animation:ktBlink .94s steps(1,end) infinite; }
 @keyframes ktBlink{ 0%,49%{ opacity:1; } 50%,100%{ opacity:.22; } }
 
-.kt-reply .kt-meta b{ color:#fff; }
-.kt-reply .kt-msg{ font-weight:600; letter-spacing:-.028em;
+.f-reply .kt-meta b{ color:#fff; }
+.f-reply .kt-msg{ font-weight:600; letter-spacing:-.028em;
   font-size:clamp(16px,1.7vw,26px); }
-.kt-reply .kt-msg s{ display:block; text-decoration:none; margin-top:10px;
+.f-reply .kt-msg s{ display:block; text-decoration:none; margin-top:10px;
   font-weight:400; font-size:clamp(13.5px,1.05vw,16.5px); line-height:1.55;
   letter-spacing:-.006em; color:rgba(238,243,248,.76); }
 .kt-from{ display:flex; align-items:center; gap:11px;
@@ -110,26 +126,6 @@
 .kt-from b{ font-size:13.5px; font-weight:600; letter-spacing:-.02em; }
 .kt-from s{ display:block; text-decoration:none; font-size:11px; letter-spacing:.14em;
   text-transform:uppercase; color:rgba(238,243,248,.52); }
-
-/* ---------- the receipt ----------
-   Not a different object. It is the shape the letter closes to, in the
-   same glass, with the same edge and the same shadow — so when it takes
-   over at exactly that size there is nothing to see. Its box is fixed
-   rather than left to its own text, because the two cards are clipped
-   down to it and a footprint that changes with the language is a
-   footprint neither of them can aim at. */
-.kt-sent{ position:absolute; left:50%; top:50%; opacity:0;
-  transform:translate(-50%,-50%); display:flex; align-items:center;
-  justify-content:center; gap:11px; box-sizing:border-box;
-  width:196px; height:52px; padding:0 22px; border-radius:999px; white-space:nowrap;
-  background:linear-gradient(150deg, rgba(232,238,244,.15), rgba(232,238,244,.05) 44%, rgba(232,238,244,.1));
-  border:1px solid var(--edge);
-  box-shadow:0 40px 90px -42px rgba(0,0,0,.76), inset 0 1px 0 rgba(255,255,255,.34);
-  -webkit-backdrop-filter:blur(24px) saturate(180%); backdrop-filter:blur(24px) saturate(180%);
-  font-size:12.5px; font-weight:600; letter-spacing:.16em; text-transform:uppercase;
-  pointer-events:none; will-change:transform,opacity; }
-.kt-sent svg{ display:block; width:16px; height:16px; flex:none;
-  stroke:#fff; fill:none; }
 
 /* ---------- the finale ---------- */
 .kt-finale{ position:absolute; left:0; right:0; text-align:center;
@@ -193,7 +189,7 @@
 /* On a short window the reply's second paragraph and the line under the
    mail are the two things that push the cards past the glass. */
 @media(max-height:740px){
-  .kt-reply .kt-msg s{ display:none; }
+  .f-reply .kt-msg s{ display:none; }
   .kt-note{ display:none; }
 }
 
@@ -206,10 +202,16 @@
   .scene.kt .stage{ position:static; height:auto; padding:12vh 0; display:block;
     perspective:none; }
   .kt-rig{ width:min(760px,92vw); margin:0 auto; display:grid; gap:20px; }
+  /* the three faces come out of their stack and read as three cards */
   .kt-card{ position:relative; pointer-events:auto; opacity:1 !important;
-    transform:none !important; filter:none !important; }
-  .kt-card::before{ display:none; }
-  .kt-sent{ display:none; }
+    transform:none !important; filter:none !important; clip-path:none !important;
+    border:1px solid var(--edge);
+    box-shadow:0 40px 90px -42px rgba(0,0,0,.76), inset 0 1px 0 rgba(255,255,255,.34); }
+  .kt-card::before, .kt-card::after{ display:none; }
+  .kt-cast, .kt-face.f-sent{ display:none; }
+  .kt-face.f-ask{ position:relative; left:auto; right:auto; top:auto;
+    transform:none; margin-bottom:26px;
+    padding-bottom:26px; border-bottom:1px solid rgba(232,238,244,.14); }
   .kt-caret{ display:none; }
   .kt-finale{ position:relative; margin-top:26px; opacity:1 !important;
     transform:none !important; filter:none !important; }

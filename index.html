@@ -22,7 +22,7 @@
 <link rel="stylesheet" href="kunder.css?v=16" />
 <link rel="stylesheet" href="telefon.css?v=6" />
 <link rel="stylesheet" href="softwarehus.css?v=20" />
-<link rel="stylesheet" href="kontakt.css?v=5" />
+<link rel="stylesheet" href="kontakt.css?v=6" />
 <link rel="stylesheet" href="mork.css?v=4" />
 <link rel="stylesheet" href="dybde.css?v=3" />
 </head>
@@ -346,31 +346,52 @@
 
       <div class="kt-rig" id="ktRig">
 
-        <article class="kt-card kt-ask" id="ktAsk">
-          <div class="kt-meta"><b data-da="Til">To</b> mgersel@lesreg.com<em></em><span class="kt-tag" data-da="Ny besked">New message</span></div>
-          <p class="kt-msg"><span id="ktTyped"></span><i class="kt-caret" id="ktCaret" aria-hidden="true"></i></p>
-        </article>
-        <!-- the letter itself lives here so the language switch can reach it;
-             the act above reads it a character at a time -->
-        <p class="kt-letter" id="ktLetter" data-da="Hej Mikkel. Vi har en caf&eacute; p&aring; havnen, og vi bruger for lang tid p&aring; telefonen. Kan I bygge noget, vi selv kan styre?">Hi Mikkel. We run a caf&eacute; down by the harbour, and we spend far too long on the phone. Could you build us something we can run ourselves?</p>
+        <!-- ONE card. Not three.
 
-        <div class="kt-sent" id="ktSent" aria-hidden="true">
-          <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg>
-          <span data-da="Sendt">Sent</span>
-        </div>
+             The letter, the receipt and the answer were three boxes taking
+             turns on the same spot, and however carefully two of them are
+             cross-faded at matching size, for a handful of frames there are
+             two outlines on the glass — one shape a little bigger than the
+             other, both lit. That is what was wrong with it: you could see
+             the join, so it was never one thing changing, it was two things
+             swapping.
 
-        <article class="kt-card kt-reply" id="ktReply">
-          <div class="kt-meta"><b data-da="Svar">Reply</b> <span data-da="efter 14 minutter">after 14 minutes</span><em></em><span class="kt-tag">Mikkel</span></div>
-          <!-- The answer is written, not printed. It arrived whole while the
-               letter above it had typed itself out, which made the reply
-               read as a caption rather than as somebody answering. -->
-          <p class="kt-msg"><span id="ktRTyped"></span><i class="kt-caret" id="ktRCaret" aria-hidden="true"></i><s id="ktRSub" data-da="Jeg ringer i morgen formiddag, s&aring; gennemg&aring;r vi det hele &mdash; og I f&aring;r en plan med fast pris inden weekenden.">I&rsquo;ll call tomorrow morning and we&rsquo;ll go through all of it &mdash; and you&rsquo;ll have a plan with a fixed price before the weekend.</s></p>
-          <p class="kt-letter" id="ktRSrc" data-da="Ja. Det kan vi bygge.">Yes. We can build that.</p>
-          <div class="kt-from">
-            <svg viewBox="0 0 128 128" aria-hidden="true"><path d="M0 0H94l34 34v94H0Z" fill="#e8eef4"/><path d="M44 28h18v62h38v18H44Z" fill="#0c0e11"/></svg>
-            <div><b>Mikkel Sten Gersel</b><s data-da="Lesreg &middot; softwarehus">Lesreg &middot; software house</s></div>
+             There is one box now, and it is the size of the largest of the
+             three. Everything that happens to it is a change of shape:
+             clipped down to the letter's height, then to the receipt's
+             footprint, then opened out to the answer's. What is printed on
+             it is three faces stacked on the same spot, and only the shape
+             says which state it is in. There is never a second edge to see,
+             because there is never a second object. -->
+        <span class="kt-cast" id="ktCast" aria-hidden="true"></span>
+        <article class="kt-card" id="ktCard">
+
+          <div class="kt-face f-ask" id="ktFAsk">
+            <div class="kt-meta"><b data-da="Til">To</b> mgersel@lesreg.com<em></em><span class="kt-tag" data-da="Ny besked">New message</span></div>
+            <p class="kt-msg"><span id="ktTyped"></span><i class="kt-caret" id="ktCaret" aria-hidden="true"></i></p>
+          </div>
+
+          <div class="kt-face f-sent" id="ktFSent" aria-hidden="true">
+            <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg>
+            <span data-da="Sendt">Sent</span>
+          </div>
+
+          <!-- the answer is the one face that is in the flow, so the box is
+               its size and the other two are clips of it -->
+          <div class="kt-face f-reply" id="ktFReply">
+            <div class="kt-meta"><b data-da="Svar">Reply</b> <span data-da="efter 14 minutter">after 14 minutes</span><em></em><span class="kt-tag">Mikkel</span></div>
+            <p class="kt-msg"><span id="ktRTyped"></span><i class="kt-caret" id="ktRCaret" aria-hidden="true"></i><s id="ktRSub" data-da="Jeg ringer i morgen formiddag, s&aring; gennemg&aring;r vi det hele &mdash; og I f&aring;r en plan med fast pris inden weekenden.">I&rsquo;ll call tomorrow morning and we&rsquo;ll go through all of it &mdash; and you&rsquo;ll have a plan with a fixed price before the weekend.</s></p>
+            <div class="kt-from">
+              <svg viewBox="0 0 128 128" aria-hidden="true"><path d="M0 0H94l34 34v94H0Z" fill="#e8eef4"/><path d="M44 28h18v62h38v18H44Z" fill="#0c0e11"/></svg>
+              <div><b>Mikkel Sten Gersel</b><s data-da="Lesreg &middot; softwarehus">Lesreg &middot; software house</s></div>
+            </div>
           </div>
         </article>
+
+        <!-- the two texts live here so the language switch can reach them;
+             the act above reads them a character at a time -->
+        <p class="kt-letter" id="ktLetter" data-da="Hej Mikkel. Vi har en caf&eacute; p&aring; havnen, og vi bruger for lang tid p&aring; telefonen. Kan I bygge noget, vi selv kan styre?">Hi Mikkel. We run a caf&eacute; down by the harbour, and we spend far too long on the phone. Could you build us something we can run ourselves?</p>
+        <p class="kt-letter" id="ktRSrc" data-da="Ja. Det kan vi bygge.">Yes. We can build that.</p>
 
         <div class="kt-finale" id="ktFin">
           <h2 data-split data-da="Har I noget p&aring; hjernen?">Got something on your mind?</h2>
@@ -1520,12 +1541,14 @@
        overshoot on the reply, so it lands rather than arrives. */
     var kt=document.getElementById('contact');
     if(kt){
-      var ktAsk=document.getElementById('ktAsk'),
+      var ktCard=document.getElementById('ktCard'),
+          ktCast=document.getElementById('ktCast'),
+          ktFAsk=document.getElementById('ktFAsk'),
+          ktFSent=document.getElementById('ktFSent'),
+          ktFReply=document.getElementById('ktFReply'),
           ktTyped=document.getElementById('ktTyped'),
           ktCaret=document.getElementById('ktCaret'),
           ktLetter=document.getElementById('ktLetter'),
-          ktSent=document.getElementById('ktSent'),
-          ktReply=document.getElementById('ktReply'),
           ktRTyped=document.getElementById('ktRTyped'),
           ktRCaret=document.getElementById('ktRCaret'),
           ktRSub=document.getElementById('ktRSub'),
@@ -1535,157 +1558,135 @@
           ktRig=document.getElementById('ktRig'),
           ktA1=document.getElementById('ktA1'), ktA2=document.getElementById('ktA2'),
           ktHd=ktFin.querySelector('h2'), ktW=[];
-      var back=function(t){ var c=1.4, u=t-1; return 1+(c+1)*u*u*u+c*u*u; };
-      /* The three stacked pieces are absolutely placed, so each is centred
-         once by its own height rather than measured every frame. */
-      function ktCentre(el){ el.style.top='50%'; el.style.marginTop=(-el.offsetHeight/2)+'px'; }
-      /* The three pieces are one object in three states, so the loop has to
-         know all three boxes: the letter shuts down onto the receipt's
-         footprint, and the answer opens back out of it. Read when the
-         layout is read and kept. */
-      var ktBox={aw:1,ah:1,pw:1,ph:1,rw:1,rh:1};
-      function ktMeasure(){
-        var aw=ktAsk.offsetWidth, ah=ktAsk.offsetHeight,
-            pw=ktSent.offsetWidth, ph=ktSent.offsetHeight,
-            rw=ktReply.offsetWidth, rh=ktReply.offsetHeight;
-        if(aw&&ah&&pw&&ph&&rw&&rh) ktBox={aw:aw,ah:ah,pw:pw,ph:ph,rw:rw,rh:rh};
+
+      /* ---------- the three shapes ----------
+         One box, the size of the largest state, and three rectangles cut
+         out of it: the letter's height, the receipt's footprint, the whole
+         thing. Everything between them is an interpolation of three
+         numbers — how far in from the sides, how far in from top and
+         bottom, and how round the corners are. Read when the layout is
+         read and kept; a box measured every frame is a reflow in a loop
+         that has to be free. */
+      var ktB={ bw:1, bh:1, ah:1, pw:196, ph:52 }, ktCastR='';
+      function ktCentre(el,h){ el.style.top='50%'; el.style.marginTop=(-h/2)+'px'; }
+      function ktLayout(){
+        if(reduce) return;
+        var bw=ktCard.offsetWidth, bh=ktCard.offsetHeight,
+            pad=parseFloat(getComputedStyle(ktCard).paddingTop)||24,
+            ah=ktFAsk.offsetHeight + pad*2;
+        if(bw>0&&bh>0) ktB={ bw:bw, bh:bh, ah:Math.min(bh,ah), pw:196, ph:52 };
+        ktCentre(ktCard, ktB.bh);
+        ktCentre(ktFin, ktFin.offsetHeight);
+        if(ktCast){ ktCast.style.height=ktB.bh+'px'; ktCentre(ktCast, ktB.bh); }
       }
-      /* inset() will not take a negative, so a clip is only ever written
-         while the shape is actually closing — an inset of nought still
-         cuts the shadow off, and a card is not meant to lose its shadow
-         for the four seconds it spends being read. */
-      function ktClip(el, k, hIn, vIn){
-        var x=(hIn*k).toFixed(2), y=(vIn*k).toFixed(2), r=(26+k*k*420).toFixed(0);
-        el.style.clipPath = k<=0.002 ? 'none'
-          : 'inset('+y+'% '+x+'% '+y+'% '+x+'% round '+r+'px)';
-        /* and the drawn edge goes exactly where the clip is */
-        el.style.setProperty('--ex', x+'%');
-        el.style.setProperty('--ey', y+'%');
-        el.style.setProperty('--er', r+'px');
-        el.style.setProperty('--eo', Math.min(1,k*7).toFixed(3));
+      /* the shape, and the edge that is drawn where the clip is */
+      function ktShape(h, v, r){
+        var hs=h.toFixed(2)+'%', vs=v.toFixed(2)+'%', rs=r.toFixed(0)+'px';
+        ktCard.style.clipPath='inset('+vs+' '+hs+' '+vs+' '+hs+' round '+rs+')';
+        ktCard.style.setProperty('--ex',hs);
+        ktCard.style.setProperty('--ey',vs);
+        ktCard.style.setProperty('--er',rs);
+        if(ktCast && rs!==ktCastR){ ktCastR=rs; ktCast.style.borderRadius=rs; }
       }
-      /* On the reduced-motion path the three pieces come out of absolute and
-         stack as an ordinary column. Centring them there pulls each one half
-         its own height upwards, straight through the one above it — so the
-         placing only happens when there is a stage to place them on. */
-      function ktLayout(){ if(reduce) return; [ktAsk,ktReply,ktFin].forEach(ktCentre); ktMeasure(); }
       /* The letter is read out of the page rather than held as a string in
-         here, so switching language switches the letter too. nodeValue is
-         a straight read of the one text node — cheap enough per frame, and
-         it is the only way to notice the swap without watching for it. */
+         here, so switching language switches the letter too. */
       var ktSrc='', ktN=-1;
       SC.add({
         el:kt, leadF:0,
         /* This one plays itself, on a clock, the moment the stage is in the
            window — on a phone as much as on a desktop. It is a letter being
            written and answered, and reading is not something a scroll can
-           set the speed of: wound by hand it either raced past a sentence
-           nobody had finished, or held a card still halfway through a word.
-           Seventeen seconds is what the four acts need to be read once,
-           without waiting between them. */
+           set the speed of. */
         auto:true, dur:21000,
-        /* build() runs again when the language is switched, and the Danish
-           reply is a different height from the English one, so the cards
-           have to be re-centred on the same beat as the words. */
         build:function(){ ktW=SC.split(ktHd); ktLayout(); },
         base:function(){
           ktSrc=(ktLetter.firstChild && ktLetter.firstChild.nodeValue)||'';
           ktTyped.textContent=ktSrc;
           ktRTxt=(ktRSrc.firstChild && ktRSrc.firstChild.nodeValue)||'';
           ktRTyped.textContent=ktRTxt; ktRN=-1;
-          SC.plain([ktAsk,ktReply,ktFin,ktRig,ktRSub].concat(ktW));
-          ktAsk.style.clipPath='none'; ktReply.style.clipPath='none';
-          ktAsk.style.setProperty('--eo','0'); ktReply.style.setProperty('--eo','0');
-          ktAsk.style.setProperty('--ink','1'); ktReply.style.setProperty('--ro','1');
+          SC.plain([ktCard,ktFAsk,ktFSent,ktFReply,ktFin,ktRig,ktRSub,ktCast].concat(ktW));
+          ktCard.style.clipPath='none';
+          ktCard.style.removeProperty('--ex'); ktCard.style.removeProperty('--ey');
+          ktCard.style.removeProperty('--er');
+          if(ktCast){ ktCast.style.opacity='0'; ktCast._op='0'; }
           ktRCaret.style.display='none';
           ktCaret.style.display='none';
-          SC.set(ktSent,null,'0');
           ktLayout();
         },
         paint:function(s){
           var L=(ktLetter.firstChild && ktLetter.firstChild.nodeValue)||'';
           if(L!==ktSrc){ ktSrc=L; ktN=-1; ktLayout(); }
-
           var R=(ktRSrc.firstChild && ktRSrc.firstChild.nodeValue)||'';
           if(R!==ktRTxt){ ktRTxt=R; ktRN=-1; ktLayout(); }
 
           /* ---------- one object, three states ----------
-             The letter, the receipt and the answer used to be three
-             things taking turns on the same spot: one shrank away, one
-             faded up in the hole it left, and one dropped in from above.
-             Three fades in a row, and a second and a half in the middle
-             where a small grey pill sat alone on an empty screen.
-
-             They are one object now. The letter shuts down onto the
-             receipt's own footprint — the ink goes first, then the glass
-             itself closes in from all four sides and the corners round off
-             into the pill as it gets small enough for that to be what it
-             is. The receipt is that same shape, so it takes over at the
-             identical size and nobody sees the hand-off. And then it opens
-             back out the other way, into the answer.
-
-             It is the same device as the three suppliers becoming the
-             block: shapes that change, not things that swap. The dead air
-             in the middle is gone because there is no gap to leave —
-             something is always on its way somewhere. */
-
-          /* act one — the message writes itself, and is sent */
+             It writes, it shuts down onto the receipt's footprint, it
+             opens back out into the answer. Nothing is ever swapped for
+             anything — there is one box and one outline the whole way
+             through, so there is no frame anywhere in it where two edges
+             are lit at once. */
           var arrive=SC.film(SC.seg(s,0,.06)),
               typeP=SC.seg(s,.035,.30),
               /* the ink goes before the paper does */
-              inkOut=SC.io(SC.seg(s,.392,.438)),
-              shut=SC.io(SC.seg(s,.404,.482)),
-              /* and the receipt takes over at the size the letter has
-                 closed to, which is its own size. The hand-off happens
-                 while the shape is still moving, not after it has stopped:
-                 a swap under motion is a swap nobody sees. */
-              hand=SC.io(SC.seg(shut,.88,1));
+              inkOut=SC.io(SC.seg(s,.386,.432)),
+              /* and the paper shuts, on a long ease in and out */
+              shut=SC.io(SC.seg(s,.398,.486)),
+              /* the receipt is read while nothing moves */
+              open=SC.io(SC.seg(s,.552,.662)),
+              rOut=SC.io(SC.seg(s,.905,.95));
+
+          /* the three rectangles, and the road between them */
+          var vAsk=50*(1-ktB.ah/ktB.bh),
+              hPill=50*(1-ktB.pw/ktB.bw),
+              vPill=50*(1-ktB.ph/ktB.bh), h, v, r;
+          if(open<=0){
+            h=hPill*shut;
+            v=vAsk+(vPill-vAsk)*shut;
+            r=26+shut*shut*420;
+          } else {
+            h=hPill*(1-open);
+            v=vPill*(1-open);
+            r=26+(1-open)*(1-open)*420;
+          }
+          ktShape(h,v,r);
+
           var n=Math.round(typeP*ktSrc.length);
           if(n!==ktN){ ktN=n; ktTyped.textContent=ktSrc.slice(0,n); }
           var writing = typeP>0 && typeP<1 && shut<.02;
           if(writing !== (ktCaret.style.display===''))
             ktCaret.style.display = writing ? '' : 'none';
-          SC.set(ktAsk,
-            'translate3d(0,'+((1-arrive)*4).toFixed(2)+'vh,'+
-              (-560*(1-arrive)).toFixed(1)+'px) rotateX('+
-              ((1-arrive)*9).toFixed(2)+'deg) scale('+(.94+arrive*.06).toFixed(4)+')',
-            (arrive*(1-hand)).toFixed(3), SC.blur((1-arrive)*14));
-          ktAsk.style.setProperty('--ink',(1-inkOut).toFixed(3));
-          ktClip(ktAsk, shut, 50*(1-ktBox.pw/ktBox.aw), 50*(1-ktBox.ph/ktBox.ah));
-          ktAsk.style.setProperty('--sx',(SC.seg(s,0,.40)*150-40).toFixed(1)+'%');
 
-          /* act two — the receipt. One beat, and it is the shape the
-             letter closed to, so it neither arrives nor leaves: it is
-             what is standing there while nothing is happening. */
-          var open=SC.io(SC.seg(s,.530,.632)),
-              /* it goes when the answer has opened past its own size, not
-                 at some moment on the clock that happens to be near it */
-              pillOut=SC.io(SC.seg(open,0,.14));
-          SC.set(ktSent,'translate(-50%,-50%)',
-            (hand*(1-pillOut)).toFixed(3));
+          /* the box itself only arrives and leaves; everything else it
+             does, it does by changing shape */
+          SC.set(ktCard,
+            'translate3d(0,'+((1-arrive)*4-rOut*10).toFixed(2)+'vh,'+
+              (-560*(1-arrive)-rOut*280).toFixed(1)+'px) rotateX('+
+              ((1-arrive)*9+rOut*6).toFixed(2)+'deg) scale('+(.94+arrive*.06).toFixed(4)+')',
+            (arrive*(1-rOut)).toFixed(3),
+            SC.blur((1-arrive)*14+rOut*12));
+          ktCard.style.setProperty('--sx',(SC.seg(s,0,.38)*150-40).toFixed(1)+'%');
 
-          /* act three — and it opens back out into the answer, which is
-             then written the way the letter above it was */
-          var rOut=SC.io(SC.seg(s,.905,.95));
-          SC.set(ktReply,
-            'translate3d(0,'+(-rOut*12).toFixed(2)+'vh,'+(-rOut*300).toFixed(1)+'px) rotateX('+
-              (rOut*6).toFixed(2)+'deg) scale(1)',
-            ((s>=.528?1:0)*(1-rOut)).toFixed(3), SC.blur(rOut*12));
-          ktClip(ktReply, 1-open, 50*(1-ktBox.pw/ktBox.rw), 50*(1-ktBox.ph/ktBox.rh));
-          /* what is printed on it comes up once the paper is open — a card
-             whose text is already there while it is still a pill is a
-             pill with somebody else's writing showing through it */
-          ktReply.style.setProperty('--ro',SC.out(SC.seg(s,.574,.632)).toFixed(3));
-          ktReply.style.setProperty('--sx',(SC.seg(s,.56,.95)*150-40).toFixed(1)+'%');
-          var rType=SC.seg(s,.628,.752),
+          /* the weight follows the part of the box that is showing */
+          if(ktCast) SC.set(ktCast,
+            'scale('+(1-h/50).toFixed(4)+','+(1-v/50).toFixed(4)+')',
+            (arrive*(1-rOut)*.92).toFixed(3));
+
+          /* and what is printed on it: three faces on the same centre,
+             each one up only while its own shape is the shape */
+          SC.set(ktFAsk,null,(1-inkOut).toFixed(3));
+          SC.set(ktFSent,null,
+            (SC.io(SC.seg(shut,.80,1))*(1-SC.io(SC.seg(open,0,.20)))).toFixed(3));
+          SC.set(ktFReply,null,SC.out(SC.seg(open,.56,1)).toFixed(3));
+
+          var rType=SC.seg(s,.672,.786),
               rn=Math.round(rType*ktRTxt.length);
           if(rn!==ktRN){ ktRN=rn; ktRTyped.textContent=ktRTxt.slice(0,rn); }
           var rWriting = rType>0 && rType<1 && rOut<.02;
           if(rWriting !== (ktRCaret.style.display===''))
             ktRCaret.style.display = rWriting ? '' : 'none';
           /* the line under it follows the sentence, not the card */
-          SC.set(ktRSub,'translate3d(0,'+((1-SC.out(SC.seg(s,.770,.828)))*10).toFixed(2)+'px,0)',
-            SC.out(SC.seg(s,.770,.828)).toFixed(3));
+          SC.set(ktRSub,'translate3d(0,'+((1-SC.out(SC.seg(s,.796,.852)))*10).toFixed(2)+'px,0)',
+            SC.out(SC.seg(s,.796,.852)).toFixed(3));
 
           /* act four — the question goes back to the reader */
           var fp=SC.out(SC.seg(s,.925,.995));
