@@ -21,7 +21,7 @@
 <link rel="stylesheet" href="bbh.css?v=10" />
 <link rel="stylesheet" href="kunder.css?v=16" />
 <link rel="stylesheet" href="telefon.css?v=6" />
-<link rel="stylesheet" href="softwarehus.css?v=18" />
+<link rel="stylesheet" href="softwarehus.css?v=19" />
 <link rel="stylesheet" href="kontakt.css?v=5" />
 <link rel="stylesheet" href="mork.css?v=4" />
 <link rel="stylesheet" href="dybde.css?v=3" />
@@ -128,7 +128,17 @@
       <span class="sw-glow" id="swGlow" aria-hidden="true"></span>
       <span class="sw-plate" id="swPlate" aria-hidden="true"></span>
       <span class="sw-veil" id="swVeil" aria-hidden="true"></span>
-      <span class="sw-vign" aria-hidden="true"></span>
+      <span class="sw-vign" id="swVign" aria-hidden="true"></span>
+
+      <!-- The film runs itself once. After that it belongs to the reader:
+           this is the line it can be pulled back and forth on, so anything
+           that went past too quickly can be gone back to and read. -->
+      <div class="sw-rail" id="swRail" role="slider" tabindex="-1"
+           aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"
+           aria-label="Spol gennem afsnittet" title="Tr&aelig;k for at spole">
+        <span class="sw-rail-fill" id="swRailFill"></span>
+        <span class="sw-rail-knob" id="swRailKnob"></span>
+      </div>
 
       <div class="sw-deck">
 
@@ -142,12 +152,10 @@
             <div class="sw-kicker" data-da="Hvad er et softwarehus">What a software house is</div>
             <p class="sw-bio"><span id="swTyped"></span><i class="sw-caret" id="swCaret" aria-hidden="true"></i></p>
           </div>
-          <!-- Two frames, held at two depths the way the stage holds
-               everything else. They come out of nothing, one after the
-               other — see swPop. -->
-          <div class="sw-shot pair">
+          <!-- One frame, held like a bubble: round, lit round its own rim,
+               and never quite still. It comes out of nothing — see swPop. -->
+          <div class="sw-shot bubble">
             <span class="sh-b"><img src="photos/kode-skaerm.jpg?v=1" alt="" loading="lazy" decoding="async" width="1280" height="853" /></span>
-            <span class="sh-f"><img src="photos/kode-naer.jpg?v=1" alt="" loading="lazy" decoding="async" width="1280" height="853" /></span>
           </div>
         </div>
         <!-- the text of act one lives here so the language switch can reach
@@ -812,6 +820,15 @@
             var lf = (o.liveF==null ? 0.72 : o.liveF);
             var live = (y + vh*lf) > o.top && y < (o.top + o.h - vh*0.28);
             if(live!==o.live){ o.live=live; o.el.classList.toggle('live', live); }
+            /* A film that has been played once can be read by hand. From
+               the frame somebody takes hold of it the clock is out of it
+               altogether — it does not creep on underneath, and it does
+               not start again when the section is left and come back to.
+               It stays exactly where it was put. */
+            if(o.scrubv!=null){
+              if(Math.abs(o.scrubv-o.last)>0.0004){ o.last=o.scrubv; o.paint(o.scrubv); }
+              continue;
+            }
             /* A manual scene waits to be asked. The scroll still decides
                whether it MAY run — leaving the section puts it back to the
                start, so nobody arrives at it halfway through something they
@@ -894,6 +911,15 @@
           }
         },
         measure:measure,
+        /* hand a self-playing scene over to the reader, or give it back to
+           its own clock with null */
+        scrub:function(el,v){
+          for(var i=0;i<scenes.length;i++){
+            if(scenes[i].el!==el) continue;
+            scenes[i].scrubv = (v==null) ? null : Math.max(0,Math.min(1,v));
+            if(v==null){ scenes[i].t0=null; scenes[i].last=-1; }
+          }
+        },
         /* start a manual scene, or start it again from the top */
         go:function(el){
           for(var i=0;i<scenes.length;i++){
@@ -918,7 +944,11 @@
           swTyped=document.getElementById('swTyped'), swCaret=document.getElementById('swCaret'),
           swBio=document.getElementById('swBio'), swHouse=document.getElementById('swHouse'),
           swDeck=swEl.querySelector('.sw-deck'), swMerge=swEl.querySelector('.sw-merge'),
-          swCast=document.getElementById('swCast');
+          swCast=document.getElementById('swCast'),
+          swVign=document.getElementById('swVign'),
+          swRail=document.getElementById('swRail'),
+          swRailFill=document.getElementById('swRailFill'),
+          swRailKnob=document.getElementById('swRailKnob');
       /* There used to be a proper measuring pass here: the three cards were
          three different widths, so something had to read the layout and
          work out what each one had to be scaled by to end on the same
@@ -929,8 +959,9 @@
          material has finished sweeping across. Read once and kept: a
          height off the layout every frame is a reflow in a loop that has
          to be free. */
-      var swCh=1, swBh=1, swK=-1;
+      var swCh=1, swBh=1, swK=-1, swTop=0, swH=1;
       function swMeasure(){
+        swTop=swEl.offsetTop; swH=swEl.offsetHeight;
         var c=swA[1] && swA[1].sups[0];
         if(!c || !swHouse) return;
         var ch=c.offsetHeight, bh=swHouse.offsetHeight;
@@ -1007,6 +1038,50 @@
           ap.toFixed(3), 'none');
       }
 
+      /* ---------- the line at the side ----------
+         It is a progress line while the film runs and a handle once it has
+         run: the whole point of a section that plays itself is that nobody
+         has to work for it, and the price of that is that anything read
+         too slowly is gone. So it stays. Take hold of the line and the
+         clock lets go, and the twenty-eight seconds become a thing you can
+         move through a frame at a time. */
+      var swDone=false, swDrag=false, swRailP=-1;
+      function swRailAt(ev){
+        var r=swRail.getBoundingClientRect();
+        return r.height ? Math.max(0,Math.min(1,(ev.clientY-r.top)/r.height)) : 0;
+      }
+      function swRailReady(){
+        if(swDone) return;
+        swDone=true;
+        swRail.classList.add('on');
+        swRail.tabIndex=0;
+      }
+      if(swRail && !reduce){
+        swRail.addEventListener('pointerdown', function(ev){
+          if(!swDone) return;
+          swDrag=true;
+          try{ swRail.setPointerCapture(ev.pointerId); }catch(e){}
+          SC.scrub(swEl, swRailAt(ev));
+          ev.preventDefault();
+        });
+        swRail.addEventListener('pointermove', function(ev){
+          if(swDrag) SC.scrub(swEl, swRailAt(ev));
+        });
+        ['pointerup','pointercancel'].forEach(function(t){
+          swRail.addEventListener(t, function(){ swDrag=false; });
+        });
+        /* and the same by keyboard, since it is a slider and says so */
+        swRail.addEventListener('keydown', function(ev){
+          if(!swDone) return;
+          var d = (ev.key==='ArrowDown'||ev.key==='ArrowRight') ? .02
+                : (ev.key==='ArrowUp'||ev.key==='ArrowLeft') ? -.02
+                : (ev.key==='Home') ? -2 : (ev.key==='End') ? 2 : 0;
+          if(!d) return;
+          SC.scrub(swEl, Math.max(0,Math.min(1,(swRailP<0?0:swRailP/1000)+d)));
+          ev.preventDefault();
+        });
+      }
+
       SC.add({
         /* It used to wait to be asked — a button under the question, and
            nothing happened until it was pressed. A visitor who scrolls
@@ -1014,7 +1089,7 @@
            section that explains the whole trade was the one nobody saw.
            It runs itself now, the way the letter at the bottom does, and
            the track it sits on was made long enough to hold it. */
-        el:swEl, leadF:0, auto:true, liveF:0.06, dur:28000,
+        el:swEl, leadF:0, auto:true, liveF:0.06, dur:30500,
         build:function(){ swA.forEach(function(a){ if(a.hd) a.w=SC.split(a.hd); }); },
         base:function(){
           swSrc=(swBio.firstChild && swBio.firstChild.nodeValue)||'';
@@ -1029,7 +1104,7 @@
              falls back to has to be written back off it */
           swHouse.style.clipPath='none';
           swMerge.style.setProperty('--k','1'); swK=-1;
-          SC.plain(all.concat([swHook,swHouse,swDeck,swCast]));
+          SC.plain(all.concat([swHook,swHouse,swDeck,swCast,swVign]));
           swHouse.style.transform='translate(-50%,-50%)';
           if(swCast){ swCast.style.transform='translate(-50%,-50%)';
             swCast._tr='translate(-50%,-50%)';
@@ -1041,8 +1116,19 @@
           var src=(swBio.firstChild && swBio.firstChild.nodeValue)||'';
           if(src!==swSrc){ swSrc=src; swN=-1; }
 
+          if(swRail){
+            var rp=Math.round(s*1000);
+            if(rp!==swRailP){
+              swRailP=rp;
+              swRailFill.style.transform='scaleY('+s.toFixed(4)+')';
+              swRailKnob.style.transform='translateY('+(s*100).toFixed(2)+'%)';
+              swRail.setAttribute('aria-valuenow', Math.round(s*100));
+            }
+            if(s>=0.999) swRailReady();
+          }
+
           /* the hook draws back into the depth as the first act arrives */
-          var hx=SC.io(SC.seg(s,.015,.065));
+          var hx=SC.io(SC.seg(s,.0138,.0597));
           SC.set(swHook,'translateZ('+(-260*hx).toFixed(1)+'px) scale('+(1-hx*.08).toFixed(4)+')',
             (1-hx).toFixed(3), SC.blur(14*hx));
           swHook.style.pointerEvents = hx>0.99 ? 'none' : 'auto';
@@ -1058,26 +1144,44 @@
              the block comes up, and stays lifted: a bloom you cannot see
              the beginning of is the difference between a lit room and a
              lamp being switched on. */
-          var pIn=SC.film(SC.seg(s,.01,.12)), pMid=SC.io(SC.seg(s,.29,.40)), pBack=SC.out(SC.seg(s,.66,.80)),
-              jk=SC.seg(s,.512,.548),
-              jolt=(s>=.512) ? (jk<=0 ? 0 : Math.exp(-7.5*jk)*Math.sin(Math.PI*2*1.7*jk)) : 0,
-              bloom=SC.io(SC.seg(s,.500,.604));
+          var pIn=SC.film(SC.seg(s,.0092,.1102)), pMid=SC.io(SC.seg(s,.2662,.3672)), pBack=SC.out(SC.seg(s,.6879,.8164)),
+              jk=SC.seg(s,.47,.5031),
+              jolt=(s>=.47) ? (jk<=0 ? 0 : Math.exp(-7.5*jk)*Math.sin(Math.PI*2*1.7*jk)) : 0,
+              bloom=SC.io(SC.seg(s,.459,.5545)),
+              /* And at the very end the room goes. Every other section on
+                 the page sits on the one fixed backdrop, so the boundary
+                 into the next one is no boundary at all — this one had a
+                 studio of its own standing in front of it, and the hand-off
+                 to the next section was the only hard line left. It hands
+                 over quietly once the last act has been read: the studio
+                 fades, the shade over it fades, and what is underneath is
+                 what is underneath everywhere else. */
+              /* Two ways to reach the same place. Read to the end, the
+                 room goes on its own. Scrolled past at speed, it goes
+                 because the section is running out — otherwise a reader in
+                 a hurry gets the one hard line left on the page. Whichever
+                 is further along wins. scrollY is free to read; the box it
+                 is measured against is not, so that is kept. */
+              roomOut=Math.max(SC.io(SC.seg(s,.96,1.0)),
+                SC.io(SC.seg((window.scrollY||window.pageYOffset)+window.innerHeight,
+                  swTop+swH-window.innerHeight*.75, swTop+swH)));
           SC.set(swPlate,'scale('+(1.05+s*.12+jolt*.006).toFixed(4)+') translate3d('+(2-s*5).toFixed(2)+'vw,'+(-1+s*3+jolt*.34).toFixed(2)+'vh,0)',
-            Math.max(0,(pIn*(.92-pMid*.6+pBack*.46)+bloom*.1)).toFixed(3));
-          SC.set(swVeil,null,(pIn*(1+pMid*.12)-bloom*.1).toFixed(3));
+            Math.max(0,(pIn*(.92-pMid*.6+pBack*.46)+bloom*.1)*(1-roomOut)).toFixed(3));
+          SC.set(swVeil,null,((pIn*(1+pMid*.12)-bloom*.1)*(1-roomOut)).toFixed(3));
+          if(swVign) SC.set(swVign,null,(1-roomOut).toFixed(3));
           SC.set(swGlow,'translate3d(0,'+(s*-10).toFixed(2)+'vh,0) scale('+(1+s*.28+bloom*.16).toFixed(4)+')',
-            Math.max(0,Math.min(1,(.6-s*.26)+bloom*.34)).toFixed(3));
+            Math.max(0,Math.min(1,(.6-s*.26)+bloom*.34)*(1-roomOut)).toFixed(3));
 
           /* act one — the trade, written out a character at a time */
-          if(swAct(swA[0],.02,.34,s)){
-            var tp=SC.seg(s,.055,.28), n=Math.round(tp*swSrc.length);
+          if(swAct(swA[0],.0184,.3121,s)){
+            var tp=SC.seg(s,.0505,.257), n=Math.round(tp*swSrc.length);
             if(n!==swN){ swN=n; swTyped.textContent=swSrc.slice(0,n); }
             var writing = tp>0 && tp<1;
             if(writing !== (swCaret.style.display==='')) swCaret.style.display = writing?'':'none';
             /* the screen first and the code after it, a beat apart: two
                things opening out of the same point at the same moment is
                one thing with a seam in it */
-            if(swA[0].shb) swPop(swA[0].shb,.085,.265,1.4,s,.34);
+            if(swA[0].shb) swPop(swA[0].shb,.078,.2433,1.4,s,.3121);
             if(swA[0].shf) swPop(swA[0].shf,.125,.305,-1.8,s,.34);
           }
 
@@ -1113,34 +1217,34 @@
              on a spring, and take one pass of light across the face —
              which is a specular on metal, and the one piece of light in
              the whole act that an actual object could have made. */
-          if(swAct(swA[1],.30,.67,s)){
-            swWords(swA[1].w,.315,.405,s);
+          if(swAct(swA[1],.2754,.7515,s)){
+            swWords(swA[1].w,.2892,.3718,s);
             /* On a phone the three are rows, so they dock downwards and
                the material sweeps out top and bottom instead. */
             var narrow=window.innerWidth<900, gap=narrow?20:44,
                 /* up together, not one at a time: a stagger is three
                    arrivals, and three arrivals is three little events
                    before the one event this act is about */
-                inS=SC.out(SC.seg(s,.366,.452)),
+                inS=SC.out(SC.seg(s,.336,.415)),
                 /* and then they are still. Nothing at all for a fifth of
                    the act, because a move only reads as fast if something
                    before it was slow. */
-                pull=SC.seg(s,.484,.512), kk=Math.pow(pull,2.7),
+                pull=SC.seg(s,.4443,.47), kk=Math.pow(pull,2.7),
                 /* contact. The row takes it and gives it back — a short,
                    hard-damped recoil, no bounce anyone could count. */
                 rc=SC.seg(s,.512,.548),
                 kick=(s>=.512) ? (rc<=0 ? 0 : Math.exp(-7.5*rc)*Math.sin(Math.PI*2*1.7*rc)) : 0,
                 /* the material, out of the middle */
-                seal=SC.out(SC.seg(s,.514,.548)),
+                seal=SC.out(SC.seg(s,.4719,.5031)),
                 /* the block breathes out to its own height */
-                grow=SC.io(SC.seg(s,.548,.592)),
+                grow=SC.io(SC.seg(s,.5031,.5435)),
                 /* and settles */
-                stl=SC.seg(s,.548,.628),
-                settle=(s>=.548) ? (stl<=0 ? 0 : Math.exp(-5.4*stl)*Math.cos(Math.PI*2*1.15*stl)) : 0,
+                stl=SC.seg(s,.5031,.5765),
+                settle=(s>=.5031) ? (stl<=0 ? 0 : Math.exp(-5.4*stl)*Math.cos(Math.PI*2*1.15*stl)) : 0,
                 /* the camera leans in for the dock and comes back off it
                    once the thing is standing — the only move on the page
                    that belongs to the viewer and not to the objects */
-                lean=.03*SC.io(SC.seg(s,.462,.514)) - .03*SC.io(SC.seg(s,.552,.618));
+                lean=.03*SC.io(SC.seg(s,.4241,.4719)) - .03*SC.io(SC.seg(s,.5068,.5673));
 
             for(var i=0;i<swA[1].sups.length;i++){
               var sp=swSpread[i],
@@ -1160,7 +1264,7 @@
             /* and the corners that are about to touch something square
                themselves off on the way in, so what stands at the end of
                the slide is one slab and not three rectangles in a row */
-            var kv=+(1-SC.io(SC.seg(s,.490,.512))).toFixed(2);
+            var kv=+(1-SC.io(SC.seg(s,.4498,.47))).toFixed(2);
             if(kv!==swK){ swK=kv; swMerge.style.setProperty('--k', kv); }
 
             /* The wipe. Half the box either side at the start, nothing at
@@ -1174,28 +1278,28 @@
             swHouse.style.clipPath = open ? 'none'
               : 'inset('+vIn.toFixed(2)+'% '+hIn.toFixed(2)+'% '+vIn.toFixed(2)+'% '+hIn.toFixed(2)+'% round var(--br))';
             SC.set(swHouse,'translate(-50%,-50%) scale('+(1+settle*.012).toFixed(4)+')',
-              (s>=.513?1:0).toFixed(0), SC.blur(0));
+              (s>=.471?1:0).toFixed(0), SC.blur(0));
 
             /* the weight arrives with the material: the shadow is cast by
                exactly the part of the face that has been uncovered */
             if(swCast) SC.set(swCast,
               'translate(-50%,-50%) scale('+((1-hIn/50)*(1+settle*.012)).toFixed(4)+','+((1-vIn/50)*(1+settle*.012)).toFixed(4)+')',
-              (s>=.513?Math.min(1,seal*1.6):0).toFixed(3));
+              (s>=.471?Math.min(1,seal*1.6):0).toFixed(3));
 
             /* and the light runs across the face once, on the settle */
-            var sw2=SC.seg(s,.556,.638);
+            var sw2=SC.seg(s,.5104,.5857);
             swHouse.style.setProperty('--sx',
               (sw2>0 && sw2<1 ? (-80+160*SC.io(sw2)).toFixed(1) : -80) + '%');
 
-            var pl=SC.out(SC.seg(s,.572,.626));
+            var pl=SC.out(SC.seg(s,.5251,.5747));
             SC.set(swA[1].lede,'translate3d(0,'+((1-pl)*16).toFixed(2)+'px,0)', pl.toFixed(3));
           }
           /* act three — why this house */
-          if(swAct(swA[2],.64,1.001,s,true)){
-            swWords(swA[2].w,.66,.78,s);
-            swPop(swA[2].shot,.685,.875,0,s,1.0);
+          if(swAct(swA[2],.6695,1.001,s,true)){
+            swWords(swA[2].w,.6879,.798,s);
+            swPop(swA[2].shot,.7108,.8852,0,s,1.0);
             for(var j=0;j<swA[2].claims.length;j++){
-              var ct=SC.out(SC.seg(s,.765+j*.042,.875+j*.042));
+              var ct=SC.out(SC.seg(s,.7843+j*.0386,.8852+j*.0386));
               SC.set(swA[2].claims[j],'translate3d(0,'+((1-ct)*18).toFixed(2)+'px,0)', ct.toFixed(3));
             }
           }

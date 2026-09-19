@@ -17,7 +17,7 @@
    piece needs to be watched in. The contact letter is the measure: about
    seven and a half screen-heights of scroll per ten seconds. This holds
    twenty-eight. */
-.scene.sw{ height:315vh; }
+.scene.sw{ height:345vh; }
 .scene.sw .stage{ box-sizing:border-box; padding-top:var(--nav);
   perspective:1500px; perspective-origin:50% 46%; isolation:isolate; }
 
@@ -90,36 +90,40 @@
    height comes down so the wide frame does not push the words aside. */
 .sw-shot.wide{ --shotmax:32vh; max-width:calc(var(--shotmax) * 1.778); aspect-ratio:16/9; }
 
-/* ---------- two frames, one slot ----------
-   The pair is not a frame with two pictures in it: it is two frames, held
-   at two depths, the way the stage holds everything else. The slot itself
-   stops being a card — no border, no fill, no shadow — and the two inside
-   it carry all of that, so what arrives is two objects and not a box with
-   a seam down the middle.
+/* ---------- the bubble ----------
+   One picture, and it is not hung on the wall. The slot stops being a
+   card — no border, no fill, no shadow — and what sits in it is round at
+   the corners past the point where a corner is a corner, lit around its
+   own rim rather than framed, and never quite still: it rises and falls
+   about a centimetre on a twelve-second cycle that does not divide evenly
+   into anything else on the page, so it never syncs up with a beat and
+   never reads as a loop.
 
-   The slot is not animated; the two inside it are. Its own opacity is
-   written back to one by the stage, and the act it sits in carries the
-   fade. The resting tilts live in the loop and not here, because a frame
-   that turns onto its tilt as it opens needs one transform and not two. */
-.sw-shot.pair{ --shotmax:34vh; max-width:calc(var(--shotmax) * 1.5); aspect-ratio:1/1;
-  border:0; background:none; box-shadow:none; border-radius:0; overflow:visible; opacity:1; }
-.sw-shot.pair span{ position:absolute; display:block; overflow:hidden; opacity:0;
-  border-radius:18px; border:1px solid var(--edge);
-  box-shadow:0 34px 70px -34px rgba(0,0,0,.82), inset 0 1px 0 rgba(255,255,255,.22);
+   Two of these used to float here, and two things floating at two depths
+   is a collage with a hole in the middle of it. One is a thing. */
+.sw-shot.bubble{ --shotmax:40vh; max-width:calc(var(--shotmax) * 1.5); aspect-ratio:3/2;
+  border:0; background:none; box-shadow:none; border-radius:0; overflow:visible; opacity:1;
+  /* The drift is on the slot and the entrance is on the frame inside it.
+     One element cannot hold two transforms, and a keyframe beats an
+     inline style — so a float written here would have quietly eaten the
+     whole arrival. */
+  animation:swFloat 12s ease-in-out infinite; }
+.sw-shot.bubble span{ position:absolute; inset:0; display:block; overflow:hidden; opacity:0;
+  border-radius:clamp(34px,7vw,92px);
+  box-shadow:0 46px 90px -40px rgba(0,0,0,.92), 0 10px 30px -18px rgba(0,0,0,.6),
+    inset 0 0 0 1px rgba(255,255,255,.3),
+    inset 0 2px 1px rgba(255,255,255,.34), inset 0 -18px 34px -22px rgba(255,255,255,.18),
+    0 0 90px -20px rgba(158,196,255,.3);
+  filter:brightness(.82) saturate(.86);
   will-change:transform,opacity; }
-.sw-shot.pair img{ display:block; width:100%; height:100%; object-fit:cover; }
-/* They overlap. Apart, with clear air between them, two rectangles on a
-   dark stage are two rectangles on a dark stage — a collage, with a hole
-   in the middle of it. Overlapping by a corner they are two prints lying
-   on top of each other, which is a thing, and the one in front casts onto
-   the one behind so the depth is real rather than implied. */
-/* the screen, set back and up */
-.sw-shot.pair .sh-b{ right:0; top:0; width:84%; aspect-ratio:3/2;
-  filter:brightness(.72) saturate(.78); }
-/* and the code itself, in front and low, lying across its corner */
-.sw-shot.pair .sh-f{ left:2%; bottom:10%; width:68%; aspect-ratio:3/2;
-  box-shadow:0 30px 60px -26px rgba(0,0,0,.9), -14px -14px 40px -18px rgba(0,0,0,.7),
-    inset 0 1px 0 rgba(255,255,255,.22); }
+/* the glint across the top of it, the way light sits on a bubble */
+.sw-shot.bubble span::after{ content:""; position:absolute; inset:0; border-radius:inherit;
+  pointer-events:none; mix-blend-mode:screen;
+  background:radial-gradient(62% 44% at 32% 8%, rgba(255,255,255,.28), transparent 70%); }
+.sw-shot.bubble img{ display:block; width:100%; height:100%; object-fit:cover; }
+@keyframes swFloat{
+  0%,100%{ transform:translate3d(0,-1.1%,0) rotate(-.5deg); }
+  50%    { transform:translate3d(0,1.4%,0) rotate(.5deg); } }
 
 /* act one — the text writes itself */
 .sw-bio{ margin:clamp(12px,2vh,22px) 0 0; max-width:30ch; white-space:pre-line;
@@ -281,14 +285,14 @@
 @media(max-width:900px){
   /* the same measure on a phone, where a screen is taller than it is wide
      and the same seconds cost more track */
-  .scene.sw{ height:350vh; }
+  .scene.sw{ height:382vh; }
   .sw-split{ grid-template-columns:1fr; gap:clamp(16px,3vh,26px); }
   .sw-bio{ max-width:none; min-height:10.5em; font-size:clamp(16px,4.4vw,22px); }
   .sw-shot, .sw-shot.port{ --shotmax:30vh; aspect-ratio:16/10;
     max-width:calc(var(--shotmax) * 1.6); }
   .sw-shot.wide{ --shotmax:26vh; aspect-ratio:16/9;
     max-width:calc(var(--shotmax) * 1.778); }
-  .sw-shot.pair{ --shotmax:24vh; aspect-ratio:1/1;
+  .sw-shot.bubble{ --shotmax:30vh; aspect-ratio:3/2;
     max-width:calc(var(--shotmax) * 1.5); }
   .sw-offer{ display:none; }
   /* On a phone the three stand one above the other, so a column that is
@@ -340,12 +344,80 @@
   .sw-act{ position:relative; top:auto; bottom:auto; margin-block:0; height:auto;
     visibility:visible !important; opacity:1 !important; transform:none !important;
     filter:none !important; }
-  .sw-act h3 .w > span, .sw-claims li, .sw-lede, .sw-shot, .sw-shot.pair span{ opacity:1 !important;
+  .sw-act h3 .w > span, .sw-claims li, .sw-lede, .sw-shot, .sw-shot.bubble span{ opacity:1 !important;
     transform:none !important; filter:none !important; }
   .sw-caret{ display:none; } .sw-bio{ min-height:0; }
+  .sw-shot.bubble{ animation:none; }
   .sw-merge{ height:auto; display:grid; gap:10px; justify-items:center; }
   .sw-sup, .sw-house{ position:relative; left:auto; top:auto; opacity:1 !important;
     transform:none !important; filter:none !important; clip-path:none !important; }
   .sw-house{ box-shadow:0 40px 100px -40px rgba(0,0,0,.85); }
   .sw-sup, .sw-cast{ display:none; }
+}
+
+/* ============================================================
+   THE LINE AT THE SIDE
+
+   A section that plays itself asks nothing of the reader, and the price
+   of that is that anything read too slowly is gone. This is the line it
+   can be pulled back along.
+
+   While the film runs it is a hairline with a lit portion: where you are,
+   nothing more, and nothing to press. When the film has run once it comes
+   forward — wider, brighter, with a bead on it — and from that moment the
+   clock has let go and the twenty-eight seconds are a thing you can move
+   through by hand.
+
+   Everything on it moves by transform alone, so a frame of it cannot cost
+   a layout.
+   ============================================================ */
+.sw-rail{ position:absolute; z-index:20;
+  right:clamp(10px,1.8vw,30px); top:50%; margin-top:-21vh;
+  width:4px; height:42vh; border-radius:999px;
+  background:rgba(232,238,244,.09);
+  -webkit-backdrop-filter:blur(14px) saturate(160%); backdrop-filter:blur(14px) saturate(160%);
+  box-shadow:inset 0 0 0 1px rgba(232,238,244,.16), 0 10px 26px -14px rgba(0,0,0,.7);
+  opacity:0; pointer-events:none; touch-action:none;
+  transition:width .5s cubic-bezier(.2,.8,.2,1), opacity .6s ease,
+    background-color .5s ease, box-shadow .5s ease; }
+/* it only exists while its own section is on the glass */
+.scene.sw.live .sw-rail{ opacity:.5; }
+
+/* the lit portion: the top of the line down to where the film has got to */
+.sw-rail-fill{ position:absolute; inset:0; border-radius:inherit;
+  transform:scaleY(0); transform-origin:50% 0; will-change:transform;
+  background:linear-gradient(180deg, rgba(255,255,255,.34), rgba(232,238,244,.86));
+  box-shadow:0 0 16px -2px rgba(198,220,255,.5); }
+
+/* The bead. Its box is the whole line, so a translate in per cent moves
+   it by a fraction of the line and not of itself — which is the only way
+   to put it somewhere without writing to top. */
+.sw-rail-knob{ position:absolute; left:0; right:0; top:0; height:100%;
+  pointer-events:none; will-change:transform; }
+.sw-rail-knob::before{ content:""; position:absolute; left:50%; top:0;
+  transform:translate(-50%,-50%) scale(0);
+  width:15px; height:15px; border-radius:50%;
+  background:linear-gradient(160deg, #ffffff, #d7e0ea);
+  box-shadow:0 2px 10px rgba(0,0,0,.6), 0 0 22px -4px rgba(198,220,255,.8),
+    inset 0 1px 0 rgba(255,255,255,.9);
+  transition:transform .55s cubic-bezier(.34,1.4,.4,1); }
+
+/* ---------- once it has been watched once ---------- */
+.sw-rail.on{ width:6px; pointer-events:auto; cursor:grab;
+  background:rgba(232,238,244,.13);
+  box-shadow:inset 0 0 0 1px rgba(232,238,244,.28), 0 14px 34px -16px rgba(0,0,0,.8); }
+.scene.sw.live .sw-rail.on{ opacity:.92; }
+.sw-rail.on::after{ content:""; position:absolute; inset:-16px -18px;
+  border-radius:999px; }               /* somewhere to take hold of it */
+.sw-rail.on .sw-rail-knob::before{ transform:translate(-50%,-50%) scale(1); }
+.sw-rail.on:active{ cursor:grabbing; }
+.sw-rail.on:focus-visible{ outline:2px solid rgba(232,238,244,.6); outline-offset:6px; }
+
+@media(max-width:900px){
+  .sw-rail{ right:8px; height:34vh; margin-top:-17vh; }
+  .sw-rail.on{ width:7px; }
+  .sw-rail.on::after{ inset:-20px -22px; }
+}
+@media (prefers-reduced-motion: reduce){
+  .sw-rail{ display:none; }
 }
