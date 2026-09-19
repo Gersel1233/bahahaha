@@ -107,34 +107,47 @@
   border-radius:0 0 .5cqw .5cqw; background:rgba(0,0,0,.16); }
 
 /* ---------- iPhone 17 Pro ----------
-   The phone leans on the laptop's corner, and its percentages resolve against
-   the cluster — which is the lid's width — so the pair keeps its proportions.
+   Mikkel's own reference, one to one, written as percentages of the
+   phone's width so it holds at any size. His numbers are against a body
+   360px across:
 
-   The frame itself is a child, not this box. A container does not measure
-   itself: a cqw written here would have resolved against the window instead,
-   and a corner radius meant to be 16% of a 120px phone came out 16% of the
-   screen. That is what turned it into a pill. Everything shaped in cqw sits
-   one level in, where the unit means the phone. */
-/* Sized off the two devices rather than by eye: an iPhone 17 Pro is 71.9mm
-   across and a 14" MacBook Pro lid is 312.6, so the phone is 23% of the
-   lid — and 71.9 by 149.9 is the body it has, not the 9:19.5 of the
-   display inside it. At 16% the phone was a prop; the minimum of 78px then
-   pushed it back up to 25% on a narrow window, so the pair changed
-   proportion depending on the screen it was read on. */
+     body      71.9 x 150, radius 54 -> 15cqw, aluminium edge 4 -> 1.111cqw
+     screen    radius 50 -> 13.889cqw, black
+     island    92 x 27 at 11 from the top -> 25.556 x 7.5 at 3.056cqw
+
+   It used to be a two-shell build in warm brown — a leftover from when
+   this page was on paper — with an island half again too wide. One shell
+   now, in aluminium, and the second shell is only the black the screen
+   sits on.
+
+   The phone leans on the laptop's corner, and its percentages resolve
+   against the cluster — which is the lid's width — so the pair keeps its
+   proportions. The frame itself is a child, not this box: a container
+   does not measure itself, and a cqw written on .iphone would resolve
+   against the window instead. Everything shaped in cqw sits one level in,
+   where the unit means the phone.
+
+   Sized off the two devices rather than by eye: an iPhone 17 Pro is
+   71.9mm across and a 14" MacBook Pro lid is 312.6, so the phone is 23%
+   of the lid. */
 .iphone{ container-type:inline-size; position:absolute; right:-3%; bottom:-6%;
-  width:23%; min-width:64px; aspect-ratio:71.9/149.9; z-index:2; }
-.iphone .inn{ height:100%; padding:1.15cqw; border-radius:16cqw;
-  background:linear-gradient(145deg,#8c8782,#4a4641 26%,#2a2722 50%,#6c6761 74%,#39352f);
-  box-shadow:0 34px 54px -30px rgba(27,23,20,.72),
-    inset 0 0 0 .18cqw rgba(255,255,255,.22); }
-.iphone .in2{ height:100%; padding:.9cqw; background:#070605; border-radius:15.1cqw; }
-.iphone .screen{ position:relative; height:100%; border-radius:14.2cqw;
-  overflow:hidden; background:var(--cream); container-type:size; }
-/* the island floats on the display, the way it does on the phone */
-.iphone .isl{ position:absolute; left:50%; top:3.1cqw; transform:translateX(-50%);
-  width:31cqw; height:8.6cqw; border-radius:99px; background:#070605; z-index:4; }
+  width:23%; min-width:64px; aspect-ratio:71.9/150; z-index:2; }
+.iphone .inn{ height:100%; padding:1.111cqw; border-radius:15cqw;
+  background:#8f9499;
+  box-shadow:0 8.33cqw 19.44cqw rgba(0,0,0,.22),
+    inset 0 0 0 .278cqw rgba(255,255,255,.45); }
+.iphone .in2{ height:100%; padding:0; background:#000; border-radius:13.889cqw; }
+.iphone .screen{ position:relative; height:100%; border-radius:13.889cqw;
+  overflow:hidden; background:#000; container-type:size; }
+/* The island floats on the display, the way it does on the phone — and it
+   is measured against the display, not the body. The screen is its own
+   container, so a cqw in here is a hundredth of the glass (352 of his 360)
+   and not of the phone: 92 wide is 26.136, 27 tall is 7.670, and his 11
+   from the top of the body is 7 from the top of the glass, or 1.989. */
+.iphone .isl{ position:absolute; left:50%; top:1.989cqw; transform:translateX(-50%);
+  width:26.136cqw; height:7.670cqw; border-radius:999px; background:#000; z-index:20; }
 .iphone .b{ position:absolute; width:.9cqw; border-radius:.45cqw; z-index:1;
-  background:linear-gradient(180deg,#b7b2ac,#6d6862); }
+  background:linear-gradient(180deg,#b9bec3,#767c82); }
 .iphone .b.act{ left:-.45cqw; top:22%; height:7%; }
 .iphone .b.vu{ left:-.45cqw; top:32%; height:11%; }
 .iphone .b.vd{ left:-.45cqw; top:45.5%; height:11%; }

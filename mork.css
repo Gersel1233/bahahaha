@@ -124,8 +124,10 @@ html, body{ background:var(--deep); color:var(--ink); }
     0 44px 80px -44px rgba(0,0,0,.9), 0 4px 14px -8px rgba(0,0,0,.7); }
 .mac .foot{ background:linear-gradient(180deg,#6e747d,#474d55 46%,#2f343a);
   box-shadow:0 18px 26px -18px rgba(0,0,0,.8); }
-.iphone .inn{ box-shadow:0 34px 54px -30px rgba(0,0,0,.9),
-  inset 0 0 0 .18cqw rgba(232,238,244,.2); }
+/* the body is aluminium at its own value now, so the dark page only owes
+   it a deeper shadow to stand in — not a different colour */
+.iphone .inn{ box-shadow:0 8.33cqw 19.44cqw rgba(0,0,0,.6),
+  inset 0 0 0 .278cqw rgba(255,255,255,.42); }
 
 /* ---------- the phone ----------
    The canvas is drawn with a transparent background, so on paper the
