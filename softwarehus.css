@@ -132,24 +132,44 @@
    the way an invoice is numbered, because the point of the line above
    them is that this is three of everything. Identical boxes cost nothing
    to animate and have nothing to step against when they cross. */
+/* The three and the block are sized off the same two numbers, because the
+   merge is a docking: the three slide until their edges touch, and three
+   of them touching IS the block's footprint. Nothing is scaled to fit
+   anything, nothing is measured at runtime — a card is --cw wide, the
+   block is three of those, and the arithmetic is done by the stylesheet. */
 .sw-merge{ position:relative; height:clamp(190px,34vh,300px);
-  margin-top:clamp(20px,3.4vh,40px); counter-reset:sup; }
+  margin-top:clamp(20px,3.4vh,40px); counter-reset:sup;
+  --cw:clamp(152px,15.6vw,226px); --ch:clamp(122px,16vh,168px);
+  --bw:calc(var(--cw) * 3); --bh:clamp(156px,20.5vh,212px);
+  --br:clamp(15px,1.6vw,22px); }
 .sw-sup, .sw-house{ position:absolute; left:50%; top:50%; display:grid;
-  justify-items:center; border-radius:18px;
+  justify-items:center; border-radius:var(--br);
   background:linear-gradient(150deg, rgba(232,238,244,.13), rgba(232,238,244,.04) 46%, rgba(232,238,244,.09));
   -webkit-backdrop-filter:blur(22px) saturate(180%); backdrop-filter:blur(22px) saturate(180%);
   border:1px solid var(--edge);
   box-shadow:0 30px 60px -30px rgba(0,0,0,.72), inset 0 1px 0 rgba(255,255,255,.3);
   will-change:transform,opacity,filter; }
 .sw-sup{ box-sizing:border-box; align-content:center; gap:clamp(8px,1.1vh,13px);
-  width:clamp(152px,15.6vw,226px); height:clamp(122px,16vh,168px);
+  width:var(--cw); height:var(--ch);
   padding:clamp(15px,1.9vh,25px) clamp(12px,1.3vw,20px);
   text-align:center;
   background:linear-gradient(150deg, rgba(232,238,244,.17), rgba(232,238,244,.055) 46%, rgba(232,238,244,.12));
   border-color:rgba(232,238,244,.2); }
+/* ---------- the joins ----------
+   Docked, three rounded rectangles are still three rounded rectangles:
+   every join has two little notches in it, and what stands there is a
+   row and not a slab. So the edges that meet square themselves off as
+   the gap closes — the loop moves one number, --k, from one to nought,
+   and the corners that are about to touch something go with it. The
+   outer four never move: they are the block's corners now. */
+.sw-sup:nth-child(2){ border-top-right-radius:calc(var(--br) * var(--k,1));
+  border-bottom-right-radius:calc(var(--br) * var(--k,1)); }
+.sw-sup:nth-child(3){ border-radius:calc(var(--br) * var(--k,1)); }
+.sw-sup:nth-child(4){ border-top-left-radius:calc(var(--br) * var(--k,1));
+  border-bottom-left-radius:calc(var(--br) * var(--k,1)); }
 .sw-sup::before{ counter-increment:sup; content:"0" counter(sup);
   font-size:10.5px; font-weight:600; letter-spacing:.24em;
-  color:rgba(232,238,244,.42); opacity:var(--lb,1); }
+  color:rgba(232,238,244,.42); }
 .sw-sup b{ font-size:clamp(15px,1.4vw,22px); font-weight:600; letter-spacing:-.028em;
   line-height:1.14; }
 .sw-sup s{ text-decoration:none; font-size:11.5px; letter-spacing:.13em; line-height:1.5;
@@ -169,10 +189,10 @@
 
    The light that runs across it once as it settles is held on a custom
    property, so the loop can move it without touching layout. */
-.sw-house{ box-sizing:border-box; align-content:center;
-  width:min(640px, 84vw); gap:clamp(9px,1.4vh,17px);
-  padding:clamp(22px,3.2vh,42px) clamp(22px,3.4vw,54px);
-  border-radius:clamp(15px,1.6vw,22px);
+.sw-house{ box-sizing:border-box; align-content:center; z-index:4;
+  width:var(--bw); height:var(--bh); gap:clamp(9px,1.4vh,17px);
+  padding:clamp(18px,2.6vh,34px) clamp(22px,3.4vw,54px);
+  border-radius:var(--br);
   border:1px solid rgba(255,255,255,.7);
   /* A milled face: a fine vertical brush, then light-dark-light down the
      height, which is what a turned metal surface does under one lamp.
@@ -182,12 +202,9 @@
   background:
     repeating-linear-gradient(90deg, rgba(255,255,255,.045) 0 1px, rgba(0,0,0,.01) 1px 3px),
     linear-gradient(174deg, #fdfdfe 0%, #f1f4f8 22%, #dae1ea 52%, #f3f6f9 78%, #ccd5e0 100%);
-  /* the resting shadow — the loop writes over this while the act plays,
-     and base() wipes what the loop wrote, so this is what it falls to */
-  box-shadow:0 56px 140px -40px rgba(0,0,0,.9), 0 16px 42px -24px rgba(0,0,0,.66),
-    0 0 130px -18px rgba(158,196,255,.28),
-    inset 0 2px 0 rgba(255,255,255,1), inset 0 -2px 0 rgba(0,0,0,.09),
-    inset 0 0 0 1px rgba(255,255,255,.66);
+  /* No outer shadow here. The face is clipped while the material sweeps
+     across the three, and clip-path takes the shadow with it — so the
+     shadow is cast by a box of its own, behind everything. */
   -webkit-backdrop-filter:none; backdrop-filter:none;
   overflow:hidden; }
 /* cut into the face rather than printed on it */
@@ -199,6 +216,20 @@
 .sw-house s::before{ content:""; position:absolute; left:50%; top:0;
   transform:translateX(-50%); width:min(260px,58%); height:1px;
   background:linear-gradient(90deg, transparent, rgba(12,14,17,.2), transparent); }
+
+/* ---------- what the block stands on ----------
+   Its own shadow, on its own box, behind the three. A clip-path clips
+   everything an element paints, its shadow included, so a block that is
+   revealed by a wipe cannot carry the shadow that says how heavy it is.
+   This box does nothing else: the loop scales it to whatever part of the
+   face has been uncovered, so the weight arrives exactly as the material
+   does. */
+.sw-cast{ position:absolute; left:50%; top:50%; z-index:1; opacity:0;
+  width:var(--bw); height:var(--bh); border-radius:var(--br);
+  transform:translate(-50%,-50%); pointer-events:none;
+  box-shadow:0 56px 140px -40px rgba(0,0,0,.92), 0 16px 44px -24px rgba(0,0,0,.7),
+    0 0 130px -18px rgba(158,196,255,.26);
+  will-change:transform,opacity; }
 .sw-house::before{ content:""; position:absolute; inset:0; border-radius:inherit;
   pointer-events:none;
   background:linear-gradient(105deg, transparent 30%, rgba(255,255,255,.85) 50%, transparent 70%);
@@ -254,13 +285,28 @@
      taller than it is wide is the wrong box: they are rows here, wide and
      shallow, and the stack needs the room to hold three of them without
      touching the line above. */
-  .sw-merge{ height:clamp(230px,40vh,310px); }
-  .sw-sup{ width:min(74vw,320px); height:clamp(70px,9.4vh,94px);
-    padding:10px 16px; border-radius:15px; gap:3px;
-    align-content:center; }
+  /* On a phone the three stand one above the other, so a column that is
+     taller than it is wide is the wrong box: they are rows here, wide and
+     shallow. They dock downwards instead of sideways, so the block is one
+     row wide and three rows tall, and the material sweeps out from the
+     middle row rather than from the middle card. */
+  .sw-merge{ height:clamp(250px,42vh,330px);
+    --cw:min(74vw,320px); --ch:clamp(74px,9.8vh,96px);
+    --bw:var(--cw); --bh:calc(var(--ch) * 3); }
+  .sw-sup{ padding:10px 16px; gap:3px; align-content:center; }
+  /* stacked, it is the top and bottom edges that meet */
+  .sw-sup:nth-child(2){ border-radius:var(--br);
+    border-bottom-left-radius:calc(var(--br) * var(--k,1));
+    border-bottom-right-radius:calc(var(--br) * var(--k,1)); }
+  .sw-sup:nth-child(3){ border-radius:calc(var(--br) * var(--k,1)); }
+  .sw-sup:nth-child(4){ border-radius:var(--br);
+    border-top-left-radius:calc(var(--br) * var(--k,1));
+    border-top-right-radius:calc(var(--br) * var(--k,1)); }
   .sw-sup::before{ font-size:9.5px; letter-spacing:.2em; }
   .sw-sup b{ font-size:clamp(15px,4.2vw,19px); }
   .sw-sup s{ display:none; }
+  .sw-house{ padding:clamp(18px,2.4vh,30px) clamp(18px,5vw,28px); }
+  .sw-house b{ font-size:clamp(42px,12.4vw,60px); }
   .sw-house s{ letter-spacing:.18em; line-height:1.7; }
 }
 @media(max-height:760px){
@@ -289,6 +335,7 @@
   .sw-caret{ display:none; } .sw-bio{ min-height:0; }
   .sw-merge{ height:auto; display:grid; gap:10px; justify-items:center; }
   .sw-sup, .sw-house{ position:relative; left:auto; top:auto; opacity:1 !important;
-    transform:none !important; filter:none !important; }
-  .sw-sup{ display:none; }
+    transform:none !important; filter:none !important; clip-path:none !important; }
+  .sw-house{ box-shadow:0 40px 100px -40px rgba(0,0,0,.85); }
+  .sw-sup, .sw-cast{ display:none; }
 }
