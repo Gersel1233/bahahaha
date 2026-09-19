@@ -636,6 +636,26 @@ body::after{ content:none; }
 .dro-stick{ position:sticky; top:0; height:100vh; height:100lvh; overflow:hidden;
   pointer-events:none; background:#0e0c0a; will-change:opacity; }
 .khero{ position:relative; z-index:1; }
+/* ---------- the glass behind the opening statement ----------
+   Two cuts of the same thing, because one frame cannot be both: the wide
+   one is turned over so the black side of it falls under the headline,
+   and the phone gets a portrait cut held high, where the frame is dark
+   and the type is not. No blur on either — the vignette that is already
+   on this header closes the corners, and that is a shade, not a softening
+   of the picture.
+
+   The copy of this header that the flight writes onto its own last frame
+   must not have it: that copy exists to be the film's final beat, and a
+   picture behind it would cover the film it is landing on. */
+.khero{ background-image:url("photos/glas-bred.jpg?v=2");
+  background-size:cover; background-position:50% 50%;
+  background-repeat:no-repeat; background-color:var(--paper-1); }
+.dro-hero .khero{ background-image:none; }
+@media(max-width:820px){
+  .khero{ background-image:url("photos/glas-hoej.jpg?v=2");
+    background-position:50% 16%; }
+  .dro-hero .khero{ background-image:none; }
+}
 /* the flight is the headline's entrance, so neither the real one nor the copy
    carries a move of its own — the copy's lines are placed by the scroll */
 .khero.no-rise .khl i, .khero.no-rise .kmeta{ transition:none; }
