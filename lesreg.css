@@ -670,8 +670,15 @@ body::after{ content:none; }
     url("photos/glas-bred-blur.jpg?v=1");
   background-size:auto, cover; background-position:50% 50%, 50% 50%;
   background-repeat:no-repeat;
-  -webkit-mask-image:linear-gradient(180deg, #000 0, #000 80%, transparent 100%);
-  mask-image:linear-gradient(180deg, #000 0, #000 80%, transparent 100%); }
+  /* an S and not a straight line — see the note in softwarehus.css */
+  -webkit-mask-image:linear-gradient(180deg, #000 0%, #000 58%,
+    rgba(0,0,0,.97) 66%, rgba(0,0,0,.88) 73%, rgba(0,0,0,.70) 79%,
+    rgba(0,0,0,.46) 85%, rgba(0,0,0,.24) 90%, rgba(0,0,0,.09) 95%,
+    rgba(0,0,0,.02) 98%, rgba(0,0,0,0) 100%);
+  mask-image:linear-gradient(180deg, #000 0%, #000 58%,
+    rgba(0,0,0,.97) 66%, rgba(0,0,0,.88) 73%, rgba(0,0,0,.70) 79%,
+    rgba(0,0,0,.46) 85%, rgba(0,0,0,.24) 90%, rgba(0,0,0,.09) 95%,
+    rgba(0,0,0,.02) 98%, rgba(0,0,0,0) 100%); }
 /* The copy has to be see-through, not merely picture-less: it was losing
    the image and keeping the colour, and an opaque colour laid over the
    layer the film dissolves into is the layer nobody could see. */

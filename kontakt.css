@@ -17,12 +17,13 @@
    watched in: one screen of stage, and a little over one more of pinning
    so the letter is not scrolled off the moment it starts. The stage
    takes a nav's worth off the top, so nothing lands under the bar. */
-/* The letter keeps its own room rather than the glass the middle of the
-   page stands on — but it must not arrive as a hard line across the
-   screen. Its paper comes up out of nothing over the first third of a
-   screen, so the backdrop above dissolves into it. */
-.scene.kt{ height:230vh;
-  background:linear-gradient(180deg, transparent 0, var(--paper-1) 38vh); }
+/* The letter used to keep a room of its own — an opaque paper that came
+   up over the first third of a screen. However softly it came up, it was
+   still a colour laid over the page's own backdrop, and where it reached
+   full strength there was a line straight across the screen. It stands on
+   the same glass as everything else now, and the only thing it adds is
+   light. */
+.scene.kt{ height:230vh; background:transparent; }
 .scene.kt .stage{ perspective:1500px; perspective-origin:50% 44%;
   box-sizing:border-box; padding-top:var(--nav); }
 
@@ -36,8 +37,24 @@
   background:radial-gradient(circle, rgba(168,188,210,.5), transparent 66%); }
 .kt-aura.a2{ width:44vw; height:44vw;
   background:radial-gradient(circle, rgba(120,140,166,.44), transparent 68%); }
+/* The stage is one screen tall inside a section of two and a bit, so for
+   a good part of the scroll one of its horizontal edges is in the middle
+   of the window. Everything in here is faded out top and bottom for the
+   same reason the software house's room is: an edge painted right up to
+   the end of the stage is a line across the screen. */
+.kt-vign, .kt-aura{
+  -webkit-mask-image:linear-gradient(180deg,
+    rgba(0,0,0,0) 0%, rgba(0,0,0,.03) 3%, rgba(0,0,0,.12) 6%, rgba(0,0,0,.30) 9%,
+    rgba(0,0,0,.55) 12%, rgba(0,0,0,.78) 15%, rgba(0,0,0,.93) 18%, rgba(0,0,0,1) 22%,
+    rgba(0,0,0,1) 78%, rgba(0,0,0,.93) 82%, rgba(0,0,0,.78) 85%, rgba(0,0,0,.55) 88%,
+    rgba(0,0,0,.30) 91%, rgba(0,0,0,.12) 94%, rgba(0,0,0,.03) 97%, rgba(0,0,0,0) 100%);
+  mask-image:linear-gradient(180deg,
+    rgba(0,0,0,0) 0%, rgba(0,0,0,.03) 3%, rgba(0,0,0,.12) 6%, rgba(0,0,0,.30) 9%,
+    rgba(0,0,0,.55) 12%, rgba(0,0,0,.78) 15%, rgba(0,0,0,.93) 18%, rgba(0,0,0,1) 22%,
+    rgba(0,0,0,1) 78%, rgba(0,0,0,.93) 82%, rgba(0,0,0,.78) 85%, rgba(0,0,0,.55) 88%,
+    rgba(0,0,0,.30) 91%, rgba(0,0,0,.12) 94%, rgba(0,0,0,.03) 97%, rgba(0,0,0,0) 100%); }
 .kt-vign{ position:absolute; inset:0; pointer-events:none;
-  background:radial-gradient(72% 64% at 50% 44%, transparent 40%, rgba(6,7,9,.76)); }
+  background:radial-gradient(72% 64% at 50% 44%, transparent 40%, rgba(6,7,9,.6)); }
 
 .kt-rig{ position:relative; z-index:1; width:min(760px,92vw); max-height:100%;
   transform-style:preserve-3d; will-change:transform; }
