@@ -12,10 +12,14 @@
    were, they would have rewritten the Kunder stage and the flight.
    ============================================================ */
 
-/* One screen of stage and one more of pinning. It plays on a clock once
-   the visitor asks for it, so the track is only the room it needs to be
-   watched in — not the hand it would take to wind it. */
-.scene.sw{ height:200vh; }
+/* It plays on its own clock the moment the stage is in the window, so the
+   track is not the hand it would take to wind it — it is the room the
+   piece needs to be watched in. Two screens of it was not that: the clock
+   runs whether or not anyone is still here, and a visitor scrolling past
+   at an ordinary speed left before the second act. The contact letter is
+   the measure — it gives itself about seven and a half screen-heights of
+   scroll per ten seconds — and this holds thirty-two seconds. */
+.scene.sw{ height:360vh; }
 .scene.sw .stage{ box-sizing:border-box; padding-top:var(--nav);
   perspective:1500px; perspective-origin:50% 46%; isolation:isolate; }
 
@@ -40,7 +44,7 @@
 .sw-deck{ position:relative; z-index:1; width:min(1280px,93vw); height:100%;
   display:grid; place-items:center; transform-style:preserve-3d; }
 
-/* ---------- the hook — the one thing anyone presses ---------- */
+/* ---------- the hook — the question, before the answer ---------- */
 .sw-hook{ position:absolute; display:grid; justify-items:center;
   gap:clamp(18px,3vh,32px); text-align:center; z-index:12;
   will-change:transform,opacity,filter; }
@@ -49,18 +53,6 @@
   text-wrap:balance; }
 .sw-hook p{ margin:0; max-width:34ch; color:var(--ink-soft);
   font-size:clamp(14.5px,1.2vw,18px); line-height:1.55; letter-spacing:-.008em; }
-.sw-play{ display:inline-flex; align-items:center; gap:13px; cursor:pointer;
-  font:inherit; color:var(--ink); border:1px solid rgba(232,238,244,.26);
-  padding:clamp(12px,1.6vh,18px) clamp(20px,2.4vw,32px); border-radius:999px;
-  font-size:clamp(14px,1.2vw,18px); font-weight:600; letter-spacing:-.015em;
-  background:linear-gradient(180deg, rgba(232,238,244,.2), rgba(232,238,244,.07));
-  box-shadow:0 30px 60px -28px rgba(0,0,0,.72), inset 0 1px 0 rgba(255,255,255,.36);
-  -webkit-backdrop-filter:blur(20px) saturate(170%); backdrop-filter:blur(20px) saturate(170%);
-  transition:transform .4s cubic-bezier(.2,.8,.2,1), box-shadow .4s ease; }
-@media(hover:hover){
-  .sw-play:hover{ transform:translateY(-2px);
-    box-shadow:0 40px 70px -28px rgba(0,0,0,.78), inset 0 1px 0 rgba(255,255,255,.4); } }
-.sw-play svg{ display:block; width:16px; height:16px; flex:none; fill:currentColor; }
 
 /* ---------- the acts ---------- */
 .sw-act{ position:absolute; left:0; right:0; top:0; bottom:0;
@@ -147,7 +139,9 @@
   fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; }
 
 @media(max-width:900px){
-  .scene.sw{ height:240vh; }
+  /* the same measure on a phone, where a screen is taller than it is wide
+     and the same seconds cost more track */
+  .scene.sw{ height:400vh; }
   .sw-split{ grid-template-columns:1fr; gap:clamp(16px,3vh,26px); }
   .sw-bio{ max-width:none; min-height:10.5em; font-size:clamp(16px,4.4vw,22px); }
   .sw-shot, .sw-shot.port{ --shotmax:30vh; aspect-ratio:16/10;
@@ -172,7 +166,7 @@
   .sw-deck{ height:auto; display:grid; gap:12vh; margin:0 auto; }
   .sw-hook{ position:relative; opacity:1 !important; transform:none !important;
     filter:none !important; }
-  .sw-play, .sw-again{ display:none; }
+  .sw-again{ display:none; }
   .sw-plate{ opacity:.55 !important; transform:none !important; }
   .sw-veil{ opacity:1 !important; }
   .sw-act{ position:relative; top:auto; bottom:auto; margin-block:0; height:auto;

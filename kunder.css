@@ -7,13 +7,15 @@
    ============================================================ */
 
 /* ---------- the intro scene ----------
-   It is a doorway, not a room. At 180vh it held the visitor for eighty of
-   them after it pinned — a whole screen of scrolling between deciding to
-   look at the customers and seeing the first one, which reads as another
-   section standing in the way. Forty is enough for a line to write itself
-   and hand over, and that is all it now gets: fifteen of pinned scroll
-   on a wide window, so the first customer is one screen away and not two. */
-.scene.intro{ height:115vh; }
+   It is a doorway, not a room — but a doorway still has to be walked
+   through. The engine gives a scene the height it has left over once the
+   pinned stage has taken its screen, so 115vh meant the whole thing —
+   eight words turning up out of the floor, a line under them, and all of
+   it leaving again — ran across fifteen hundredths of a screen. A hundred
+   and thirty pixels of thumb, and the sentence had been and gone. The two
+   customer scenes either side of it get 170vh of that same measure. This
+   takes a hundred, which is a doorway a person can see. */
+.scene.intro{ height:200vh; }
 .scene.intro .inner{ max-width:1180px; }
 .scene h1 i, .cname i{ font-style:normal; color:var(--ink-soft); }
 .scene h1 .w > i{ display:inline-block; opacity:0; will-change:transform,opacity,filter; }
@@ -140,7 +142,7 @@
   box-shadow:0 14px 30px -18px rgba(27,23,20,.8); }
 
 @media(max-width:980px){
-  .scene.intro{ height:130vh; }
+  .scene.intro{ height:225vh; }
   .scene.case{ height:310vh; }
   .wrap{ grid-template-columns:1fr; gap:clamp(18px,4vh,34px); }
   .devices{ --lidmax:38vh; width:min(88%, calc(var(--lidmax) * 1.547)); }

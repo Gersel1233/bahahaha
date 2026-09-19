@@ -19,9 +19,9 @@
 <link rel="stylesheet" href="styles.css?v=45" />
 <link rel="stylesheet" href="lesreg.css?v=60" />
 <link rel="stylesheet" href="bbh.css?v=10" />
-<link rel="stylesheet" href="kunder.css?v=8" />
+<link rel="stylesheet" href="kunder.css?v=9" />
 <link rel="stylesheet" href="telefon.css?v=5" />
-<link rel="stylesheet" href="softwarehus.css?v=2" />
+<link rel="stylesheet" href="softwarehus.css?v=3" />
 <link rel="stylesheet" href="kontakt.css?v=2" />
 <link rel="stylesheet" href="mork.css?v=2" />
 <link rel="stylesheet" href="dybde.css?v=1" />
@@ -120,10 +120,6 @@
         <div class="sw-hook" id="swHook">
           <h2 data-da="Hvad er et softwarehus?">What is a software house?</h2>
           <p data-da="Og hvorfor det betyder noget for jeres forretning.">And why it matters to your business.</p>
-          <button class="sw-play" id="swPlay" type="button">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5 19 12 8 18.5Z"/></svg>
-            <span data-da="Lad mig forklare">Let me explain</span>
-          </button>
         </div>
 
         <div class="sw-act sw-split" data-sw-act="1">
@@ -182,8 +178,8 @@
     <div class="stage">
       <div class="glow" aria-hidden="true"></div>
       <div class="inner">
-        <h1 data-split data-da="Live drift. <i>Ikke eksempler.</i>">Live in production. <i>Not examples.</i></h1>
-        <p class="lede" data-da="Begge systemer er tegnet, bygget og sat i drift af os &mdash; og <b>passet af os bagefter.</b> De tager imod rigtige bestillinger, mens du l&aelig;ser det her.">Both systems were drawn, built and put into production by us &mdash; and <b>looked after by us afterwards.</b> They are taking real orders while you read this.</p>
+        <h1 data-split data-da="Her er to <i>live eksempler.</i>">Here are two <i>live examples.</i></h1>
+        <p class="lede" data-da="Begge er tegnet, bygget og passet af os. De tager imod bestillinger lige nu.">Both were drawn, built and looked after by us. They are taking orders right now.</p>
       </div>
     </div>
   </section>
@@ -881,7 +877,7 @@
        it halfway through something they never started. */
     var swEl=document.getElementById('softwarehus');
     if(swEl){
-      var swHook=document.getElementById('swHook'), swPlay=document.getElementById('swPlay'),
+      var swHook=document.getElementById('swHook'),
           swAgain=document.getElementById('swAgain'), swPlate=document.getElementById('swPlate'),
           swVeil=document.getElementById('swVeil'), swGlow=document.getElementById('swGlow'),
           swTyped=document.getElementById('swTyped'), swCaret=document.getElementById('swCaret'),
@@ -933,7 +929,13 @@
       }
 
       SC.add({
-        el:swEl, leadF:0, auto:true, manual:true, dur:42000,
+        /* It used to wait to be asked — a button under the question, and
+           nothing happened until it was pressed. A visitor who scrolls
+           past a still headline has no reason to press anything, so the
+           section that explains the whole trade was the one nobody saw.
+           It runs itself now, the way the letter at the bottom does, and
+           the track it sits on was made long enough to hold it. */
+        el:swEl, leadF:0, auto:true, dur:32000,
         build:function(){ swA.forEach(function(a){ if(a.hd) a.w=SC.split(a.hd); }); },
         base:function(){
           swSrc=(swBio.firstChild && swBio.firstChild.nodeValue)||'';
@@ -952,7 +954,7 @@
           if(src!==swSrc){ swSrc=src; swN=-1; }
 
           /* the hook draws back into the depth as the first act arrives */
-          var hx=SC.io(SC.seg(s,0,.045));
+          var hx=SC.io(SC.seg(s,.015,.065));
           SC.set(swHook,'translateZ('+(-260*hx).toFixed(1)+'px) scale('+(1-hx*.08).toFixed(4)+')',
             (1-hx).toFixed(3), SC.blur(14*hx));
           swHook.style.pointerEvents = hx>0.99 ? 'none' : 'auto';
@@ -1011,7 +1013,6 @@
         }
       });
       if(!reduce){
-        swPlay.addEventListener('click', function(){ SC.go(swEl); });
         swAgain.addEventListener('click', function(){ SC.go(swEl); });
       }
     }
