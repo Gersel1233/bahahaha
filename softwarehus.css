@@ -14,12 +14,10 @@
 
 /* It plays on its own clock the moment the stage is in the window, so the
    track is not the hand it would take to wind it — it is the room the
-   piece needs to be watched in. Two screens of it was not that: the clock
-   runs whether or not anyone is still here, and a visitor scrolling past
-   at an ordinary speed left before the second act. The contact letter is
-   the measure — it gives itself about seven and a half screen-heights of
-   scroll per ten seconds — and this holds thirty-two seconds. */
-.scene.sw{ height:360vh; }
+   piece needs to be watched in. The contact letter is the measure: about
+   seven and a half screen-heights of scroll per ten seconds. This holds
+   twenty-eight. */
+.scene.sw{ height:315vh; }
 .scene.sw .stage{ box-sizing:border-box; padding-top:var(--nav);
   perspective:1500px; perspective-origin:50% 46%; isolation:isolate; }
 
@@ -131,20 +129,10 @@
   font-size:clamp(13px,1vw,15.5px); font-weight:400; letter-spacing:-.005em;
   color:var(--ink-soft); }
 
-.sw-again{ position:absolute; bottom:clamp(20px,4vh,44px); left:50%;
-  transform:translateX(-50%); z-index:12; opacity:0; pointer-events:none;
-  display:inline-flex; align-items:center; gap:9px; cursor:pointer;
-  border:0; background:none; font:inherit; color:var(--ink-faint);
-  padding:8px 4px; font-size:12px; font-weight:600; letter-spacing:.16em;
-  text-transform:uppercase; transition:opacity .6s ease, color .25s ease; }
-.sw-again:hover{ color:var(--ink); }
-.sw-again svg{ display:block; width:14px; height:14px; flex:none;
-  fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; }
-
 @media(max-width:900px){
   /* the same measure on a phone, where a screen is taller than it is wide
      and the same seconds cost more track */
-  .scene.sw{ height:400vh; }
+  .scene.sw{ height:350vh; }
   .sw-split{ grid-template-columns:1fr; gap:clamp(16px,3vh,26px); }
   .sw-bio{ max-width:none; min-height:10.5em; font-size:clamp(16px,4.4vw,22px); }
   .sw-shot, .sw-shot.port{ --shotmax:30vh; aspect-ratio:16/10;
@@ -171,7 +159,6 @@
   .sw-deck{ height:auto; display:grid; gap:12vh; margin:0 auto; }
   .sw-hook{ position:relative; opacity:1 !important; transform:none !important;
     filter:none !important; }
-  .sw-again{ display:none; }
   .sw-plate{ opacity:.55 !important; transform:none !important; }
   .sw-veil{ opacity:1 !important; }
   .sw-act{ position:relative; top:auto; bottom:auto; margin-block:0; height:auto;

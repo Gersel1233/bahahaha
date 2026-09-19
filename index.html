@@ -21,7 +21,7 @@
 <link rel="stylesheet" href="bbh.css?v=10" />
 <link rel="stylesheet" href="kunder.css?v=10" />
 <link rel="stylesheet" href="telefon.css?v=5" />
-<link rel="stylesheet" href="softwarehus.css?v=4" />
+<link rel="stylesheet" href="softwarehus.css?v=5" />
 <link rel="stylesheet" href="kontakt.css?v=2" />
 <link rel="stylesheet" href="mork.css?v=2" />
 <link rel="stylesheet" href="dybde.css?v=1" />
@@ -161,11 +161,6 @@
             <img src="media/spiis-mac.jpg" alt="" loading="lazy" decoding="async" width="1600" height="1200" />
           </div>
         </div>
-
-        <button class="sw-again" id="swAgain" type="button">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.4-5.7"/><path d="M20 4v4h-4"/></svg>
-          <span data-da="Spil igen">Play again</span>
-        </button>
 
       </div>
     </div>
@@ -877,8 +872,7 @@
        it halfway through something they never started. */
     var swEl=document.getElementById('softwarehus');
     if(swEl){
-      var swHook=document.getElementById('swHook'),
-          swAgain=document.getElementById('swAgain'), swPlate=document.getElementById('swPlate'),
+      var swHook=document.getElementById('swHook'), swPlate=document.getElementById('swPlate'),
           swVeil=document.getElementById('swVeil'), swGlow=document.getElementById('swGlow'),
           swTyped=document.getElementById('swTyped'), swCaret=document.getElementById('swCaret'),
           swBio=document.getElementById('swBio'), swHouse=document.getElementById('swHouse'),
@@ -935,7 +929,7 @@
            section that explains the whole trade was the one nobody saw.
            It runs itself now, the way the letter at the bottom does, and
            the track it sits on was made long enough to hold it. */
-        el:swEl, leadF:0, auto:true, dur:32000,
+        el:swEl, leadF:0, auto:true, dur:28000,
         build:function(){ swA.forEach(function(a){ if(a.hd) a.w=SC.split(a.hd); }); },
         base:function(){
           swSrc=(swBio.firstChild && swBio.firstChild.nodeValue)||'';
@@ -961,15 +955,20 @@
 
           /* the room comes up behind the glass, and steps back under the
              three suppliers so they have the stage to themselves */
-          var pIn=SC.film(SC.seg(s,.01,.12)), pMid=SC.io(SC.seg(s,.30,.42)), pBack=SC.out(SC.seg(s,.66,.80));
+          var pIn=SC.film(SC.seg(s,.01,.12)), pMid=SC.io(SC.seg(s,.29,.40)), pBack=SC.out(SC.seg(s,.66,.80));
           SC.set(swPlate,'scale('+(1.05+s*.12).toFixed(4)+') translate3d('+(2-s*5).toFixed(2)+'vw,'+(-1+s*3).toFixed(2)+'vh,0)',
             (pIn*(.92-pMid*.6+pBack*.46)).toFixed(3));
           SC.set(swVeil,null,(pIn*(1+pMid*.12)).toFixed(3));
-          SC.set(swGlow,'translate3d(0,'+(s*-10).toFixed(2)+'vh,0) scale('+(1+s*.28).toFixed(4)+')',
-            (.6-s*.26).toFixed(3));
+          /* the flare, on the frame the three become one. A fast attack and
+             a long fall — light behaves that way, and an even fade in and
+             out would read as a lamp being turned up rather than a hit. */
+          var fl=SC.seg(s,.510,.600),
+              flash=(fl>0 && fl<1) ? Math.pow(1-fl,2.6) : 0;
+          SC.set(swGlow,'translate3d(0,'+(s*-10).toFixed(2)+'vh,0) scale('+(1+s*.28+flash*.42).toFixed(4)+')',
+            Math.min(1,(.6-s*.26+flash*.7)).toFixed(3));
 
           /* act one — the trade, written out a character at a time */
-          if(swAct(swA[0],.02,.36,s)){
+          if(swAct(swA[0],.02,.34,s)){
             var tp=SC.seg(s,.055,.28), n=Math.round(tp*swSrc.length);
             if(n!==swN){ swN=n; swTyped.textContent=swSrc.slice(0,n); }
             var writing = tp>0 && tp<1;
@@ -977,44 +976,65 @@
             swShot(swA[0].shot,.10,.24,7,s);
           }
 
-          /* act two — three become one */
-          if(swAct(swA[1],.32,.66,s)){
-            swWords(swA[1].w,.34,.46,s);
-            var inS=SC.out(SC.seg(s,.38,.48)), join=SC.io(SC.seg(s,.48,.58)),
-                hb=swBack(SC.seg(s,.545,.62)), narrow=window.innerWidth<900;
+          /* act two — three become one.
+
+             It used to be three cards fading up in place, sliding to the
+             middle on an ease-in-out, and a fourth appearing. Everything
+             happened at the same speed, which is the one thing that makes
+             a move read as slow: nothing was ever going fast, so nothing
+             was ever arriving.
+
+             It is a collapse now. They come in one at a time, from off the
+             side each will fall back through and from a long way behind
+             the glass, and they land. Then they are pulled — on a cubic,
+             so the first third of the move is almost nothing and the last
+             third is a snap — into the point the house comes out of. They
+             are still there when it hits. The room flares on the same
+             frame, because a merge you can see the light of is a merge. */
+          if(swAct(swA[1],.30,.67,s)){
+            swWords(swA[1].w,.315,.405,s);
+            /* On a phone they stack instead of standing side by side —
+               the deck is one column wide there. They used to be given a
+               horizontal spread on a narrow window too, and a wider one
+               than on a desk: the outer two landed a third of a metre off
+               either side of a four-hundred-pixel screen, so the act that
+               exists to show three suppliers showed one. */
+            var narrow=window.innerWidth<900, rest=narrow?0:30, vgap=narrow?9:0;
+            /* the pull, accelerating */
+            var pull=SC.seg(s,.464,.532), kk=pull*pull;
             for(var i=0;i<swA[1].sups.length;i++){
-              var x=swSpread[i]*(1-join)*(narrow?38:30), y=(narrow?(i-1)*30:0)*(1-join);
+              var q=SC.out(SC.seg(s,.330+i*.024,.404+i*.024)),
+                  sp=swSpread[i],
+                  rx=sp*rest, ry=sp*vgap,
+                  /* in from off the side, out to the middle */
+                  x=rx*(1-kk) + sp*(1-q)*(narrow?34:96),
+                  z=-460*(1-q) - kk*240,
+                  rot=sp*(1-q)*-18 + sp*kk*26,
+                  sc=(.82+q*.18)*(1-kk*.78);
               SC.set(swA[1].sups[i],
-                'translate(-50%,-50%) translate3d('+x.toFixed(2)+'vh,'+y.toFixed(2)+'vh,0) scale('+((.9+inS*.1)*(1-join*.28)).toFixed(4)+')',
-                (inS*(1-Math.min(1,join*1.35))).toFixed(3), SC.blur((1-inS)*9+join*7));
+                'translate(-50%,-50%) translate3d('+x.toFixed(2)+'vh,'+(ry*(1-kk)).toFixed(2)+'vh,'+z.toFixed(0)+'px) rotateY('+rot.toFixed(1)+'deg) scale('+sc.toFixed(4)+')',
+                (q*(1-Math.min(1,kk*1.28))).toFixed(3), SC.blur((1-q)*13+kk*11));
             }
-            SC.set(swHouse,'translate(-50%,-50%) scale('+(.3+hb*.7).toFixed(4)+')',
-              Math.min(1,SC.seg(s,.535,.575)*3).toFixed(3),
-              SC.blur((1-Math.min(1,SC.seg(s,.535,.60)*1.4))*12));
-            var pl=SC.out(SC.seg(s,.585,.65));
+            /* the house comes out of the point they went into, hard */
+            var hb=SC.seg(s,.508,.566);
+            SC.set(swHouse,'translate(-50%,-50%) scale('+(.2+swBack(hb)*.8).toFixed(4)+')',
+              Math.min(1,SC.seg(s,.506,.520)*4.5).toFixed(3),
+              SC.blur((1-Math.min(1,SC.seg(s,.506,.542)*1.9))*18));
+            var pl=SC.out(SC.seg(s,.536,.588));
             SC.set(swA[1].lede,'translate3d(0,'+((1-pl)*16).toFixed(2)+'px,0)', pl.toFixed(3));
           }
 
           /* act three — why this house */
-          if(swAct(swA[2],.63,1.001,s,true)){
-            swWords(swA[2].w,.65,.78,s);
+          if(swAct(swA[2],.64,1.001,s,true)){
+            swWords(swA[2].w,.66,.78,s);
             swShot(swA[2].shot,.70,.84,-7,s);
             for(var j=0;j<swA[2].claims.length;j++){
-              var ct=SC.out(SC.seg(s,.76+j*.045,.87+j*.045));
+              var ct=SC.out(SC.seg(s,.765+j*.042,.875+j*.042));
               SC.set(swA[2].claims[j],'translate3d(0,'+((1-ct)*18).toFixed(2)+'px,0)', ct.toFixed(3));
             }
           }
-
-          var over = s>=0.999;
-          if(over !== (swAgain.style.opacity==='1')){
-            swAgain.style.opacity = over?'1':'0';
-            swAgain.style.pointerEvents = over?'auto':'none';
-          }
         }
       });
-      if(!reduce){
-        swAgain.addEventListener('click', function(){ SC.go(swEl); });
-      }
     }
 
     /* ---------- KUNDER — the line into the two cases ---------- */
