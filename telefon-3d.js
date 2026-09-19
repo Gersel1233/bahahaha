@@ -710,6 +710,29 @@ window.LesregTelefon = {
     pending = true;
     return el;
   },
+  /* A still, for a screen that is not a recording. The second phone's
+     other display is the one the notifications land on, and what belongs
+     behind them is the thing the order came from — so it takes a picture
+     rather than a film. Nothing is drawn until the file is here: the
+     placeholder holds the glass in the meantime, and the loop is told to
+     draw one more frame once it arrives, or the swap would wait for the
+     next scroll. */
+  setImage(which, src) {
+    const img = new Image();
+    img.decoding = 'async';
+    img.onload = () => {
+      const tex = new THREE.Texture(img);
+      tex.colorSpace = THREE.SRGBColorSpace;
+      tex.minFilter = THREE.LinearMipmapLinearFilter;
+      tex.generateMipmaps = true;
+      tex.needsUpdate = true;
+      const target = which === 1 ? p1.sA : which === 2 ? p2.sA : p2.sB;
+      target.map = tex; target.needsUpdate = true;
+      pending = true;
+    };
+    img.src = src;
+    return img;
+  },
   /* the canvas cannot be read by a DOM tool, so the state is readable
      instead — this is how the section gets verified */
   state() {
@@ -754,6 +777,10 @@ const SCREENS = { 1: 'media/app-1', 2: 'media/app-2' };   // 1 = gaesteappen, 2 
   const webm = !!probe.canPlayType && probe.canPlayType('video/webm; codecs="vp9"') !== '';
   Object.keys(SCREENS).forEach(k => {
     if (!SCREENS[k]) return;
-    window.LesregTelefon.setVideo(+k, SCREENS[k] + (webm ? '.webm' : '.mp4') + '?v=3');
+    window.LesregTelefon.setVideo(+k, SCREENS[k] + (webm ? '.webm' : '.mp4') + '?v=4');
   });
+  /* The third screen is the one the notification cards drop onto — the
+     restaurant's own front page, which is where the order the card is
+     announcing came from. */
+  window.LesregTelefon.setImage(3, 'media/app-2-notif.jpg?v=1');
 })();
