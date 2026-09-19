@@ -17,7 +17,12 @@
    watched in: one screen of stage, and a little over one more of pinning
    so the letter is not scrolled off the moment it starts. The stage
    takes a nav's worth off the top, so nothing lands under the bar. */
-.scene.kt{ height:230vh; }
+/* The letter keeps its own room rather than the glass the middle of the
+   page stands on — but it must not arrive as a hard line across the
+   screen. Its paper comes up out of nothing over the first third of a
+   screen, so the backdrop above dissolves into it. */
+.scene.kt{ height:230vh;
+  background:linear-gradient(180deg, transparent 0, var(--paper-1) 38vh); }
 .scene.kt .stage{ perspective:1500px; perspective-origin:50% 44%;
   box-sizing:border-box; padding-top:var(--nav); }
 
@@ -37,6 +42,7 @@
 .kt-rig{ position:relative; z-index:1; width:min(760px,92vw); max-height:100%;
   transform-style:preserve-3d; will-change:transform; }
 .kt-letter{ display:none; }
+#ktRSrc{ display:none; }
 
 /* ---------- the two cards ----------
    The same pane of glass twice: a lit top edge, the room showing
@@ -108,15 +114,32 @@
 .kt-finale h2 .w{ display:inline-block; white-space:pre; }
 .kt-finale h2 .w > span{ display:inline-block; opacity:0;
   will-change:transform,opacity,filter; }
-.kt-mail{ display:inline-flex; align-items:center; gap:clamp(10px,1.3vw,16px);
+/* The address is the one thing on this stage anybody is meant to touch,
+   so it is the one piece of real glass: thick, lit along the top edge,
+   rimmed on the inside as well as the outside, and with a highlight that
+   travels across it the way it does on the two cards above. It had a flat
+   wash and a hairline, which is a button with a blur behind it. */
+.kt-mail{ position:relative; overflow:hidden; isolation:isolate;
+  display:inline-flex; align-items:center; gap:clamp(10px,1.3vw,16px);
   margin-top:clamp(20px,3.2vh,38px); line-height:1;
   font-size:clamp(18px,2.8vw,42px); font-weight:600; letter-spacing:-.04em;
-  padding:clamp(12px,1.6vh,20px) clamp(20px,2.6vw,36px); border-radius:999px;
-  background:linear-gradient(180deg, rgba(232,238,244,.2), rgba(232,238,244,.07));
-  border:1px solid rgba(232,238,244,.26);
-  box-shadow:0 30px 60px -28px rgba(0,0,0,.72), inset 0 1px 0 rgba(255,255,255,.36);
-  -webkit-backdrop-filter:blur(20px) saturate(170%); backdrop-filter:blur(20px) saturate(170%);
+  padding:clamp(14px,1.9vh,24px) clamp(24px,3vw,44px); border-radius:999px;
+  background:
+    linear-gradient(150deg, rgba(255,255,255,.26), rgba(255,255,255,.06) 44%, rgba(255,255,255,.16));
+  border:1px solid rgba(255,255,255,.4);
+  box-shadow:
+    0 40px 80px -30px rgba(0,0,0,.8),
+    0 2px 10px -4px rgba(0,0,0,.5),
+    inset 0 1px 0 rgba(255,255,255,.75),
+    inset 0 -1px 0 rgba(255,255,255,.14),
+    inset 0 0 22px rgba(255,255,255,.1);
+  -webkit-backdrop-filter:blur(26px) saturate(200%); backdrop-filter:blur(26px) saturate(200%);
   transition:transform .4s cubic-bezier(.2,.8,.2,1), box-shadow .4s ease; }
+/* the light that runs across it, slowly, for ever */
+.kt-mail::before{ content:""; position:absolute; inset:0; z-index:-1; pointer-events:none;
+  background:linear-gradient(105deg, transparent 34%, rgba(255,255,255,.34) 50%, transparent 66%);
+  transform:translateX(-60%); animation:ktSheen 7s cubic-bezier(.5,0,.5,1) infinite; }
+@keyframes ktSheen{ 0%,62%{ transform:translateX(-70%); } 100%{ transform:translateX(70%); } }
 .kt-mail svg{ display:block; flex:none;
   width:clamp(15px,1.7vw,25px); height:clamp(15px,1.7vw,25px); }
 @media(hover:hover){
@@ -153,6 +176,7 @@
    The cards have to come out of absolute, or all four acts stack on the
    same line. */
 @media (prefers-reduced-motion: reduce){
+  .kt-mail::before{ animation:none; }
   .scene.kt{ height:auto; }
   .scene.kt .stage{ position:static; height:auto; padding:12vh 0; display:block;
     perspective:none; }

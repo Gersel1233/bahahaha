@@ -17,14 +17,14 @@
 <link rel="preload" as="font" type="font/woff2" href="fonts/instrumentserif-italic-400.woff2" crossorigin />
 <link rel="preload" as="font" type="font/woff2" href="fonts/barlow-normal-400.woff2" crossorigin />
 <link rel="stylesheet" href="styles.css?v=45" />
-<link rel="stylesheet" href="lesreg.css?v=67" />
+<link rel="stylesheet" href="lesreg.css?v=69" />
 <link rel="stylesheet" href="bbh.css?v=10" />
 <link rel="stylesheet" href="kunder.css?v=16" />
 <link rel="stylesheet" href="telefon.css?v=6" />
-<link rel="stylesheet" href="softwarehus.css?v=10" />
-<link rel="stylesheet" href="kontakt.css?v=2" />
+<link rel="stylesheet" href="softwarehus.css?v=11" />
+<link rel="stylesheet" href="kontakt.css?v=4" />
 <link rel="stylesheet" href="mork.css?v=4" />
-<link rel="stylesheet" href="dybde.css?v=2" />
+<link rel="stylesheet" href="dybde.css?v=3" />
 </head>
 <body>
 
@@ -62,6 +62,15 @@
   </nav>
 
   <div class="site-reveal">
+
+  <!-- The backdrop the middle of the page stands on. It used to be set on
+       each pinned stage, and a stage is one screen tall — so every section
+       started its own copy of the picture and the boundary between two of
+       them was a hard line across the page. One layer, fixed to the window,
+       and the sections scroll over it: nothing to line up, and nothing to
+       see between them. The vignette and the lift that were also per-stage
+       are on it too, for the same reason. -->
+  <div class="bg-glass" aria-hidden="true"></div>
 
   <!-- ===================== DRONE INTRO — the flight into the studio =====================
        Scroll scrubs one continuous drone shot: over the house, in through the
@@ -149,10 +158,11 @@
           <div class="sw-kicker" data-da="Hvorfor det betyder noget for jer">Why it matters to you</div>
           <h3 data-sw-split data-da="Normalt skal I hyre tre.">Normally you hire three.</h3>
           <div class="sw-merge">
+            <span class="sw-seam" id="swSeam" aria-hidden="true"></span>
             <div class="sw-sup"><b data-da="Designbureau">Design agency</b><s data-da="tegner det">draws it</s></div>
             <div class="sw-sup"><b data-da="Udvikler">Developer</b><s data-da="bygger det">builds it</s></div>
             <div class="sw-sup"><b data-da="Driftleverand&oslash;r">Hosting supplier</b><s data-da="holder det i luften">keeps it up</s></div>
-            <div class="sw-house" id="swHouse"><b>Lesreg</b><s data-da="alle tre">all three</s></div>
+            <div class="sw-house" id="swHouse"><b>Lesreg</b><s data-da="&eacute;t hus &middot; &eacute;n regning &middot; &eacute;t ansvar">one house &middot; one invoice &middot; one responsibility</s></div>
           </div>
           <p class="sw-lede" data-da="Tre aftaler, tre regninger, og <b>ingen der har ansvaret</b> n&aring;r noget ikke virker. Et softwarehus er &eacute;t sted at g&aring; hen.">Three contracts, three invoices, and <b>nobody who carries the responsibility</b> when something stops working. A software house is one place to go.</p>
         </div>
@@ -343,10 +353,14 @@
 
         <article class="kt-card kt-reply" id="ktReply">
           <div class="kt-meta"><b data-da="Svar">Reply</b> <span data-da="efter 14 minutter">after 14 minutes</span><em></em><span class="kt-tag">Mikkel</span></div>
-          <p class="kt-msg" data-da="Ja. Det kan vi bygge.<s>Jeg ringer i morgen formiddag, s&aring; gennemg&aring;r vi det hele &mdash; og I f&aring;r en plan med fast pris inden weekenden.</s>">Yes. We can build that.<s>I&rsquo;ll call tomorrow morning and we&rsquo;ll go through all of it &mdash; and you&rsquo;ll have a plan with a fixed price before the weekend.</s></p>
+          <!-- The answer is written, not printed. It arrived whole while the
+               letter above it had typed itself out, which made the reply
+               read as a caption rather than as somebody answering. -->
+          <p class="kt-msg"><span id="ktRTyped"></span><i class="kt-caret" id="ktRCaret" aria-hidden="true"></i><s id="ktRSub" data-da="Jeg ringer i morgen formiddag, s&aring; gennemg&aring;r vi det hele &mdash; og I f&aring;r en plan med fast pris inden weekenden.">I&rsquo;ll call tomorrow morning and we&rsquo;ll go through all of it &mdash; and you&rsquo;ll have a plan with a fixed price before the weekend.</s></p>
+          <p class="kt-letter" id="ktRSrc" data-da="Ja. Det kan vi bygge.">Yes. We can build that.</p>
           <div class="kt-from">
             <svg viewBox="0 0 128 128" aria-hidden="true"><path d="M0 0H94l34 34v94H0Z" fill="#e8eef4"/><path d="M44 28h18v62h38v18H44Z" fill="#0c0e11"/></svg>
-            <div><b>Mikkel Ste Gersel</b><s data-da="Lesreg &middot; softwarehus">Lesreg &middot; software house</s></div>
+            <div><b>Mikkel Sten Gersel</b><s data-da="Lesreg &middot; softwarehus">Lesreg &middot; software house</s></div>
           </div>
         </article>
 
@@ -903,32 +917,15 @@
           swVeil=document.getElementById('swVeil'), swGlow=document.getElementById('swGlow'),
           swTyped=document.getElementById('swTyped'), swCaret=document.getElementById('swCaret'),
           swBio=document.getElementById('swBio'), swHouse=document.getElementById('swHouse'),
-          swDeck=swEl.querySelector('.sw-deck'), swMerge=swEl.querySelector('.sw-merge');
-      /* The three cards end at the fourth one's footprint, so the dissolve
-         between them is a dissolve between the same shape rather than a
-         swap of two different ones. Read once and kept — a width off the
-         layout every frame is a reflow in a loop that has to be free. */
-      /* The three end on the middle one's box, and the answer starts from
-         that box and grows out of it. It used to be the other way — the
-         three scaled up to the answer's size — and that made the result
-         the same size as its inputs, which is the definition of nothing
-         happening. Read once and kept: a width off the layout every frame
-         is a reflow in a loop that has to be free. */
-      var swFit=null, swEdge=-1, swHouseSh=-1;
-      function swFits(){
-        if(swFit) return swFit;
-        var mid=swA[1].sups[1], mw=mid.offsetWidth, mh=mid.offsetHeight,
-            hw=swHouse.offsetWidth, hh=swHouse.offsetHeight;
-        if(!mw||!mh||!hw||!hh) return null;
-        swFit={
-          sup: swA[1].sups.map(function(el){
-            return { x: mw/(el.offsetWidth||mw), y: mh/(el.offsetHeight||mh) }; }),
-          /* the answer at the size of the stack it comes out of */
-          house0: mw/hw
-        };
-        return swFit;
-      }
-      window.addEventListener('resize', function(){ swFit=null; swEdge=-1; }, {passive:true});
+          swDeck=swEl.querySelector('.sw-deck'), swMerge=swEl.querySelector('.sw-merge'),
+          swSeam=document.getElementById('swSeam');
+      /* There used to be a measuring pass here: the three cards were three
+         different widths, so something had to read the layout and work out
+         what each one had to be scaled by to end on the same footprint.
+         The three are one box in the stylesheet now — same width, same
+         height, same weight — so there is nothing left to reconcile, and a
+         whole class of resize bugs went with it. */
+      var swHouseSh=-1;
       var swA=[1,2,3].map(function(n){
         var el=swEl.querySelector('[data-sw-act="'+n+'"]');
         return { el:el, kick:el.querySelector('.sw-kicker'),
@@ -992,14 +989,15 @@
           swA.forEach(function(a){
             all=all.concat([a.el,a.kick,a.shot,a.lede]).concat(a.w).concat(a.claims).concat(a.sups);
             (a.supTxt||[]).forEach(function(t){ all=all.concat(t); });
-            /* the edges are written straight onto the elements, so the
-               state they fall back to has to be written back off them */
-            (a.sups||[]).forEach(function(su){ su.style.borderColor=''; su.style.boxShadow=''; });
             a.el.style.visibility='visible'; a.vis=true;
           });
-          swHouse.style.borderColor=''; swHouse.style.boxShadow=''; swHouseSh=-1;
-          SC.plain(all.concat([swHook,swHouse,swDeck]));
+          /* the shadow is written straight onto the block, so the state it
+             falls back to has to be written back off it */
+          swHouse.style.boxShadow=''; swHouseSh=-1;
+          SC.plain(all.concat([swHook,swHouse,swDeck,swSeam]));
           swHouse.style.transform='translate(-50%,-50%)';
+          if(swSeam){ swSeam.style.opacity='0'; swSeam._op='0';
+            swSeam.style.transform='translate(-50%,-50%)'; swSeam._tr='translate(-50%,-50%)'; }
           swCaret.style.display='none';
         },
         paint:function(s){
@@ -1021,15 +1019,22 @@
              the camera, not a lamp. And the light in the room jumps on the
              contact frame and falls away fast, the way it does when
              something in the room catches it. */
-          var kt=SC.seg(s,.512,.586),
-              punch=(s>=.504) ? (kt<=0 ? 1 : Math.exp(-5.2*kt)*Math.cos(Math.PI*2*1.55*kt)) : 0,
-              gl=SC.seg(s,.504,.572),
-              glow=(gl>0&&gl<1) ? Math.pow(1-gl,2.4)*.55 : 0;
+          /* And the room goes down before it comes up. The light used to
+             jump on the frame of contact and nothing before it, which is a
+             lamp being switched on; a room that dims while the three swing
+             shut and then flares is the light being pulled into the thing
+             that is about to happen. The dip is what makes the flare
+             read — you cannot brighten a room that was already bright. */
+          var dim=SC.io(SC.seg(s,.470,.508)),
+              kt=SC.seg(s,.514,.588),
+              punch=(s>=.506) ? (kt<=0 ? 1 : Math.exp(-5.2*kt)*Math.cos(Math.PI*2*1.55*kt)) : 0,
+              gl=SC.seg(s,.506,.574),
+              glow=(gl>0&&gl<1) ? Math.pow(1-gl,2.4)*.62 : 0;
           SC.set(swPlate,'scale('+(1.05+s*.12+punch*.028).toFixed(4)+') translate3d('+(2-s*5).toFixed(2)+'vw,'+(-1+s*3+punch*.6).toFixed(2)+'vh,0)',
-            (pIn*(.92-pMid*.6+pBack*.46)+glow*.12).toFixed(3));
-          SC.set(swVeil,null,(pIn*(1+pMid*.12)-glow*.18).toFixed(3));
+            Math.max(0,(pIn*(.92-pMid*.6+pBack*.46)*(1-dim*.62)+glow*.14)).toFixed(3));
+          SC.set(swVeil,null,(pIn*(1+pMid*.12+dim*.2)-glow*.2).toFixed(3));
           SC.set(swGlow,'translate3d(0,'+(s*-10).toFixed(2)+'vh,0) scale('+(1+s*.28+glow*.6).toFixed(4)+')',
-            Math.min(1,(.6-s*.26+glow)).toFixed(3));
+            Math.max(0,Math.min(1,(.6-s*.26)*(1-dim*.7)+glow)).toFixed(3));
 
           /* act one — the trade, written out a character at a time */
           if(swAct(swA[0],.02,.34,s)){
@@ -1042,150 +1047,140 @@
 
           /* act two — three become one.
 
-             It used to be three cards fading up in place, sliding to the
-             middle on an ease-in-out, and a fourth appearing. Everything
-             happened at the same speed, which is the one thing that makes
-             a move read as slow: nothing was ever going fast, so nothing
-             was ever arriving.
+             Two earlier goes at this were explosions — a shockwave, a
+             whiteout, a flare — and both were the same mistake at
+             different strengths: the event was happening TO the cards
+             rather than being made OF them. A third was a stack: three
+             panes sliding into register. It was clean and it was nothing,
+             because three things ending up on top of each other is a
+             dissolve however brightly it is lit.
 
-             It is a collapse now. They come in one at a time, from off the
-             side each will fall back through and from a long way behind
-             the glass, and they land. Then they are pulled — on a cubic,
-             so the first third of the move is almost nothing and the last
-             third is a snap — into the point the house comes out of. They
-             are still there when it hits. The room flares on the same
-             frame, because a merge you can see the light of is a merge. */
+             This one is a turn. The three stand still — a real beat of
+             nothing, which is the only thing that makes a snap land — and
+             then they swing, all to the same side, all the way to their
+             own edge, and slide together while they do it. Edge on, three
+             panes are one line of light: nothing overlaps, so nothing can
+             step, and the seam the last three attempts kept drawing has
+             no surface to draw itself on.
+
+             Then the line opens back out, the other way, and what comes
+             round to face you is not one of the three. It is four times
+             their width with the name cut into it. The whole move is one
+             piece of choreography with one idea in it — three became
+             this — and the size of the thing that turns round is the
+             point of the section. */
           if(swAct(swA[1],.30,.67,s)){
             swWords(swA[1].w,.315,.405,s);
             /* On a phone they stack instead of standing side by side —
-               the deck is one column wide there. */
-            var narrow=window.innerWidth<900, rest=narrow?0:30, vgap=narrow?9:0;
+               the deck is one column wide there — so the spread that is
+               horizontal on a desk is vertical on a phone. */
+            var narrow=window.innerWidth<900, rest=narrow?0:30, vgap=narrow?11:0;
 
-            /* REGISTER is the frame everything is written against. The
-               beats that have to land together are the ones you can see
-               are wrong when they do not, so they all read one number. */
-            var REG=.506, fit=swFits();
+            /* REGISTER is the frame everything is written against: the
+               frame the three are edge on and the line exists. The beats
+               that have to land together are the ones you can see are
+               wrong when they do not, so they all read one number. */
+            var REG=.508,
+                /* the swing. A power of 2.4 is almost nothing for the
+                   first half of the window and everything in the last
+                   quarter: they do not drift shut, they are shut. */
+                turn=SC.seg(s,.490,REG), tk=Math.pow(turn,2.4),
+                /* the breath before it: the last card lands, the room
+                   dims, and the three draw back a hair — the inhale that
+                   makes the swing read as a swing and not a slide */
+                hush=SC.io(SC.seg(s,.472,.492)),
+                /* and the open, on a damped spring — round past flat,
+                   back under, and still. The rotation carries the
+                   overshoot and the width does not: a plate that lands
+                   ten degrees past itself reads as weight, a plate that
+                   lands ten per cent wider than itself reads as rubber. */
+                oc=SC.seg(s,REG+.008,.570),
+                spring=(oc<=0 ? 1 : Math.exp(-5.6*oc)*Math.cos(Math.PI*2*1.3*oc)),
+                ok=(s>=REG+.008) ? 1-spring : 0,
+                land=(s>=REG) ? (oc<=0 ? 1 : spring) : 0,
+                wide=SC.io(SC.seg(s,REG+.008,.552)),
+                lb=SC.io(SC.seg(s,.486,.500));
 
-            /* The merge is made of glass now, not of light. Two goes at
-               this were an explosion — a shockwave, a whiteout, a flare —
-               and both were the same mistake in different strengths: the
-               event was happening to the cards rather than being made of
-               them. Three identical panes shrinking into nothing and a
-               fourth appearing is a dissolve however brightly it is lit.
-
-               So they are not destroyed. They come together, they turn
-               square, they take the fourth one's footprint, and they slide
-               into register as three sheets of the same glass — which,
-               because glass is what they are made of, gets brighter and
-               denser as they stack. That brightness is the material
-               answering, not a lamp being switched on. The stack closes,
-               and what is left standing is one pane with the name on it.
-               The only light in the whole move is the highlight that runs
-               across it once as it settles. */
-            /* Order matters more than anything else here. Three panes of
-               different widths sliding through each other overlap by
-               different amounts along the way, and translucent glass over
-               translucent glass is brighter where they double — so every
-               part-overlap draws a vertical step, and three of them is the
-               three lines. They take the one box first, while they are
-               still apart, and only then travel. What meets is three
-               identical sheets, and identical sheets have nothing to step
-               against. */
-            var form=SC.io(SC.seg(s,.434,.478)),
-                /* The pull. A power of 2.6 is almost nothing for two thirds
-                   of the window and everything in the last third: they do
-                   not drift into the middle, they are taken there. */
-                pull=SC.seg(s,.478,REG), kk=Math.pow(pull,2.6),
-                shut=SC.io(SC.seg(s,.494,REG)),
-                /* They keep most of their weight on the way in. Doubled glass
-                   is brighter than single glass, and with a snap this fast
-                   the doubling lasts a handful of frames — which is what a
-                   thing moving too fast to see still looks like, not a seam.
-                   A little is given up so the frames do not flare. */
-                give=SC.io(SC.seg(s,.490,REG))*.38,
-                /* the frame of contact, held: nothing moves for a fifth of
-                   a second, which is how a hit is told from a fade */
-                hold=SC.seg(s,REG,REG+.008),
-                /* and then it grows. The answer is there on the contact
-                   frame at the size of the stack, held, and then it comes
-                   out of it on a damped spring — past its own size, back
-                   under, and still. Three cards' worth of glass becoming
-                   one thing that is bigger than all of them. */
-                st=SC.seg(s,REG+.008,.600),
-                spring=Math.exp(-5.0*st)*Math.cos(Math.PI*2*1.35*st),
-                land=(s>=REG) ? (st<=0 ? 1 : spring) : 0,
-                grow=(s>=REG) ? (st<=0 ? 0 : 1-spring) : 0;
             for(var i=0;i<swA[1].sups.length;i++){
-              var q=SC.out(SC.seg(s,.318+i*.022,.386+i*.022)),
+              /* Tight enough that the last one is standing well before the
+                 swing starts. On a wider stagger the third was still on
+                 its way in when the first two began to turn, which is not
+                 three things being still and then moving — it is one long
+                 shuffle with no beat anywhere in it. */
+              var q=SC.out(SC.seg(s,.392+i*.014,.446+i*.014)),
                   sp=swSpread[i],
-                  x=sp*rest*(1-kk) + sp*(1-q)*(narrow?34:96),
-                  y=sp*vgap*(1-kk),
-                  /* in from behind the glass, apart in depth so the three read
-                     as sheets, then shut on the frame they meet */
-                  z=-460*(1-q)*(1-kk) + sp*52*kk*(1-shut),
-                  base=.82+q*.18,
-                  sc=fit ? base+(fit.sup[i].x-base)*form : base,
-                  scy=fit ? sc*(1+(fit.sup[i].y/fit.sup[i].x-1)*form) : sc,
-                  /* stretched a little along the travel as they snap — the
-                     shape of speed, sideways on a desk, up and down on a
-                     phone */
-                  smear=kk*(1-shut)*.14,
-                  scx2=sc*(narrow?1-smear*.5:1+smear), scy2=scy*(narrow?1+smear:1-smear*.5);
+                  /* in from off the side each one will later fall through,
+                     and from a long way behind the glass */
+                  x=sp*rest*(1-tk) + sp*(1-q)*(narrow?30:86),
+                  y=sp*vgap*(1-tk),
+                  z=-470*(1-q) - hush*(1-tk)*30 + tk*46,
+                  /* they arrive turned a little towards the middle, and
+                     they leave turned all the way onto their own edge */
+                  ry=(1-q)*sp*-15*(1-tk) + tk*86;
               SC.set(swA[1].sups[i],
-                'translate(-50%,-50%) translate3d('+x.toFixed(2)+'vh,'+y.toFixed(2)+'vh,'+z.toFixed(0)+'px) rotateY('+(sp*(1-q)*-18*(1-kk)).toFixed(1)+'deg) scale('+scx2.toFixed(4)+','+scy2.toFixed(4)+')',
-                (q*(1-give)*(1-SC.seg(s,REG-.0015,REG+.004))).toFixed(3),
+                'translate(-50%,-50%) translate3d('+x.toFixed(2)+'vh,'+y.toFixed(2)+'vh,'+z.toFixed(0)+'px) rotateY('+ry.toFixed(2)+'deg)',
+                (q*(1-SC.io(SC.seg(s,.500,REG+.001)))).toFixed(3),
                 SC.blur((1-q)*13));
-              var lb=1-SC.io(SC.seg(s,.430,.468));
+              /* What is written on them goes before they do. Three panes
+                 still carrying three job titles as they swing shut are
+                 three things being hidden; three blank sheets of glass
+                 turning onto their edge are three things becoming one. */
               for(var m=0;m<swA[1].supTxt[i].length;m++)
-                SC.set(swA[1].supTxt[i][m],null,(lb*q).toFixed(3));
+                SC.set(swA[1].supTxt[i][m],null,(q*(1-lb)).toFixed(3));
             }
+            /* the numbers are drawn by the stylesheet, so they cannot be
+               written to one by one — they read an inherited property off
+               the row instead, which is one write a frame for all three */
+            if(swMerge) swMerge.style.setProperty('--lb',(1-lb).toFixed(3));
 
-            /* the sheets' own edges let go before they meet — one pane wants
-               a lit top edge and a hairline, three panes through each other
-               are six edges, and that is a seam */
-            var edge=+(1-SC.io(SC.seg(s,.446,.482))).toFixed(2);
-            if(edge!==swEdge){
-              swEdge=edge;
-              var bs = edge>.02
-                ? '0 30px 60px -30px rgba(0,0,0,'+(.72*edge).toFixed(3)+'), inset 0 1px 0 rgba(255,255,255,'+(.3*edge).toFixed(3)+')'
-                : 'none';
-              for(var e=0;e<swA[1].sups.length;e++){
-                swA[1].sups[e].style.borderColor='rgba(232,238,244,'+(.18*edge).toFixed(3)+')';
-                swA[1].sups[e].style.boxShadow=bs;
-              }
-            }
-
-            /* The block takes the hit. Down hard on contact, held there for
-               the frame, then back up on the same spring the pane lands on
+            /* The block takes the hit: down hard on the frame the line
+               exists, then back up on the same spring the plate opens on
                — the two are one body. */
-            var jolt=(s>=REG) ? (st<=0 ? 1 : Math.exp(-6*st)*Math.cos(Math.PI*2*1.55*st)) : 0;
-            SC.set(swMerge,'translate3d(0,'+(jolt*9).toFixed(2)+'px,0)', null);
+            SC.set(swMerge,'translate3d(0,'+(Math.max(0,land)*10).toFixed(2)+'px,0)', null);
 
-            /* The one that is left. It is there on the frame of contact,
-               a tenth too big, held, and then it lands: over, under, over,
-               still. That is the weight of three sheets becoming one — not
-               a fade-up, a landing. Its shadow is deepest on the frame it
-               hits and settles with it. */
-            var h0=fit ? fit.house0 : .45,
-                hsc=h0+(1-h0)*grow;
-            SC.set(swHouse,'translate(-50%,-50%) scale('+hsc.toFixed(4)+')',
-              (s>=REG-.0015?1:0).toFixed(0), SC.blur(0));
-            /* its shadow is deepest on the frame it hits, and settles */
+            /* The line. It is on for about a fifth of a second, and the
+               first frame of it is the loudest thing in the section: three
+               panes' worth of surface has nowhere to go but into light, so
+               it arrives four times its own width and too tall, thins to a
+               hairline while the room is still flaring, and is gone before
+               the plate is a third of the way round. A line that merely
+               fades up is a hairline somebody drew. */
+            if(swSeam){
+              /* it comes up under the last of the squeeze, not after it —
+                 there was a black frame between the panes going and the
+                 light arriving, and a gap in the middle of a collision is
+                 the one thing the whole move cannot have */
+              var hit=SC.io(SC.seg(s,REG-.0015,REG+.009)),
+                  sOut=SC.seg(s,REG+.009,REG+.040),
+                  sOp=SC.io(SC.seg(s,.4985,REG))*(1-SC.io(sOut)),
+                  sY=1+.5*(1-hit),
+                  sX=(1+4.2*(1-hit)) * (1+Math.max(0,ok)*14);
+              SC.set(swSeam,'translate(-50%,-50%) scaleX('+sX.toFixed(2)+') scaleY('+sY.toFixed(3)+')',
+                sOp.toFixed(3), null);
+            }
+
+            /* The one that is left. It comes round from its own edge,
+               opening as it turns, and it is four times the width of the
+               things it came out of. That difference in size is the whole
+               argument of the section, so nothing here is allowed to make
+               it look like another card. */
+            SC.set(swHouse,
+              'translate(-50%,-50%) translate3d(0,'+(Math.max(0,land)*7).toFixed(2)+'px,0) rotateY('+(86*(1-ok)).toFixed(2)+'deg) scaleX('+(.05+.95*wide).toFixed(4)+')',
+              (s>=REG+.003?1:0).toFixed(0), SC.blur(0));
+            /* its shadow is deepest on the frame it lands and settles with it */
             var hsh=+Math.max(0,land).toFixed(2);
             if(hsh!==swHouseSh){
               swHouseSh=hsh;
-              swHouse.style.boxShadow='0 '+(50+30*hsh).toFixed(0)+'px '+(100+60*hsh).toFixed(0)+'px -30px rgba(0,0,0,'+(.85+.15*hsh).toFixed(2)+'), 0 8px 24px -10px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,255,255,.95), inset 0 -1px 0 rgba(0,0,0,.08)';
-              swHouse.style.borderColor='rgba(255,255,255,'+(.72+.28*hsh).toFixed(2)+')';
+              swHouse.style.boxShadow='0 '+(60+34*hsh).toFixed(0)+'px '+(120+70*hsh).toFixed(0)+'px -40px rgba(0,0,0,'+(.92+.08*hsh).toFixed(2)+'), 0 18px 48px -24px rgba(0,0,0,.7), inset 0 2px 0 rgba(255,255,255,1), inset 0 -2px 0 rgba(0,0,0,.1), inset 0 0 0 1px rgba(255,255,255,'+(.45+.4*hsh).toFixed(2)+')';
             }
-            /* and the light runs across it once, on the settle */
-            var sw2=SC.seg(s,REG+.010,.610);
+            /* and the light runs across the face once, on the settle */
+            var sw2=SC.seg(s,REG+.014,.606);
             swHouse.style.setProperty('--sx',
               (sw2>0 && sw2<1 ? (-80+160*SC.io(sw2)).toFixed(1) : -80) + '%');
 
             var pl=SC.out(SC.seg(s,.556,.606));
             SC.set(swA[1].lede,'translate3d(0,'+((1-pl)*16).toFixed(2)+'px,0)', pl.toFixed(3));
           }
-
           /* act three — why this house */
           if(swAct(swA[2],.64,1.001,s,true)){
             swWords(swA[2].w,.66,.78,s);
@@ -1389,6 +1384,11 @@
           ktLetter=document.getElementById('ktLetter'),
           ktSent=document.getElementById('ktSent'),
           ktReply=document.getElementById('ktReply'),
+          ktRTyped=document.getElementById('ktRTyped'),
+          ktRCaret=document.getElementById('ktRCaret'),
+          ktRSub=document.getElementById('ktRSub'),
+          ktRSrc=document.getElementById('ktRSrc'),
+          ktRTxt='', ktRN=-1,
           ktFin=document.getElementById('ktFin'),
           ktRig=document.getElementById('ktRig'),
           ktA1=document.getElementById('ktA1'), ktA2=document.getElementById('ktA2'),
@@ -1416,7 +1416,7 @@
            nobody had finished, or held a card still halfway through a word.
            Seventeen seconds is what the four acts need to be read once,
            without waiting between them. */
-        auto:true, dur:17000,
+        auto:true, dur:21000,
         /* build() runs again when the language is switched, and the Danish
            reply is a different height from the English one, so the cards
            have to be re-centred on the same beat as the words. */
@@ -1424,7 +1424,10 @@
         base:function(){
           ktSrc=(ktLetter.firstChild && ktLetter.firstChild.nodeValue)||'';
           ktTyped.textContent=ktSrc;
-          SC.plain([ktAsk,ktReply,ktFin,ktRig].concat(ktW));
+          ktRTxt=(ktRSrc.firstChild && ktRSrc.firstChild.nodeValue)||'';
+          ktRTyped.textContent=ktRTxt; ktRN=-1;
+          SC.plain([ktAsk,ktReply,ktFin,ktRig,ktRSub].concat(ktW));
+          ktRCaret.style.display='none';
           ktCaret.style.display='none';
           SC.set(ktSent,null,'0');
           ktLayout();
@@ -1433,44 +1436,65 @@
           var L=(ktLetter.firstChild && ktLetter.firstChild.nodeValue)||'';
           if(L!==ktSrc){ ktSrc=L; ktN=-1; ktLayout(); }
 
+          var R=(ktRSrc.firstChild && ktRSrc.firstChild.nodeValue)||'';
+          if(R!==ktRTxt){ ktRTxt=R; ktRN=-1; ktLayout(); }
+
           /* act one — the message writes itself */
-          var arrive=SC.film(SC.seg(s,0,.07)),
-              typeP=SC.seg(s,.04,.36),
-              leave=SC.io(SC.seg(s,.46,.54));
+          var arrive=SC.film(SC.seg(s,0,.06)),
+              typeP=SC.seg(s,.035,.30),
+              /* and then it is sent. It used to be pushed back into the
+                 depth, which is a card leaving; this is a letter going
+                 somewhere. It folds down onto the point the receipt comes
+                 out of, and the receipt comes out of the same point — so
+                 what you see is the message packed into the button. */
+              leave=SC.io(SC.seg(s,.42,.50));
           var n=Math.round(typeP*ktSrc.length);
           if(n!==ktN){ ktN=n; ktTyped.textContent=ktSrc.slice(0,n); }
           var writing = typeP>0 && typeP<1 && leave<.02;
           if(writing !== (ktCaret.style.display===''))
             ktCaret.style.display = writing ? '' : 'none';
           SC.set(ktAsk,
-            'translate3d(0,'+((1-arrive)*4-leave*16).toFixed(2)+'vh,'+
-              (-560*(1-arrive)-leave*360).toFixed(1)+'px) rotateX('+
-              ((1-arrive)*9-leave*7).toFixed(2)+'deg) scale('+(.94+arrive*.06).toFixed(4)+')',
-            (arrive*(1-leave)).toFixed(3), SC.blur((1-arrive)*14+leave*12));
-          ktAsk.style.setProperty('--sx',(SC.seg(s,0,.46)*150-40).toFixed(1)+'%');
+            'translate3d(0,'+((1-arrive)*4).toFixed(2)+'vh,'+
+              (-560*(1-arrive)).toFixed(1)+'px) rotateX('+
+              ((1-arrive)*9).toFixed(2)+'deg) scale('+
+              ((.94+arrive*.06)*(1-leave*.82)).toFixed(4)+','+
+              ((.94+arrive*.06)*(1-leave*.94)).toFixed(4)+')',
+            (arrive*(1-SC.seg(s,.46,.505))).toFixed(3),
+            SC.blur((1-arrive)*14+leave*5));
+          ktAsk.style.setProperty('--sx',(SC.seg(s,0,.42)*150-40).toFixed(1)+'%');
 
-          /* act two — the receipt, in the gap the letter leaves behind */
-          var sp=SC.seg(s,.48,.60);
+          /* act two — the receipt, out of the point the letter folded onto */
+          var sp=SC.seg(s,.455,.60);
           SC.set(ktSent,
-            'translate(-50%,-50%) scale('+(.86+SC.io(Math.min(1,sp*1.6))*.14).toFixed(4)+')',
-            (Math.sin(sp*Math.PI)*.95).toFixed(3));
+            'translate(-50%,-50%) scale('+(.46+SC.io(Math.min(1,sp*2.2))*.54).toFixed(4)+')',
+            (Math.sin(Math.min(1,sp*1.05)*Math.PI)*.98).toFixed(3));
 
-          /* act three — the answer comes in from above and lands */
-          var rp=SC.seg(s,.56,.68), rb=back(rp), rOut=SC.io(SC.seg(s,.86,.93));
+          /* act three — the answer comes in from above, lands, and is
+             written out the way the letter above it was */
+          var rp=SC.seg(s,.56,.64), rb=back(rp), rOut=SC.io(SC.seg(s,.905,.95));
           SC.set(ktReply,
             'translate3d(0,'+((1-rb)*-12-rOut*12).toFixed(2)+'vh,'+
               (-420*(1-rb)-rOut*300).toFixed(1)+'px) rotateX('+
               ((1-rb)*-10+rOut*6).toFixed(2)+'deg) scale('+(.9+rb*.1).toFixed(4)+')',
             (Math.min(1,rp*3)*(1-rOut)).toFixed(3),
             SC.blur((1-Math.min(1,rp*1.3))*14+rOut*12));
-          ktReply.style.setProperty('--sx',(SC.seg(s,.56,.93)*150-40).toFixed(1)+'%');
+          ktReply.style.setProperty('--sx',(SC.seg(s,.56,.95)*150-40).toFixed(1)+'%');
+          var rType=SC.seg(s,.615,.745),
+              rn=Math.round(rType*ktRTxt.length);
+          if(rn!==ktRN){ ktRN=rn; ktRTyped.textContent=ktRTxt.slice(0,rn); }
+          var rWriting = rType>0 && rType<1 && rOut<.02;
+          if(rWriting !== (ktRCaret.style.display===''))
+            ktRCaret.style.display = rWriting ? '' : 'none';
+          /* the line under it follows the sentence, not the card */
+          SC.set(ktRSub,'translate3d(0,'+((1-SC.out(SC.seg(s,.755,.815)))*10).toFixed(2)+'px,0)',
+            SC.out(SC.seg(s,.755,.815)).toFixed(3));
 
           /* act four — the question goes back to the reader */
-          var fp=SC.out(SC.seg(s,.90,.99));
+          var fp=SC.out(SC.seg(s,.925,.995));
           SC.set(ktFin,'translateZ('+(-300*(1-fp)).toFixed(1)+'px) scale('+(.94+fp*.06).toFixed(4)+')',
             fp.toFixed(3), SC.blur((1-fp)*12));
           for(var i=0;i<ktW.length;i++){
-            var t=SC.film(SC.seg(s,.90+i*.012,.98+i*.012));
+            var t=SC.film(SC.seg(s,.925+i*.010,.99+i*.010));
             SC.set(ktW[i],
               'translate3d(0,'+((1-t)*.55).toFixed(3)+'em,0) rotateX('+(-46*(1-t)).toFixed(2)+'deg)',
               t.toFixed(3), SC.blur(9*(1-t)));

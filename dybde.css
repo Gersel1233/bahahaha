@@ -23,46 +23,40 @@
    The same frame the page opens on, held far back: blurred hard, taken
    down to two fifths, and small — a blurred picture needs almost no
    resolution, so the whole backdrop is twenty kilobytes against the two
-   hundred the sharp one at the top costs. It goes under the three
-   sections in the middle. The opening keeps the sharp frame, because that
-   is the statement; the letter at the bottom keeps its own room, because
-   a letter is read and not looked at.
+   hundred the sharp one at the top costs.
 
-   It sits on the pinned stage rather than the section, so it holds still
-   while the section scrolls — the depth the rest of this file is about,
-   done with one image instead of a fixed attachment, which is the thing
-   that makes a phone crawl. */
-.scene.sw .stage, .scene.case .stage, .scene.tel .stage{
-  background-image:url("photos/glas-dyb.jpg?v=1");
-  background-size:cover; background-position:50% 50%; background-repeat:no-repeat; }
+   One layer, fixed to the window. It was on each pinned stage, and a
+   stage is exactly one screen tall: every section started the picture
+   over, and where two of them met there was a hard line across the page.
+   Fixed, the sections scroll over one continuous picture and there is
+   nothing between them to see. The vignette and the lift that were also
+   drawn per stage are on it as well, for the same reason — three
+   full-window gradient layers and an animation come off the page with
+   them.
+
+   The three sections in the middle let it through. The opening keeps the
+   sharp frame, because that is the statement; the letter at the bottom
+   keeps its own room, because a letter is read and not looked at. */
+.bg-glass{ position:fixed; inset:0; z-index:0; pointer-events:none;
+  background-image:
+    radial-gradient(38% 34% at 42% 38%, rgba(162,186,214,.11) 0%, rgba(162,186,214,.04) 44%, transparent 70%),
+    radial-gradient(92% 82% at 50% 46%, transparent 44%, rgba(4,5,7,.62) 100%),
+    url("photos/glas-dyb.jpg?v=1");
+  background-size:auto, auto, cover;
+  background-position:50% 50%, 50% 50%, 50% 50%;
+  background-repeat:no-repeat; }
 @media(max-width:820px){
-  .scene.sw .stage, .scene.case .stage, .scene.tel .stage{
-    background-image:url("photos/glas-dyb-h.jpg?v=1"); background-position:50% 30%; }
+  .bg-glass{ background-image:
+    radial-gradient(44% 30% at 44% 34%, rgba(162,186,214,.11) 0%, rgba(162,186,214,.04) 44%, transparent 70%),
+    radial-gradient(96% 80% at 50% 46%, transparent 42%, rgba(4,5,7,.62) 100%),
+    url("photos/glas-dyb-h.jpg?v=1");
+    background-position:50% 50%, 50% 50%, 50% 30%; }
 }
-
-/* ---------- the room, on every pinned stage ----------
-   ::before is the light, ::after closes the corners. Both are absolute,
-   or they would become flex items on a stage that centres its content.
-   The contact scene brings its own and is left alone. */
-.scene:not(.kt) .stage::before{
-  content:""; position:absolute; left:50%; top:44%;
-  width:120vw; height:120vh; transform:translate(-50%,-50%);
-  pointer-events:none; border-radius:50%;
-  background:
-    radial-gradient(38% 34% at 42% 40%, rgba(162,186,214,.13) 0%, rgba(162,186,214,.05) 42%, transparent 68%),
-    radial-gradient(30% 28% at 62% 62%, rgba(116,138,168,.10) 0%, transparent 66%); }
-.scene:not(.kt) .stage::after{
-  content:""; position:absolute; inset:0; pointer-events:none;
-  /* Wider in the middle than the contact scene's, because two of these
-     sections put their words at the left edge rather than in the centre
-     — a vignette tight enough to shape a card sits on top of a headline. */
-  background:radial-gradient(88% 78% at 50% 44%, transparent 48%, rgba(4,5,7,.6)); }
+/* and the sections in the middle stop painting over it */
+.scene.sw, .scene.case, .scene.tel{ background:transparent; }
 
 /* only the scene being looked at is running anything */
-.scene.live:not(.kt) .stage::before{ animation:dybA 26s ease-in-out infinite; }
-@keyframes dybA{
-  0%,100%{ transform:translate(-50%,-50%) scale(1); }
-  50%    { transform:translate(-46%,-53%) scale(1.09); } }
+/* nothing drifts per stage any more — the backdrop is one fixed layer */
 
 /* The lift that was already behind the headlines. It was a warm stain
    inherited from the paper page; on this ground it is the brightest
@@ -111,6 +105,4 @@
   background:linear-gradient(105deg, transparent 34%, rgba(255,255,255,.1) 50%, transparent 64%); }
 .card > *, .way-list li > *{ position:relative; z-index:1; }
 
-@media (prefers-reduced-motion: reduce){
-  .scene.live:not(.kt) .stage::before{ animation:none; }
-}
+
