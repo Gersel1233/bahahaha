@@ -623,7 +623,7 @@ const clips = [];
    the page, and a megabyte and a half is fetched at load — in the same
    queue as the flight at the top, which is the one thing that must not
    wait. */
-let sectionNear = false;
+let sectionNear = false, lastS = 0;
 if ('IntersectionObserver' in window) {
   new IntersectionObserver(es => { sectionNear = es.some(e => e.isIntersecting); },
     { rootMargin: '40% 0px' }).observe(canvas);
@@ -639,8 +639,17 @@ let clipsUnlocked = false;
 function unlockClips() {
   if (clipsUnlocked) return;
   clipsUnlocked = true;
+  /* Only the clip whose turn it is. This used to ask every one of them at
+     once — preload auto, load(), play() — and touchstart is the first
+     event of a scroll gesture, so the very first flick on a phone pulled
+     down every film on the page before the reader had left the opening
+     line. The permission a browser wants is granted to the document by
+     the gesture, not to the element by the call, so the ones that are not
+     on screen yet lose nothing by waiting: driveClips asks them when they
+     come near, and by then the gesture has already happened. */
   for (let i = 0; i < clips.length; i++) {
     const v = clips[i];
+    if (!(sectionNear && lastS > v.at - 0.12)) continue;
     if (v.el.preload === 'none') { v.el.preload = 'auto'; v.el.load(); }
     v.el.play().catch(() => {});
   }
@@ -649,6 +658,7 @@ function unlockClips() {
   window.addEventListener(t, unlockClips, { once: true, passive: true, capture: true }));
 
 function driveClips(s) {
+  lastS = s;
   for (let i = 0; i < clips.length; i++) {
     const v = clips[i], near = sectionNear && s > v.at - 0.12;
     if (near && v.el.preload === 'none') { v.el.preload = 'auto'; v.el.load(); }
