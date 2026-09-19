@@ -17,14 +17,14 @@
 <link rel="preload" as="font" type="font/woff2" href="fonts/instrumentserif-italic-400.woff2" crossorigin />
 <link rel="preload" as="font" type="font/woff2" href="fonts/barlow-normal-400.woff2" crossorigin />
 <link rel="stylesheet" href="styles.css?v=45" />
-<link rel="stylesheet" href="lesreg.css?v=66" />
+<link rel="stylesheet" href="lesreg.css?v=67" />
 <link rel="stylesheet" href="bbh.css?v=10" />
 <link rel="stylesheet" href="kunder.css?v=16" />
-<link rel="stylesheet" href="telefon.css?v=5" />
-<link rel="stylesheet" href="softwarehus.css?v=8" />
+<link rel="stylesheet" href="telefon.css?v=6" />
+<link rel="stylesheet" href="softwarehus.css?v=10" />
 <link rel="stylesheet" href="kontakt.css?v=2" />
 <link rel="stylesheet" href="mork.css?v=4" />
-<link rel="stylesheet" href="dybde.css?v=1" />
+<link rel="stylesheet" href="dybde.css?v=2" />
 </head>
 <body>
 
@@ -82,6 +82,12 @@
         <span class="dn-role" data-da="Grundl&aelig;gger, Lesreg">Founder, Lesreg</span>
       </div>
       <div class="dro-fade" id="droFade" aria-hidden="true"></div>
+      <!-- The glass, on a layer of its own so it can arrive with the words
+           rather than with the paper. The film dissolves into black; the
+           picture comes up line by line under the headline as it writes
+           itself, and is whole on the frame the last line lands. Nothing
+           in the flight had to change for it. -->
+      <div class="dro-glass" id="droGlass" aria-hidden="true"></div>
       <!-- the headline, written into the film's own field of paper, so it
            arrives as the last beat of the flight and not after it -->
       <div class="dro-hero" id="droHero" aria-hidden="true"></div>
@@ -119,7 +125,7 @@
 
         <div class="sw-hook" id="swHook">
           <h2 data-da="Hvad er et softwarehus?">What is a software house?</h2>
-          <p data-da="Og hvorfor det betyder noget for jeres forretning.">And why it matters to your business.</p>
+          <p data-da="Og hvorfor Lesreg.">And why Lesreg.</p>
         </div>
 
         <div class="sw-act sw-split" data-sw-act="1">
@@ -127,8 +133,12 @@
             <div class="sw-kicker" data-da="Hvad er et softwarehus">What a software house is</div>
             <p class="sw-bio"><span id="swTyped"></span><i class="sw-caret" id="swCaret" aria-hidden="true"></i></p>
           </div>
-          <div class="sw-shot wide">
-            <img src="photos/lesreg-hero.jpg?v=3" alt="" loading="lazy" decoding="async" width="1600" height="900" />
+          <!-- Two frames, not one: the near shot of the code and the screen
+               it is being read on, held at two depths the way the stage
+               holds everything else. -->
+          <div class="sw-shot pair">
+            <span class="sh-b"><img src="photos/kode-skaerm.jpg?v=1" alt="" loading="lazy" decoding="async" width="1280" height="853" /></span>
+            <span class="sh-f"><img src="photos/kode-naer.jpg?v=1" alt="" loading="lazy" decoding="async" width="1280" height="853" /></span>
           </div>
         </div>
         <!-- the text of act one lives here so the language switch can reach
@@ -156,6 +166,11 @@
               <li data-da="Ingen led imellem<s>I taler med dem, der bygger det. En rettelse tager timer, ikke uger.</s>">Nothing sitting in between<s>You talk to the people building it. A change takes hours, not weeks.</s></li>
               <li data-da="Ingen der forsvinder bagefter<s>Samme h&aelig;nder passer det, n&aring;r det er i drift.</s>">Nobody who disappears afterwards<s>The same hands look after it once it is running.</s></li>
             </ul>
+            <!-- The section explained the trade and then stopped. It ends on
+                 a way in now: one line that says what is actually on offer,
+                 and the one button on the page that is worth pressing here. -->
+            <p class="sw-offer" data-da="Fast pris, aftalt inden vi starter. Vi tegner det, bygger det og passer det bagefter.">One fixed price, agreed before we start. We draw it, build it and look after it afterwards.</p>
+            <a class="sw-cta" href="#contact" data-da="Lad os tage en snak">Let's talk</a>
           </div>
           <div class="sw-shot wide">
             <img src="photos/lesreg-team.jpg?v=1" alt="" loading="lazy" decoding="async" width="1600" height="900" />
@@ -435,6 +450,7 @@
          spent in the middle of the flight is the one thing the scroll cannot
          afford — so it is spent here, where nothing is moving yet. */
       var dhr=document.getElementById('droHero'), dhK=null, dhL=null, dhM=null, dHLast=-1;
+      var dgl=document.getElementById('droGlass'), dGlLast=-1;
       /* the real headline sits in its finished state behind the film, with no
          move of its own — the copy above does the writing */
       if(hero) hero.classList.add('go','no-rise');
@@ -619,6 +635,13 @@
              spent early, not on the one where the writing begins. */
           var hv=pc>dFin*.55;
           if(hv!==dHvLast){ dHvLast=hv; dhr.classList.toggle('on', hv); }
+          /* the picture rises with the writing, a little behind it, so the
+             screen the words land on starts black and is glass by the time
+             they have all landed */
+          if(dgl){
+            var gv=+Math.max(0,Math.min(1,(h-.06)/.82)).toFixed(3);
+            if(gv!==dGlLast){ dGlLast=gv; dgl.style.opacity=gv; }
+          }
           if(hv && dhL){
             h=Math.max(0,Math.min(1,h));
             if(Math.abs(h-dHLast)>.002){
@@ -885,14 +908,24 @@
          between them is a dissolve between the same shape rather than a
          swap of two different ones. Read once and kept — a width off the
          layout every frame is a reflow in a loop that has to be free. */
+      /* The three end on the middle one's box, and the answer starts from
+         that box and grows out of it. It used to be the other way — the
+         three scaled up to the answer's size — and that made the result
+         the same size as its inputs, which is the definition of nothing
+         happening. Read once and kept: a width off the layout every frame
+         is a reflow in a loop that has to be free. */
       var swFit=null, swEdge=-1, swHouseSh=-1;
       function swFits(){
         if(swFit) return swFit;
-        var hw=swHouse.offsetWidth, hh=swHouse.offsetHeight;
-        if(!hw||!hh) return null;
-        swFit=swA[1].sups.map(function(el){
-          return { x: hw/(el.offsetWidth||hw), y: hh/(el.offsetHeight||hh) };
-        });
+        var mid=swA[1].sups[1], mw=mid.offsetWidth, mh=mid.offsetHeight,
+            hw=swHouse.offsetWidth, hh=swHouse.offsetHeight;
+        if(!mw||!mh||!hw||!hh) return null;
+        swFit={
+          sup: swA[1].sups.map(function(el){
+            return { x: mw/(el.offsetWidth||mw), y: mh/(el.offsetHeight||mh) }; }),
+          /* the answer at the size of the stack it comes out of */
+          house0: mw/hw
+        };
         return swFit;
       }
       window.addEventListener('resize', function(){ swFit=null; swEdge=-1; }, {passive:true});
@@ -1073,11 +1106,15 @@
                 /* the frame of contact, held: nothing moves for a fifth of
                    a second, which is how a hit is told from a fade */
                 hold=SC.seg(s,REG,REG+.008),
-                /* and then the weight lands — a damped spring, two bounces,
-                   from a tenth over to rest */
-                st=SC.seg(s,REG+.008,.586),
-                spring=Math.exp(-5.2*st)*Math.cos(Math.PI*2*1.55*st),
-                land=(s>=REG) ? (st<=0 ? 1 : spring) : 0;
+                /* and then it grows. The answer is there on the contact
+                   frame at the size of the stack, held, and then it comes
+                   out of it on a damped spring — past its own size, back
+                   under, and still. Three cards' worth of glass becoming
+                   one thing that is bigger than all of them. */
+                st=SC.seg(s,REG+.008,.600),
+                spring=Math.exp(-5.0*st)*Math.cos(Math.PI*2*1.35*st),
+                land=(s>=REG) ? (st<=0 ? 1 : spring) : 0,
+                grow=(s>=REG) ? (st<=0 ? 0 : 1-spring) : 0;
             for(var i=0;i<swA[1].sups.length;i++){
               var q=SC.out(SC.seg(s,.318+i*.022,.386+i*.022)),
                   sp=swSpread[i],
@@ -1087,8 +1124,8 @@
                      as sheets, then shut on the frame they meet */
                   z=-460*(1-q)*(1-kk) + sp*52*kk*(1-shut),
                   base=.82+q*.18,
-                  sc=fit ? base+(fit[i].x-base)*form : base,
-                  scy=fit ? sc*(1+(fit[i].y/fit[i].x-1)*form) : sc,
+                  sc=fit ? base+(fit.sup[i].x-base)*form : base,
+                  scy=fit ? sc*(1+(fit.sup[i].y/fit.sup[i].x-1)*form) : sc,
                   /* stretched a little along the travel as they snap — the
                      shape of speed, sideways on a desk, up and down on a
                      phone */
@@ -1129,21 +1166,23 @@
                still. That is the weight of three sheets becoming one — not
                a fade-up, a landing. Its shadow is deepest on the frame it
                hits and settles with it. */
-            var hsc=1+.11*land;
+            var h0=fit ? fit.house0 : .45,
+                hsc=h0+(1-h0)*grow;
             SC.set(swHouse,'translate(-50%,-50%) scale('+hsc.toFixed(4)+')',
               (s>=REG-.0015?1:0).toFixed(0), SC.blur(0));
+            /* its shadow is deepest on the frame it hits, and settles */
             var hsh=+Math.max(0,land).toFixed(2);
             if(hsh!==swHouseSh){
               swHouseSh=hsh;
-              swHouse.style.boxShadow='0 '+(40+30*hsh).toFixed(0)+'px '+(76+50*hsh).toFixed(0)+'px -30px rgba(0,0,0,'+(.78+.2*hsh).toFixed(2)+'), inset 0 1px 0 rgba(255,255,255,'+(.36+.5*hsh).toFixed(2)+')';
-              swHouse.style.borderColor='rgba(232,238,244,'+(.28+.5*hsh).toFixed(2)+')';
+              swHouse.style.boxShadow='0 '+(50+30*hsh).toFixed(0)+'px '+(100+60*hsh).toFixed(0)+'px -30px rgba(0,0,0,'+(.85+.15*hsh).toFixed(2)+'), 0 8px 24px -10px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,255,255,.95), inset 0 -1px 0 rgba(0,0,0,.08)';
+              swHouse.style.borderColor='rgba(255,255,255,'+(.72+.28*hsh).toFixed(2)+')';
             }
             /* and the light runs across it once, on the settle */
-            var sw2=SC.seg(s,REG+.006,.600);
+            var sw2=SC.seg(s,REG+.010,.610);
             swHouse.style.setProperty('--sx',
               (sw2>0 && sw2<1 ? (-80+160*SC.io(sw2)).toFixed(1) : -80) + '%');
 
-            var pl=SC.out(SC.seg(s,.540,.594));
+            var pl=SC.out(SC.seg(s,.556,.606));
             SC.set(swA[1].lede,'translate3d(0,'+((1-pl)*16).toFixed(2)+'px,0)', pl.toFixed(3));
           }
 
@@ -1515,7 +1554,7 @@
   <script type="importmap">
   { "imports": { "three": "./vendor/three.module.js?v=0.184.0" } }
   </script>
-  <script type="module" src="telefon-3d.js?v=27"></script>
+  <script type="module" src="telefon-3d.js?v=28"></script>
 
   <script src="site.js?v=48" defer></script>
 </body>

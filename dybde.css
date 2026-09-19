@@ -19,6 +19,27 @@
    the scroll is actually in is running an animation.
    ============================================================ */
 
+/* ---------- the glass, under the middle of the page ----------
+   The same frame the page opens on, held far back: blurred hard, taken
+   down to two fifths, and small — a blurred picture needs almost no
+   resolution, so the whole backdrop is twenty kilobytes against the two
+   hundred the sharp one at the top costs. It goes under the three
+   sections in the middle. The opening keeps the sharp frame, because that
+   is the statement; the letter at the bottom keeps its own room, because
+   a letter is read and not looked at.
+
+   It sits on the pinned stage rather than the section, so it holds still
+   while the section scrolls — the depth the rest of this file is about,
+   done with one image instead of a fixed attachment, which is the thing
+   that makes a phone crawl. */
+.scene.sw .stage, .scene.case .stage, .scene.tel .stage{
+  background-image:url("photos/glas-dyb.jpg?v=1");
+  background-size:cover; background-position:50% 50%; background-repeat:no-repeat; }
+@media(max-width:820px){
+  .scene.sw .stage, .scene.case .stage, .scene.tel .stage{
+    background-image:url("photos/glas-dyb-h.jpg?v=1"); background-position:50% 30%; }
+}
+
 /* ---------- the room, on every pinned stage ----------
    ::before is the light, ::after closes the corners. Both are absolute,
    or they would become flex items on a stage that centres its content.

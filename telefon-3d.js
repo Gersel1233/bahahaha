@@ -490,10 +490,16 @@ function layout() {
      canvas entirely, nothing shares the frame, and the phone has no reason
      to be small or to hug the top. */
   if (document.documentElement.classList.contains('tap'))
-    return { y1: 0.05, s1: 0.98, x2: 0, y2: 0.05, s2: 0.98 };
+    return { y1: 0.05, s1: 1.00, x2: 0, y2: 0.05, s2: 1.00 };
+  /* The phone was sized to leave the words a third of the stage to
+     themselves, which made it a picture of a phone on a page. It is the
+     product now: it takes the frame, and the words come forward over it.
+     Act one sits near the middle and large, because that act's line is
+     written across it; two and three keep to the left of centre because
+     their words are a column beside them, and they are bigger there too. */
   return window.innerWidth < 900
-    ? { y1: 0.34, s1: 0.62, x2: 0,     y2: 0.36, s2: 0.62 }
-    : { y1: 0.34, s1: 0.72, x2: -0.66, y2: 0,    s2: 0.86 };
+    ? { y1: 0.18, s1: 0.84, x2: 0,     y2: 0.20, s2: 0.80 }
+    : { y1: 0.10, s1: 1.06, x2: -0.62, y2: 0,    s2: 1.00 };
 }
 
 /* ---------- the three acts ---------- */

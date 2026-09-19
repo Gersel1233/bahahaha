@@ -716,18 +716,22 @@ body::after{ content:none; }
    flight writes is what fills the screen for the whole landing, and it sat
    on flat black. The picture arrived, if you were still looking, at the
    moment the film layer was switched off. */
-/* Longhands, not the shorthand. A var() inside a background shorthand is
+/* The layer the film dissolves into: the page's own colour, and nothing
+   else. It used to carry the picture as well, which meant the picture
+   arrived with the paper — a lit screen before a word had been written.
+
+   Longhands, not the shorthand: a var() inside a background shorthand is
    resolved at computed-value time, and if it does not resolve the whole
-   declaration falls back to the initial value — no colour and no picture —
-   rather than to the rule above it. That is exactly what happened here:
-   the layer came out empty and the glass only appeared at the frame the
-   film was switched off. */
+   declaration falls back to the initial value rather than to the rule
+   above it. */
 .dro-fade{ position:absolute; inset:0; opacity:0; pointer-events:none; will-change:opacity;
-  background-color:var(--ax-bg);
+  background-color:var(--ax-bg); }
+/* and the picture, on its own layer, timed to the writing */
+.dro-glass{ position:absolute; inset:0; opacity:0; pointer-events:none; will-change:opacity;
   background-image:url("photos/glas-bred.jpg?v=2");
   background-size:cover; background-position:50% 50%; background-repeat:no-repeat; }
 @media(max-width:820px){
-  .dro-fade{ background-image:url("photos/glas-hoej.jpg?v=2"); background-position:50% 16%; }
+  .dro-glass{ background-image:url("photos/glas-hoej.jpg?v=2"); background-position:50% 16%; }
 }
 /* the headline on the film's own paper — exactly where the real one will be
    standing when the film goes, so the two are never in different places */
