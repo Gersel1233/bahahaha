@@ -19,11 +19,11 @@
 <link rel="stylesheet" href="styles.css?v=45" />
 <link rel="stylesheet" href="lesreg.css?v=60" />
 <link rel="stylesheet" href="bbh.css?v=10" />
-<link rel="stylesheet" href="kunder.css?v=13" />
+<link rel="stylesheet" href="kunder.css?v=14" />
 <link rel="stylesheet" href="telefon.css?v=5" />
-<link rel="stylesheet" href="softwarehus.css?v=6" />
+<link rel="stylesheet" href="softwarehus.css?v=7" />
 <link rel="stylesheet" href="kontakt.css?v=2" />
-<link rel="stylesheet" href="mork.css?v=2" />
+<link rel="stylesheet" href="mork.css?v=3" />
 <link rel="stylesheet" href="dybde.css?v=1" />
 </head>
 <body>
@@ -152,7 +152,6 @@
                  none of them are in the layout. -->
             <span class="sw-flash"  id="swFlash"  aria-hidden="true"></span>
             <span class="sw-core"   id="swCore"   aria-hidden="true"></span>
-            <span class="sw-ring"   id="swRing"   aria-hidden="true"></span>
             <span class="sw-streak" id="swStreak" aria-hidden="true"></span>
           </div>
           <p class="sw-lede" data-da="Tre aftaler, tre regninger, og <b>ingen der har ansvaret</b> n&aring;r noget ikke virker. Et softwarehus er &eacute;t sted at g&aring; hen.">Three contracts, three invoices, and <b>nobody who carries the responsibility</b> when something stops working. A software house is one place to go.</p>
@@ -187,7 +186,7 @@
        timeline and the customer is the rest of it, which is what makes
        them one thing rather than two that happen to be next to each
        other. -->
-  <section class="scene case" id="kunder" data-brand="spiis" data-screen-label="case-spiis">
+  <section class="scene case" id="kunder" data-screen-label="clients">
     <div class="stage">
       <div class="glow" aria-hidden="true"></div>
       <div class="kdoor">
@@ -196,7 +195,7 @@
           <p class="lede" data-da="Begge er tegnet, bygget og passet af os. De tager imod bestillinger lige nu.">Both were drawn, built and looked after by us. They are taking orders right now.</p>
         </div>
       </div>
-      <div class="wrap">
+      <div class="wrap" data-brand="spiis">
         <div class="col">
           <p class="kicker" data-da="Restaurant &middot; Bestilling &amp; booking">Restaurant &middot; Ordering &amp; booking</p>
           <h2 class="cname" data-split>Spiis</h2>
@@ -233,14 +232,8 @@
           </div>
         </div>
       </div>
-    </div>
-  </section>
 
-  <!-- ---------- Mosede Havnecafe ---------- -->
-  <section class="scene case" data-brand="mosede" data-screen-label="case-mosede">
-    <div class="stage">
-      <div class="glow" aria-hidden="true"></div>
-      <div class="wrap">
+      <div class="wrap" data-brand="mosede">
         <div class="col">
           <p class="kicker" data-da="Caf&eacute; &middot; Menukort &amp; sk&aelig;rme">Café &middot; Menus &amp; screens</p>
           <h2 class="cname" data-split>Mosede Havnecafe</h2>
@@ -898,7 +891,7 @@
           swTyped=document.getElementById('swTyped'), swCaret=document.getElementById('swCaret'),
           swBio=document.getElementById('swBio'), swHouse=document.getElementById('swHouse'),
           swDeck=swEl.querySelector('.sw-deck'), swMerge=swEl.querySelector('.sw-merge'),
-          swCore=document.getElementById('swCore'), swRing=document.getElementById('swRing'),
+          swCore=document.getElementById('swCore'),
           swStreak=document.getElementById('swStreak'), swFlash=document.getElementById('swFlash');
       var swA=[1,2,3].map(function(n){
         var el=swEl.querySelector('[data-sw-act="'+n+'"]');
@@ -985,14 +978,14 @@
              flash on a stage that was already bright is a lamp; a flash
              out of a room that just got darker is a hit. */
           var dip=SC.io(SC.seg(s,.430,.502))*(1-SC.seg(s,.506,.560));
-          SC.set(swVeil,null,(pIn*(1+pMid*.12)+dip*.26).toFixed(3));
+          SC.set(swVeil,null,(pIn*(1+pMid*.12)+dip*.15).toFixed(3));
           /* the flare on the glass, on the same frame. Fast attack, long
              fall — light behaves that way, and an even fade in and out
              would read as a lamp being turned up rather than a hit. */
-          var fl=SC.seg(s,.504,.596),
-              flare=(fl>0 && fl<1) ? Math.pow(1-fl,2.6) : 0;
-          SC.set(swGlow,'translate3d(0,'+(s*-10).toFixed(2)+'vh,0) scale('+(1+s*.28+flare*.46).toFixed(4)+')',
-            Math.min(1,(.6-s*.26-dip*.3+flare*.8)).toFixed(3));
+          var fl=SC.seg(s,.504,.582),
+              flare=(fl>0 && fl<1) ? Math.pow(1-fl,2.6)*.42 : 0;
+          SC.set(swGlow,'translate3d(0,'+(s*-10).toFixed(2)+'vh,0) scale('+(1+s*.28+flare*.3).toFixed(4)+')',
+            Math.min(1,(.6-s*.26-dip*.18+flare*.9)).toFixed(3));
 
           /* act one — the trade, written out a character at a time */
           if(swAct(swA[0],.02,.34,s)){
@@ -1051,37 +1044,38 @@
                 (q*(1-SC.seg(s,.488,HIT))).toFixed(3), SC.blur((1-q)*13+kk*7));
             }
 
-            /* the core: fed while they come in, then blown out */
-            var feed=SC.seg(s,.448,HIT), blow=SC.seg(s,HIT,.548);
-            SC.set(swCore,'translate3d(0,0,0) scale('+(.2+feed*feed*.9+blow*9).toFixed(3)+')',
-              (blow>0 ? Math.pow(1-blow,2.2) : Math.pow(feed,3)*.9).toFixed(3));
+            /* The strike, taken down. It had a shockwave ring, a whiteout
+               and a long bright streak, which between them are the stock
+               parts of every energy-burst anybody has ever generated. The
+               physics stays and the effect goes: the three still arrive at
+               a point, the point still catches the light, and the room
+               still registers it — but as a camera would, not as a poster
+               would. The ring is gone entirely. */
+            var feed=SC.seg(s,.448,HIT), blow=SC.seg(s,HIT,.540);
+            SC.set(swCore,'translate3d(0,0,0) scale('+(.2+feed*feed*.55+blow*2.6).toFixed(3)+')',
+              ((blow>0 ? Math.pow(1-blow,2.4)*.62 : Math.pow(feed,3)*.5)).toFixed(3));
 
-            /* the frame the room is lit on — a spike and a long fall */
-            var fw=SC.seg(s,.502,.566);
-            SC.set(swFlash,null,(fw>0&&fw<1 ? Math.pow(1-fw,3.4) : 0).toFixed(3));
+            /* a lens catching light for a frame, not a whiteout */
+            var fw=SC.seg(s,.502,.556);
+            SC.set(swFlash,null,(fw>0&&fw<1 ? Math.pow(1-fw,3.2)*.34 : 0).toFixed(3));
 
-            /* the streak rips out of the point before the ring does */
-            var st=SC.seg(s,.503,.574), stw=SC.out(SC.seg(s,.503,.524));
-            SC.set(swStreak,'translate3d(0,0,0) scale('+(.12+stw*.88).toFixed(3)+','+(1-st*.72).toFixed(3)+')',
-              (st>0&&st<1 ? Math.pow(1-st,2.1) : 0).toFixed(3));
-
-            /* and the ring goes on past the edge of the glass */
-            var rg=SC.seg(s,HIT,.590);
-            SC.set(swRing,'translate3d(0,0,0) scale('+(1+rg*44).toFixed(2)+')',
-              (rg>0&&rg<1 ? Math.pow(1-rg,2.7) : 0).toFixed(3));
+            /* and the flare along it, short and thin */
+            var st=SC.seg(s,.503,.552), stw=SC.out(SC.seg(s,.503,.520));
+            SC.set(swStreak,'translate3d(0,0,0) scale('+(.2+stw*.8).toFixed(3)+','+(1-st*.6).toFixed(3)+')',
+              (st>0&&st<1 ? Math.pow(1-st,2.2)*.5 : 0).toFixed(3));
 
             /* the recoil. Nine beats, dying — a knock, not a wobble */
-            var sk=SC.seg(s,HIT,.552),
-                sh=(sk>0&&sk<1) ? Math.sin(sk*Math.PI*9)*(1-sk)*(1-sk) : 0;
-            SC.set(swMerge,'translate3d('+(sh*9).toFixed(2)+'px,'+(sh*-5).toFixed(2)+'px,0)', null);
+            var sk=SC.seg(s,HIT,.544),
+                sh=(sk>0&&sk<1) ? Math.sin(sk*Math.PI*7)*(1-sk)*(1-sk) : 0;
+            SC.set(swMerge,'translate3d('+(sh*4.5).toFixed(2)+'px,'+(sh*-2.5).toFixed(2)+'px,0)', null);
 
             /* the house is not grown. It is there on the frame of the
                flash, too big, and settles — which is what something
                arriving under its own weight looks like. */
-            var hs=SC.out(SC.seg(s,HIT,.572));
-            SC.set(swHouse,'translate(-50%,-50%) scale('+(1+.36*Math.pow(1-hs,2.4)).toFixed(4)+')',
+            var hs=SC.out(SC.seg(s,HIT,.578));
+            SC.set(swHouse,'translate(-50%,-50%) scale('+(1+.17*Math.pow(1-hs,2.4)).toFixed(4)+')',
               (s>=HIT?1:0).toFixed(0),
-              SC.blur((1-Math.min(1,SC.seg(s,HIT,.534)*2.2))*14));
+              SC.blur((1-Math.min(1,SC.seg(s,HIT,.534)*2.2))*9));
 
             var pl=SC.out(SC.seg(s,.548,.600));
             SC.set(swA[1].lede,'translate3d(0,'+((1-pl)*16).toFixed(2)+'px,0)', pl.toFixed(3));
@@ -1100,107 +1094,127 @@
       });
     }
 
-    /* ---------- A CASE — the words and the work, swung in together ----------
-       The cluster arrives from off to the right and turns square to the
-       reader as the sentence about it is written; on the way out both are
-       pushed back into the depth rather than faded, so the next customer
-       reads as the next room and not the next slide. */
-    [].slice.call(document.querySelectorAll('.scene.case')).forEach(function(cs){
-      var col=cs.querySelector('.col'), dev=cs.querySelector('.devices'),
-          phone=cs.querySelector('.iphone'), glow=cs.querySelector('.glow'),
-          kick=cs.querySelector('.kicker'), name=cs.querySelector('.cname'),
-          url=cs.querySelector('.curl'), blurb=cs.querySelector('.blurb'),
-          facts=[].slice.call(cs.querySelectorAll('.facts li')), nw=[],
-          /* only the first case carries the line into the two of them */
-          door=cs.querySelector('.kdoor'),
-          dIn=door&&door.querySelector('.inner'), dHd=door&&door.querySelector('h1'),
-          dLe=door&&door.querySelector('.lede'), dW=[],
-          /* The share of this section's track the line gets before the
-             customer starts arriving on the same stage. It was a quarter,
-             and a quarter was not enough: the words finished arriving and
-             the whole thing started leaving twenty-six pixels of scroll
-             later, so the sentence was never all there at once. The line
-             needs three things and the track has to hold all of them —
-             arriving, standing, and going. */
-          DOOR=door?0.38:0;
+    /* ---------- KUNDER — the line, and the two customers under it ----------
+       One stage, one timeline, three beats. The sentence comes up out of
+       the depth and stands; the first customer swings in from the right
+       while it goes back the way it came; and the second takes the first
+       one's place the same way. They were three sections once, which meant
+       three stages sliding past each other, and no easing inside a section
+       can hide a boundary between sections.
+
+       Every beat below is written against its own 0..1, exactly as it was
+       when each customer had a section to itself. Only the mapping from
+       the section's progress to those numbers is new. */
+    var kEl=document.getElementById('kunder');
+    if(kEl){
+      var kDoor=kEl.querySelector('.kdoor'),
+          kdIn=kDoor&&kDoor.querySelector('.inner'),
+          kdHd=kDoor&&kDoor.querySelector('h1'),
+          kdLe=kDoor&&kDoor.querySelector('.lede'), kdW=[],
+          kGlow=kEl.querySelector('.glow'),
+          /* the share of the track the line gets, and where the first
+             customer hands over to the second */
+          KD=0.24, KA=KD*0.86, KB=0.64, KM=KA+0.87*(KB-KA);
+      var kCases=[].slice.call(kEl.querySelectorAll('.wrap')).map(function(w){
+        return { w:w, col:w.querySelector('.col'), dev:w.querySelector('.devices'),
+                 phone:w.querySelector('.iphone'), kick:w.querySelector('.kicker'),
+                 name:w.querySelector('.cname'), url:w.querySelector('.curl'),
+                 blurb:w.querySelector('.blurb'),
+                 facts:[].slice.call(w.querySelectorAll('.facts li')), nw:[] };
+      });
+      function kPaint(c, q){
+        var ex=SC.io(SC.seg(q,.84,1));
+
+        var kt=SC.out(SC.seg(q,0,.10));
+        SC.set(c.kick,'translate3d(0,'+((1-kt)*14).toFixed(2)+'px,0)',kt.toFixed(3));
+
+        for(var i=0;i<c.nw.length;i++){
+          var t=SC.film(SC.seg(q,.04+i*.05,.28+i*.05));
+          SC.set(c.nw[i],
+            'translate3d(0,'+((1-t)*.6).toFixed(3)+'em,0) rotateX('+(-50*(1-t)).toFixed(2)+'deg) scale('+(.94+.06*t).toFixed(4)+')',
+            t.toFixed(3), SC.blur(7*(1-t)));
+        }
+
+        var ut=SC.out(SC.seg(q,.20,.34));
+        SC.set(c.url,'translate3d(0,'+((1-ut)*12).toFixed(2)+'px,0)',ut.toFixed(3));
+        var bt=SC.out(SC.seg(q,.26,.42));
+        SC.set(c.blurb,'translate3d(0,'+((1-bt)*16).toFixed(2)+'px,0)',bt.toFixed(3));
+        for(i=0;i<c.facts.length;i++){
+          var ft=SC.out(SC.seg(q,.36+i*.05,.56+i*.05));
+          SC.set(c.facts[i],'translate3d(0,'+((1-ft)*14).toFixed(2)+'px,0)',ft.toFixed(3));
+        }
+
+        /* the cluster swings in from the right and squares up */
+        var g=SC.io(SC.seg(q,.24,.72));
+        SC.set(c.dev,
+          'translate3d('+(16*(1-g)).toFixed(3)+'vw,'+(4*(1-g)).toFixed(3)+'vh,'+(-420*(1-g)-200*ex).toFixed(1)+'px)'+
+          ' rotateY('+(-19*(1-g)+6*ex).toFixed(2)+'deg) rotateX('+(7*(1-g)).toFixed(2)+'deg)'+
+          ' scale('+(.93+.07*g).toFixed(4)+')',
+          (g*(1-Math.min(1,ex*1.3))).toFixed(3),
+          SC.blur(7*(1-g)+9*ex));
+
+        /* and the phone comes in late, leaning on its corner */
+        var ph=SC.io(SC.seg(q,.44,.84));
+        SC.set(c.phone,
+          'translate3d('+(5*(1-ph)).toFixed(3)+'vw,'+(7*(1-ph)).toFixed(3)+'vh,'+(70*ph).toFixed(1)+'px)'+
+          ' rotate('+(6*(1-ph)).toFixed(2)+'deg)', ph.toFixed(3));
+
+        /* on the way out the text is pushed up and back, not blinked off */
+        /* The one leaving has to be off the column before the one
+             arriving lands on it. When each customer had a stage of its
+             own the stage itself slid away and took the leftovers with it;
+             on a shared stage they are in the same place, so the exit does
+             the work instead: further back, and gone by three quarters of
+             it rather than trailing to the end. */
+        SC.set(c.col,'translate3d(0,'+(-8*ex).toFixed(3)+'vh,0) scale('+(1-.08*ex).toFixed(4)+')',
+          (SC.seg(q,0,.02)*(1-Math.min(1,ex*1.35))).toFixed(3), SC.blur(9*ex));
+        /* nothing of a customer that has not started, or has finished, is
+           left where the other one is standing */
+        var on = q>.0005 && q<.9995;
+        if(c.on!==on){ c.on=on; c.w.style.visibility = on?'visible':'hidden'; }
+      }
+
       SC.add({
-        el:cs, leadF:0,
-        build:function(){ nw=SC.split(name); if(door) dW=SC.split(dHd); },
-        base:function(){ SC.plain(nw.concat(dW, facts,
-          [kick,url,blurb,col,dev,phone]).concat(door?[dIn,dHd,dLe]:[])); },
+        el:kEl, leadF:0,
+        build:function(){
+          kCases.forEach(function(c){ c.nw=SC.split(c.name); });
+          if(kDoor) kdW=SC.split(kdHd);
+        },
+        base:function(){
+          var all=[];
+          kCases.forEach(function(c){
+            all=all.concat(c.nw, c.facts, [c.kick,c.url,c.blurb,c.col,c.dev,c.phone]);
+          });
+          SC.plain(all.concat(kdW, kDoor?[kdIn,kdHd,kdLe]:[]));
+        },
         paint:function(raw){
-          if(door){
-            /* in out of the depth, held, and pushed back the same way the
-               customer's own words leave — so the handover is one move on
-               one stage and not a section ending */
-            var dx=SC.io(SC.seg(raw,DOOR*.80,DOOR*1.0)),
-                di=SC.film(SC.seg(raw,0,DOOR*.12));
-            SC.set(dIn,'translate3d(0,'+((1-di)*24-dx*6).toFixed(2)+'vh,0) translateZ('+(-340*(1-di)-320*dx).toFixed(1)+'px) scale('+(1-.08*dx).toFixed(4)+')',
+          if(kDoor){
+            var dx=SC.io(SC.seg(raw,KD*.80,KD*1.0)),
+                di=SC.film(SC.seg(raw,0,KD*.12));
+            SC.set(kdIn,'translate3d(0,'+((1-di)*24-dx*6).toFixed(2)+'vh,0) translateZ('+(-340*(1-di)-320*dx).toFixed(1)+'px) scale('+(1-.08*dx).toFixed(4)+')',
               (1-dx).toFixed(3), SC.blur(9*dx));
-            for(var k=0;k<dW.length;k++){
-              var dt=SC.film(SC.seg(raw,DOOR*(.02+k*.034),DOOR*(.18+k*.034)));
-              SC.set(dW[k],
+            for(var k=0;k<kdW.length;k++){
+              var dt=SC.film(SC.seg(raw,KD*(.02+k*.034),KD*(.18+k*.034)));
+              SC.set(kdW[k],
                 'translate3d(0,'+((1-dt)*.82).toFixed(3)+'em,0) rotateX('+(-54*(1-dt)).toFixed(2)+'deg) scale('+(.93+.07*dt).toFixed(4)+')',
                 dt.toFixed(3), SC.blur(10*(1-dt)));
             }
-            var dl=SC.out(SC.seg(raw,DOOR*.24,DOOR*.38));
-            SC.set(dLe,'translate3d(0,'+((1-dl)*22).toFixed(2)+'px,0)', dl.toFixed(3));
-            door.style.visibility = dx>.995 ? 'hidden' : 'visible';
+            var dl=SC.out(SC.seg(raw,KD*.24,KD*.38));
+            SC.set(kdLe,'translate3d(0,'+((1-dl)*22).toFixed(2)+'px,0)', dl.toFixed(3));
+            kDoor.style.visibility = dx>.995 ? 'hidden' : 'visible';
           }
-          /* the customer's own timeline starts where the line hands over,
-             so every beat below is written against the same numbers it
-             always was */
-          /* and it starts a little before the line has finished leaving, so
-             the two moves cross rather than queue: the sentence is on its
-             way back into the depth while the customer is already swinging
-             in from the right. A cut between them is a section boundary,
-             which is the thing this section exists not to have. */
-          var q = door ? SC.seg(raw,DOOR*.86,1) : raw;
-          var ex=SC.io(SC.seg(q,.84,1));
+          /* the first customer starts a little before the line has finished
+             leaving, and the second a little before the first has; the two
+             moves cross rather than queue, which is what a cut between
+             sections never could */
+          kPaint(kCases[0], SC.seg(raw,KA,KB));
+          if(kCases[1]) kPaint(kCases[1], SC.seg(raw,KM,1));
 
-          var kt=SC.out(SC.seg(q,0,.10));
-          SC.set(kick,'translate3d(0,'+((1-kt)*14).toFixed(2)+'px,0)',kt.toFixed(3));
-
-          for(var i=0;i<nw.length;i++){
-            var t=SC.film(SC.seg(q,.04+i*.05,.28+i*.05));
-            SC.set(nw[i],
-              'translate3d(0,'+((1-t)*.6).toFixed(3)+'em,0) rotateX('+(-50*(1-t)).toFixed(2)+'deg) scale('+(.94+.06*t).toFixed(4)+')',
-              t.toFixed(3), SC.blur(7*(1-t)));
-          }
-
-          var ut=SC.out(SC.seg(q,.20,.34));
-          SC.set(url,'translate3d(0,'+((1-ut)*12).toFixed(2)+'px,0)',ut.toFixed(3));
-          var bt=SC.out(SC.seg(q,.26,.42));
-          SC.set(blurb,'translate3d(0,'+((1-bt)*16).toFixed(2)+'px,0)',bt.toFixed(3));
-          for(i=0;i<facts.length;i++){
-            var ft=SC.out(SC.seg(q,.36+i*.05,.56+i*.05));
-            SC.set(facts[i],'translate3d(0,'+((1-ft)*14).toFixed(2)+'px,0)',ft.toFixed(3));
-          }
-
-          /* the cluster swings in from the right and squares up */
-          var g=SC.io(SC.seg(q,.24,.72));
-          SC.set(dev,
-            'translate3d('+(16*(1-g)).toFixed(3)+'vw,'+(4*(1-g)).toFixed(3)+'vh,'+(-420*(1-g)-200*ex).toFixed(1)+'px)'+
-            ' rotateY('+(-19*(1-g)+6*ex).toFixed(2)+'deg) rotateX('+(7*(1-g)).toFixed(2)+'deg)'+
-            ' scale('+(.93+.07*g).toFixed(4)+')',
-            (g*(1-.92*ex)).toFixed(3),
-            SC.blur(7*(1-g)+8*ex));
-
-          /* and the phone comes in late, leaning on its corner */
-          var ph=SC.io(SC.seg(q,.44,.84));
-          SC.set(phone,
-            'translate3d('+(5*(1-ph)).toFixed(3)+'vw,'+(7*(1-ph)).toFixed(3)+'vh,'+(70*ph).toFixed(1)+'px)'+
-            ' rotate('+(6*(1-ph)).toFixed(2)+'deg)', ph.toFixed(3));
-
-          /* on the way out the text is pushed up and back, not blinked off */
-          SC.set(col,'translate3d(0,'+(-5*ex).toFixed(3)+'vh,0) scale('+(1-.05*ex).toFixed(4)+')',
-            (1-ex).toFixed(3), SC.blur(6*ex));
-
-          SC.set(glow,'translate3d(-50%,'+(-12*raw).toFixed(3)+'vh,0) scale('+(1+.22*raw).toFixed(4)+')',
+          SC.set(kGlow,'translate3d(-50%,'+(-12*raw).toFixed(3)+'vh,0) scale('+(1+.22*raw).toFixed(4)+')',
             (.75-.4*raw).toFixed(3));
         }
       });
-    });
+    }
 
     /* ---------- TELEFONER — the words that stand over the phone ----------
        The phone itself is drawn in WebGL and knows nothing about the page.

@@ -114,8 +114,8 @@ html, body{ background:var(--deep); color:var(--ink); }
    of that pair of scenes is that they are two places and not two cards.
    The colours are theirs, lifted to where they can be read on a dark
    ground — the same hue, not a different one. */
-.scene.case{ --brand:#e8834f; --cream:#14171b; }
-.scene.case[data-brand="mosede"]{ --brand:#f0717a; --cream:#14171b; }
+.scene.case .wrap{ --brand:#e8834f; --cream:#14171b; }
+.scene.case .wrap[data-brand="mosede"]{ --brand:#f0717a; --cream:#14171b; }
 
 /* The two devices were photographed in a light room. Their shells are
    metal either way, but the highlights have to come down or they glow. */

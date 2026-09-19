@@ -24,17 +24,24 @@
 /* ============================================================
    A CASE — text on the left, the work itself on the right
    ============================================================ */
-.scene.case{ height:270vh; --brand:#a8431c; --cream:#f7ece1; }
-.scene.case[data-brand="mosede"]{ --brand:#b4242f; --cream:#faf3e8; }
-/* The first case carries the opening line as well. The track has to hold
-   both: about a thousand pixels for the line to arrive, stand long enough
-   to be read, and go — and the seventeen hundred the customer already
-   needed. */
-.scene.case#kunder{ height:420vh; }
+/* One stage for all three beats: the line, the first customer, the
+   second. They were three sections, and three sections is three stages —
+   each one sticks, holds, and is scrolled off the top while the next
+   slides up from underneath. That vertical wipe is the seam, and no
+   amount of easing inside a section removes a boundary between sections.
+   One track carries the lot now: about a thousand pixels for the line and
+   nineteen hundred for each customer. */
+.scene.case{ height:600vh; }
+.scene.case .wrap{ --brand:#a8431c; --cream:#f7ece1; }
+.scene.case .wrap[data-brand="mosede"]{ --brand:#b4242f; --cream:#faf3e8; }
 .scene.case .stage{ perspective:1700px; perspective-origin:64% 50%;
   box-sizing:border-box; padding-top:var(--nav); }
 
-.wrap{ position:relative; z-index:1; transform-style:preserve-3d;
+/* Two customers share the stage, so they are laid on it rather than put
+   in it — the same centring the acts of the software house use: pinned to
+   every edge below the bar, sized, and left to auto margins. */
+.wrap{ position:absolute; inset:var(--nav) 0 0; margin:auto; height:fit-content;
+  z-index:1; transform-style:preserve-3d;
   width:min(1320px, calc(100% - clamp(24px,6vw,112px)));
   display:grid; grid-template-columns:.82fr 1.18fr; align-items:center;
   gap:clamp(22px,4.4vw,80px); }
@@ -148,8 +155,7 @@
   box-shadow:0 14px 30px -18px rgba(27,23,20,.8); }
 
 @media(max-width:980px){
-  .scene.case{ height:310vh; }
-  .scene.case#kunder{ height:460vh; }
+  .scene.case{ height:620vh; }
   .wrap{ grid-template-columns:1fr; gap:clamp(18px,4vh,34px); }
   .devices{ --lidmax:38vh; width:min(88%, calc(var(--lidmax) * 1.547)); }
   /* the width is the real ratio at every size now — only the overhang moves */
