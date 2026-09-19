@@ -21,7 +21,7 @@
 <link rel="stylesheet" href="bbh.css?v=10" />
 <link rel="stylesheet" href="kunder.css?v=16" />
 <link rel="stylesheet" href="telefon.css?v=6" />
-<link rel="stylesheet" href="softwarehus.css?v=14" />
+<link rel="stylesheet" href="softwarehus.css?v=15" />
 <link rel="stylesheet" href="kontakt.css?v=4" />
 <link rel="stylesheet" href="mork.css?v=4" />
 <link rel="stylesheet" href="dybde.css?v=3" />
@@ -127,6 +127,11 @@
     <div class="stage">
       <span class="sw-glow" id="swGlow" aria-hidden="true"></span>
       <span class="sw-plate" id="swPlate" aria-hidden="true"></span>
+      <!-- act one has a room of its own: the near shot of the code, out of
+           focus in the file, so the part of the section that explains what
+           a software house is stands in one. It gives way to the studio
+           before the three suppliers arrive. -->
+      <span class="sw-room" id="swRoom" aria-hidden="true"></span>
       <span class="sw-veil" id="swVeil" aria-hidden="true"></span>
       <span class="sw-vign" aria-hidden="true"></span>
 
@@ -142,12 +147,11 @@
             <div class="sw-kicker" data-da="Hvad er et softwarehus">What a software house is</div>
             <p class="sw-bio"><span id="swTyped"></span><i class="sw-caret" id="swCaret" aria-hidden="true"></i></p>
           </div>
-          <!-- Two frames, not one: the near shot of the code and the screen
-               it is being read on, held at two depths the way the stage
-               holds everything else. -->
-          <div class="sw-shot pair">
-            <span class="sh-b"><img src="photos/kode-skaerm.jpg?v=1" alt="" loading="lazy" decoding="async" width="1280" height="853" /></span>
-            <span class="sh-f"><img src="photos/kode-naer.jpg?v=1" alt="" loading="lazy" decoding="async" width="1280" height="853" /></span>
+          <!-- One frame, not two. The other picture is the room this act
+               stands in, and a room with two small copies of itself
+               floating in front of it is a collage. -->
+          <div class="sw-shot">
+            <img src="photos/kode-skaerm.jpg?v=1" alt="" loading="lazy" decoding="async" width="1280" height="853" />
           </div>
         </div>
         <!-- the text of act one lives here so the language switch can reach
@@ -183,7 +187,7 @@
             <a class="sw-cta" href="#contact" data-da="Lad os tage en snak">Let's talk</a>
           </div>
           <div class="sw-shot wide">
-            <img src="photos/lesreg-team.jpg?v=1" alt="" loading="lazy" decoding="async" width="1600" height="900" />
+            <img src="photos/lesreg-moede.jpg?v=1" alt="" loading="lazy" decoding="async" width="1400" height="785" />
           </div>
         </div>
 
@@ -917,6 +921,7 @@
           swVeil=document.getElementById('swVeil'), swGlow=document.getElementById('swGlow'),
           swTyped=document.getElementById('swTyped'), swCaret=document.getElementById('swCaret'),
           swBio=document.getElementById('swBio'), swHouse=document.getElementById('swHouse'),
+          swRoom=document.getElementById('swRoom'),
           swDeck=swEl.querySelector('.sw-deck'), swMerge=swEl.querySelector('.sw-merge'),
           swCast=document.getElementById('swCast');
       /* There used to be a proper measuring pass here: the three cards were
@@ -977,11 +982,19 @@
             t.toFixed(3), SC.blur(9*(1-t)));
         }
       }
-      function swShot(el, from, to, dx, s){
-        var t=SC.film(SC.seg(s,from,to));
+      /* A picture arrives, and then it never quite stops. The arrival is
+         long and the ease is the slow one — in from the side it is angled
+         away from, from a long way behind the glass, out of focus until
+         it is nearly there. And once it has landed it keeps creeping
+         forward for the rest of the act: a couple of per cent over eight
+         seconds, which nobody watching could name and everybody feels.
+         A frame that parks dead still is a slide in a deck. */
+      function swShot(el, from, to, dx, s, until){
+        var t=SC.film(SC.seg(s,from,to)),
+            dr=SC.seg(s,to,(until==null?to+.30:until));
         SC.set(el,
-          'translate3d('+((1-t)*dx).toFixed(2)+'vw,0,'+(-360*(1-t)).toFixed(1)+'px) rotateY('+((1-t)*dx*1.1).toFixed(2)+'deg) scale('+(.94+t*.06).toFixed(4)+')',
-          t.toFixed(3), SC.blur(12*(1-t)));
+          'translate3d('+((1-t)*dx).toFixed(2)+'vw,0,'+(-560*(1-t)+dr*54).toFixed(1)+'px) rotateY('+((1-t)*dx*1.25).toFixed(2)+'deg) scale('+(.93+t*.07).toFixed(4)+')',
+          t.toFixed(3), SC.blur(15*(1-t)));
       }
 
       SC.add({
@@ -1007,6 +1020,7 @@
           swHouse.style.clipPath='none';
           swMerge.style.setProperty('--k','1'); swK=-1;
           SC.plain(all.concat([swHook,swHouse,swDeck,swCast]));
+          if(swRoom){ swRoom.style.opacity='0'; swRoom._op='0'; }
           swHouse.style.transform='translate(-50%,-50%)';
           if(swCast){ swCast.style.transform='translate(-50%,-50%)';
             swCast._tr='translate(-50%,-50%)';
@@ -1024,30 +1038,36 @@
             (1-hx).toFixed(3), SC.blur(14*hx));
           swHook.style.pointerEvents = hx>0.99 ? 'none' : 'auto';
 
-          /* the room comes up behind the glass, and steps back under the
-             three suppliers so they have the stage to themselves */
-          var pIn=SC.film(SC.seg(s,.01,.12)), pMid=SC.io(SC.seg(s,.29,.40)), pBack=SC.out(SC.seg(s,.66,.80));
-          /* The room takes the hit with the block. On the frame the three
-             meet, the whole picture behind the glass pushes in a couple of
-             per cent and comes back on the same spring the pane lands on —
-             the camera, not a lamp. And the light in the room jumps on the
-             contact frame and falls away fast, the way it does when
-             something in the room catches it. */
-          /* The room used to take a hit here: a dip while the three closed
-             and a flare on the frame they met. Both of them were there to
-             sell an impact, and there is no impact any more — so the room
-             does one slow thing instead. It lifts while the block comes
-             up, and it stays lifted. A bloom you cannot see the beginning
-             of is the difference between a lit room and a lamp. */
-          /* the room takes the dock with the row: half a per cent of push
+          /* ---------- the two rooms ----------
+             The studio comes up behind the glass and steps back under the
+             three suppliers so they have the stage to themselves. And for
+             the length of the first act it is not the studio at all: the
+             near shot of the code stands in front of it, out of focus,
+             drifting, and hands the stage back before the three arrive.
+             Two rooms rather than one is a cut, and a section that runs
+             four and a half minutes of reading in one room is a lecture.
+
+             The room takes the dock with the row: half a per cent of push
              and a third of a second to get over it. A camera in a hand,
-             not a lamp on a dimmer — and small enough that nobody watching
-             could tell you what moved. */
-          var jk=SC.seg(s,.512,.548),
+             not a lamp on a dimmer — small enough that nobody watching
+             could tell you what moved. And it lifts once, slowly, while
+             the block comes up, and stays lifted: a bloom you cannot see
+             the beginning of is the difference between a lit room and a
+             lamp being switched on. */
+          var pIn=SC.film(SC.seg(s,.01,.12)), pMid=SC.io(SC.seg(s,.29,.40)), pBack=SC.out(SC.seg(s,.66,.80)),
+              jk=SC.seg(s,.512,.548),
               jolt=(s>=.512) ? (jk<=0 ? 0 : Math.exp(-7.5*jk)*Math.sin(Math.PI*2*1.7*jk)) : 0,
               bloom=SC.io(SC.seg(s,.500,.604));
           SC.set(swPlate,'scale('+(1.05+s*.12+jolt*.006).toFixed(4)+') translate3d('+(2-s*5).toFixed(2)+'vw,'+(-1+s*3+jolt*.34).toFixed(2)+'vh,0)',
             Math.max(0,(pIn*(.92-pMid*.6+pBack*.46)+bloom*.1)).toFixed(3));
+          if(swRoom){
+            /* up with the first act, gone before the second — and moving
+               the whole time it is there, a slow drift across and in, so
+               the picture behind the words is never a still */
+            var rIn=SC.film(SC.seg(s,.015,.155)), rOut=SC.io(SC.seg(s,.275,.375));
+            SC.set(swRoom,'scale('+(1.02+s*.20).toFixed(4)+') translate3d('+(1.4-s*7).toFixed(2)+'vw,'+(-.6+s*2.2).toFixed(2)+'vh,0)',
+              (rIn*(1-rOut)*.96).toFixed(3));
+          }
           SC.set(swVeil,null,(pIn*(1+pMid*.12)-bloom*.1).toFixed(3));
           SC.set(swGlow,'translate3d(0,'+(s*-10).toFixed(2)+'vh,0) scale('+(1+s*.28+bloom*.16).toFixed(4)+')',
             Math.max(0,Math.min(1,(.6-s*.26)+bloom*.34)).toFixed(3));
@@ -1058,7 +1078,7 @@
             if(n!==swN){ swN=n; swTyped.textContent=swSrc.slice(0,n); }
             var writing = tp>0 && tp<1;
             if(writing !== (swCaret.style.display==='')) swCaret.style.display = writing?'':'none';
-            swShot(swA[0].shot,.10,.24,7,s);
+            swShot(swA[0].shot,.085,.275,8,s,.34);
           }
 
           /* act two — three become one.
@@ -1173,7 +1193,7 @@
           /* act three — why this house */
           if(swAct(swA[2],.64,1.001,s,true)){
             swWords(swA[2].w,.66,.78,s);
-            swShot(swA[2].shot,.70,.84,-7,s);
+            swShot(swA[2].shot,.685,.855,-8,s,1.0);
             for(var j=0;j<swA[2].claims.length;j++){
               var ct=SC.out(SC.seg(s,.765+j*.042,.875+j*.042));
               SC.set(swA[2].claims[j],'translate3d(0,'+((1-ct)*18).toFixed(2)+'px,0)', ct.toFixed(3));

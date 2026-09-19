@@ -30,6 +30,18 @@
   background-size:cover; background-position:50% 58%;
   filter:blur(15px) saturate(.68) brightness(.62) contrast(1.05);
   will-change:transform,opacity; }
+/* ---------- act one's own room ----------
+   The near shot of the code, blurred in the file rather than by the
+   browser — a second full-screen filter running next to the studio's was
+   a lot of work for a picture that never changes, and out of focus a JPEG
+   is a quarter of the size it was. What is left of it is what should have
+   been left: rows of coloured light, which is what code looks like from
+   across a room. It lifts in under the first act and hands the stage back
+   to the studio before the three suppliers arrive. */
+.sw-room{ position:absolute; inset:-8%; opacity:0;
+  background-image:url("photos/kode-rum.jpg?v=1");
+  background-size:cover; background-position:50% 50%;
+  will-change:transform,opacity; }
 .sw-veil{ position:absolute; inset:0; pointer-events:none; opacity:0;
   background:linear-gradient(180deg, rgba(12,14,17,.72), rgba(12,14,17,.54) 44%, rgba(12,14,17,.82));
   will-change:opacity; }
@@ -89,27 +101,6 @@
 /* A landscape picture in a column that was cut for a portrait one: the
    height comes down so the wide frame does not push the words aside. */
 .sw-shot.wide{ --shotmax:32vh; max-width:calc(var(--shotmax) * 1.778); aspect-ratio:16/9; }
-
-/* ---------- two frames, one slot ----------
-   The pair is not a frame with two pictures in it: it is two frames, held
-   at two depths, the way the stage holds everything else. The slot itself
-   stops being a card — no border, no fill, no shadow — and the two inside
-   it carry all of that, so what arrives is two objects and not a box with
-   a seam down the middle. */
-.sw-shot.pair{ --shotmax:34vh; max-width:calc(var(--shotmax) * 1.5); aspect-ratio:1/1;
-  border:0; background:none; box-shadow:none; border-radius:0; overflow:visible; }
-.sw-shot.pair span{ position:absolute; display:block; overflow:hidden;
-  border-radius:18px; border:1px solid var(--edge);
-  box-shadow:0 34px 70px -34px rgba(0,0,0,.82), inset 0 1px 0 rgba(255,255,255,.22); }
-.sw-shot.pair img{ display:block; width:100%; height:100%; object-fit:cover; }
-/* the screen, set back and up */
-.sw-shot.pair .sh-b{ right:0; top:0; width:78%; aspect-ratio:3/2;
-  transform:rotate(1.4deg); filter:brightness(.78) saturate(.85); }
-/* and the code itself, in front and low */
-.sw-shot.pair .sh-f{ left:0; bottom:0; width:70%; aspect-ratio:3/2;
-  transform:rotate(-1.8deg); }
-
-
 
 /* act one — the text writes itself */
 .sw-bio{ margin:clamp(12px,2vh,22px) 0 0; max-width:30ch; white-space:pre-line;
@@ -278,8 +269,6 @@
     max-width:calc(var(--shotmax) * 1.6); }
   .sw-shot.wide{ --shotmax:26vh; aspect-ratio:16/9;
     max-width:calc(var(--shotmax) * 1.778); }
-  .sw-shot.pair{ --shotmax:24vh; aspect-ratio:1/1;
-    max-width:calc(var(--shotmax) * 1.5); }
   .sw-offer{ display:none; }
   /* On a phone the three stand one above the other, so a column that is
      taller than it is wide is the wrong box: they are rows here, wide and
