@@ -115,17 +115,44 @@
     rgba(0,0,0,0.0161) 96.25%,
     rgba(0,0,0,0.0022) 98.12%,
     rgba(0,0,0,0) 100%); }
+/* The room used to be built in the browser: the sharp photograph, blurred
+   fifteen pixels and graded down, on a layer the size of the window and a
+   bit. A filter on a layer that big has to be rasterised again every time
+   the layer moves or changes opacity — which here is every frame of the
+   scroll — and measured over the handover from the opening to this
+   section it was most of the cost of the page: nine frames a second with
+   it, forty-eight with it and the glow below taken off.
+
+   None of that work says anything. The blur and the grade are fixed, so
+   they are baked into the file instead, and because a blurred picture
+   carries no detail the file is 480px wide and twelve kilobytes against
+   the sharp one's hundred and twenty-eight. The upscale finishes the
+   softening. Same picture, no filter, nothing to rasterise. */
 .sw-plate{ position:absolute; inset:-10%; opacity:0;
-  background-image:url("photos/lesreg-stue.jpg");
+  background-image:url("photos/lesreg-stue-blur.jpg?v=2");
   background-size:cover; background-position:50% 58%;
-  filter:blur(15px) saturate(.68) brightness(.62) contrast(1.05);
   will-change:transform,opacity; }
 .sw-veil{ position:absolute; inset:0; pointer-events:none; opacity:0;
   background:linear-gradient(180deg, rgba(12,14,17,.72), rgba(12,14,17,.54) 44%, rgba(12,14,17,.82));
   will-change:opacity; }
+/* And a thirty-pixel blur on a gradient is work for nothing: a gradient
+   is already as soft as it is asked to be. The blur was only smoothing
+   the ring where this one stopped dead at 72%, which a falloff does for
+   free — and better, since the falloff leaves no ring to smooth. */
 .sw-glow{ position:absolute; inset:-26% -10% auto; height:78vh; pointer-events:none;
-  background:radial-gradient(54% 64% at 50% 0%, rgba(168,188,210,.4), transparent 72%);
-  filter:blur(30px); will-change:transform,opacity; }
+  background:radial-gradient(54% 64% at 50% 0%,
+    rgba(168,188,210,0.4) 0%,
+    rgba(168,188,210,0.39658) 7.8%,
+    rgba(168,188,210,0.37683) 15.6%,
+    rgba(168,188,210,0.33477) 23.4%,
+    rgba(168,188,210,0.27302) 31.2%,
+    rgba(168,188,210,0.2) 39%,
+    rgba(168,188,210,0.12698) 46.8%,
+    rgba(168,188,210,0.06523) 54.6%,
+    rgba(168,188,210,0.02317) 62.4%,
+    rgba(168,188,210,0.00342) 70.2%,
+    rgba(168,188,210,0) 78%);
+  will-change:transform,opacity; }
 .sw-vign{ position:absolute; inset:0; pointer-events:none;
   background:radial-gradient(72% 64% at 50% 44%, transparent 40%, rgba(6,7,9,.74)); }
 

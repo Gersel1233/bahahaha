@@ -31,12 +31,39 @@
    Two soft discs drifting behind the glass, and a vignette that closes
    the corners so the cards sit in the middle of something rather than
    on a flat field. */
-.kt-aura{ position:absolute; border-radius:50%; filter:blur(74px);
+/* These were two gradients with a seventy-four pixel blur laid over them,
+   which is the same argument as the backdrop: a gradient is already the
+   soft thing, and blurring it is a full-window rasterisation per frame
+   for a picture a longer falloff draws for nothing. The discs are grown
+   to where the blur used to carry them and the falloff does the rest. */
+.kt-aura{ position:absolute; border-radius:50%;
   pointer-events:none; will-change:transform,opacity; }
-.kt-aura.a1{ width:58vw; height:58vw;
-  background:radial-gradient(circle, rgba(168,188,210,.5), transparent 66%); }
-.kt-aura.a2{ width:44vw; height:44vw;
-  background:radial-gradient(circle, rgba(120,140,166,.44), transparent 68%); }
+.kt-aura.a1{ width:74vw; height:74vw;
+  background:radial-gradient(circle,
+    rgba(168,188,210,0.5) 0%,
+    rgba(168,188,210,0.49572) 7.8%,
+    rgba(168,188,210,0.47104) 15.6%,
+    rgba(168,188,210,0.41846) 23.4%,
+    rgba(168,188,210,0.34128) 31.2%,
+    rgba(168,188,210,0.25) 39%,
+    rgba(168,188,210,0.15872) 46.8%,
+    rgba(168,188,210,0.08154) 54.6%,
+    rgba(168,188,210,0.02896) 62.4%,
+    rgba(168,188,210,0.00428) 70.2%,
+    rgba(168,188,210,0) 78%); }
+.kt-aura.a2{ width:58vw; height:58vw;
+  background:radial-gradient(circle,
+    rgba(120,140,166,0.44) 0%,
+    rgba(120,140,166,0.43623) 8%,
+    rgba(120,140,166,0.41452) 16%,
+    rgba(120,140,166,0.36824) 24%,
+    rgba(120,140,166,0.30033) 32%,
+    rgba(120,140,166,0.22) 40%,
+    rgba(120,140,166,0.13967) 48%,
+    rgba(120,140,166,0.07176) 56%,
+    rgba(120,140,166,0.02548) 64%,
+    rgba(120,140,166,0.00377) 72%,
+    rgba(120,140,166,0) 80%); }
 /* The stage is one screen tall inside a section of two and a bit, so for
    a good part of the scroll one of its horizontal edges is in the middle
    of the window. Everything in here is faded out top and bottom for the
@@ -138,6 +165,15 @@
   background:linear-gradient(150deg, rgba(232,238,244,.15), rgba(232,238,244,.05) 44%, rgba(232,238,244,.1));
   -webkit-backdrop-filter:blur(24px) saturate(180%); backdrop-filter:blur(24px) saturate(180%);
   will-change:transform,opacity,filter;
+  /* The card changes shape on every frame of the scroll, and a backdrop
+     filter has to sample whatever is behind whatever it is drawn over.
+     This tells the browser that nothing in here paints outside the box,
+     so a shape change need not invalidate the window. It is already
+     overflow:hidden and its shadow is cast by a box behind it, so there
+     is nothing outside the box to lose. It did not move the numbers in
+     software rendering, where this is measured; it is here because it is
+     true of the box and costs nothing to say. */
+  contain:paint;
   /* nothing in it is meant to be pressed, so nothing in it takes a press */
   pointer-events:none; }
 .kt-card::before{ content:""; position:absolute; inset:0; border-radius:inherit;
