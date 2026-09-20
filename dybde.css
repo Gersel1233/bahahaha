@@ -37,18 +37,25 @@
    The three sections in the middle let it through. The opening keeps the
    sharp frame, because that is the statement; the letter at the bottom
    keeps its own room, because a letter is read and not looked at. */
+/* The two washes over the picture fall away on a smootherstep as well.
+   A radial that ends in "transparent 70%" reaches nought with the slope
+   it had, and that ring is a change in the slope, which is a line — and
+   because this layer is fixed to the window it is the same line in the
+   same place in every section, which is why it kept being reported as a
+   section border in four different places. It was one artefact, and it
+   was never at a boundary at all. */
 .bg-glass{ position:fixed; inset:0; z-index:0; pointer-events:none;
   background-image:
-    radial-gradient(38% 34% at 42% 38%, rgba(162,186,214,.11) 0%, rgba(162,186,214,.04) 44%, transparent 70%),
-    radial-gradient(92% 82% at 50% 46%, transparent 44%, rgba(4,5,7,.62) 100%),
+    radial-gradient(38% 34% at 42% 38%, rgba(162,186,214,0.12) 0%, rgba(162,186,214,0.11897) 8.6%, rgba(162,186,214,0.11305) 17.2%, rgba(162,186,214,0.10043) 25.8%, rgba(162,186,214,0.08191) 34.4%, rgba(162,186,214,0.06) 43%, rgba(162,186,214,0.03809) 51.6%, rgba(162,186,214,0.01957) 60.2%, rgba(162,186,214,0.00695) 68.8%, rgba(162,186,214,0.00103) 77.4%, rgba(162,186,214,0) 86%),
+    radial-gradient(96% 88% at 50% 46%, rgba(4,5,7,0) 30%, rgba(4,5,7,0.00531) 37%, rgba(4,5,7,0.03591) 44%, rgba(4,5,7,0.10111) 51%, rgba(4,5,7,0.19681) 58%, rgba(4,5,7,0.31) 65%, rgba(4,5,7,0.42319) 72%, rgba(4,5,7,0.51889) 79%, rgba(4,5,7,0.58409) 86%, rgba(4,5,7,0.61469) 93%, rgba(4,5,7,0.62) 100%),
     url("photos/glas-dyb.jpg?v=1");
   background-size:auto, auto, cover;
   background-position:50% 50%, 50% 50%, 50% 50%;
   background-repeat:no-repeat; }
 @media(max-width:820px){
   .bg-glass{ background-image:
-    radial-gradient(44% 30% at 44% 34%, rgba(162,186,214,.11) 0%, rgba(162,186,214,.04) 44%, transparent 70%),
-    radial-gradient(96% 80% at 50% 46%, transparent 42%, rgba(4,5,7,.62) 100%),
+    radial-gradient(44% 30% at 44% 34%, rgba(162,186,214,0.12) 0%, rgba(162,186,214,0.11897) 8.6%, rgba(162,186,214,0.11305) 17.2%, rgba(162,186,214,0.10043) 25.8%, rgba(162,186,214,0.08191) 34.4%, rgba(162,186,214,0.06) 43%, rgba(162,186,214,0.03809) 51.6%, rgba(162,186,214,0.01957) 60.2%, rgba(162,186,214,0.00695) 68.8%, rgba(162,186,214,0.00103) 77.4%, rgba(162,186,214,0) 86%),
+    radial-gradient(100% 86% at 50% 46%, rgba(4,5,7,0) 28%, rgba(4,5,7,0.00531) 35.2%, rgba(4,5,7,0.03591) 42.4%, rgba(4,5,7,0.10111) 49.6%, rgba(4,5,7,0.19681) 56.8%, rgba(4,5,7,0.31) 64%, rgba(4,5,7,0.42319) 71.2%, rgba(4,5,7,0.51889) 78.4%, rgba(4,5,7,0.58409) 85.6%, rgba(4,5,7,0.61469) 92.8%, rgba(4,5,7,0.62) 100%),
     url("photos/glas-dyb-h.jpg?v=1");
     background-position:50% 50%, 50% 50%, 50% 30%; }
 }
