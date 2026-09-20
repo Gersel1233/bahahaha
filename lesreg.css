@@ -585,12 +585,17 @@ body::after{ content:none; }
   .fin-aura{ animation:none; }
   .fin-steps li{ opacity:1 !important; transform:none !important; transition:none; }
 }
-}
 
 /* ============================================================
    FOOTER — quiet
    ============================================================ */
-.footer{ border-top:1px solid var(--ax-line); }
+/* The footer used to be separated from the letter above it by a rule.
+   A hairline the full width of the window, dead straight, is the one
+   shape the eye never misses however faint it is — and on a page where
+   every other section hands over without one, it reads as a seam. The
+   footer is far enough down, and quiet enough, to be the end of the page
+   on its own; it only needs air above it. */
+.footer{ border-top:0; padding-top:10px; }
 .footer .brand{ color:var(--ax-ink); }
 .footer .links{ color:var(--ax-soft); }
 .footer .links a:hover{ color:var(--ax-ink); }
