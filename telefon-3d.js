@@ -830,7 +830,7 @@ const SCREENS = { 1: 'media/app-1', 2: 'media/app-2' };   // 1 = gaesteappen, 2 
   const webm = !!probe.canPlayType && probe.canPlayType('video/webm; codecs="vp9"') !== '';
   Object.keys(SCREENS).forEach(k => {
     if (!SCREENS[k]) return;
-    window.LesregTelefon.setVideo(+k, SCREENS[k] + (webm ? '.webm' : '.mp4') + '?v=5');
+    window.LesregTelefon.setVideo(+k, SCREENS[k] + (webm ? '.webm' : '.mp4') + '?v=6');
   });
   /* The third screen is the one the notification cards drop onto — the
      restaurant's own front page, which is where the order the card is
