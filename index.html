@@ -1569,6 +1569,8 @@
           ktCast=document.getElementById('ktCast'),
           ktFAsk=document.getElementById('ktFAsk'),
           ktFSent=document.getElementById('ktFSent'),
+          ktTick=document.getElementById('ktFSent').querySelector('path'),
+          ktSentW=document.getElementById('ktFSent').querySelector('span'),
           ktFReply=document.getElementById('ktFReply'),
           ktTyped=document.getElementById('ktTyped'),
           ktCaret=document.getElementById('ktCaret'),
@@ -1615,7 +1617,7 @@
       }
       /* The letter is read out of the page rather than held as a string in
          here, so switching language switches the letter too. */
-      var ktSrc='', ktN=-1;
+      var ktSrc='', ktN=-1, ktTickD='';
       SC.add({
         el:kt, leadF:0,
         /* This one plays itself, on a clock, the moment the stage is in the
@@ -1636,6 +1638,7 @@
           if(ktCast){ ktCast.style.opacity='0'; ktCast._op='0'; }
           ktRCaret.style.display='none';
           ktCaret.style.display='none';
+          if(ktTick){ ktTick.style.strokeDasharray='24'; ktTick.style.strokeDashoffset='24'; ktTickD='24'; }
           ktLayout();
         },
         paint:function(s){
@@ -1661,17 +1664,32 @@
                  move with a little weight behind it, the way a stamp does.
                  The reading before it and the wait after it are untouched:
                  what was wrong was never how long it stood still. */
-              /* Quicker again, and on an ease that leaves at speed
-                 instead of one that creeps out of its own start. An
-                 in-out ease arrives at nothing and departs from nothing,
-                 which for a letter being sent means it hesitates before
-                 it goes. This one is off the mark at once and lands
-                 soft — which is what sending something feels like. */
-              shut=SC.out(SC.seg(s,.402,.4362)),
+              /* ---------- sending ----------
+                 Three beats, not one.
+
+                 It had been squeezed down to a single move a hundred and
+                 twenty-six milliseconds long, which is not a fast
+                 animation — it is a cut. And what happened inside it was
+                 that the paper was clipped in from the sides while the
+                 words stayed exactly where they were at exactly the size
+                 they were. Nothing was sent anywhere; a mask ran across
+                 a letter.
+
+                 So: the letter leaves first, upward and out of its own
+                 frame. The paper closes around the space it left. The
+                 tick draws itself into the button now standing there,
+                 and the word follows it in. Each beat starts before the
+                 one in front of it has finished, so it reads as one
+                 quick action rather than three short ones — and all of
+                 it is done in a second. */
+              lift=SC.out(SC.seg(s,.4000,.4195)),
+              shut=SC.io(SC.seg(s,.4070,.4360)),
+              draw=SC.out(SC.seg(s,.4290,.4530)),
+              word=SC.out(SC.seg(s,.4380,.4560)),
               /* the box gives a little as the shape arrives at the pill —
                  a fifth of a second of weight, nothing anyone counts */
-              rk=SC.seg(s,.4362,.476),
-              recoil=(s>=.4362) ? (rk<=0 ? 0 : Math.exp(-8*rk)*Math.sin(Math.PI*2*1.9*rk)) : 0,
+              rk=SC.seg(s,.4360,.4750),
+              recoil=(s>=.4360) ? (rk<=0 ? 0 : Math.exp(-8*rk)*Math.sin(Math.PI*2*1.9*rk)) : 0,
               /* the receipt is read while nothing moves */
               open=SC.io(SC.seg(s,.530,.628)),
               rOut=SC.io(SC.seg(s,.905,.95));
@@ -1737,13 +1755,29 @@
              grows out of that same point, from half its size, a touch past
              itself and back. And the answer opens out of the button the
              same way the box does. Three moves, one line through them. */
-          SC.set(ktFAsk,'scale('+(1-shut*.34).toFixed(4)+')',
-            (1-SC.io(SC.seg(shut,.10,.74))).toFixed(3));
+          /* The letter goes: up, back a little, and out through the top
+             of its own frame — the card is overflow:hidden, so the last
+             of it is taken by the edge rather than simply reaching zero
+             where it stands. The blur is the speed of it. */
+          SC.set(ktFAsk,
+            'translate3d(0,'+(-58*lift).toFixed(1)+'px,0) scale('+(1-lift*.08).toFixed(4)+')',
+            (1-SC.io(SC.seg(lift,.34,1))).toFixed(3),
+            SC.blur(lift*lift*9));
 
-          var stamp=ktBack(SC.seg(shut,.62,1)),
-              stampOut=SC.io(SC.seg(open,0,.22));
-          SC.set(ktFSent,'scale('+((.55+.45*stamp)*(1-stampOut*.26)).toFixed(4)+')',
-            (Math.max(0,Math.min(1,SC.seg(shut,.62,1)*1.8))*(1-stampOut)).toFixed(3));
+          /* The tick is drawn rather than dropped in. A stroke that
+             appears all at once is a state change; a stroke that is laid
+             down left to right is somebody ticking something off, which
+             is the whole of what this beat has to say. */
+          var stampOut=SC.io(SC.seg(open,0,.22));
+          if(ktTick){
+            var dl=(24*(1-draw)).toFixed(2);
+            if(dl!==ktTickD){ ktTickD=dl; ktTick.style.strokeDashoffset=dl; }
+          }
+          SC.set(ktFSent,'scale('+(1-stampOut*.26).toFixed(4)+')',
+            ((draw>0?1:0)*(1-stampOut)).toFixed(3));
+          /* and the word comes in behind the tick, from where the tick is */
+          SC.set(ktSentW,
+            'translate3d('+((1-word)*-9).toFixed(1)+'px,0,0)', word.toFixed(3));
 
           var rIn=SC.out(SC.seg(open,.40,1));
           SC.set(ktFReply,'scale('+(.80+.20*rIn).toFixed(4)+')', rIn.toFixed(3));
