@@ -198,11 +198,17 @@ body{ font-family:var(--sys); color:var(--ink);
    back to the least the bar and the strip can live with, because every pixel
    given to padding is a pixel taken off the type. */
 .khero{ padding:84px clamp(18px,4vw,48px) clamp(24px,3.4vh,40px); }
+/* The headline was three one-word lines, so it could be set at whatever
+   the height of the screen allowed — a word has no width worth speaking
+   of. It is a sentence now, and a sentence is held by two things at
+   once: the height of three lines, and the width of the longest one.
+   The size is the smaller of the two, so it fills the screen on a wide
+   monitor and still fits on a laptop with a short window. */
 .kh{ font-weight:700; text-transform:none; padding-top:clamp(10px,2.2vh,26px);
-  font-size:clamp(44px, min(20vw, calc((100vh - 230px) / 2.8)), 420px);
-  line-height:.92; letter-spacing:-.045em; }
+  font-size:clamp(30px, min(7.9vw, calc((100vh - 270px) / 3.5)), 132px);
+  line-height:.96; letter-spacing:-.04em; }
 @media(max-width:700px){
-  .kh{ font-size:clamp(40px, min(19vw, calc((100vh - 200px) / 2.8)), 120px); }
+  .kh{ font-size:clamp(32px, min(10.4vw, calc((100vh - 230px) / 5.2)), 62px); }
 }
 .kh .em{ color:var(--accent); }
 .kmeta{ font-size:13.5px; letter-spacing:-.006em; }
