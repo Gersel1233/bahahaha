@@ -67,9 +67,30 @@
 
 /* The lift that was already behind the headlines. It was a warm stain
    inherited from the paper page; on this ground it is the brightest
-   part of the room, and it is the thing the type stands in front of. */
-.glow{ background:radial-gradient(52% 48% at 50% 40%,
-  rgba(176,198,224,.16) 0%, rgba(176,198,224,.05) 46%, transparent 74%); }
+   part of the room, and it is the thing the type stands in front of.
+
+   Its geometry is rewritten here as well. It used to hang 18vh above the
+   stage and stand 110vh tall, and a stage clips — so at the stage's top
+   edge the gradient still had about eight per cent of its strength and
+   simply stopped. That is a light switched on at the exact scroll where
+   the section starts, and it measured as a step of three and a half grey
+   levels on a ground of six, right on the boundary between the software
+   house and the clients. It fills the stage now, and the falloff is
+   centred and sized so it reaches nought before it reaches an edge:
+   nothing is cut off, so there is nothing to see at the join. */
+.glow{ left:0; right:0; top:0; width:auto; height:100%; transform:none;
+  background:radial-gradient(58% 39% at 50% 39%,
+    rgba(176,198,224,0.19) 0.0%,
+    rgba(176,198,224,0.18837) 10.0%,
+    rgba(176,198,224,0.179) 20.0%,
+    rgba(176,198,224,0.15901) 30.0%,
+    rgba(176,198,224,0.12969) 40.0%,
+    rgba(176,198,224,0.095) 50.0%,
+    rgba(176,198,224,0.06031) 60.0%,
+    rgba(176,198,224,0.03099) 70.0%,
+    rgba(176,198,224,0.011) 80.0%,
+    rgba(176,198,224,0.00163) 90.0%,
+    rgba(176,198,224,0.0) 100.0%); }
 
 /* ---------- the sections that are not stages ----------
    The hero, the closer, the team and the footer are ordinary blocks, so

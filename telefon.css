@@ -40,14 +40,46 @@
 .tel-bottom{ position:absolute; left:50%; transform:translateX(-50%);
   bottom:clamp(26px,6vh,64px); width:min(920px, calc(100% - clamp(24px,6vw,96px)));
   text-align:center; }
+/* The scrim hung 180% of its own height below the words, and the stage
+   clips at its own bottom edge — which is exactly where this section
+   hands over to the letter. So the shadow was cut off mid-strength on
+   the boundary row: measured as a step of three grey levels on a ground
+   of eight, and the third of the invisible borders between sections,
+   all three of them the same mistake in three different places.
+
+   It ends where the stage ends now, and the falloff is centred and sized
+   to reach nought before it reaches an edge — so there is nothing left
+   being cut off, and nothing to see at the join. */
 .tel-bottom::before{ content:""; position:absolute; z-index:-1; pointer-events:none;
-  inset:-26% -34% -180%;
-  background:radial-gradient(58% 62% at 50% 56%,
-    rgba(8,10,13,.86) 0%, rgba(8,10,13,.62) 42%, rgba(8,10,13,.22) 68%, transparent 84%); }
+  top:-90%; left:-34%; right:-34%; bottom:calc(-1 * clamp(26px,6vh,64px));
+  background:radial-gradient(62% 44% at 50% 56%,
+    rgba(8,10,13,0.86) 0.0%,
+    rgba(8,10,13,0.85439) 9.09%,
+    rgba(8,10,13,0.82138) 18.18%,
+    rgba(8,10,13,0.74913) 27.27%,
+    rgba(8,10,13,0.63923) 36.36%,
+    rgba(8,10,13,0.50289) 45.45%,
+    rgba(8,10,13,0.35711) 54.55%,
+    rgba(8,10,13,0.22077) 63.64%,
+    rgba(8,10,13,0.11087) 72.73%,
+    rgba(8,10,13,0.03862) 81.82%,
+    rgba(8,10,13,0.00561) 90.91%,
+    rgba(8,10,13,0.0) 100.0%); }
 .tel-side .tel-act::before{ content:""; position:absolute; z-index:-1; pointer-events:none;
   inset:-34% -26% -34% -22%;
-  background:radial-gradient(62% 60% at 44% 50%,
-    rgba(8,10,13,.82) 0%, rgba(8,10,13,.5) 46%, transparent 78%); }
+  background:radial-gradient(64% 50% at 44% 50%,
+    rgba(8,10,13,0.82) 0.0%,
+    rgba(8,10,13,0.81465) 9.09%,
+    rgba(8,10,13,0.78318) 18.18%,
+    rgba(8,10,13,0.71428) 27.27%,
+    rgba(8,10,13,0.60949) 36.36%,
+    rgba(8,10,13,0.4795) 45.45%,
+    rgba(8,10,13,0.3405) 54.55%,
+    rgba(8,10,13,0.21051) 63.64%,
+    rgba(8,10,13,0.10572) 72.73%,
+    rgba(8,10,13,0.03682) 81.82%,
+    rgba(8,10,13,0.00535) 90.91%,
+    rgba(8,10,13,0.0) 100.0%); }
 .tel-bottom .tel-tags{ justify-content:center; }
 .tel-bottom p{ margin-left:auto; margin-right:auto; }
 

@@ -72,25 +72,27 @@ html, body{ background:var(--deep); color:var(--ink); }
 
 .gn-links a:hover{ background:rgba(232,238,244,.08); color:var(--ink); }
 
-/* the one strong element in the corner — now the light one */
-.gn-cta{ background:rgba(232,238,244,.94); color:#0c0e11;
-  box-shadow:inset 0 1px 1px rgba(255,255,255,.9), inset 0 0 0 1px rgba(232,238,244,.5); }
+/* The one strong element in the corner. It was a flat white pill, which
+   is the shape every template ships with; this is the same button with a
+   surface on it — lit along the top edge and falling away down the face,
+   the way the glass everywhere else on the page is lit — and the type is
+   tracked in rather than left at its default. */
+.gn-cta{ background:linear-gradient(168deg,#ffffff,#e4ebf2 62%,#d3dce6); color:#0c0e11;
+  letter-spacing:-.022em;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,1), inset 0 -1px 0 rgba(12,14,17,.08),
+    inset 0 0 0 1px rgba(232,238,244,.45), 0 6px 16px -10px rgba(0,0,0,.7); }
 .gn-cta::after{ background:linear-gradient(115deg, transparent 32%, rgba(12,14,17,.10) 46%,
   rgba(12,14,17,.18) 50%, rgba(12,14,17,.10) 54%, transparent 68%); }
-.gn-cta:hover{ background:#fff;
-  box-shadow:inset 0 1px 1px rgba(255,255,255,1), 0 10px 24px -12px rgba(0,0,0,.8),
+.gn-cta:hover{ background:linear-gradient(168deg,#ffffff,#eef3f8 62%,#e2e9f1);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,1), 0 12px 28px -12px rgba(0,0,0,.85),
     0 0 0 5px rgba(232,238,244,.10); }
 
 /* ---------- the language switch ----------
-   The track recedes into the glass and the thumb is the lit surface, the
-   same way round as before — it is only which of the two is the light
-   one that changes. */
-.langsw{ background:rgba(232,238,244,.08);
-  box-shadow:inset 0 1px 2px rgba(0,0,0,.4), inset 0 0 0 1px rgba(232,238,244,.09); }
-.lang-thumb{ background:linear-gradient(168deg,#f4f8fc,#d5dfea);
-  box-shadow:0 1px 2px rgba(0,0,0,.5), 0 3px 8px -3px rgba(0,0,0,.6),
-    inset 0 1px 0 rgba(255,255,255,1), inset 0 0 0 .5px rgba(12,14,17,.12); }
-.langsw button.on{ color:#0c0e11; }
+   Two letters and a rule. On this ground the rule is the page's own
+   light, and the letter above it comes up to full white. */
+.langsw{ background:none; box-shadow:none; }
+.lang-thumb{ background:var(--ink); box-shadow:none; }
+.langsw button.on{ color:var(--ink); }
 
 /* the reading line */
 #sprog i{ background:linear-gradient(90deg,#eef3f8,#8c98a8); }
@@ -136,8 +138,18 @@ html, body{ background:var(--deep); color:var(--ink); }
    glow becomes the light it stands in — enough to separate the body from
    the ground, not enough to look like a spotlight. */
 .scene.tel .glow{
-  background:radial-gradient(48% 46% at 42% 48%, rgba(152,176,206,.17) 0%,
-    rgba(152,176,206,.06) 46%, transparent 72%); }
+  background:radial-gradient(52% 44% at 42% 44%,
+    rgba(152,176,206,0.2) 0.0%,
+    rgba(152,176,206,0.19829) 10.0%,
+    rgba(152,176,206,0.18842) 20.0%,
+    rgba(152,176,206,0.16738) 30.0%,
+    rgba(152,176,206,0.13651) 40.0%,
+    rgba(152,176,206,0.1) 50.0%,
+    rgba(152,176,206,0.06349) 60.0%,
+    rgba(152,176,206,0.03262) 70.0%,
+    rgba(152,176,206,0.01158) 80.0%,
+    rgba(152,176,206,0.00171) 90.0%,
+    rgba(152,176,206,0.0) 100.0%); }
 
 /* ---------- the closer and the finale ----------
    The closer's pill was written flat, to take the green out of it on a

@@ -17,14 +17,14 @@
 <link rel="preload" as="font" type="font/woff2" href="fonts/instrumentserif-italic-400.woff2" crossorigin />
 <link rel="preload" as="font" type="font/woff2" href="fonts/barlow-normal-400.woff2" crossorigin />
 <link rel="stylesheet" href="styles.css?v=45" />
-<link rel="stylesheet" href="lesreg.css?v=74" />
+<link rel="stylesheet" href="lesreg.css?v=75" />
 <link rel="stylesheet" href="bbh.css?v=10" />
 <link rel="stylesheet" href="kunder.css?v=16" />
-<link rel="stylesheet" href="telefon.css?v=6" />
-<link rel="stylesheet" href="softwarehus.css?v=23" />
+<link rel="stylesheet" href="telefon.css?v=7" />
+<link rel="stylesheet" href="softwarehus.css?v=24" />
 <link rel="stylesheet" href="kontakt.css?v=9" />
-<link rel="stylesheet" href="mork.css?v=4" />
-<link rel="stylesheet" href="dybde.css?v=4" />
+<link rel="stylesheet" href="mork.css?v=5" />
+<link rel="stylesheet" href="dybde.css?v=5" />
 </head>
 <body>
 
@@ -130,16 +130,6 @@
       <span class="sw-veil" id="swVeil" aria-hidden="true"></span>
       <span class="sw-vign" id="swVign" aria-hidden="true"></span>
 
-      <!-- The film runs itself once. After that it belongs to the reader:
-           this is the line it can be pulled back and forth on, so anything
-           that went past too quickly can be gone back to and read. -->
-      <div class="sw-rail" id="swRail" role="slider" tabindex="-1"
-           aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"
-           aria-label="Spol gennem afsnittet" title="Tr&aelig;k for at spole">
-        <span class="sw-rail-fill" id="swRailFill"></span>
-        <span class="sw-rail-knob" id="swRailKnob"></span>
-      </div>
-
       <div class="sw-deck">
 
         <div class="sw-hook" id="swHook">
@@ -147,15 +137,14 @@
           <p data-da="Og hvorfor Lesreg.">And why Lesreg.</p>
         </div>
 
-        <div class="sw-act sw-split" data-sw-act="1">
+        <!-- No picture here. A stock frame of somebody else's code said
+             nothing about this house that the sentence does not say better,
+             and it took half the act to say it. The answer writes itself
+             out and stands on its own. -->
+        <div class="sw-act sw-solo" data-sw-act="1">
           <div>
             <div class="sw-kicker" data-da="Hvad er et softwarehus">What a software house is</div>
             <p class="sw-bio"><span id="swTyped"></span><i class="sw-caret" id="swCaret" aria-hidden="true"></i></p>
-          </div>
-          <!-- One frame, held like a bubble: round, lit round its own rim,
-               and never quite still. It comes out of nothing — see swPop. -->
-          <div class="sw-shot bubble">
-            <span class="sh-b"><img src="photos/kode-skaerm.jpg?v=1" alt="" loading="lazy" decoding="async" width="1280" height="853" /></span>
           </div>
         </div>
         <!-- the text of act one lives here so the language switch can reach
@@ -390,7 +379,7 @@
 
         <!-- the two texts live here so the language switch can reach them;
              the act above reads them a character at a time -->
-        <p class="kt-letter" id="ktLetter" data-da="Hej Mikkel. Vi har en caf&eacute; p&aring; havnen, og vi bruger for lang tid p&aring; telefonen. Kan I bygge noget, vi selv kan styre?">Hi Mikkel. We run a caf&eacute; down by the harbour, and we spend far too long on the phone. Could you build us something we can run ourselves?</p>
+        <p class="kt-letter" id="ktLetter" data-da="Hej Lesreg. Vi har en caf&eacute; p&aring; havnen, og vi bruger for lang tid p&aring; telefonen. Kan I bygge noget, vi selv kan styre?">Hi Lesreg. We run a caf&eacute; down by the harbour, and we spend far too long on the phone. Could you build us something we can run ourselves?</p>
         <p class="kt-letter" id="ktRSrc" data-da="Ja. Det kan vi bygge.">Yes. We can build that.</p>
 
         <div class="kt-finale" id="ktFin">
@@ -980,10 +969,8 @@
           swBio=document.getElementById('swBio'), swHouse=document.getElementById('swHouse'),
           swDeck=swEl.querySelector('.sw-deck'), swMerge=swEl.querySelector('.sw-merge'),
           swCast=document.getElementById('swCast'),
-          swVign=document.getElementById('swVign'),
-          swRail=document.getElementById('swRail'),
-          swRailFill=document.getElementById('swRailFill'),
-          swRailKnob=document.getElementById('swRailKnob');
+          swVign=document.getElementById('swVign');
+
       /* There used to be a proper measuring pass here: the three cards were
          three different widths, so something had to read the layout and
          work out what each one had to be scaled by to end on the same
@@ -1008,7 +995,6 @@
         return { el:el, kick:el.querySelector('.sw-kicker'),
                  hd:el.querySelector('[data-sw-split]'), w:[],
                  shot:el.querySelector('.sw-shot'), lede:el.querySelector('.sw-lede'),
-                 shb:el.querySelector('.sh-b'), shf:el.querySelector('.sh-f'),
                  sups:[].slice.call(el.querySelectorAll('.sw-sup')),
                  supTxt:[].slice.call(el.querySelectorAll('.sw-sup')).map(function(su){
                    return [].slice.call(su.children); }),
@@ -1089,58 +1075,29 @@
          too slowly is gone. So it stays. Take hold of the line and the
          clock lets go, and the twenty-eight seconds become a thing you can
          move through a frame at a time. */
-      var swDone=false, swDrag=false, swRailP=-1;
-      function swRailAt(ev){
-        var r=swRail.getBoundingClientRect();
-        return r.height ? Math.max(0,Math.min(1,(ev.clientY-r.top)/r.height)) : 0;
-      }
-      function swRailReady(){
-        if(swDone) return;
-        swDone=true;
-        swRail.classList.add('on');
-        swRail.tabIndex=0;
-      }
-      if(swRail && !reduce){
-        swRail.addEventListener('pointerdown', function(ev){
-          if(!swDone) return;
-          swDrag=true;
-          try{ swRail.setPointerCapture(ev.pointerId); }catch(e){}
-          SC.scrub(swEl, swRailAt(ev));
-          ev.preventDefault();
-        });
-        swRail.addEventListener('pointermove', function(ev){
-          if(swDrag) SC.scrub(swEl, swRailAt(ev));
-        });
-        ['pointerup','pointercancel'].forEach(function(t){
-          swRail.addEventListener(t, function(){ swDrag=false; });
-        });
-        /* and the same by keyboard, since it is a slider and says so */
-        swRail.addEventListener('keydown', function(ev){
-          if(!swDone) return;
-          var d = (ev.key==='ArrowDown'||ev.key==='ArrowRight') ? .02
-                : (ev.key==='ArrowUp'||ev.key==='ArrowLeft') ? -.02
-                : (ev.key==='Home') ? -2 : (ev.key==='End') ? 2 : 0;
-          if(!d) return;
-          SC.scrub(swEl, Math.max(0,Math.min(1,(swRailP<0?0:swRailP/1000)+d)));
-          ev.preventDefault();
-        });
-      }
-
       SC.add({
-        /* It used to wait to be asked — a button under the question, and
-           nothing happened until it was pressed. A visitor who scrolls
-           past a still headline has no reason to press anything, so the
-           section that explains the whole trade was the one nobody saw.
-           It runs itself now, the way the letter at the bottom does, and
-           the track it sits on was made long enough to hold it. */
-        el:swEl, leadF:0, auto:true, liveF:0.06, dur:30500,
+        /* Two arrangements before this one. A button, which nobody
+           pressed, so the section that explains the whole trade was the
+           one nobody saw. Then a clock: it ran itself for half a minute
+           while the stage was pinned to the top of the window — and a
+           pinned stage that does not answer the scroll is a page that has
+           stopped working. You push, and nothing moves. That is what it
+           was being called, and it was right.
+
+           The scroll drives it now, the way it drives every other section
+           here. The film is exactly as long as the track, so the hand
+           doing the scrolling is the hand running it: push and it goes,
+           push back and it rewinds, stop and it waits. Nothing to wait
+           out and nothing to take hold of, because it was never out of
+           anybody's hands to begin with. */
+        el:swEl, leadF:0,
         build:function(){ swA.forEach(function(a){ if(a.hd) a.w=SC.split(a.hd); }); },
         base:function(){
           swSrc=(swBio.firstChild && swBio.firstChild.nodeValue)||'';
           swTyped.textContent=swSrc;
           var all=[];
           swA.forEach(function(a){
-            all=all.concat([a.el,a.kick,a.shot,a.shb,a.shf,a.lede]).concat(a.w).concat(a.claims).concat(a.sups);
+            all=all.concat([a.el,a.kick,a.shot,a.lede]).concat(a.w).concat(a.claims).concat(a.sups);
             (a.supTxt||[]).forEach(function(t){ all=all.concat(t); });
             a.el.style.visibility='visible'; a.vis=true;
           });
@@ -1159,17 +1116,6 @@
         paint:function(s){
           var src=(swBio.firstChild && swBio.firstChild.nodeValue)||'';
           if(src!==swSrc){ swSrc=src; swN=-1; }
-
-          if(swRail){
-            var rp=Math.round(s*1000);
-            if(rp!==swRailP){
-              swRailP=rp;
-              swRailFill.style.transform='scaleY('+s.toFixed(4)+')';
-              swRailKnob.style.transform='translateY('+(s*100).toFixed(2)+'%)';
-              swRail.setAttribute('aria-valuenow', Math.round(s*100));
-            }
-            if(s>=0.999) swRailReady();
-          }
 
           /* the hook draws back into the depth as the first act arrives */
           var hx=SC.io(SC.seg(s,.0138,.0597));
@@ -1222,11 +1168,6 @@
             if(n!==swN){ swN=n; swTyped.textContent=swSrc.slice(0,n); }
             var writing = tp>0 && tp<1;
             if(writing !== (swCaret.style.display==='')) swCaret.style.display = writing?'':'none';
-            /* the screen first and the code after it, a beat apart: two
-               things opening out of the same point at the same moment is
-               one thing with a seam in it */
-            if(swA[0].shb) swPop(swA[0].shb,.078,.2433,1.4,s,.3121);
-            if(swA[0].shf) swPop(swA[0].shf,.125,.305,-1.8,s,.34);
           }
 
           /* act two — three become one.
@@ -1278,17 +1219,31 @@
                    hard-damped recoil, no bounce anyone could count. */
                 rc=SC.seg(s,.47,.5031),
                 kick=(s>=.47) ? (rc<=0 ? 0 : Math.exp(-7.5*rc)*Math.sin(Math.PI*2*1.7*rc)) : 0,
-                /* the material, out of the middle */
-                seal=SC.io(SC.seg(s,.4719,.5085)),
-                /* the block breathes out to its own height */
-                grow=SC.io(SC.seg(s,.5085,.5520)),
-                /* and settles */
-                stl=SC.seg(s,.5085,.5860),
-                settle=(s>=.5085) ? (stl<=0 ? 0 : Math.exp(-5.4*stl)*Math.cos(Math.PI*2*1.15*stl)) : 0,
+                /* The face opens once, not twice.
+
+                   The wipe out of the middle and the breath up to full
+                   height used to be laid end to end, and both were on an
+                   in-out ease — which arrives at zero speed and leaves at
+                   zero speed. So the sideways move stopped dead, held for
+                   a frame, and the upward one set off again from nothing.
+                   Two moves with a full stop between them, which is
+                   exactly what it looked like.
+
+                   They overlap now, and both are on the film ease: hard
+                   off the mark and a long tail. The block is still
+                   spreading sideways as it starts to rise, so what opens
+                   is one thing growing out of a point rather than a bar
+                   that later becomes a box — and there is no frame in the
+                   middle of it where nothing is moving. */
+                seal=SC.film(SC.seg(s,.4719,.5240)),
+                grow=SC.film(SC.seg(s,.4960,.5620)),
+                /* and settles, once it has its height */
+                stl=SC.seg(s,.5240,.6020),
+                settle=(s>=.5240) ? (stl<=0 ? 0 : Math.exp(-5.4*stl)*Math.cos(Math.PI*2*1.15*stl)) : 0,
                 /* the camera leans in for the dock and comes back off it
                    once the thing is standing — the only move on the page
                    that belongs to the viewer and not to the objects */
-                lean=.03*SC.io(SC.seg(s,.4241,.4719)) - .03*SC.io(SC.seg(s,.5068,.5673));
+                lean=.03*SC.io(SC.seg(s,.4241,.4719)) - .03*SC.io(SC.seg(s,.5240,.5850));
 
             for(var i=0;i<swA[1].sups.length;i++){
               var sp=swSpread[i],
@@ -1330,10 +1285,19 @@
               'translate(-50%,-50%) scale('+((1-hIn/50)*(1+settle*.012)).toFixed(4)+','+((1-vIn/50)*(1+settle*.012)).toFixed(4)+')',
               (s>=.471?Math.min(1,seal*1.6):0).toFixed(3));
 
-            /* and the light runs across the face once, on the settle */
-            var sw2=SC.seg(s,.5180,.6240);
+            /* And the light runs across the face once, timed so it
+               crosses on the frames the block is finding its full height
+               — the highlight and the landing are one event.
+
+               It accelerates rather than easing in and out. A reflection
+               is a fixed light on a surface that is turning, so it
+               gathers pace as it goes and leaves at the edge; an in-out
+               ease makes it slow down in the middle of the face, which
+               reads as a white shape being animated across a box, which
+               is what it was. */
+            var sw2=SC.seg(s,.5230,.5940);
             swHouse.style.setProperty('--sx',
-              (sw2>0 && sw2<1 ? (-80+160*SC.io(sw2)).toFixed(1) : -80) + '%');
+              (sw2>0 && sw2<1 ? (-90+195*Math.pow(sw2,1.42)).toFixed(1) : -90) + '%');
 
             var pl=SC.out(SC.seg(s,.5470,.5990));
             SC.set(swA[1].lede,'translate3d(0,'+((1-pl)*16).toFixed(2)+'px,0)', pl.toFixed(3));

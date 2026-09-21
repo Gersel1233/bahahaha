@@ -12,12 +12,11 @@
    were, they would have rewritten the Kunder stage and the flight.
    ============================================================ */
 
-/* It plays on its own clock the moment the stage is in the window, so the
-   track is not the hand it would take to wind it — it is the room the
-   piece needs to be watched in. The contact letter is the measure: about
-   seven and a half screen-heights of scroll per ten seconds. This holds
-   twenty-eight. */
-.scene.sw{ height:345vh; }
+/* The scroll runs this section, so the track IS the film: every screen
+   of it is a stretch of the piece, and the length is how much hand it
+   takes to get through three acts without any of them going past before
+   it can be read. */
+.scene.sw{ height:420vh; }
 .scene.sw .stage{ box-sizing:border-box; padding-top:var(--nav);
   perspective:1500px; perspective-origin:50% 46%; isolation:isolate; }
 
@@ -138,20 +137,31 @@
 /* And a thirty-pixel blur on a gradient is work for nothing: a gradient
    is already as soft as it is asked to be. The blur was only smoothing
    the ring where this one stopped dead at 72%, which a falloff does for
-   free — and better, since the falloff leaves no ring to smooth. */
-.sw-glow{ position:absolute; inset:-26% -10% auto; height:78vh; pointer-events:none;
-  background:radial-gradient(54% 64% at 50% 0%,
-    rgba(168,188,210,0.4) 0%,
-    rgba(168,188,210,0.39658) 7.8%,
-    rgba(168,188,210,0.37683) 15.6%,
-    rgba(168,188,210,0.33477) 23.4%,
-    rgba(168,188,210,0.27302) 31.2%,
-    rgba(168,188,210,0.2) 39%,
-    rgba(168,188,210,0.12698) 46.8%,
-    rgba(168,188,210,0.06523) 54.6%,
-    rgba(168,188,210,0.02317) 62.4%,
-    rgba(168,188,210,0.00342) 70.2%,
-    rgba(168,188,210,0) 78%);
+   free — and better, since the falloff leaves no ring to smooth.
+
+   It also used to hang 26% above the stage and stand 78vh tall, so the
+   brightest part of it was outside the stage — and the stage clips. What
+   was left at the top edge was a fifth of full strength with nowhere to
+   fade from, which is a light switched on at the exact scroll where this
+   section begins: measured as a step of four grey levels on a ground of
+   five, right on the boundary, and reported as a border between the
+   sections. It fills the stage exactly now, so the mask the rest of the
+   room carries lines up with the edge that does the clipping and the
+   light comes up out of nothing like everything else here. The source is
+   moved down to match, so it still falls from above. */
+.sw-glow{ position:absolute; inset:0 -10%; pointer-events:none;
+  background:radial-gradient(56% 58% at 50% 6%,
+    rgba(168,188,210,0.46) 0.0%,
+    rgba(168,188,210,0.45606) 7.8%,
+    rgba(168,188,210,0.43336) 15.6%,
+    rgba(168,188,210,0.38498) 23.4%,
+    rgba(168,188,210,0.31398) 31.2%,
+    rgba(168,188,210,0.23) 39.0%,
+    rgba(168,188,210,0.14602) 46.8%,
+    rgba(168,188,210,0.07502) 54.6%,
+    rgba(168,188,210,0.02664) 62.4%,
+    rgba(168,188,210,0.00394) 70.2%,
+    rgba(168,188,210,0.0) 78.0%);
   will-change:transform,opacity; }
 .sw-vign{ position:absolute; inset:0; pointer-events:none;
   background:radial-gradient(72% 64% at 50% 44%, transparent 40%, rgba(6,7,9,.74)); }
@@ -207,37 +217,20 @@
    height comes down so the wide frame does not push the words aside. */
 .sw-shot.wide{ --shotmax:32vh; max-width:calc(var(--shotmax) * 1.778); aspect-ratio:16/9; }
 
-/* ---------- the one picture ----------
-   It was a bubble for one round: corners rounded past the point where a
-   corner is a corner, lit around its own rim, no frame at all. It read as
-   a sticker. This is the same frame the rest of the page uses — the hair-
-   line, the radius, the shadow the other pictures have — and the two
-   things that were worth keeping: it comes out of nothing, and it is
-   never quite still.
-
-   The drift is on the slot and the arrival is on the frame inside it. One
-   element cannot hold two transforms, and a keyframe beats an inline
-   style, so a float written on the wrong one quietly eats the whole
-   entrance. It rises and falls about a centimetre on a cycle that divides
-   evenly into nothing else on the page, so it never falls into step with
-   anything and never reads as a loop. */
-.sw-shot.bubble{ --shotmax:40vh; max-width:calc(var(--shotmax) * 1.5); aspect-ratio:3/2;
-  border:0; background:none; box-shadow:none; border-radius:0; overflow:visible; opacity:1;
-  animation:swFloat 13s ease-in-out infinite; }
-.sw-shot.bubble span{ position:absolute; inset:0; display:block; overflow:hidden; opacity:0;
-  border-radius:22px; border:1px solid var(--edge);
-  box-shadow:0 44px 86px -42px rgba(0,0,0,.86), 0 8px 24px -16px rgba(0,0,0,.55),
-    inset 0 1px 0 rgba(255,255,255,.26);
-  filter:brightness(.88) saturate(.9);
-  will-change:transform,opacity; }
-.sw-shot.bubble img{ display:block; width:100%; height:100%; object-fit:cover; }
-@keyframes swFloat{
-  0%,100%{ transform:translate3d(0,-1%,0) rotate(-.35deg); }
-  50%    { transform:translate3d(0,1.3%,0) rotate(.35deg); } }
-
 /* act one — the text writes itself */
-.sw-bio{ margin:clamp(12px,2vh,22px) 0 0; max-width:30ch; white-space:pre-line;
-  font-size:clamp(16px,1.8vw,28px); line-height:1.45; letter-spacing:-.026em;
+/* Act one is one column now that the picture is gone. Left to itself the
+   answer would run the full width of the deck and read as a paragraph in
+   a document; held to a measure and set in the middle of the stage it
+   reads as a statement, which is what it is. */
+.sw-solo{ display:grid; justify-content:center; }
+.sw-solo > div{ max-width:min(860px, 90vw); }
+/* The answer used to share the act with a picture, so it was set at the
+   size of a caption next to one. It is the act now, and a sentence that
+   has a screen to itself has to be worth the screen: it is set at nearly
+   half again, which is the difference between a paragraph in a document
+   and a thing somebody meant. */
+.sw-bio{ margin:clamp(14px,2.4vh,26px) 0 0; max-width:26ch; white-space:pre-line;
+  font-size:clamp(19px,2.5vw,40px); line-height:1.34; letter-spacing:-.032em;
   font-weight:500; color:var(--ink); min-height:8.4em; }
 .sw-caret{ font-style:normal; display:inline-block; width:2px; height:1.02em;
   margin-left:3px; vertical-align:-.14em; background:#fff;
@@ -410,15 +403,14 @@
 @media(max-width:900px){
   /* the same measure on a phone, where a screen is taller than it is wide
      and the same seconds cost more track */
-  .scene.sw{ height:382vh; }
+  .scene.sw{ height:460vh; }
   .sw-split{ grid-template-columns:1fr; gap:clamp(16px,3vh,26px); }
+  .sw-solo > div{ max-width:none; }
   .sw-bio{ max-width:none; min-height:10.5em; font-size:clamp(16px,4.4vw,22px); }
   .sw-shot, .sw-shot.port{ --shotmax:30vh; aspect-ratio:16/10;
     max-width:calc(var(--shotmax) * 1.6); }
   .sw-shot.wide{ --shotmax:26vh; aspect-ratio:16/9;
     max-width:calc(var(--shotmax) * 1.778); }
-  .sw-shot.bubble{ --shotmax:30vh; aspect-ratio:3/2;
-    max-width:calc(var(--shotmax) * 1.5); }
   .sw-offer{ display:none; }
   /* On a phone the three stand one above the other, so a column that is
      taller than it is wide is the wrong box: they are rows here, wide and
@@ -469,10 +461,9 @@
   .sw-act{ position:relative; top:auto; bottom:auto; margin-block:0; height:auto;
     visibility:visible !important; opacity:1 !important; transform:none !important;
     filter:none !important; }
-  .sw-act h3 .w > span, .sw-claims li, .sw-lede, .sw-shot, .sw-shot.bubble span{ opacity:1 !important;
+  .sw-act h3 .w > span, .sw-claims li, .sw-lede, .sw-shot{ opacity:1 !important;
     transform:none !important; filter:none !important; }
   .sw-caret{ display:none; } .sw-bio{ min-height:0; }
-  .sw-shot.bubble{ animation:none; }
   .sw-house::after{ animation:none; opacity:0; }
   .sw-merge{ height:auto; display:grid; gap:10px; justify-items:center; }
   .sw-sup, .sw-house{ position:relative; left:auto; top:auto; opacity:1 !important;
@@ -481,69 +472,15 @@
   .sw-sup, .sw-cast{ display:none; }
 }
 
-/* ============================================================
-   THE LINE AT THE SIDE
-
-   A section that plays itself asks nothing of the reader, and the price
-   of that is that anything read too slowly is gone. This is the line it
-   can be pulled back along.
-
-   While the film runs it is a hairline with a lit portion: where you are,
-   nothing more, and nothing to press. When the film has run once it comes
-   forward — wider, brighter, with a bead on it — and from that moment the
-   clock has let go and the twenty-eight seconds are a thing you can move
-   through by hand.
-
-   Everything on it moves by transform alone, so a frame of it cannot cost
-   a layout.
-   ============================================================ */
-.sw-rail{ position:absolute; z-index:20;
-  right:clamp(10px,1.8vw,30px); top:50%; margin-top:-21vh;
-  width:4px; height:42vh; border-radius:999px;
-  background:rgba(232,238,244,.09);
-  -webkit-backdrop-filter:blur(14px) saturate(160%); backdrop-filter:blur(14px) saturate(160%);
-  box-shadow:inset 0 0 0 1px rgba(232,238,244,.16), 0 10px 26px -14px rgba(0,0,0,.7);
-  opacity:0; pointer-events:none; touch-action:none;
-  transition:width .5s cubic-bezier(.2,.8,.2,1), opacity .6s ease,
-    background-color .5s ease, box-shadow .5s ease; }
-/* it only exists while its own section is on the glass */
-.scene.sw.live .sw-rail{ opacity:.5; }
-
 /* the lit portion: the top of the line down to where the film has got to */
-.sw-rail-fill{ position:absolute; inset:0; border-radius:inherit;
-  transform:scaleY(0); transform-origin:50% 0; will-change:transform;
-  background:linear-gradient(180deg, rgba(255,255,255,.34), rgba(232,238,244,.86));
-  box-shadow:0 0 16px -2px rgba(198,220,255,.5); }
 
 /* The bead. Its box is the whole line, so a translate in per cent moves
    it by a fraction of the line and not of itself — which is the only way
    to put it somewhere without writing to top. */
-.sw-rail-knob{ position:absolute; left:0; right:0; top:0; height:100%;
-  pointer-events:none; will-change:transform; }
-.sw-rail-knob::before{ content:""; position:absolute; left:50%; top:0;
-  transform:translate(-50%,-50%) scale(0);
-  width:15px; height:15px; border-radius:50%;
-  background:linear-gradient(160deg, #ffffff, #d7e0ea);
-  box-shadow:0 2px 10px rgba(0,0,0,.6), 0 0 22px -4px rgba(198,220,255,.8),
-    inset 0 1px 0 rgba(255,255,255,.9);
-  transition:transform .55s cubic-bezier(.34,1.4,.4,1); }
 
 /* ---------- once it has been watched once ---------- */
-.sw-rail.on{ width:6px; pointer-events:auto; cursor:grab;
-  background:rgba(232,238,244,.13);
-  box-shadow:inset 0 0 0 1px rgba(232,238,244,.28), 0 14px 34px -16px rgba(0,0,0,.8); }
-.scene.sw.live .sw-rail.on{ opacity:.92; }
-.sw-rail.on::after{ content:""; position:absolute; inset:-16px -18px;
-  border-radius:999px; }               /* somewhere to take hold of it */
-.sw-rail.on .sw-rail-knob::before{ transform:translate(-50%,-50%) scale(1); }
-.sw-rail.on:active{ cursor:grabbing; }
-.sw-rail.on:focus-visible{ outline:2px solid rgba(232,238,244,.6); outline-offset:6px; }
 
 @media(max-width:900px){
-  .sw-rail{ right:8px; height:34vh; margin-top:-17vh; }
-  .sw-rail.on{ width:7px; }
-  .sw-rail.on::after{ inset:-20px -22px; }
 }
 @media (prefers-reduced-motion: reduce){
-  .sw-rail{ display:none; }
 }
