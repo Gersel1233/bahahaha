@@ -1,0 +1,1470 @@
+/* ============================================================
+   THE PAGE
+
+   The whole of the hand-written page's own script, moved across without
+   a line changed. It is one closure that finds its elements by id and
+   drives them from a single requestAnimationFrame loop — the drone
+   flight, the software house, the customers, the phone and the letter.
+
+   Every timing in it was arrived at by measuring the page and watching
+   it, over a lot of rounds. Translating it into hooks and state would
+   have meant rewriting all of that from memory, and the only thing it
+   needs from a framework is to be called once the markup is in the
+   document.
+   ============================================================ */
+/* eslint-disable */
+// @ts-nocheck
+
+export function initPage(){
+  (function(){
+    var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    /* ---------- language: Danish for Danish visitors, switchable ----------
+       Every translatable node carries data-da. The English original is stashed
+       in data-en on first run, so switching back is lossless. Danish is chosen
+       when the browser asks for it (or the visitor picks DA); the choice sticks
+       in localStorage. Runs before the reveal/scroll setup so nothing has to be
+       re-measured afterwards. */
+    var LKEY='lesreg-lang';
+    function applyLang(l){
+      [].slice.call(document.querySelectorAll('[data-da]')).forEach(function(n){
+        if(!n.hasAttribute('data-en')) n.setAttribute('data-en', n.innerHTML);
+        var html = (l==='da') ? n.getAttribute('data-da') : n.getAttribute('data-en');
+        if(n.innerHTML!==html) n.innerHTML=html;
+      });
+      document.documentElement.lang = (l==='da') ? 'da' : 'en';
+      var sw=document.getElementById('langsw'); if(sw) sw.setAttribute('data-lang', l);
+      [].slice.call(document.querySelectorAll('[data-lang-btn]')).forEach(function(b){
+        var on = b.getAttribute('data-lang-btn')===l;
+        b.classList.toggle('on', on);
+        b.setAttribute('aria-pressed', on?'true':'false');
+      });
+      try{ localStorage.setItem(LKEY,l); }catch(e){}
+    }
+    var saved=null; try{ saved=localStorage.getItem(LKEY); }catch(e){}
+    var wantsDa = saved ? (saved==='da')
+      : (navigator.languages || [navigator.language || '']).some(function(x){ return /^da\b/i.test(x||''); });
+    // first paint: place the switch without sliding it, so a Danish visitor
+    // doesn't see the lens travel from EN to DA on load
+    var sw0=document.getElementById('langsw');
+    if(sw0) sw0.classList.add('no-anim');
+    applyLang(wantsDa ? 'da' : 'en');
+    if(sw0) requestAnimationFrame(function(){ requestAnimationFrame(function(){ sw0.classList.remove('no-anim'); }); });
+    [].slice.call(document.querySelectorAll('[data-lang-btn]')).forEach(function(b){
+      b.addEventListener('click', function(){ applyLang(b.getAttribute('data-lang-btn')); });
+    });
+
+    var hero=document.querySelector('.khero');
+    /* A phone is not a small desktop. Everything below that hangs on the
+       scroll — the flight scrubbed frame by frame, the sticky stages that
+       turn one section into three screens of scrolling — is the wrong
+       instrument there: seeking a video per frame is the most expensive
+       thing a phone can be asked to do, and a thumb throws the page rather
+       than winding it. On a phone a section arrives and its animation
+       plays. Decided once, in one place, and written to the document so
+       the stylesheets read the same answer as the engine. */
+    /* Narrow enough for the portrait cut of the film. It chooses a file,
+       nothing else: the sections are driven by the scroll on a phone the
+       same as on a desktop, because that is what makes a page feel placed
+       rather than played at you. */
+    var TAP = window.matchMedia('(max-width:760px)').matches;
+
+    function go(){ if(hero) requestAnimationFrame(function(){ hero.classList.add('go'); }); }
+
+    /* drone intro — the scroll scrubs the flight. A rAF loop eases the video
+       toward the scroll position (direct seeking per event is choppy), the
+       brand fades out as the flight starts, and the film ends on the front
+       page itself, which the real one then takes over from unchanged. */
+    var dtr=document.getElementById('droTrack');
+    if(dtr && !reduce){
+      var dv=document.getElementById('droVid'), dbr=document.getElementById('droBrand'),
+          dfa=document.getElementById('droFade'), dst=document.getElementById('droStick'),
+          dnm=document.getElementById('droName');
+      var dDur=14, dTop=0, dRange=1, dCur=0, dTarget=0, dNavHid=false;
+      /* The headline waits behind the film and rises the moment the flight
+         lands, so the page writes itself in as the last beat of the same
+         move rather than being there already. */
+      /* Built once, at load. Cloning a headline costs a frame, and a frame
+         spent in the middle of the flight is the one thing the scroll cannot
+         afford — so it is spent here, where nothing is moving yet. */
+      var dhr=document.getElementById('droHero'), dhK=null, dhL=null, dhM=null, dHLast=-1;
+      var dgl=document.getElementById('droGlass'), dGlLast=-1;
+      /* the real headline sits in its finished state behind the film, with no
+         move of its own — the copy above does the writing */
+      if(hero) hero.classList.add('go','no-rise');
+      function dHeroBuild(){
+        if(!dhr || !hero) return;
+        dhr.innerHTML='';
+        dhK=hero.cloneNode(true);
+        dhK.removeAttribute('id');
+        [].slice.call(dhK.querySelectorAll('[id]')).forEach(function(c){ c.removeAttribute('id'); });
+        dhK.classList.add('go','no-rise');
+        dhr.appendChild(dhK);
+        dhL=dhK.querySelectorAll('.kh .khl i');
+        dhM=dhK.querySelector('.kmeta');
+        for(var i=0;i<dhL.length;i++) dhL[i].style.transform='translate3d(0,112%,0)';
+        if(dhM){ dhM.style.opacity='0'; dhM.style.transform='translate3d(0,20px,0)'; }
+        dHLast=-1;
+      }
+      dHeroBuild();
+      [].slice.call(document.querySelectorAll('[data-lang-btn]')).forEach(function(b){
+        b.addEventListener('click', dHeroBuild);
+      });
+      /* 1920px flight on real screens, a 1280px cut on phones and on anyone
+         asking to save data — the full file is three times the download */
+      var dCon=navigator.connection||{};
+      /* A phone is not a small cinema screen, it is a different shape. The
+         landscape cut covered a portrait window by throwing away 74% of the
+         frame's width and blowing the rest up three and a half times — the
+         laptop the whole flight lands on was outside the crop. The portrait
+         cut is taken from the 1600px master, not from the already reduced
+         landscape file, so it is not scaled down twice: 506x900, which is
+         the frame the phone actually shows. 1.33MB against 3.76.
+
+         The class is set here rather than in a media query so the two can
+         never disagree — a portrait file in a landscape box would be the
+         same crop all over again. */
+      /* Two decisions, and neither is a guess about the device. Shape: a
+         phone gets the portrait cut, which is 498x1080 taken out of the
+         1920x1080 master and very nearly the exact shape of a phone screen,
+         so it fills it with almost nothing cropped and nothing invented.
+         Codec: whatever the browser says it can play. VP9 carries the full
+         frame in 5.2MB where H.264 needs 7.0, and Safari — which cannot
+         take the first — is handed the second. */
+      var dNarrow=Math.max(screen.width||0, window.innerWidth||0) < 760;
+      var dWebm=!!dv.canPlayType && dv.canPlayType('video/webm; codecs="vp9"')!=='';
+      var dBase='media/drone-intro'+(dNarrow?'-tel':'');
+      dv.poster=dBase+'-poster.jpg?v=17';
+      dv.src=dBase+(dWebm?'.webm':'.mp4')+'?v=21';
+      dv.addEventListener('loadedmetadata',function(){ if(dv.duration && isFinite(dv.duration)) dDur=dv.duration; });
+      var dSeek=false;
+      dv.addEventListener('seeking',function(){ dSeek=true; });
+      dv.addEventListener('seeked', function(){ dSeek=false; });
+      dv.addEventListener('error',  function(){ dSeek=false; });
+      try{ dv.load(); }catch(_){}
+      /* the flight ends exactly when the hero behind the film reaches the top
+         of the screen — which is the track minus one sticky screen, not minus
+         the live viewport, so a collapsing address bar can't shift the landing */
+      /* dArr is the point in the scroll where the hero behind the film reaches
+         the top of the screen. The flight is timed to finish exactly there, so
+         arriving and handing over are one moment, and scrolling on from it
+         simply carries the page up — no stretch of scroll where nothing
+         happens, and no jump. Measured, so the two can never drift apart. */
+      var dArr=1, dFin=.56, dWri=.58;
+      /* The headline's stretch is a share of the window, not of the track.
+         A share of the track makes the writing faster the shorter the
+         track, and it has nothing to do with how far a person actually
+         scrolls to read three lines. Half a screen: enough that a flick of
+         the wheel cannot take the whole headline with it, which is the
+         whole complaint. The flight keeps the remainder. */
+      var dWRI=0.50, dGAP=0.03;
+      function dMeasure(){
+        dTop=dtr.offsetTop;
+        dRange=Math.max(1,dtr.offsetHeight-dst.offsetHeight);
+        dArr=Math.max(.4,Math.min(1,((hero?hero.offsetTop:dRange)-dTop)/dRange));
+        var vh=window.innerHeight||1;
+        dWri=Math.max(.30, dArr-(dWRI*vh)/dRange);   /* here it starts writing */
+        dFin=Math.max(.25, dWri-(dGAP*vh)/dRange);   /* the flight is over here */
+      }
+      /* dSize() was called here and has never existed anywhere in this file.
+         A phone fires a resize every time its address bar folds away, so this
+         threw a ReferenceError on most scrolls on most phones. */
+      window.addEventListener('resize',function(){ dMeasure(); },{passive:true});
+      dMeasure();
+      function dNav(hide){ if(hide!==dNavHid){ dNavHid=hide; document.body.classList.toggle('dro-on',hide); } }
+      dNav(true);
+
+      var dDone=false, dPrev=0, dBrLast=-1, dFaLast=-1, dCutLast=null, dNmLast=null, dHvLast=null;
+      /* dRATE is most of the track per second — well above any reading
+         scroll, so only a flick ever meets it. dLAG is how far the film may
+         fall behind the page before it simply follows along. */
+      var dPr=0, dRATE=1.15, dLAG=0.22;
+      function dLoop(now){
+        /* frame-rate independent easing, so the flight follows the scroll the
+           same way on a 60Hz laptop and a 120Hz phone */
+        var dt=dPrev? Math.min(64, now-dPrev) : 16.7; dPrev=now;
+        var y=window.scrollY||window.pageYOffset;
+        var p=(y-dTop)/dRange;
+        if(p>-0.15 && p<1.15){
+          var pcRaw=Math.max(0,Math.min(1,p));
+          /* ---- the flight runs at its own speed ----
+             The scroll says where to go, not how fast to get there. A flick
+             can ask for half the track in a single frame, and a film cannot
+             be shown half a track at a time — the decoder is handed a jump
+             it cannot make, and what comes out is the stutter.
+
+             So the progress the intro actually runs on chases the scroll,
+             and its speed is capped: at full tilt it covers dRATE of the
+             track per second and no more. Ordinary scrolling never reaches
+             that ceiling, so it feels exactly as before; a flick is turned
+             into a run-through that keeps its pace and finishes by itself
+             after the finger has stopped.
+
+             It is allowed to fall behind, but only so far. Past that it
+             follows at a fixed distance instead of dropping further back,
+             which bounds how long the film can hold the screen after the
+             page beneath it has arrived. */
+          var ds=dt/1000;
+          var dGap=pcRaw-dPr;
+          var dStep=dGap*(1-Math.pow(1-0.21, dt/16.7));
+          var dCap=dRATE*ds;
+          if(dStep>dCap) dStep=dCap; else if(dStep<-dCap) dStep=-dCap;
+          /* An eased chase never quite arrives, and the handover waits for
+             it to. Four thousandths of the track is seven pixels of scroll
+             — under a frame of film — so it is taken as arrived, and the
+             long tail of the ease stops holding the page back. */
+          dPr = (Math.abs(dGap)<0.004) ? pcRaw : dPr+dStep;
+          if(pcRaw-dPr>dLAG) dPr=pcRaw-dLAG;
+          else if(dPr-pcRaw>dLAG) dPr=pcRaw+dLAG;
+          var pc=dPr;
+          /* The flight does not run at the scroll's own pace — it eases out of
+             it, so the camera decelerates into the page and comes to rest
+             instead of simply stopping wherever the reader's finger stops.
+             The last stretch of the track barely moves the picture, which is
+             what makes the arrival read as an arrival. */
+          var q=1-Math.pow(1-Math.min(1,pc/dFin),1.9);
+          dTarget=q*dDur;
+          /* only touch the DOM when a value actually changes — writing every
+             frame costs a style recalc and reads as jitter */
+          var br=+Math.max(0,1-pc*5).toFixed(3);
+          if(br!==dBrLast){ dBrLast=br; dbr.style.opacity=br; }
+
+          /* The smoothing now lives in the progress above, and the film
+             simply follows it. Easing a second time here would only add
+             lag on top of lag — and the old catch-up jump, which threw the
+             decoder a whole second of film at once, is exactly what the
+             pacing exists to prevent. */
+          dCur=dTarget;
+          /* The film can only stand on whole frames, so
+             so it is asked for whole ones. Nudging currentTime by less than a
+             frame makes the browser decode again for a picture that cannot
+             change, and that work is what a scroll stumbles over. */
+          var fr=24;                          /* the film's own frame rate */
+          var ft=Math.round(dCur*fr)/fr;
+          /* Never ask for a new frame while the last one is still being
+             found. Stacking seeks on a busy decoder is what turns a scroll
+             into a stutter — the requests queue and arrive late and uneven. */
+          if(dv.readyState>1 && !dSeek){
+            var sk=Math.min(ft, dDur-0.04);
+            if(Math.abs(dv.currentTime-sk)>0.6/fr){ try{ dSeek=true; dv.currentTime=sk; }catch(_){ dSeek=false; } }
+          }
+          /* The screen in the film is simply the page's own paper, so the
+             last thing the flight shows is a full field of it. This wash is
+             that same colour in exact terms, laid over the film's compressed
+             version of it, so the moment the layer goes there is nothing to
+             see — not even a shift in tone. */
+          /* the film has landed on the screen's own paper by now, so this is
+             only that same colour in exact terms — beige laid on beige */
+          /* The dissolve to paper is measured against the breath between
+             the flight landing and the writing starting, so it is complete
+             at the exact scroll where the first line begins to move. Given
+             any of the headline's own stretch it would still be dissolving
+             with words already standing on it — a headline on a room. */
+          var fa=+Math.max(0,Math.min(1,(pc-(dFin-.015))/((dWri-dFin)+.015))).toFixed(3);
+          if(fa!==dFaLast){ dFaLast=fa; dfa.style.opacity=fa; }
+          /* Once the flight has landed on that field, the rest of the track
+             belongs to the headline: it writes itself in under the same
+             scroll that flew in, line after line, rather than playing a
+             clip of its own once the scrolling is over. */
+          var h=(pc-dWri)/(dArr-dWri);
+          /* The layer is switched on long before it has anything to show —
+             its lines are still pushed below their own clip and the line
+             under them is transparent — so the frame that first draws it is
+             spent early, not on the one where the writing begins. */
+          var hv=pc>dFin*.55;
+          if(hv!==dHvLast){ dHvLast=hv; dhr.classList.toggle('on', hv); }
+          /* the picture rises with the writing, a little behind it, so the
+             screen the words land on starts black and is glass by the time
+             they have all landed */
+          if(dgl){
+            var gv=+Math.max(0,Math.min(1,(h-.06)/.82)).toFixed(3);
+            if(gv!==dGlLast){ dGlLast=gv; dgl.style.opacity=gv; }
+          }
+          if(hv && dhL){
+            h=Math.max(0,Math.min(1,h));
+            if(Math.abs(h-dHLast)>.002){
+              dHLast=h;
+              for(var li=0; li<dhL.length; li++){
+                /* A wide stagger let the three lines arrive as three
+                   separate events, which on a headline this size reads as
+                   the words being out of step with each other rather than
+                   as one statement landing. They overlap closely now: each
+                   still leads the next, but they are a group. */
+                var u=Math.max(0,Math.min(1,(h-li*.10)/.60));
+                u=1-Math.pow(1-u,3);
+                dhL[li].style.transform='translate3d(0,'+((1-u)*112).toFixed(2)+'%,0)';
+              }
+              if(dhM){
+                var um=Math.max(0,Math.min(1,(h-.62)/.38)); um=1-Math.pow(1-um,3);
+                dhM.style.opacity=um.toFixed(3);
+                dhM.style.transform='translate3d(0,'+((1-um)*20).toFixed(1)+'px,0)';
+              }
+            }
+          }
+          /* Hand over at the exact scroll where the hero behind lands on the
+             top of the screen. A hair early and the real page is still a few
+             pixels low, which is the jump this arrangement exists to avoid. */
+          var cut=pc>=dArr;
+          if(cut!==dCutLast){
+            dCutLast=cut;
+            dst.style.visibility=cut ? 'hidden' : '';
+          }
+          /* the bar belongs to the page, so it arrives with the headline, not
+             over the room while the flight is still going */
+          dNav(pc<dWri);
+          /* the name card holds while the camera is with him, then leaves
+             before the desk fills the frame */
+          var nm=q>.50 && q<.78;
+          if(nm!==dNmLast){ dNmLast=nm; dnm.classList.toggle('on', nm); }
+        } else { dPr=Math.max(0,Math.min(1,p)); dNav(false);
+          /* past the track for good: the film, its fade, its brand and the
+             headline copy are four full-window layers held by will-change,
+             and none of them has anything left to do */
+          if(p>1 && !dDone){ dDone=true; dtr.classList.add('dro-done'); }
+          else if(p<=1 && dDone){ dDone=false; dtr.classList.remove('dro-done'); } }
+        requestAnimationFrame(dLoop);
+      }
+      requestAnimationFrame(dLoop);
+      /* safety: if the video never becomes seekable, the site must not hide —
+         the fade overlay and hero gate above run regardless of video state */
+    } else { go(); }
+
+    /* ================= THE STAGE ENGINE =================
+       Every long section on this page works the same way: a tall block with
+       one sticky stage inside it, and everything on that stage moved by how
+       far the block has run through its own scroll. One loop drives all of
+       them.
+
+       Two things make it feel the way it does. The scroll is not used raw —
+       it is chased by a lerp, and that damping is where the smoothness comes
+       from. And the timeline starts a little before the stage locks to the
+       top, so the type is already on the glass when it begins to write
+       itself, instead of finishing below the edge where nobody sees it.
+
+       Only transform, opacity and filter are ever written, so no frame in
+       here can cost a layout. */
+    var SC = (function(){
+      var scenes=[], t0=null, started=false, prev=null;
+      var out =function(t){ return 1-Math.pow(1-t,3); },
+          io  =function(t){ return t<.5 ? 4*t*t*t : 1-Math.pow(-2*t+2,3)/2; },
+          film=function(t){ return 1-Math.pow(1-t,4.2); };   /* quick off the mark, long tail */
+      function seg(s,a,b){ return Math.max(0,Math.min(1,(s-a)/(b-a))); }
+      /* write only what changed — handing the browser a value it already has
+         still costs a style recalculation */
+      /* A blur whose radius changes every frame is the most expensive thing
+         on this page: the browser cannot reuse the layer it rasterised last
+         frame, so every word being revealed is redrawn from scratch at
+         whatever the screen's pixel density is. Rounded to a quarter of a
+         pixel, a fourteen-pixel reveal asks for 56 distinct rasters instead
+         of one per frame for as long as it runs, and it is not possible to
+         see the difference. Under a third of a pixel it is dropped: a blur
+         that small is a layer's worth of work for nothing. */
+      function blur(px){
+        if(!(px>0.34)) return 'none';
+        return 'blur('+(Math.round(px*4)/4)+'px)';
+      }
+      function set(n,tr,op,fl){
+        if(!n) return;
+        if(tr!==null && n._tr!==tr){ n._tr=tr; n.style.transform=tr; }
+        if(op!==null && n._op!==op){ n._op=op; n.style.opacity=op; }
+        if(fl!==undefined && n._fl!==fl){ n._fl=fl; n.style.filter=fl; }
+      }
+      /* Each word becomes its own layer. The outer span keeps the spacing,
+         the inner one tips, blurs and rises — and it keeps whatever tag the
+         word had, so a dimmed half of a sentence stays dimmed. */
+      function split(el){
+        if(!el) return [];
+        var kids=[].slice.call(el.childNodes), frag=document.createDocumentFragment(), out=[];
+        kids.forEach(function(node){
+          var tag = node.nodeType===1 ? node.nodeName.toLowerCase() : 'span';
+          var chunks=(node.textContent||'').match(/\S+\s*/g)||[];
+          chunks.forEach(function(ch){
+            var word=ch.replace(/\s+$/,''), tail=ch.slice(word.length);
+            var w=document.createElement('span'); w.className='w';
+            var inner=document.createElement(tag);
+            inner.textContent=word; w.appendChild(inner);
+            if(tail) w.appendChild(document.createTextNode(tail));
+            frag.appendChild(w); out.push(inner);
+          });
+        });
+        el.textContent=''; el.appendChild(frag);
+        return out;
+      }
+      function plain(list){
+        list.forEach(function(n){ if(!n) return;
+          n.style.opacity='1'; n.style.transform='none'; n.style.filter='none';
+          n._op='1'; n._tr='none'; n._fl='none'; });
+      }
+      function measure(){
+        var vh=window.innerHeight;
+        scenes.forEach(function(o){
+          o.top=o.el.offsetTop;
+          o.h=o.el.offsetHeight;
+          o.span=Math.max(1, o.el.offsetHeight-o.stage.offsetHeight);
+          /* The lead starts a scene's timeline before it reaches the top of
+             the window. Words want that — they have to be readable by the
+             time the stage pins. A scene whose opening beat is the thing
+             worth seeing wants the opposite, and says so. */
+          o.lead=Math.round(vh*(o.leadF==null?0.45:o.leadF));
+          o.last=-1;
+        });
+      }
+      function loop(now){
+        requestAnimationFrame(loop);
+        /* a hidden tab gets no work at all, and no stale clock on return */
+        if(document.visibilityState!=='visible'){ t0=null; prev=null; return; }
+        if(t0===null) t0=now;
+        /* How much of the gap to the scroll's real position to close on
+           this frame. It used to be a flat fourteen per cent, which is a
+           different speed on every machine: a frame that arrives late
+           closes the same fourteen per cent as one that arrives on time,
+           so a dropped frame does not just skip, it lands short — and a
+           run of them reads as a stutter rather than as a slow patch.
+           Measured against the clock instead, a long frame catches up
+           exactly as far as it should have, and the section moves at the
+           same speed whether the browser is managing sixty frames or
+           thirty. A hair gentler than it was, too: this stage carries a
+           laptop and a phone, and weight wants a longer glide. */
+        var dt = (prev===null) ? (1/60) : Math.min(.06,(now-prev)/1000);
+        prev=now;
+        var chase = 1 - Math.pow(1-0.115, dt*60);
+        var intro=out(Math.min(1,(now-t0)/900));
+        var y=window.scrollY||window.pageYOffset, vh=window.innerHeight;
+        for(var i=0;i<scenes.length;i++){
+          var o=scenes[i];
+          /* A scene that plays itself. The scroll only decides whether it
+             is on — once the stage is in the window the clock takes over,
+             and it starts again from the top every time it comes back, so
+             the section is never found halfway through. This is for the
+             one scene that is a little film rather than a thing to be
+             wound: a letter cannot be read at whatever speed a thumb
+             happens to be moving. */
+          if(o.auto){
+            /* How early a self-playing scene is allowed to start. Nearly a
+               whole screen ahead was right for a line that should already
+               be standing when the reader gets to it, and wrong for a
+               piece that is meant to hold them: the software house began
+               while the section above was still on the glass, so the
+               opening ran to an empty room. A scene that is a film says
+               so, and starts when its stage takes the window. */
+            var lf = (o.liveF==null ? 0.72 : o.liveF);
+            var live = (y + vh*lf) > o.top && y < (o.top + o.h - vh*0.28);
+            if(live!==o.live){ o.live=live; o.el.classList.toggle('live', live); }
+            /* A film that has been played once can be read by hand. From
+               the frame somebody takes hold of it the clock is out of it
+               altogether — it does not creep on underneath, and it does
+               not start again when the section is left and come back to.
+               It stays exactly where it was put. */
+            if(o.scrubv!=null){
+              if(Math.abs(o.scrubv-o.last)>0.0004){ o.last=o.scrubv; o.paint(o.scrubv); }
+              continue;
+            }
+            /* A manual scene waits to be asked. The scroll still decides
+               whether it MAY run — leaving the section puts it back to the
+               start, so nobody arrives at it halfway through something they
+               never started. */
+            if(!live || (o.manual && !o.playing)){
+              o.t0=null; if(o.manual) o.playing=false;
+              if(o.last!==0){ o.last=0; o.paint(0); }
+              continue;
+            }
+            if(o.t0==null) o.t0=now;
+            var a=Math.min(1,(now-o.t0)/o.dur);
+            if(Math.abs(a-o.last)>0.0004){ o.last=a; o.paint(a); }
+            continue;
+          }
+          var praw=(y-o.top+o.lead)/(o.span+o.lead);
+          var p=Math.max(0,Math.min(1,praw));
+          /* Only the scene the scroll is in keeps its composited layers —
+             see the note in bbh.css. A quarter of a scene either side, so
+             the layers exist before they are needed and outlast the exit. */
+          var lv=praw>-0.25 && praw<1.25;
+          if(lv!==o.live){ o.live=lv; o.el.classList.toggle('live', lv); }
+          o.sm+=(p-o.sm)*chase;
+          if(Math.abs(p-o.sm)<0.0004) o.sm=p;
+          /* The opening beat plays by itself only for someone who lands
+             inside the section — a reload, or a link straight to it. Arriving
+             down the page, the scroll owns the whole timeline, so nothing
+             ever holds still while it is being scrolled through. */
+          if(o.introOn===null) o.introOn = p>0.02 && p<0.999;
+          var s=o.introOn ? Math.max(o.sm, intro*0.3) : o.sm;
+          if(Math.abs(s-o.last)>0.0004){ o.last=s; o.paint(s); }
+        }
+      }
+      return {
+        out:out, io:io, film:film, seg:seg, set:set, split:split, plain:plain, blur:blur,
+        /* the stage starts hidden in CSS, so it must never be left to the
+           loop alone — base() is the state it falls back to */
+        add:function(o){
+          o.stage=o.el.querySelector('.stage');
+          o.sm=0; o.last=-1; o.introOn=null; o.top=0; o.h=0; o.span=1; o.lead=0; o.live=null;
+          o.t0=null; o.playing=false;
+
+          scenes.push(o);
+          o.build(); o.base();
+          if(reduce) return;
+          measure();
+          if(!started){
+            started=true;
+            window.addEventListener('resize', measure, {passive:true});
+            window.addEventListener('load', measure);
+            if(document.fonts && document.fonts.ready) document.fonts.ready.then(measure);
+            /* A scene is placed by where it starts and how long it runs, and
+               both move whenever anything above it changes height — a late
+               image, a font, a canvas that only takes its size once its
+               script has run. Measured once, a section can spend its whole
+               scroll believing it begins a screen and a half further down,
+               and then it never reaches its own end: the last card never
+               lands, the notification never arrives. So the page's own box
+               is watched, and every scene is measured again whenever it
+               moves. */
+            if('ResizeObserver' in window){
+              new ResizeObserver(function(){ measure(); }).observe(document.documentElement);
+            }
+            document.addEventListener('visibilitychange', function(){
+              t0=null;
+              if(document.visibilityState!=='visible'){
+                scenes.forEach(function(x){ x.base(); });    /* never leave it blank */
+              } else {
+                scenes.forEach(function(x){ x.last=-1; });
+              }
+            });
+            /* the language switch rewrites the text, so the words have to be
+               cut apart again and the stages repainted where the scroll is */
+            [].slice.call(document.querySelectorAll('[data-lang-btn]')).forEach(function(b){
+              b.addEventListener('click', function(){
+                scenes.forEach(function(x){ x.build(); x.last=-1; });
+                measure();
+              });
+            });
+            requestAnimationFrame(loop);
+          }
+        },
+        measure:measure,
+        /* hand a self-playing scene over to the reader, or give it back to
+           its own clock with null */
+        scrub:function(el,v){
+          for(var i=0;i<scenes.length;i++){
+            if(scenes[i].el!==el) continue;
+            scenes[i].scrubv = (v==null) ? null : Math.max(0,Math.min(1,v));
+            if(v==null){ scenes[i].t0=null; scenes[i].last=-1; }
+          }
+        },
+        /* start a manual scene, or start it again from the top */
+        go:function(el){
+          for(var i=0;i<scenes.length;i++){
+            if(scenes[i].el===el){ scenes[i].playing=true; scenes[i].t0=null; scenes[i].last=-1; }
+          }
+        }
+      };
+    })();
+
+    /* ---------- SOFTWAREHUS — the question before the rest ----------
+       The one scene on the page that waits to be asked. The scroll only
+       decides whether it MAY run; the button decides whether it does, and
+       from then on a clock owns it. Forty-two seconds is what the three
+       acts need to be read once, and a scroll cannot set a reading speed.
+
+       Leaving the section puts it back to the hook, so nobody arrives at
+       it halfway through something they never started. */
+    var swEl=document.getElementById('softwarehus');
+    if(swEl){
+      var swHook=document.getElementById('swHook'), swPlate=document.getElementById('swPlate'),
+          swVeil=document.getElementById('swVeil'), swGlow=document.getElementById('swGlow'),
+          swTyped=document.getElementById('swTyped'), swCaret=document.getElementById('swCaret'),
+          swBio=document.getElementById('swBio'), swHouse=document.getElementById('swHouse'),
+          swDeck=swEl.querySelector('.sw-deck'), swMerge=swEl.querySelector('.sw-merge'),
+          swCast=document.getElementById('swCast'),
+          swVign=document.getElementById('swVign'),
+          swRail=document.getElementById('swRail'),
+          swRailFill=document.getElementById('swRailFill'),
+          swRailKnob=document.getElementById('swRailKnob');
+
+      /* There used to be a proper measuring pass here: the three cards were
+         three different widths, so something had to read the layout and
+         work out what each one had to be scaled by to end on the same
+         footprint. The stylesheet does that arithmetic now — a card is one
+         box wide and the block is three of them — so the only thing still
+         worth reading off the page is how much shorter a card is than the
+         block, which is how far the face has left to open after the
+         material has finished sweeping across. Read once and kept: a
+         height off the layout every frame is a reflow in a loop that has
+         to be free. */
+      var swCh=1, swBh=1, swK=-1, swTop=0, swH=1;
+      function swMeasure(){
+        swTop=swEl.offsetTop; swH=swEl.offsetHeight;
+        var c=swA[1] && swA[1].sups[0];
+        if(!c || !swHouse) return;
+        var ch=c.offsetHeight, bh=swHouse.offsetHeight;
+        if(ch>0 && bh>0){ swCh=ch; swBh=bh; }
+      }
+      window.addEventListener('resize', swMeasure, {passive:true});
+      var swA=[1,2,3].map(function(n){
+        var el=swEl.querySelector('[data-sw-act="'+n+'"]');
+        return { el:el, kick:el.querySelector('.sw-kicker'),
+                 hd:el.querySelector('[data-sw-split]'), w:[],
+                 shot:el.querySelector('.sw-shot'), lede:el.querySelector('.sw-lede'),
+                 sups:[].slice.call(el.querySelectorAll('.sw-sup')),
+                 supTxt:[].slice.call(el.querySelectorAll('.sw-sup')).map(function(su){
+                   return [].slice.call(su.children); }),
+                 claims:[].slice.call(el.querySelectorAll('.sw-claims li')) };
+      });
+      var swBack=function(t){ var c=1.4, u=t-1; return 1+(c+1)*u*u*u+c*u*u; };
+      var swSrc='', swN=-1, swSpread=[-1,0,1];
+
+      /* one act: in from the depth, held, pushed back out.
+
+         How long it takes to leave is its own business. A fifth of the
+         act is right for a short one; the middle act runs four and a half
+         screens' worth of reading, and a fifth of that is nearly three
+         seconds of a block dissolving while the next headline writes
+         itself over the top of it. Two things half-there at once is not a
+         transition, it is a mess. It leaves in a second and a half now,
+         and the act after it starts where the act before this one started
+         relative to its own exit — the same cut, twice. */
+      function swAct(a, from, to, s, hold, exF){
+        var len=to-from,
+            inn=SC.film(SC.seg(s,from,from+len*.34)),
+            /* The last act is not pushed back out. It dissolved at the very
+               end and left a blurred room and a replay button where the
+               three reasons had just been — the one thing anyone is meant
+               to leave with. It stays up. */
+            ex=hold ? 0 : SC.io(SC.seg(s,to-len*(exF==null?.2:exF),to));
+        var vis = inn>.002 && ex<.998;
+        if(a.vis!==vis){ a.vis=vis; a.el.style.visibility = vis?'visible':'hidden'; }
+        if(!vis) return false;
+        SC.set(a.el,
+          'translate3d(0,'+((1-inn)*4-ex*7).toFixed(2)+'vh,'+(-520*(1-inn)-ex*300).toFixed(1)+'px) scale('+(.94+inn*.06).toFixed(4)+')',
+          (inn*(1-ex)).toFixed(3), SC.blur((1-inn)*14+ex*11));
+        var pk=SC.out(SC.seg(s,from,from+len*.16));
+        SC.set(a.kick,'translate3d(0,'+((1-pk)*10).toFixed(2)+'px,0)', pk.toFixed(3));
+        return true;
+      }
+      function swWords(ws, from, to, s){
+        for(var i=0;i<ws.length;i++){
+          var t=SC.film(SC.seg(s,from+i*.016,to+i*.016));
+          SC.set(ws[i],
+            'translate3d(0,'+((1-t)*.5).toFixed(3)+'em,0) rotateX('+(-46*(1-t)).toFixed(2)+'deg)',
+            t.toFixed(3), SC.blur(9*(1-t)));
+        }
+      }
+      /* ---------- how a picture arrives ----------
+         Out of nothing. It is already there before it has any size — the
+         opacity is up inside the first tenth of the window, so what
+         happens next is a thing growing and not a thing fading in — and
+         then it comes from a twentieth of itself to all of itself on the
+         film ease: quick off the mark, and a tail so long the last five
+         per cent of the move takes a third of the time. That is the whole
+         trick. A frame that arrives at a constant speed has arrived; a
+         frame that is still settling three seconds later is still
+         arriving, and the eye keeps watching it.
+
+         It turns as it grows, a few degrees off and back onto the tilt it
+         rests at, because something that opens out of a point with no
+         rotation at all reads as a window being resized.
+
+         And it never quite stops. Once landed it keeps creeping forward
+         for the rest of the act — a couple of per cent over eight
+         seconds, which nobody watching could name and everybody feels. A
+         frame that parks dead still is a slide in a deck. */
+      function swPop(el, from, to, rot, s, until){
+        var w=to-from,
+            t=SC.film(SC.seg(s,from,to)),
+            ap=Math.min(1,SC.seg(s,from,from+w*.09)),
+            dr=SC.seg(s,to,(until==null?to+.30:until));
+        SC.set(el,
+          'translate3d(0,0,'+(dr*50).toFixed(1)+'px) rotate('+(rot*t-(1-t)*7).toFixed(2)+'deg) scale('+(.05+.95*t).toFixed(4)+')',
+          ap.toFixed(3), 'none');
+      }
+
+      /* ---------- the line at the side ----------
+         It is a progress line while the film runs and a handle once it has
+         run: the whole point of a section that plays itself is that nobody
+         has to work for it, and the price of that is that anything read
+         too slowly is gone. So it stays. Take hold of the line and the
+         clock lets go, and the twenty-eight seconds become a thing you can
+         move through a frame at a time. */
+      var swDone=false, swDrag=false, swRailP=-1;
+      function swRailAt(ev){
+        var r=swRail.getBoundingClientRect();
+        return r.height ? Math.max(0,Math.min(1,(ev.clientY-r.top)/r.height)) : 0;
+      }
+      function swRailReady(){
+        if(swDone) return;
+        swDone=true;
+        swRail.classList.add('on');
+        swRail.tabIndex=0;
+      }
+      if(swRail && !reduce){
+        swRail.addEventListener('pointerdown', function(ev){
+          if(!swDone) return;
+          swDrag=true;
+          try{ swRail.setPointerCapture(ev.pointerId); }catch(e){}
+          SC.scrub(swEl, swRailAt(ev));
+          ev.preventDefault();
+        });
+        swRail.addEventListener('pointermove', function(ev){
+          if(swDrag) SC.scrub(swEl, swRailAt(ev));
+        });
+        ['pointerup','pointercancel'].forEach(function(t){
+          swRail.addEventListener(t, function(){ swDrag=false; });
+        });
+        /* and the same by keyboard, since it is a slider and says so */
+        swRail.addEventListener('keydown', function(ev){
+          if(!swDone) return;
+          var d = (ev.key==='ArrowDown'||ev.key==='ArrowRight') ? .02
+                : (ev.key==='ArrowUp'||ev.key==='ArrowLeft') ? -.02
+                : (ev.key==='Home') ? -2 : (ev.key==='End') ? 2 : 0;
+          if(!d) return;
+          SC.scrub(swEl, Math.max(0,Math.min(1,(swRailP<0?0:swRailP/1000)+d)));
+          ev.preventDefault();
+        });
+      }
+
+      SC.add({
+        /* Three arrangements. A button, which nobody pressed. Then a
+           clock. Then the scroll, which made it a thing you wind by hand
+           — and winding it by hand is not what it is. It is a film: it
+           has a pace of its own, and the beats in it are timed against
+           each other rather than against how fast somebody happens to be
+           moving a thumb. So it is back on its own clock, and the line at
+           the side is back with it, because a film wants a timeline. */
+        el:swEl, leadF:0, auto:true, liveF:0.06, dur:30500,
+        build:function(){ swA.forEach(function(a){ if(a.hd) a.w=SC.split(a.hd); }); },
+        base:function(){
+          swSrc=(swBio.firstChild && swBio.firstChild.nodeValue)||'';
+          swTyped.textContent=swSrc;
+          var all=[];
+          swA.forEach(function(a){
+            all=all.concat([a.el,a.kick,a.shot,a.lede]).concat(a.w).concat(a.claims).concat(a.sups);
+            (a.supTxt||[]).forEach(function(t){ all=all.concat(t); });
+            a.el.style.visibility='visible'; a.vis=true;
+          });
+          /* the clip is written straight onto the block, so the state it
+             falls back to has to be written back off it */
+          swHouse.style.clipPath='none';
+          swMerge.style.setProperty('--k','1'); swK=-1;
+          SC.plain(all.concat([swHook,swHouse,swDeck,swCast,swVign]));
+          swHouse.style.transform='translate(-50%,-50%)';
+          if(swCast){ swCast.style.transform='translate(-50%,-50%)';
+            swCast._tr='translate(-50%,-50%)';
+            swCast.style.opacity='0'; swCast._op='0'; }
+          swCaret.style.display='none';
+          swMeasure();
+        },
+        paint:function(s){
+          var src=(swBio.firstChild && swBio.firstChild.nodeValue)||'';
+          if(src!==swSrc){ swSrc=src; swN=-1; }
+
+          if(swRail){
+            var rp=Math.round(s*1000);
+            if(rp!==swRailP){
+              swRailP=rp;
+              swRailFill.style.transform='scaleY('+s.toFixed(4)+')';
+              swRailKnob.style.transform='translateY('+(s*100).toFixed(2)+'%)';
+              swRail.setAttribute('aria-valuenow', Math.round(s*100));
+            }
+            if(s>=0.999) swRailReady();
+          }
+
+          /* the hook draws back into the depth as the first act arrives */
+          var hx=SC.io(SC.seg(s,.0138,.0597));
+          SC.set(swHook,'translateZ('+(-260*hx).toFixed(1)+'px) scale('+(1-hx*.08).toFixed(4)+')',
+            (1-hx).toFixed(3), SC.blur(14*hx));
+          swHook.style.pointerEvents = hx>0.99 ? 'none' : 'auto';
+
+          /* ---------- the room ----------
+             The studio comes up behind the glass and steps back under the
+             three suppliers so they have the stage to themselves.
+
+             It takes the dock with the row: half a per cent of push
+             and a third of a second to get over it. A camera in a hand,
+             not a lamp on a dimmer — small enough that nobody watching
+             could tell you what moved. And it lifts once, slowly, while
+             the block comes up, and stays lifted: a bloom you cannot see
+             the beginning of is the difference between a lit room and a
+             lamp being switched on. */
+          var pIn=SC.film(SC.seg(s,.0092,.1102)), pMid=SC.io(SC.seg(s,.2662,.3672)), pBack=SC.out(SC.seg(s,.735,.86)),
+              jk=SC.seg(s,.47,.5031),
+              jolt=(s>=.47) ? (jk<=0 ? 0 : Math.exp(-7.5*jk)*Math.sin(Math.PI*2*1.7*jk)) : 0,
+              bloom=SC.io(SC.seg(s,.459,.5545)),
+              /* And at the very end the room goes. Every other section on
+                 the page sits on the one fixed backdrop, so the boundary
+                 into the next one is no boundary at all — this one had a
+                 studio of its own standing in front of it, and the hand-off
+                 to the next section was the only hard line left. It hands
+                 over quietly once the last act has been read: the studio
+                 fades, the shade over it fades, and what is underneath is
+                 what is underneath everywhere else. */
+              /* Two ways to reach the same place. Read to the end, the
+                 room goes on its own. Scrolled past at speed, it goes
+                 because the section is running out — otherwise a reader in
+                 a hurry gets the one hard line left on the page. Whichever
+                 is further along wins. scrollY is free to read; the box it
+                 is measured against is not, so that is kept. */
+              roomOut=Math.max(SC.io(SC.seg(s,.96,1.0)),
+                SC.io(SC.seg((window.scrollY||window.pageYOffset)+window.innerHeight,
+                  swTop+swH-window.innerHeight*.75, swTop+swH)));
+          SC.set(swPlate,'scale('+(1.05+s*.12+jolt*.006).toFixed(4)+') translate3d('+(2-s*5).toFixed(2)+'vw,'+(-1+s*3+jolt*.34).toFixed(2)+'vh,0)',
+            Math.max(0,(pIn*(.92-pMid*.6+pBack*.46)+bloom*.1)*(1-roomOut)).toFixed(3));
+          SC.set(swVeil,null,((pIn*(1+pMid*.12)-bloom*.1)*(1-roomOut)).toFixed(3));
+          if(swVign) SC.set(swVign,null,(1-roomOut).toFixed(3));
+          SC.set(swGlow,'translate3d(0,'+(s*-10).toFixed(2)+'vh,0) scale('+(1+s*.28+bloom*.16).toFixed(4)+')',
+            Math.max(0,Math.min(1,(.6-s*.26)+bloom*.34)*(1-roomOut)).toFixed(3));
+
+          /* act one — the trade, written out a character at a time */
+          if(swAct(swA[0],.0184,.3121,s)){
+            var tp=SC.seg(s,.0505,.257), n=Math.round(tp*swSrc.length);
+            if(n!==swN){ swN=n; swTyped.textContent=swSrc.slice(0,n); }
+            var writing = tp>0 && tp<1;
+            if(writing !== (swCaret.style.display==='')) swCaret.style.display = writing?'':'none';
+          }
+
+          /* act two — three become one.
+
+             Six goes at this before now. An explosion, a shockwave, a
+             whiteout, a stack of glass sliding into register, three panes
+             swinging onto their own edge and a line of light, and finally
+             a version so calm that nothing happened in it at all. The loud
+             ones all failed the same way and the quiet one failed the
+             opposite way, and both failures come from the same mistake:
+             the merge was being performed BY light. Light is what you
+             reach for when the objects themselves are not doing anything,
+             and a viewer can always tell.
+
+             So there is no light in this one. It is a docking.
+
+             The three are one box wide, and the block is exactly three of
+             those boxes — the stylesheet does that arithmetic, so it is
+             true at every size. They slide until their edges touch, and
+             three of them touching IS the block's footprint: nothing has
+             to shrink, grow, cross over or be scaled to fit. The row gives
+             on contact, the way three heavy things do.
+
+             Then the material changes. Silver sweeps out from the middle
+             across all three, left and right at once, and where it passes
+             it takes the joins with it — the two hairlines between the
+             cards, the borders, the three names. It is a wipe of surface,
+             not a flash: the same three objects, one face. The name is
+             underneath the whole time and the wipe uncovers it.
+
+             And only then does it breathe out to its full height, settle
+             on a spring, and take one pass of light across the face —
+             which is a specular on metal, and the one piece of light in
+             the whole act that an actual object could have made. */
+          if(swAct(swA[1],.2754,.7515,s,false,.10)){
+            swWords(swA[1].w,.2892,.3718,s);
+            /* On a phone the three are rows, so they dock downwards and
+               the material sweeps out top and bottom instead. */
+            var narrow=window.innerWidth<900, gap=narrow?20:44,
+                /* up together, not one at a time: a stagger is three
+                   arrivals, and three arrivals is three little events
+                   before the one event this act is about */
+                inS=SC.out(SC.seg(s,.336,.415)),
+                /* and then they are still. Nothing at all for a fifth of
+                   the act, because a move only reads as fast if something
+                   before it was slow. */
+                pull=SC.seg(s,.4443,.47), kk=Math.pow(pull,2.7),
+                /* contact. The row takes it and gives it back — a short,
+                   hard-damped recoil, no bounce anyone could count. */
+                rc=SC.seg(s,.47,.5031),
+                kick=(s>=.47) ? (rc<=0 ? 0 : Math.exp(-7.5*rc)*Math.sin(Math.PI*2*1.7*rc)) : 0,
+                /* The face opens once, not twice.
+
+                   The wipe out of the middle and the breath up to full
+                   height used to be laid end to end, and both were on an
+                   in-out ease — which arrives at zero speed and leaves at
+                   zero speed. So the sideways move stopped dead, held for
+                   a frame, and the upward one set off again from nothing.
+                   Two moves with a full stop between them, which is
+                   exactly what it looked like.
+
+                   They overlap now, and both are on the film ease: hard
+                   off the mark and a long tail. The block is still
+                   spreading sideways as it starts to rise, so what opens
+                   is one thing growing out of a point rather than a bar
+                   that later becomes a box — and there is no frame in the
+                   middle of it where nothing is moving. */
+                seal=SC.film(SC.seg(s,.4719,.5240)),
+                grow=SC.film(SC.seg(s,.4960,.5620)),
+                /* and settles, once it has its height */
+                stl=SC.seg(s,.5240,.6020),
+                settle=(s>=.5240) ? (stl<=0 ? 0 : Math.exp(-5.4*stl)*Math.cos(Math.PI*2*1.15*stl)) : 0,
+                /* the camera leans in for the dock and comes back off it
+                   once the thing is standing — the only move on the page
+                   that belongs to the viewer and not to the objects */
+                lean=.03*SC.io(SC.seg(s,.4241,.4719)) - .03*SC.io(SC.seg(s,.5240,.5850));
+
+            for(var i=0;i<swA[1].sups.length;i++){
+              var sp=swSpread[i],
+                  /* the gap closes to nothing: the 100% is the card's own
+                     width, so at rest they stand a gap apart and at the
+                     end they are touching, exactly, at any screen size */
+                  off=sp*(gap*(1-kk) + (1-inS)*(narrow?44:96) - kick*5),
+                  pc=narrow ? 'translateY('+(sp*100)+'%)' : 'translateX('+(sp*100)+'%)',
+                  ax=narrow ? '0px,'+off.toFixed(2)+'px' : off.toFixed(2)+'px,0px';
+              SC.set(swA[1].sups[i],
+                'translate(-50%,-50%) '+pc+' translate3d('+ax+','+(-470*(1-inS)).toFixed(0)+'px) scale('+(.92+inS*.08).toFixed(4)+')',
+                (inS*(seal>.996?0:1)).toFixed(3), SC.blur((1-inS)*11));
+            }
+
+            /* the row leans in, and flinches on the frame they meet */
+            SC.set(swMerge,'translate3d(0,'+(kick*7).toFixed(2)+'px,0) scale('+(1+lean).toFixed(4)+')', null);
+            /* and the corners that are about to touch something square
+               themselves off on the way in, so what stands at the end of
+               the slide is one slab and not three rectangles in a row */
+            var kv=+(1-SC.io(SC.seg(s,.4498,.47))).toFixed(2);
+            if(kv!==swK){ swK=kv; swMerge.style.setProperty('--k', kv); }
+
+            /* The wipe. Half the box either side at the start, nothing at
+               the end — and the corners are carried on the same custom
+               property the block is rounded with, so the sliver that comes
+               out of the middle is a rounded object from its first frame
+               and not a square one that rounds off later. */
+            var hIn=narrow ? 0 : 50*(1-seal),
+                vIn=narrow ? 50*(1-seal) : 50*(1-(swCh/swBh))*(1-grow),
+                open=(seal>=1 && grow>=1);
+            swHouse.style.clipPath = open ? 'none'
+              : 'inset('+vIn.toFixed(2)+'% '+hIn.toFixed(2)+'% '+vIn.toFixed(2)+'% '+hIn.toFixed(2)+'% round var(--br))';
+            SC.set(swHouse,'translate(-50%,-50%) scale('+(1+settle*.012).toFixed(4)+')',
+              (s>=.471?1:0).toFixed(0), SC.blur(0));
+
+            /* the weight arrives with the material: the shadow is cast by
+               exactly the part of the face that has been uncovered */
+            if(swCast) SC.set(swCast,
+              'translate(-50%,-50%) scale('+((1-hIn/50)*(1+settle*.012)).toFixed(4)+','+((1-vIn/50)*(1+settle*.012)).toFixed(4)+')',
+              (s>=.471?Math.min(1,seal*1.6):0).toFixed(3));
+
+            /* And the light runs across the face once, timed so it
+               crosses on the frames the block is finding its full height
+               — the highlight and the landing are one event.
+
+               It accelerates rather than easing in and out. A reflection
+               is a fixed light on a surface that is turning, so it
+               gathers pace as it goes and leaves at the edge; an in-out
+               ease makes it slow down in the middle of the face, which
+               reads as a white shape being animated across a box, which
+               is what it was. */
+            var sw2=SC.seg(s,.5230,.5940);
+            swHouse.style.setProperty('--sx',
+              (sw2>0 && sw2<1 ? (-90+195*Math.pow(sw2,1.42)).toFixed(1) : -90) + '%');
+
+            var pl=SC.out(SC.seg(s,.5470,.5990));
+            SC.set(swA[1].lede,'translate3d(0,'+((1-pl)*16).toFixed(2)+'px,0)', pl.toFixed(3));
+          }
+          /* act three — why this house */
+          if(swAct(swA[2],.7295,1.001,s,true)){
+            swWords(swA[2].w,.740,.840,s);
+            swPop(swA[2].shot,.758,.905,0,s,1.0);
+            for(var j=0;j<swA[2].claims.length;j++){
+              var ct=SC.out(SC.seg(s,.815+j*.037,.893+j*.037));
+              SC.set(swA[2].claims[j],'translate3d(0,'+((1-ct)*18).toFixed(2)+'px,0)', ct.toFixed(3));
+            }
+          }
+        }
+      });
+    }
+
+    /* ---------- KUNDER — the line, and the two customers under it ----------
+       One stage, one timeline, three beats. The sentence comes up out of
+       the depth and stands; the first customer swings in from the right
+       while it goes back the way it came; and the second takes the first
+       one's place the same way. They were three sections once, which meant
+       three stages sliding past each other, and no easing inside a section
+       can hide a boundary between sections.
+
+       Every beat below is written against its own 0..1, exactly as it was
+       when each customer had a section to itself. Only the mapping from
+       the section's progress to those numbers is new. */
+    var kEl=document.getElementById('kunder');
+    if(kEl){
+      var kDoor=kEl.querySelector('.kdoor'),
+          kdIn=kDoor&&kDoor.querySelector('.inner'),
+          kdHd=kDoor&&kDoor.querySelector('h1'),
+          kdLe=kDoor&&kDoor.querySelector('.lede'), kdW=[],
+          kGlow=kEl.querySelector('.glow'),
+          /* the share of the track the line gets, and where the first
+             customer hands over to the second */
+          KD=0.24, KA=KD*0.86, KB=0.64, KM=KA+0.87*(KB-KA);
+      var kCases=[].slice.call(kEl.querySelectorAll('.wrap')).map(function(w){
+        return { w:w, col:w.querySelector('.col'), dev:w.querySelector('.devices'),
+                 phone:w.querySelector('.iphone'), kick:w.querySelector('.kicker'),
+                 name:w.querySelector('.cname'), url:w.querySelector('.curl'),
+                 blurb:w.querySelector('.blurb'),
+                 facts:[].slice.call(w.querySelectorAll('.facts li')), nw:[] };
+      });
+      function kPaint(c, q, last){
+        /* The last customer is not pushed back out. There is nothing
+           behind it to clear the stage for, so it faded to nothing and
+           left a screen of empty room between the second café and the
+           phone. It stays lit and the stage carries it off, which is what
+           the end of a section looks like anywhere else on the page. */
+        var ex=last ? 0 : SC.io(SC.seg(q,.84,1));
+
+        var kt=SC.out(SC.seg(q,0,.10));
+        SC.set(c.kick,'translate3d(0,'+((1-kt)*14).toFixed(2)+'px,0)',kt.toFixed(3));
+
+        for(var i=0;i<c.nw.length;i++){
+          var t=SC.film(SC.seg(q,.04+i*.05,.28+i*.05));
+          SC.set(c.nw[i],
+            'translate3d(0,'+((1-t)*.6).toFixed(3)+'em,0) rotateX('+(-50*(1-t)).toFixed(2)+'deg) scale('+(.94+.06*t).toFixed(4)+')',
+            t.toFixed(3), SC.blur(7*(1-t)));
+        }
+
+        var ut=SC.out(SC.seg(q,.20,.34));
+        SC.set(c.url,'translate3d(0,'+((1-ut)*12).toFixed(2)+'px,0)',ut.toFixed(3));
+        var bt=SC.out(SC.seg(q,.26,.42));
+        SC.set(c.blurb,'translate3d(0,'+((1-bt)*16).toFixed(2)+'px,0)',bt.toFixed(3));
+        for(i=0;i<c.facts.length;i++){
+          var ft=SC.out(SC.seg(q,.36+i*.05,.56+i*.05));
+          SC.set(c.facts[i],'translate3d(0,'+((1-ft)*14).toFixed(2)+'px,0)',ft.toFixed(3));
+        }
+
+        /* the cluster swings in from the right and squares up */
+        var g=SC.io(SC.seg(q,.24,.72));
+        SC.set(c.dev,
+          'translate3d('+(16*(1-g)).toFixed(3)+'vw,'+(4*(1-g)).toFixed(3)+'vh,'+(-560*(1-g)-260*ex).toFixed(1)+'px)'+
+          ' rotateY('+(-19*(1-g)+6*ex).toFixed(2)+'deg) rotateX('+(7*(1-g)).toFixed(2)+'deg)'+
+          ' scale('+(.93+.07*g).toFixed(4)+')',
+          (g*(1-Math.min(1,ex*1.3))).toFixed(3),
+          /* No blur on the cluster. It is the biggest thing on the page —
+             a laptop lid, a screenshot and a phone — and a blur radius
+             that changes every frame makes the browser draw the whole of
+             it again every frame. That is where the stutter in this
+             section was coming from; the depth it travels through says
+             the same thing and costs nothing. */
+          'none');
+
+        /* and the phone comes in late, leaning on its corner */
+        var ph=SC.io(SC.seg(q,.44,.84));
+        SC.set(c.phone,
+          'translate3d('+(5*(1-ph)).toFixed(3)+'vw,'+(7*(1-ph)).toFixed(3)+'vh,'+(70*ph).toFixed(1)+'px)'+
+          ' rotate('+(6*(1-ph)).toFixed(2)+'deg)', ph.toFixed(3));
+
+        /* on the way out the text is pushed up and back, not blinked off */
+        /* The one leaving has to be off the column before the one
+             arriving lands on it. When each customer had a stage of its
+             own the stage itself slid away and took the leftovers with it;
+             on a shared stage they are in the same place, so the exit does
+             the work instead: further back, and gone by three quarters of
+             it rather than trailing to the end. */
+        SC.set(c.col,'translate3d(0,'+(-8*ex).toFixed(3)+'vh,0) scale('+(1-.08*ex).toFixed(4)+')',
+          (SC.seg(q,0,.02)*(1-Math.min(1,ex*1.35))).toFixed(3), SC.blur(9*ex));
+        /* nothing of a customer that has not started, or has finished, is
+           left where the other one is standing */
+        var on = q>.0005 && (last || q<.9995);
+        if(c.on!==on){ c.on=on; c.w.style.visibility = on?'visible':'hidden'; }
+      }
+
+      SC.add({
+        el:kEl, leadF:0,
+        build:function(){
+          kCases.forEach(function(c){ c.nw=SC.split(c.name); });
+          if(kDoor) kdW=SC.split(kdHd);
+        },
+        base:function(){
+          var all=[];
+          kCases.forEach(function(c){
+            all=all.concat(c.nw, c.facts, [c.kick,c.url,c.blurb,c.col,c.dev,c.phone]);
+          });
+          SC.plain(all.concat(kdW, kDoor?[kdIn,kdHd,kdLe]:[]));
+        },
+        paint:function(raw){
+          if(kDoor){
+            var dx=SC.io(SC.seg(raw,KD*.80,KD*1.0)),
+                di=SC.film(SC.seg(raw,0,KD*.12));
+            SC.set(kdIn,'translate3d(0,'+((1-di)*24-dx*6).toFixed(2)+'vh,0) translateZ('+(-340*(1-di)-320*dx).toFixed(1)+'px) scale('+(1-.08*dx).toFixed(4)+')',
+              (1-dx).toFixed(3), SC.blur(9*dx));
+            for(var k=0;k<kdW.length;k++){
+              var dt=SC.film(SC.seg(raw,KD*(.02+k*.034),KD*(.18+k*.034)));
+              SC.set(kdW[k],
+                'translate3d(0,'+((1-dt)*.82).toFixed(3)+'em,0) rotateX('+(-54*(1-dt)).toFixed(2)+'deg) scale('+(.93+.07*dt).toFixed(4)+')',
+                dt.toFixed(3), SC.blur(10*(1-dt)));
+            }
+            var dl=SC.out(SC.seg(raw,KD*.24,KD*.38));
+            SC.set(kdLe,'translate3d(0,'+((1-dl)*22).toFixed(2)+'px,0)', dl.toFixed(3));
+            kDoor.style.visibility = dx>.995 ? 'hidden' : 'visible';
+          }
+          /* the first customer starts a little before the line has finished
+             leaving, and the second a little before the first has; the two
+             moves cross rather than queue, which is what a cut between
+             sections never could */
+          kPaint(kCases[0], SC.seg(raw,KA,KB), kCases.length<2);
+          if(kCases[1]) kPaint(kCases[1], SC.seg(raw,KM,1), true);
+
+          SC.set(kGlow,'translate3d(-50%,'+(-12*raw).toFixed(3)+'vh,0) scale('+(1+.22*raw).toFixed(4)+')',
+            (.75-.4*raw).toFixed(3));
+        }
+      });
+    }
+
+    /* ---------- TELEFONER — the words that stand over the phone ----------
+       The phone itself is drawn in WebGL and knows nothing about the page.
+       It reads one number, and this is where that number comes from — so
+       the words and the object they describe can never fall out of step.
+       Each act writes itself in, holds, and is pushed up as the next one
+       takes over. */
+    window.__lesreg = window.__lesreg || { s:0, err:null };
+    var tel=document.getElementById('telefoner');
+    if(tel){
+      var tA=[].slice.call(tel.querySelectorAll('.tel-act')),
+          tH=tA.map(function(a){ return a.querySelector('h2'); }), tW=[];
+      /* in, held, out — lined up with the acts the phone plays */
+      var tBand=[[.04,.20,.34,.46],[.44,.60,.64,.74],[.72,.88,1.02,1.03]];
+      SC.add({
+        el:tel,
+        /* Act one is an arrival, and it is the one beat in this section
+           that has to be watched rather than read. On the standard lead it
+           was spent before the stage was on screen — most of the way
+           through the turn with the canvas still below the fold. The turn
+           is a short one now, so the lead is shorter again: the phone
+           should not be halfway home by the time the stage pins. */
+        leadF:0.05,
+        build:function(){ tW=tH.map(function(h){ return SC.split(h); }); },
+        base:function(){ var all=tA.slice(); tW.forEach(function(a){ all=all.concat(a); }); SC.plain(all); },
+        paint:function(s){
+          window.__lesreg.s=s;
+          for(var i=0;i<tA.length;i++){
+            var b=tBand[i];
+            var into=SC.out(SC.seg(s,b[0],b[1])), away=SC.io(SC.seg(s,b[2],b[3]));
+            SC.set(tA[i],'translate3d(0,'+((1-into)*20-away*28).toFixed(1)+'px,0)',
+              (into*(1-away)).toFixed(3));
+            var ws=tW[i]||[];
+            for(var j=0;j<ws.length;j++){
+              var t=SC.film(SC.seg(s,b[0]+j*.012,b[1]+j*.012));
+              SC.set(ws[j],
+                'translate3d(0,'+((1-t)*.5).toFixed(3)+'em,0) rotateX('+(-44*(1-t)).toFixed(2)+'deg)',
+                t.toFixed(3), SC.blur(6*(1-t)));
+            }
+          }
+        }
+      });
+    }
+
+    /* ---------- KONTAKT — the letter ----------
+       Four acts on one stage: the message writes itself, it is sent, an
+       answer lands, and the question is handed back to the reader.
+
+       It arrived as a page of its own with a rAF loop of its own. A
+       second loop is the thing the rest of this page was rebuilt to
+       avoid — two clocks reading the same scroll drift apart, and every
+       frame pays for both — so the acts are folded into the one engine
+       and read the same progress as everything else.
+
+       back() is the only easing this page did not already have: the
+       overshoot on the reply, so it lands rather than arrives. */
+    var kt=document.getElementById('contact');
+    if(kt){
+      var ktCard=document.getElementById('ktCard'),
+          ktCast=document.getElementById('ktCast'),
+          ktFAsk=document.getElementById('ktFAsk'),
+          ktFSent=document.getElementById('ktFSent'),
+          ktTick=document.getElementById('ktFSent').querySelector('path'),
+          ktSentW=document.getElementById('ktFSent').querySelector('span'),
+          ktFReply=document.getElementById('ktFReply'),
+          ktTyped=document.getElementById('ktTyped'),
+          ktCaret=document.getElementById('ktCaret'),
+          ktLetter=document.getElementById('ktLetter'),
+          ktRTyped=document.getElementById('ktRTyped'),
+          ktRCaret=document.getElementById('ktRCaret'),
+          ktRSub=document.getElementById('ktRSub'),
+          ktRSrc=document.getElementById('ktRSrc'),
+          ktRTxt='', ktRN=-1,
+          ktFin=document.getElementById('ktFin'),
+          ktRig=document.getElementById('ktRig'),
+          ktA1=document.getElementById('ktA1'), ktA2=document.getElementById('ktA2'),
+          ktHd=ktFin.querySelector('h2'), ktW=[];
+
+      /* ---------- the three shapes ----------
+         One box, the size of the largest state, and three rectangles cut
+         out of it: the letter's height, the receipt's footprint, the whole
+         thing. Everything between them is an interpolation of three
+         numbers — how far in from the sides, how far in from top and
+         bottom, and how round the corners are. Read when the layout is
+         read and kept; a box measured every frame is a reflow in a loop
+         that has to be free. */
+      var ktB={ bw:1, bh:1, ah:1, pw:196, ph:52 }, ktCastR='';
+      var ktBack=function(t){ var c=1.7, u=t-1; return 1+(c+1)*u*u*u+c*u*u; };
+      function ktCentre(el,h){ el.style.top='50%'; el.style.marginTop=(-h/2)+'px'; }
+      function ktLayout(){
+        if(reduce) return;
+        var bw=ktCard.offsetWidth, bh=ktCard.offsetHeight,
+            pad=parseFloat(getComputedStyle(ktCard).paddingTop)||24,
+            ah=ktFAsk.offsetHeight + pad*2;
+        if(bw>0&&bh>0) ktB={ bw:bw, bh:bh, ah:Math.min(bh,ah), pw:196, ph:52 };
+        ktCentre(ktCard, ktB.bh);
+        ktCentre(ktFin, ktFin.offsetHeight);
+        if(ktCast){ ktCast.style.height=ktB.bh+'px'; ktCentre(ktCast, ktB.bh); }
+      }
+      /* the shape, and the edge that is drawn where the clip is */
+      function ktShape(h, v, r){
+        var hs=h.toFixed(2)+'%', vs=v.toFixed(2)+'%', rs=r.toFixed(0)+'px';
+        ktCard.style.clipPath='inset('+vs+' '+hs+' '+vs+' '+hs+' round '+rs+')';
+        ktCard.style.setProperty('--ex',hs);
+        ktCard.style.setProperty('--ey',vs);
+        ktCard.style.setProperty('--er',rs);
+        if(ktCast && rs!==ktCastR){ ktCastR=rs; ktCast.style.borderRadius=rs; }
+      }
+      /* The letter is read out of the page rather than held as a string in
+         here, so switching language switches the letter too. */
+      var ktSrc='', ktN=-1, ktTickD='';
+      SC.add({
+        el:kt, leadF:0,
+        /* This one plays itself, on a clock, the moment the stage is in the
+           window — on a phone as much as on a desktop. It is a letter being
+           written and answered, and reading is not something a scroll can
+           set the speed of. */
+        auto:true, dur:21000,
+        build:function(){ ktW=SC.split(ktHd); ktLayout(); },
+        base:function(){
+          ktSrc=(ktLetter.firstChild && ktLetter.firstChild.nodeValue)||'';
+          ktTyped.textContent=ktSrc;
+          ktRTxt=(ktRSrc.firstChild && ktRSrc.firstChild.nodeValue)||'';
+          ktRTyped.textContent=ktRTxt; ktRN=-1;
+          SC.plain([ktCard,ktFAsk,ktFSent,ktFReply,ktFin,ktRig,ktRSub,ktCast].concat(ktW));
+          ktCard.style.clipPath='none';
+          ktCard.style.removeProperty('--ex'); ktCard.style.removeProperty('--ey');
+          ktCard.style.removeProperty('--er');
+          if(ktCast){ ktCast.style.opacity='0'; ktCast._op='0'; }
+          ktRCaret.style.display='none';
+          ktCaret.style.display='none';
+          if(ktTick){ ktTick.style.strokeDasharray='24'; ktTick.style.strokeDashoffset='24'; ktTickD='24'; }
+          ktLayout();
+        },
+        paint:function(s){
+          var L=(ktLetter.firstChild && ktLetter.firstChild.nodeValue)||'';
+          if(L!==ktSrc){ ktSrc=L; ktN=-1; ktLayout(); }
+          var R=(ktRSrc.firstChild && ktRSrc.firstChild.nodeValue)||'';
+          if(R!==ktRTxt){ ktRTxt=R; ktRN=-1; ktLayout(); }
+
+          /* ---------- one object, three states ----------
+             It writes, it shuts down onto the receipt's footprint, it
+             opens back out into the answer. Nothing is ever swapped for
+             anything — there is one box and one outline the whole way
+             through, so there is no frame anywhere in it where two edges
+             are lit at once. */
+          var arrive=SC.film(SC.seg(s,0,.06)),
+              typeP=SC.seg(s,.035,.30),
+              /* ---------- sending ----------
+                 This part is quick. A letter is read slowly and sent fast:
+                 it took nearly two seconds to shut, which is the speed of
+                 a thing being put away rather than the speed of a thing
+                 being sent. The ink goes in half a second and the paper is
+                 shut in under one, and the tick lands on the end of that
+                 move with a little weight behind it, the way a stamp does.
+                 The reading before it and the wait after it are untouched:
+                 what was wrong was never how long it stood still. */
+              /* ---------- sending ----------
+                 Three beats, not one.
+
+                 It had been squeezed down to a single move a hundred and
+                 twenty-six milliseconds long, which is not a fast
+                 animation — it is a cut. And what happened inside it was
+                 that the paper was clipped in from the sides while the
+                 words stayed exactly where they were at exactly the size
+                 they were. Nothing was sent anywhere; a mask ran across
+                 a letter.
+
+                 So: the letter leaves first, upward and out of its own
+                 frame. The paper closes around the space it left. The
+                 tick draws itself into the button now standing there,
+                 and the word follows it in. Each beat starts before the
+                 one in front of it has finished, so it reads as one
+                 quick action rather than three short ones — and all of
+                 it is done in a second. */
+              lift=SC.out(SC.seg(s,.4000,.4195)),
+              shut=SC.io(SC.seg(s,.4070,.4360)),
+              draw=SC.out(SC.seg(s,.4290,.4530)),
+              word=SC.out(SC.seg(s,.4380,.4560)),
+              /* the box gives a little as the shape arrives at the pill —
+                 a fifth of a second of weight, nothing anyone counts */
+              rk=SC.seg(s,.4360,.4750),
+              recoil=(s>=.4360) ? (rk<=0 ? 0 : Math.exp(-8*rk)*Math.sin(Math.PI*2*1.9*rk)) : 0,
+              /* the receipt is read while nothing moves */
+              open=SC.io(SC.seg(s,.530,.628)),
+              rOut=SC.io(SC.seg(s,.905,.95));
+
+          /* the three rectangles, and the road between them */
+          var vAsk=50*(1-ktB.ah/ktB.bh),
+              hPill=50*(1-ktB.pw/ktB.bw),
+              vPill=50*(1-ktB.ph/ktB.bh), h, v, r;
+          if(open<=0){
+            h=hPill*shut;
+            v=vAsk+(vPill-vAsk)*shut;
+            r=26+shut*shut*420;
+          } else {
+            h=hPill*(1-open);
+            v=vPill*(1-open);
+            r=26+(1-open)*(1-open)*420;
+          }
+          ktShape(h,v,r);
+
+          var n=Math.round(typeP*ktSrc.length);
+          if(n!==ktN){ ktN=n; ktTyped.textContent=ktSrc.slice(0,n); }
+          var writing = typeP>0 && typeP<1 && shut<.02;
+          if(writing !== (ktCaret.style.display===''))
+            ktCaret.style.display = writing ? '' : 'none';
+
+          /* the box itself only arrives and leaves; everything else it
+             does, it does by changing shape */
+          SC.set(ktCard,
+            'translate3d(0,'+((1-arrive)*4-rOut*10).toFixed(2)+'vh,'+
+              (-560*(1-arrive)-rOut*280).toFixed(1)+'px) rotateX('+
+              ((1-arrive)*9+rOut*6).toFixed(2)+'deg) scale('+((.94+arrive*.06)*(1-recoil*.016)).toFixed(4)+')',
+            (arrive*(1-rOut)).toFixed(3),
+            SC.blur((1-arrive)*14+rOut*12));
+          ktCard.style.setProperty('--sx',(SC.seg(s,0,.38)*150-40).toFixed(1)+'%');
+
+          /* The weight follows the part of the box that is showing — and
+             goes out altogether by the time it is a button.
+
+             This box carries nothing but a shadow, and a shadow drawn at
+             forty pixels of blur and scaled to a seventh of its height is
+             no longer a shadow: it is a hard line sitting a few pixels
+             below the pill, which is what was showing up under the button
+             as a second edge. A button that small does not want a cast
+             shadow anyway — its own lit rim is the whole of it — so the
+             weight fades out as the shape closes and comes back as the
+             answer opens. */
+          if(ktCast) SC.set(ktCast,
+            'scale('+(1-h/50).toFixed(4)+','+(1-v/50).toFixed(4)+')',
+            (arrive*(1-rOut)*.92*(hPill>0 ? Math.max(0,1-h/hPill) : 1)).toFixed(3));
+
+          /* and what is printed on it: three faces on the same centre,
+             each one up only while its own shape is the shape */
+          /* ---------- and what is written on it goes with the shape ----------
+             All three faces used to arrive and leave on opacity alone. The
+             box did something and the writing on it did nothing, which is
+             why the move never felt like one thing happening: a letter
+             that fades where it stands has not been sent anywhere.
+
+             They are tied to the shape now. The letter is drawn into the
+             point the button forms at — it goes small as the paper closes
+             around it, so what you see is the message being packed into
+             the button and not a message being switched off. The tick
+             grows out of that same point, from half its size, a touch past
+             itself and back. And the answer opens out of the button the
+             same way the box does. Three moves, one line through them. */
+          /* The letter goes: up, back a little, and out through the top
+             of its own frame — the card is overflow:hidden, so the last
+             of it is taken by the edge rather than simply reaching zero
+             where it stands. The blur is the speed of it. */
+          SC.set(ktFAsk,
+            'translate3d(0,'+(-58*lift).toFixed(1)+'px,0) scale('+(1-lift*.08).toFixed(4)+')',
+            (1-SC.io(SC.seg(lift,.34,1))).toFixed(3),
+            SC.blur(lift*lift*9));
+
+          /* The tick is drawn rather than dropped in. A stroke that
+             appears all at once is a state change; a stroke that is laid
+             down left to right is somebody ticking something off, which
+             is the whole of what this beat has to say. */
+          var stampOut=SC.io(SC.seg(open,0,.22));
+          if(ktTick){
+            var dl=(24*(1-draw)).toFixed(2);
+            if(dl!==ktTickD){ ktTickD=dl; ktTick.style.strokeDashoffset=dl; }
+          }
+          SC.set(ktFSent,'scale('+(1-stampOut*.26).toFixed(4)+')',
+            ((draw>0?1:0)*(1-stampOut)).toFixed(3));
+          /* and the word comes in behind the tick, from where the tick is */
+          SC.set(ktSentW,
+            'translate3d('+((1-word)*-9).toFixed(1)+'px,0,0)', word.toFixed(3));
+
+          var rIn=SC.out(SC.seg(open,.40,1));
+          SC.set(ktFReply,'scale('+(.80+.20*rIn).toFixed(4)+')', rIn.toFixed(3));
+
+          /* and the answer is written a shade quicker than the question
+             was: the reader has read one of these already and knows what
+             is happening, so the second one does not need the same pace. */
+          var rType=SC.seg(s,.636,.722),
+              rn=Math.round(rType*ktRTxt.length);
+          if(rn!==ktRN){ ktRN=rn; ktRTyped.textContent=ktRTxt.slice(0,rn); }
+          var rWriting = rType>0 && rType<1 && rOut<.02;
+          if(rWriting !== (ktRCaret.style.display===''))
+            ktRCaret.style.display = rWriting ? '' : 'none';
+          /* the line under it follows the sentence, not the card */
+          SC.set(ktRSub,'translate3d(0,'+((1-SC.out(SC.seg(s,.734,.790)))*10).toFixed(2)+'px,0)',
+            SC.out(SC.seg(s,.734,.790)).toFixed(3));
+
+          /* act four — the question goes back to the reader */
+          var fp=SC.out(SC.seg(s,.925,.995));
+          SC.set(ktFin,'translateZ('+(-300*(1-fp)).toFixed(1)+'px) scale('+(.94+fp*.06).toFixed(4)+')',
+            fp.toFixed(3), SC.blur((1-fp)*12));
+          for(var i=0;i<ktW.length;i++){
+            var t=SC.film(SC.seg(s,.925+i*.010,.99+i*.010));
+            SC.set(ktW[i],
+              'translate3d(0,'+((1-t)*.55).toFixed(3)+'em,0) rotateX('+(-46*(1-t)).toFixed(2)+'deg)',
+              t.toFixed(3), SC.blur(9*(1-t)));
+          }
+
+          /* the room: the rig dollies in once, and the light drifts */
+          var dolly=SC.film(SC.seg(s,0,.16));
+          SC.set(ktRig,'translateZ('+(-200*(1-dolly)).toFixed(1)+'px)',null);
+          SC.set(ktA1,'translate3d('+(-16+s*26).toFixed(2)+'vw,'+
+            (-4+Math.sin(s*3)*6).toFixed(2)+'vh,0)',(.6-s*.08).toFixed(3));
+          SC.set(ktA2,'translate3d('+(22-s*30).toFixed(2)+'vw,'+
+            (12-s*20).toFixed(2)+'vh,0)',(.32+s*.2).toFixed(3));
+        }
+      });
+      if(!reduce) window.addEventListener('resize', ktLayout, {passive:true});
+    }
+
+    /* statements light up character by character with the scroll —
+       and always finish before the page runs out of scroll */
+    [].slice.call(document.querySelectorAll('.litx')).forEach(function(abt){
+      var raw=abt.textContent; abt.textContent='';
+      var frag=document.createDocumentFragment();
+      raw.split('').forEach(function(ch){ var sp=document.createElement('span'); sp.textContent=ch; sp.style.opacity=reduce?1:.16; frag.appendChild(sp); });
+      abt.appendChild(frag);
+      if(reduce) return;
+      var chars=abt.querySelectorAll('span'), nch=chars.length, aq=false, W=20;
+      function updAbt(){
+        aq=false;
+        var vh=window.innerHeight, y=window.scrollY||window.pageYOffset;
+        var r=abt.getBoundingClientRect(), topAbs=r.top+y;
+        var startY=topAbs-vh*0.9;
+        var endY=Math.min(topAbs+r.height-vh*0.42,
+          document.documentElement.scrollHeight-vh-20);
+        if(endY<=startY) endY=startY+1;
+        var prog=Math.max(0,Math.min(1,(y-startY)/(endY-startY)));
+        var head=prog*(nch+W);
+        for(var i=0;i<nch;i++){ var o=Math.max(0,Math.min(1,(head-i)/W)); chars[i].style.opacity=(.16+.84*o).toFixed(3); }
+      }
+      window.addEventListener('scroll',function(){ if(!aq){ aq=true; requestAnimationFrame(updAbt); } },{passive:true});
+      updAbt();
+    });
+
+    /* the device scene plays in when it enters the viewport and reverses back
+       out when it leaves — scrolling up and down replays it both ways */
+    var cxs=document.getElementById('cxStage');
+    if(cxs && !reduce && 'IntersectionObserver' in window){
+      new IntersectionObserver(function(es){ es.forEach(function(e){
+        cxs.classList.toggle('in', e.isIntersecting);
+      }); },{threshold:.22}).observe(cxs);
+    } else if(cxs){ cxs.classList.add('in'); }
+
+    /* magnet — buttons lean gently toward the pointer, spring back on exit */
+    if(!reduce && window.matchMedia('(hover:hover)').matches){
+      var mags=[].slice.call(document.querySelectorAll('[data-magnet]'));
+      if(mags.length){
+        var mq=false, mx=0, my=0;
+        window.addEventListener('pointermove',function(e){ mx=e.clientX; my=e.clientY;
+          if(!mq){ mq=true; requestAnimationFrame(function(){ mq=false;
+            mags.forEach(function(el){
+              var cfg=(el.getAttribute('data-magnet')||'100,10').split(','), pad=+cfg[0], k=+cfg[1];
+              var r=el.getBoundingClientRect();
+              if(mx>r.left-pad && mx<r.right+pad && my>r.top-pad && my<r.bottom+pad){
+                var dx=(mx-(r.left+r.width/2))/k, dy=(my-(r.top+r.height/2))/k;
+                el.style.transition='transform .3s ease-out';
+                el.style.transform='translate3d('+dx.toFixed(1)+'px,'+dy.toFixed(1)+'px,0)';
+              } else if(el.style.transform && el.style.transform!=='translate3d(0px, 0px, 0)'){
+                el.style.transition='transform .6s ease-in-out';
+                el.style.transform='translate3d(0px, 0px, 0)';
+              }
+            });
+          }); }
+        },{passive:true});
+      }
+    }
+
+  })();
+}

@@ -1,15 +1,14 @@
-# Stilarkene her
+# Stilarkene
 
-`precision.css` og `site.css` er siden. De er de eneste to der indlæses.
+De ni der indlæses i `app/layout.tsx` er den håndskrevne sides egne,
+kopieret uændret på nær én ting: relative stier til billeder og film er
+gjort absolutte, fordi Next serverer stilarket fra et andet sted end
+repoets rod.
 
-De ti andre — styles, lesreg, bbh, kunder, telefon, softwarehus, kontakt,
-mork, dybde, liquid-glass — er den håndskrevne sides designsprog: mørkt,
-af glas, med bløde hjørner og en scroll-drevet film i hver sektion. De
-indlæses ikke længere, men de bliver liggende, fordi de rummer et halvt
-års målinger og rettelser: Mach-bånd der blev jaget ned til enkelte
-gråtoner, blur-filtre der kostede fem sjettedele af billedhastigheden,
-udtoninger skrevet som smootherstep frem for lineære. Skal noget af det
-tilbage, er det billigere at læse end at opdage igen.
+Rækkefølgen er ikke til forhandling. En god del af designet er én fil der
+retter en anden — `mork.css` gør siden mørk oven på den lyse, `dybde.css`
+lægger rummet under det hele. Bytter man om, skifter siden udseende.
 
-`lib/stage.ts` er den samme historie: animationsmotoren fra den gamle
-side, flyttet ordret. Ingenting importerer den nu.
+`precision.css` er væk igen. Den lå her som tokens fra det private
+Figma-bibliotek, mens det var uafklaret om siden skulle skifte sprog. Det
+skulle den ikke.

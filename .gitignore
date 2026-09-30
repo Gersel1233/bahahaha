@@ -13,3 +13,8 @@ web/public/photos/
 web/public/fonts/
 web/public/brand/
 web/public/favicon.svg
+web/public/vendor/
+web/public/telefon-3d.js
+web/public/site.js
+web/public/image-slot.js
+web/public/loader.js

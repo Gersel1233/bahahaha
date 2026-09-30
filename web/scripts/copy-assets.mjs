@@ -16,7 +16,15 @@ const pub = join(here, '..', 'public');
 /* the mark the tab shows, which lives at the root like the rest */
 await cp(join(root, 'favicon.svg'), join(pub, 'favicon.svg')).catch(() => console.warn('skip: favicon.svg'));
 
-for (const dir of ['media', 'photos', 'fonts', 'brand']) {
+/* The three scripts the page loads from the document rather than through
+   the bundler: the phone is an ES module that imports three.js through an
+   import map, and the other two were written to be dropped in with a
+   script tag. They are served as they are. */
+for (const f of ['telefon-3d.js', 'site.js', 'image-slot.js', 'loader.js']) {
+  await cp(join(root, f), join(pub, f)).catch(() => console.warn('skip:', f));
+}
+
+for (const dir of ['media', 'photos', 'fonts', 'brand', 'vendor']) {
   const from = join(root, dir);
   if (!existsSync(from)) { console.warn('skip (missing):', dir); continue; }
   const to = join(pub, dir);
