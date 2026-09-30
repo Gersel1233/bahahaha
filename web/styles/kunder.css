@@ -1,0 +1,194 @@
+/* ============================================================
+   LESREG — Kunder.
+
+   Two customers, a screen each, on the same stage engine as Konceptet.
+   No green anywhere in here: the only colour is the customer's own, set
+   per section, so the two cases read as two places and not as two cards.
+   ============================================================ */
+
+/* ---------- the line into the two cases ----------
+   It had a section of its own: its own stage, its own pin, its own
+   release. However well it played, the reader met it, watched it leave,
+   and then met the first customer somewhere else — two rooms, and a seam
+   between them. It lives on the first customer's stage now, laid over it
+   and taking the opening quarter of its track, so the sentence and the
+   thing it introduces are one move on one piece of glass. */
+.scene.case .kdoor{ position:absolute; inset:0; z-index:2; pointer-events:none;
+  display:grid; place-items:center; box-sizing:border-box;
+  padding:var(--nav) clamp(24px,6vw,112px) 0; }
+.scene.case .kdoor .inner{ width:min(1180px,100%); text-align:center;
+  transform-style:preserve-3d; will-change:transform,opacity,filter; }
+.scene h1 i, .cname i{ font-style:normal; color:var(--ink-soft); }
+.scene h1 .w > i{ display:inline-block; opacity:0; will-change:transform,opacity,filter; }
+
+/* ============================================================
+   A CASE — text on the left, the work itself on the right
+   ============================================================ */
+/* One stage for all three beats: the line, the first customer, the
+   second. They were three sections, and three sections is three stages —
+   each one sticks, holds, and is scrolled off the top while the next
+   slides up from underneath. That vertical wipe is the seam, and no
+   amount of easing inside a section removes a boundary between sections.
+   One track carries the lot now: about a thousand pixels for the line and
+   nineteen hundred for each customer. */
+.scene.case{ height:600vh; }
+.scene.case .wrap{ --brand:#a8431c; --cream:#f7ece1; }
+.scene.case .wrap[data-brand="mosede"]{ --brand:#b4242f; --cream:#faf3e8; }
+.scene.case .stage{ perspective:1700px; perspective-origin:64% 50%;
+  box-sizing:border-box; padding-top:var(--nav); }
+
+/* Two customers share the stage, so they are laid on it rather than put
+   in it — the same centring the acts of the software house use: pinned to
+   every edge below the bar, sized, and left to auto margins. */
+.wrap{ position:absolute; inset:var(--nav) 0 0; margin:auto; height:fit-content;
+  z-index:1; transform-style:preserve-3d;
+  width:min(1320px, calc(100% - clamp(24px,6vw,112px)));
+  display:grid; grid-template-columns:.82fr 1.18fr; align-items:center;
+  gap:clamp(22px,4.4vw,80px); }
+
+.col{ text-align:left; will-change:transform,opacity,filter; }
+.kicker{ margin:0 0 clamp(10px,1.6vh,18px); opacity:0; font-size:12px; font-weight:500;
+  letter-spacing:.22em; text-transform:uppercase; color:var(--ink-faint);
+  will-change:transform,opacity; }
+.cname{ margin:0; font-weight:700; color:var(--ink);
+  font-size:clamp(36px,5.6vw,82px); line-height:.98; letter-spacing:-.048em; }
+.cname .w{ display:inline-block; white-space:pre; }
+.cname .w > span, .cname .w > i{ display:inline-block; opacity:0;
+  will-change:transform,opacity,filter; }
+.curl{ display:inline-block; margin-top:clamp(8px,1.4vh,14px); opacity:0;
+  font-size:14.5px; color:var(--brand); letter-spacing:-.006em;
+  border-bottom:1px solid color-mix(in srgb, var(--brand) 34%, transparent);
+  will-change:transform,opacity; }
+.curl:hover{ border-bottom-color:currentColor; }
+.blurb{ margin:clamp(14px,2.2vh,22px) 0 0; max-width:38ch; opacity:0;
+  font-size:clamp(15px,1.12vw,18px); line-height:1.62; letter-spacing:-.008em;
+  color:var(--ink-soft); will-change:transform,opacity; }
+.blurb b{ color:var(--ink); font-weight:600; }
+
+.facts{ list-style:none; margin:clamp(18px,3vh,30px) 0 0; padding:0;
+  display:grid; gap:0; max-width:34ch; }
+.facts li{ opacity:0; padding:11px 0 11px 18px; position:relative;
+  font-size:15px; line-height:1.5; color:var(--ink-soft);
+  border-top:1px solid color-mix(in srgb, var(--ink) 9%, transparent);
+  will-change:transform,opacity; }
+.facts li::before{ content:""; position:absolute; left:0; top:19px;
+  width:6px; height:1px; background:var(--brand); }
+
+/* ---------- the cluster ----------
+   Height-led, not width-led: the lid is sized off the viewport height, and
+   the column takes whatever that comes to. Sized off the column instead, a
+   short window would push the laptop straight through the bottom of the
+   stage — which is exactly the bug this shape exists to avoid. */
+/* the phone hangs 3% past the right edge, so the cluster keeps a margin of
+   its own — otherwise the stage clips the very thing it is leaning on */
+.devices{ --lidmax:58vh; position:relative;
+  width:min(91%, calc(var(--lidmax) * 1.547)); margin-inline:auto;
+  will-change:transform,opacity,filter; }
+
+.mac{ container-type:inline-size; width:100%; }
+.mac .lid{ position:relative; aspect-ratio:1.547; padding:.5cqw;
+  border-radius:1.5cqw;
+  background:linear-gradient(158deg,#e4e0da,#b6b1a9 36%,#8b8680 64%,#c7c2bb);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.55),
+    0 44px 80px -44px rgba(27,23,20,.6), 0 4px 14px -8px rgba(27,23,20,.35); }
+.mac .bez{ position:relative; height:100%; background:#0c0b0a;
+  border-radius:1.1cqw; padding:.86cqw .62cqw .9cqw; }
+.mac .notch{ position:absolute; left:50%; top:0; transform:translateX(-50%);
+  width:12.4cqw; height:.86cqw; background:#0c0b0a;
+  border-radius:0 0 .34cqw .34cqw; z-index:3; }
+.mac .screen{ position:relative; height:100%; border-radius:.45cqw;
+  overflow:hidden; background:var(--cream); container-type:size; }
+.mac .foot{ position:relative; height:1.9cqw; margin:0 -4.6cqw;
+  border-radius:0 0 .9cqw .9cqw;
+  background:linear-gradient(180deg,#dcd8d2,#b0aba4 46%,#87837d);
+  box-shadow:0 18px 26px -18px rgba(27,23,20,.5); }
+.mac .foot::after{ content:""; position:absolute; left:50%; top:0;
+  transform:translateX(-50%); width:14cqw; height:.62cqw;
+  border-radius:0 0 .5cqw .5cqw; background:rgba(0,0,0,.16); }
+
+/* ---------- iPhone 17 Pro ----------
+   Mikkel's own reference, one to one, written as percentages of the
+   phone's width so it holds at any size. His numbers are against a body
+   360px across:
+
+     body      71.9 x 150, radius 54 -> 15cqw, aluminium edge 4 -> 1.111cqw
+     screen    radius 50 -> 13.889cqw, black
+     island    92 x 27 at 11 from the top -> 25.556 x 7.5 at 3.056cqw
+
+   It used to be a two-shell build in warm brown — a leftover from when
+   this page was on paper — with an island half again too wide. One shell
+   now, in aluminium, and the second shell is only the black the screen
+   sits on.
+
+   The phone leans on the laptop's corner, and its percentages resolve
+   against the cluster — which is the lid's width — so the pair keeps its
+   proportions. The frame itself is a child, not this box: a container
+   does not measure itself, and a cqw written on .iphone would resolve
+   against the window instead. Everything shaped in cqw sits one level in,
+   where the unit means the phone.
+
+   Sized off the two devices rather than by eye: an iPhone 17 Pro is
+   71.9mm across and a 14" MacBook Pro lid is 312.6, so the phone is 23%
+   of the lid. */
+.iphone{ container-type:inline-size; position:absolute; right:-3%; bottom:-6%;
+  width:23%; min-width:64px; aspect-ratio:71.9/150; z-index:2; }
+.iphone .inn{ height:100%; padding:1.111cqw; border-radius:15cqw;
+  background:#8f9499;
+  box-shadow:0 8.33cqw 19.44cqw rgba(0,0,0,.22),
+    inset 0 0 0 .278cqw rgba(255,255,255,.45); }
+.iphone .in2{ height:100%; padding:0; background:#000; border-radius:13.889cqw; }
+.iphone .screen{ position:relative; height:100%; border-radius:13.889cqw;
+  overflow:hidden; background:#000; container-type:size; }
+/* The island floats on the display, the way it does on the phone — and it
+   is measured against the display, not the body. The screen is its own
+   container, so a cqw in here is a hundredth of the glass (352 of his 360)
+   and not of the phone: 92 wide is 26.136, 27 tall is 7.670, and his 11
+   from the top of the body is 7 from the top of the glass, or 1.989. */
+.iphone .isl{ position:absolute; left:50%; top:1.989cqw; transform:translateX(-50%);
+  width:26.136cqw; height:7.670cqw; border-radius:999px; background:#000; z-index:20; }
+.iphone .b{ position:absolute; width:.9cqw; border-radius:.45cqw; z-index:1;
+  background:linear-gradient(180deg,#b9bec3,#767c82); }
+.iphone .b.act{ left:-.45cqw; top:22%; height:7%; }
+.iphone .b.vu{ left:-.45cqw; top:32%; height:11%; }
+.iphone .b.vd{ left:-.45cqw; top:45.5%; height:11%; }
+.iphone .b.pw{ right:-.45cqw; top:30%; height:15%; }
+.iphone .screen img, .mac .screen img{ display:block; width:100%; height:100%;
+  object-fit:cover; object-position:top center; }
+
+/* ---------- the closer ---------- */
+.closer{ padding:clamp(110px,18vh,220px) 0 clamp(96px,14vh,170px);
+  text-align:center; background:var(--paper-1); }
+.closer h2{ margin:0 auto; max-width:16ch; font-weight:700; color:var(--ink);
+  font-size:clamp(34px,6vw,84px); line-height:1; letter-spacing:-.045em; }
+.closer h2 i{ font-style:normal; color:var(--ink-soft); }
+.closer .cta{ margin-top:clamp(26px,4vh,44px); }
+/* no green in this part of the page — the call sits in the same black pill
+   as the one in the bar */
+.closer .abtn.spruce{ background:var(--dark); text-shadow:none;
+  box-shadow:0 14px 30px -18px rgba(27,23,20,.8); }
+
+@media(max-width:980px){
+  .scene.case{ height:620vh; }
+  .wrap{ grid-template-columns:1fr; gap:clamp(18px,4vh,34px); }
+  .devices{ --lidmax:38vh; width:min(88%, calc(var(--lidmax) * 1.547)); }
+  /* the width is the real ratio at every size now — only the overhang moves */
+  .iphone{ bottom:-5%; }
+  .facts{ grid-template-columns:1fr 1fr; gap:0 clamp(14px,3vw,26px); max-width:none; }
+}
+@media(max-height:760px){
+  .devices{ --lidmax:36vh; }
+  .cname{ font-size:clamp(32px,4.4vw,58px); }
+  .facts{ display:none; }
+}
+
+@media (prefers-reduced-motion: reduce){
+  .scene.case{ height:auto; }
+  .scene.case .kdoor{ position:relative; inset:auto; padding:8vh 0 0;
+    opacity:1 !important; transform:none !important; }
+  .scene.case .kdoor .inner{ opacity:1 !important; transform:none !important;
+    filter:none !important; }
+  .devices{ --lidmax:52vh; }
+  .kicker, .curl, .blurb, .facts li, .cname .w > span, .cname .w > i,
+  .scene h1 .w > i{ opacity:1 !important; transform:none !important; filter:none !important; }
+  .wrap{ padding:6vh 0; }
+}

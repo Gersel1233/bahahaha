@@ -1,0 +1,337 @@
+/* ============================================================
+   LESREG — Kontakt.
+
+   Not a form and not a card with a button in it: a letter that writes
+   itself, is sent, is answered, and then hands the question back to the
+   person reading it. Four acts on one pinned stage, moved entirely by
+   the scroll, on the same engine as every other scene on the page.
+
+   Everything here is prefixed kt-, because this section arrived as a
+   page of its own and its names — card, meta, msg — are names the rest
+   of the site already uses for something else.
+   ============================================================ */
+
+/* It ran 720vh while the scroll was winding it, because a hundred and
+   twenty characters typing themselves out take that much hand. It plays
+   on its own clock now, so the height is only the room it needs to be
+   watched in: one screen of stage, and a little over one more of pinning
+   so the letter is not scrolled off the moment it starts. The stage
+   takes a nav's worth off the top, so nothing lands under the bar. */
+/* The letter used to keep a room of its own — an opaque paper that came
+   up over the first third of a screen. However softly it came up, it was
+   still a colour laid over the page's own backdrop, and where it reached
+   full strength there was a line straight across the screen. It stands on
+   the same glass as everything else now, and the only thing it adds is
+   light. */
+.scene.kt{ height:230vh; background:transparent; }
+.scene.kt .stage{ perspective:1500px; perspective-origin:50% 44%;
+  box-sizing:border-box; padding-top:var(--nav); }
+
+/* ---------- the light in the room ----------
+   Two soft discs drifting behind the glass, and a vignette that closes
+   the corners so the cards sit in the middle of something rather than
+   on a flat field. */
+/* These were two gradients with a seventy-four pixel blur laid over them,
+   which is the same argument as the backdrop: a gradient is already the
+   soft thing, and blurring it is a full-window rasterisation per frame
+   for a picture a longer falloff draws for nothing. The discs are grown
+   to where the blur used to carry them and the falloff does the rest. */
+.kt-aura{ position:absolute; border-radius:50%;
+  pointer-events:none; will-change:transform,opacity; }
+.kt-aura.a1{ width:74vw; height:74vw;
+  background:radial-gradient(circle,
+    rgba(168,188,210,0.5) 0%,
+    rgba(168,188,210,0.49572) 7.8%,
+    rgba(168,188,210,0.47104) 15.6%,
+    rgba(168,188,210,0.41846) 23.4%,
+    rgba(168,188,210,0.34128) 31.2%,
+    rgba(168,188,210,0.25) 39%,
+    rgba(168,188,210,0.15872) 46.8%,
+    rgba(168,188,210,0.08154) 54.6%,
+    rgba(168,188,210,0.02896) 62.4%,
+    rgba(168,188,210,0.00428) 70.2%,
+    rgba(168,188,210,0) 78%); }
+.kt-aura.a2{ width:58vw; height:58vw;
+  background:radial-gradient(circle,
+    rgba(120,140,166,0.44) 0%,
+    rgba(120,140,166,0.43623) 8%,
+    rgba(120,140,166,0.41452) 16%,
+    rgba(120,140,166,0.36824) 24%,
+    rgba(120,140,166,0.30033) 32%,
+    rgba(120,140,166,0.22) 40%,
+    rgba(120,140,166,0.13967) 48%,
+    rgba(120,140,166,0.07176) 56%,
+    rgba(120,140,166,0.02548) 64%,
+    rgba(120,140,166,0.00377) 72%,
+    rgba(120,140,166,0) 80%); }
+/* The stage is one screen tall inside a section of two and a bit, so for
+   a good part of the scroll one of its horizontal edges is in the middle
+   of the window. Everything in here is faded out top and bottom for the
+   same reason the software house's room is: an edge painted right up to
+   the end of the stage is a line across the screen. */
+.kt-vign, .kt-aura{
+  -webkit-mask-image:linear-gradient(180deg,
+    rgba(0,0,0,0) 0%,
+    rgba(0,0,0,0.0022) 1.88%,
+    rgba(0,0,0,0.0161) 3.75%,
+    rgba(0,0,0,0.0488) 5.62%,
+    rgba(0,0,0,0.1035) 7.5%,
+    rgba(0,0,0,0.18) 9.38%,
+    rgba(0,0,0,0.2752) 11.25%,
+    rgba(0,0,0,0.384) 13.12%,
+    rgba(0,0,0,0.5) 15%,
+    rgba(0,0,0,0.616) 16.88%,
+    rgba(0,0,0,0.7248) 18.75%,
+    rgba(0,0,0,0.82) 20.62%,
+    rgba(0,0,0,0.8965) 22.5%,
+    rgba(0,0,0,0.9512) 24.38%,
+    rgba(0,0,0,0.9839) 26.25%,
+    rgba(0,0,0,0.9978) 28.12%,
+    rgba(0,0,0,1) 30%,
+    rgba(0,0,0,1) 70%,
+    rgba(0,0,0,0.9978) 71.88%,
+    rgba(0,0,0,0.9839) 73.75%,
+    rgba(0,0,0,0.9512) 75.62%,
+    rgba(0,0,0,0.8965) 77.5%,
+    rgba(0,0,0,0.82) 79.38%,
+    rgba(0,0,0,0.7248) 81.25%,
+    rgba(0,0,0,0.616) 83.12%,
+    rgba(0,0,0,0.5) 85%,
+    rgba(0,0,0,0.384) 86.88%,
+    rgba(0,0,0,0.2752) 88.75%,
+    rgba(0,0,0,0.18) 90.62%,
+    rgba(0,0,0,0.1035) 92.5%,
+    rgba(0,0,0,0.0488) 94.38%,
+    rgba(0,0,0,0.0161) 96.25%,
+    rgba(0,0,0,0.0022) 98.12%,
+    rgba(0,0,0,0) 100%);
+  mask-image:linear-gradient(180deg,
+    rgba(0,0,0,0) 0%,
+    rgba(0,0,0,0.0022) 1.88%,
+    rgba(0,0,0,0.0161) 3.75%,
+    rgba(0,0,0,0.0488) 5.62%,
+    rgba(0,0,0,0.1035) 7.5%,
+    rgba(0,0,0,0.18) 9.38%,
+    rgba(0,0,0,0.2752) 11.25%,
+    rgba(0,0,0,0.384) 13.12%,
+    rgba(0,0,0,0.5) 15%,
+    rgba(0,0,0,0.616) 16.88%,
+    rgba(0,0,0,0.7248) 18.75%,
+    rgba(0,0,0,0.82) 20.62%,
+    rgba(0,0,0,0.8965) 22.5%,
+    rgba(0,0,0,0.9512) 24.38%,
+    rgba(0,0,0,0.9839) 26.25%,
+    rgba(0,0,0,0.9978) 28.12%,
+    rgba(0,0,0,1) 30%,
+    rgba(0,0,0,1) 70%,
+    rgba(0,0,0,0.9978) 71.88%,
+    rgba(0,0,0,0.9839) 73.75%,
+    rgba(0,0,0,0.9512) 75.62%,
+    rgba(0,0,0,0.8965) 77.5%,
+    rgba(0,0,0,0.82) 79.38%,
+    rgba(0,0,0,0.7248) 81.25%,
+    rgba(0,0,0,0.616) 83.12%,
+    rgba(0,0,0,0.5) 85%,
+    rgba(0,0,0,0.384) 86.88%,
+    rgba(0,0,0,0.2752) 88.75%,
+    rgba(0,0,0,0.18) 90.62%,
+    rgba(0,0,0,0.1035) 92.5%,
+    rgba(0,0,0,0.0488) 94.38%,
+    rgba(0,0,0,0.0161) 96.25%,
+    rgba(0,0,0,0.0022) 98.12%,
+    rgba(0,0,0,0) 100%); }
+.kt-vign{ position:absolute; inset:0; pointer-events:none;
+  background:radial-gradient(72% 64% at 50% 44%, transparent 40%, rgba(6,7,9,.6)); }
+
+.kt-rig{ position:relative; z-index:1; width:min(760px,92vw); max-height:100%;
+  transform-style:preserve-3d; will-change:transform; }
+.kt-letter{ display:none; }
+#ktRSrc{ display:none; }
+
+/* ---------- the card ----------
+   One pane of glass. A lit top edge, the room showing through, and a slow
+   highlight travelling across the surface.
+
+   It carries no border and no shadow of its own, and that is the whole
+   point. A clip-path cuts everything an element paints — its border with
+   it — so a card that changes shape either loses its outline for the
+   length of the move or, if a second box is faded in at the right size to
+   cover for it, shows two outlines at once for a handful of frames. Both
+   were happening. The edge is drawn inside, at exactly where the clip is,
+   and moved by the same numbers; the shadow is cast by a box behind. One
+   object, one outline, at every frame of every state. */
+.kt-card{ position:absolute; left:0; right:0; padding:clamp(20px,2.6vw,34px);
+  border:0; border-radius:26px; overflow:hidden; transform-style:preserve-3d;
+  background:linear-gradient(150deg, rgba(232,238,244,.15), rgba(232,238,244,.05) 44%, rgba(232,238,244,.1));
+  -webkit-backdrop-filter:blur(24px) saturate(180%); backdrop-filter:blur(24px) saturate(180%);
+  will-change:transform,opacity,filter;
+  /* The card changes shape on every frame of the scroll, and a backdrop
+     filter has to sample whatever is behind whatever it is drawn over.
+     This tells the browser that nothing in here paints outside the box,
+     so a shape change need not invalidate the window. It is already
+     overflow:hidden and its shadow is cast by a box behind it, so there
+     is nothing outside the box to lose. It did not move the numbers in
+     software rendering, where this is measured; it is here because it is
+     true of the box and costs nothing to say. */
+  contain:paint;
+  /* nothing in it is meant to be pressed, so nothing in it takes a press */
+  pointer-events:none; }
+.kt-card::before{ content:""; position:absolute; inset:0; border-radius:inherit;
+  pointer-events:none; mix-blend-mode:screen; z-index:1;
+  background:linear-gradient(105deg, transparent 32%, rgba(255,255,255,.32) 48%, transparent 66%);
+  transform:translateX(var(--sx,-40%)); will-change:transform; }
+/* the edge, drawn where the clip is */
+.kt-card::after{ content:""; position:absolute; z-index:3; pointer-events:none;
+  inset:var(--ey,0%) var(--ex,0%); border-radius:var(--er,26px);
+  border:1px solid var(--edge);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.3); }
+
+/* and the weight, on a box of its own behind it */
+.kt-cast{ position:absolute; left:0; right:0; top:50%; opacity:0;
+  border-radius:26px; pointer-events:none;
+  box-shadow:0 40px 90px -42px rgba(0,0,0,.8), 0 12px 34px -20px rgba(0,0,0,.6);
+  will-change:transform,opacity; }
+
+/* ---------- the three faces ----------
+   The answer is the one in the flow, so the box is the size of the
+   largest state and the other two are clips of it. The other two are laid
+   over the middle of it, so all three read from the same centre. */
+.kt-face{ position:relative; z-index:2; }
+/* Centred by the box and not by a transform. The stage writes transform,
+   opacity and filter onto everything it is given, and the state it falls
+   back to is transform:none — so a face centred with translateY(-50%)
+   lost its centring the first time the scene was reset, and sat half its
+   own height too low for the rest of the page's life. Nothing in here
+   leans on a transform the loop is allowed to touch. */
+.kt-face.f-ask, .kt-face.f-sent{ position:absolute; z-index:2;
+  left:clamp(20px,2.6vw,34px); right:clamp(20px,2.6vw,34px);
+  top:0; bottom:0; display:grid; align-content:center; }
+.kt-face.f-sent{ display:flex; align-items:center; justify-content:center; gap:11px;
+  font-size:12.5px; font-weight:600; letter-spacing:.16em; text-transform:uppercase; }
+.kt-face.f-sent svg{ display:block; width:16px; height:16px; flex:none;
+  stroke:#fff; fill:none; }
+
+.kt-meta{ display:flex; align-items:center; gap:10px; font-size:11.5px; font-weight:600;
+  letter-spacing:.18em; text-transform:uppercase; color:rgba(238,243,248,.58); }
+.kt-meta b{ color:var(--ink); font-weight:600; }
+.kt-meta em{ flex:1; height:1px; background:rgba(232,238,244,.2); font-style:normal; }
+
+/* The message box is held at three and a bit lines whatever is in it, so
+   the card does not grow a line at a time while the letter types — a
+   card that changes height mid-sentence drags everything under it. */
+.kt-msg{ margin:clamp(14px,2vh,20px) 0 0; min-height:3.2em; text-wrap:pretty;
+  font-size:clamp(15px,1.5vw,23px); line-height:1.45; letter-spacing:-.018em; }
+.kt-caret{ display:inline-block; width:2px; height:1.05em; margin-left:2px;
+  vertical-align:-.16em; background:#fff; font-style:normal;
+  animation:ktBlink .94s steps(1,end) infinite; }
+@keyframes ktBlink{ 0%,49%{ opacity:1; } 50%,100%{ opacity:.22; } }
+
+.f-reply .kt-meta b{ color:#fff; }
+.f-reply .kt-msg{ font-weight:600; letter-spacing:-.028em;
+  font-size:clamp(16px,1.7vw,26px); }
+.f-reply .kt-msg s{ display:block; text-decoration:none; margin-top:10px;
+  font-weight:400; font-size:clamp(13.5px,1.05vw,16.5px); line-height:1.55;
+  letter-spacing:-.006em; color:rgba(238,243,248,.76); }
+/* No rule above the signature. The card already draws one edge, and a
+   second full-width line thirty pixels inside it reads as a box inside a
+   box — two borders where the eye expects one. Space says the same
+   thing: the signature sits apart from the message because there is room
+   between them, not because something was drawn between them. */
+.kt-from{ display:flex; align-items:center; gap:11px;
+  margin-top:clamp(20px,3vh,30px); padding-top:0; border-top:0; }
+.kt-from svg{ display:block; width:26px; height:26px; flex:none; }
+.kt-from b{ font-size:13.5px; font-weight:600; letter-spacing:-.02em; }
+.kt-from s{ display:block; text-decoration:none; font-size:11px; letter-spacing:.14em;
+  text-transform:uppercase; color:rgba(238,243,248,.52); }
+
+/* ---------- the finale ---------- */
+.kt-finale{ position:absolute; left:0; right:0; text-align:center;
+  transform-style:preserve-3d; will-change:transform,opacity,filter; }
+.kt-finale h2{ margin:0; font-weight:700; color:var(--ink);
+  font-size:clamp(30px,5vw,76px); line-height:.98; letter-spacing:-.05em; }
+.kt-finale h2 .w{ display:inline-block; white-space:pre; }
+.kt-finale h2 .w > span{ display:inline-block; opacity:0;
+  will-change:transform,opacity,filter; }
+/* The address is the one thing on this stage anybody is meant to touch,
+   so it is the one piece of real glass: thick, lit along the top edge,
+   rimmed on the inside as well as the outside, and with a highlight that
+   travels across it the way it does on the two cards above. It had a flat
+   wash and a hairline, which is a button with a blur behind it. */
+.kt-mail{ position:relative; overflow:hidden; isolation:isolate;
+  display:inline-flex; align-items:center; gap:clamp(10px,1.3vw,16px);
+  margin-top:clamp(20px,3.2vh,38px); line-height:1;
+  font-size:clamp(18px,2.8vw,42px); font-weight:600; letter-spacing:-.04em;
+  padding:clamp(14px,1.9vh,24px) clamp(24px,3vw,44px); border-radius:999px;
+  background:
+    linear-gradient(150deg, rgba(255,255,255,.26), rgba(255,255,255,.06) 44%, rgba(255,255,255,.16));
+  border:1px solid rgba(255,255,255,.4);
+  box-shadow:
+    0 40px 80px -30px rgba(0,0,0,.8),
+    0 2px 10px -4px rgba(0,0,0,.5),
+    inset 0 1px 0 rgba(255,255,255,.75),
+    inset 0 -1px 0 rgba(255,255,255,.14),
+    inset 0 0 22px rgba(255,255,255,.1);
+  -webkit-backdrop-filter:blur(26px) saturate(200%); backdrop-filter:blur(26px) saturate(200%);
+  transition:transform .4s cubic-bezier(.2,.8,.2,1), box-shadow .4s ease; }
+/* the light that runs across it, slowly, for ever */
+.kt-mail::before{ content:""; position:absolute; inset:0; z-index:-1; pointer-events:none;
+  background:linear-gradient(105deg, transparent 34%, rgba(255,255,255,.34) 50%, transparent 66%);
+  transform:translateX(-60%); animation:ktSheen 7s cubic-bezier(.5,0,.5,1) infinite; }
+@keyframes ktSheen{ 0%,62%{ transform:translateX(-70%); } 100%{ transform:translateX(70%); } }
+.kt-mail svg{ display:block; flex:none;
+  width:clamp(15px,1.7vw,25px); height:clamp(15px,1.7vw,25px); }
+@media(hover:hover){
+  .kt-mail:hover{ color:#fff; transform:translateY(-2px);
+    box-shadow:0 40px 70px -28px rgba(0,0,0,.78), inset 0 1px 0 rgba(255,255,255,.4); } }
+.kt-note{ display:block; margin-top:clamp(12px,1.8vh,18px);
+  font-size:12.5px; letter-spacing:.02em; color:rgba(238,243,248,.58); }
+
+@media(max-width:900px){
+  .scene.kt{ height:270vh; }
+  .kt-card{ border-radius:20px; }
+}
+/* On a phone the header line is wider than the card it sits in: the
+   address is twenty characters of tracked-out capitals, and the label on
+   the right wrapped onto two lines with the rule between them squeezed
+   to nothing. The tracking comes in, and on the narrowest screens the
+   label goes — the address is the part that says what this is. */
+@media(max-width:600px){
+  .kt-meta{ gap:8px; font-size:10px; letter-spacing:.1em; flex-wrap:nowrap; }
+  .kt-meta em{ min-width:14px; }
+}
+@media(max-width:440px){
+  .kt-tag{ display:none; }
+  .kt-meta em{ min-width:0; }
+}
+/* On a short window the reply's second paragraph and the line under the
+   mail are the two things that push the cards past the glass. */
+@media(max-height:740px){
+  .f-reply .kt-msg s{ display:none; }
+  .kt-note{ display:none; }
+}
+
+/* The stage does its own placing, so nothing here answers to a viewer.
+   The cards have to come out of absolute, or all four acts stack on the
+   same line. */
+@media (prefers-reduced-motion: reduce){
+  .kt-mail::before{ animation:none; }
+  .scene.kt{ height:auto; }
+  .scene.kt .stage{ position:static; height:auto; padding:12vh 0; display:block;
+    perspective:none; }
+  .kt-rig{ width:min(760px,92vw); margin:0 auto; display:grid; gap:20px; }
+  /* the three faces come out of their stack and read as three cards */
+  .kt-card{ position:relative; pointer-events:auto; opacity:1 !important;
+    transform:none !important; filter:none !important; clip-path:none !important;
+    border:1px solid var(--edge);
+    box-shadow:0 40px 90px -42px rgba(0,0,0,.76), inset 0 1px 0 rgba(255,255,255,.34); }
+  .kt-card::before, .kt-card::after{ display:none; }
+  .kt-cast, .kt-face.f-sent{ display:none; }
+  .kt-face.f-ask{ position:relative; left:auto; right:auto; top:auto;
+    transform:none; margin-bottom:26px;
+    padding-bottom:26px; border-bottom:1px solid rgba(232,238,244,.14); }
+  .kt-caret{ display:none; }
+  .kt-finale{ position:relative; margin-top:26px; opacity:1 !important;
+    transform:none !important; filter:none !important; }
+  .kt-finale h2 .w > span{ opacity:1 !important; }
+  .kt-aura{ display:none; }
+}

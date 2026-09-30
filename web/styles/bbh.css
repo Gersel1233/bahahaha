@@ -1,0 +1,235 @@
+/* ============================================================
+   LESREG — header + Konceptet.
+
+   Built to the brief: system type, one sticky stage, one rAF loop.
+   Loaded after lesreg.css, so it keeps what still holds — the flight,
+   the device scene, the finale — and replaces the voice around them.
+   ============================================================ */
+
+:root{
+  --paper-1:#f1eade; --paper-2:#e7dfd1; --peach:#f6e3cd;
+  --ink:#1b1714; --ink-soft:#645a50; --ink-faint:#9b9084;
+  --dark:#221e1a;
+  --accent:#1f857a; --accent-deep:#166b62; --accent-tint:#2f9e91;
+  --nav:66px;
+  /* the Kunder brief names the same two papers without the numbers */
+  --paper:var(--paper-1);
+  --sys:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Helvetica Neue",Helvetica,sans-serif;
+  /* the older sheet paints everything from these; moving them keeps one page */
+  --ax-bg:var(--paper-1); --ax-ink:var(--ink); --ax-soft:var(--ink-soft);
+  --ax-faint:var(--ink-faint); --ax-line:color-mix(in srgb, var(--ink) 12%, transparent);
+  --ax-spruce:var(--accent);
+}
+
+html, body{ background:var(--paper-1); }
+body{ font-family:var(--sys); color:var(--ink);
+  -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; }
+.brand-l, .gn-links a, .gn-cta, .langsw button, .abtn, .kh, .kmeta{ font-family:var(--sys); }
+
+/* ---------- the bar ---------- */
+/* The bar had a backdrop-filter: a twenty-pixel blur with a saturate on
+   top of it, across the full width of a fixed element. That is the most
+   expensive thing a page can ask for while it scrolls — the whole strip
+   behind the bar has to be read back, blurred and re-saturated every
+   single frame, at whatever the screen's pixel density is, for as long as
+   the page is open.
+
+   And it was doing nothing. The bar is hidden outright for the whole
+   drone flight (body.dro-on .nav), and from the moment it appears it
+   carries .scrolled for the rest of the page — so the blur only ever
+   worked behind a bar that was 86% opaque, over the page's own flat
+   paper. Solid, it is the same bar, measured: 0.86 of paper-1 over the
+   background's own peach at the top of the window comes to f2e9dc. */
+.nav{ height:var(--nav); padding:0 clamp(16px,3.4vw,40px); gap:20px;
+  background:#f2e9dc; -webkit-backdrop-filter:none; backdrop-filter:none;
+  border-bottom:1px solid color-mix(in srgb, var(--ink) 8%, transparent); }
+.nav.scrolled{ background:#f2e9dc;
+  border-bottom-color:color-mix(in srgb, var(--ink) 8%, transparent); }
+/* The bar is set in the same family as the headlines, but it was set
+   loose and light, so it read as a different face. Same treatment,
+   scaled down: heavier, and pulled tight — though nowhere near the
+   headline's -.045em, which at 15px would start closing the words up. */
+.brand-l{ font-size:20.5px; font-weight:700; letter-spacing:-.032em; gap:9px; }
+/* The mark stands beside the word rather than replacing it: the word stays
+   live text, so it keeps the bar's own typography, and a screen reader and
+   a translator both still find it. */
+.brand-l .bmark{ width:23px; height:23px; flex:none; display:block; }
+.gn-links{ gap:4px; }
+.gn-links a{ font-size:15.5px; font-weight:600; letter-spacing:-.024em;
+  color:var(--ink-soft); padding:7px 11px; }
+.gn-links a:hover{ color:var(--ink); background:color-mix(in srgb, var(--ink) 5%, transparent); }
+.gn-cta{ background:var(--dark); color:#faf6ef; font-size:14.5px; font-weight:600;
+  padding:9px 16px; letter-spacing:-.022em;
+  -webkit-backdrop-filter:none; backdrop-filter:none; }
+.langsw button{ font-family:var(--sys); font-size:11.5px; font-weight:600;
+  letter-spacing:.01em; }
+
+/* the reading progress sits on top of the bar */
+#sprog{ height:3px; }
+#sprog i{ background:linear-gradient(90deg,var(--accent-tint),var(--accent-deep)); }
+
+/* ---------- the line under the bar ---------- */
+.meta{ display:flex; align-items:center; justify-content:space-between; gap:20px;
+  width:min(1180px,calc(100% - clamp(20px,6vw,72px))); margin:0 auto;
+  padding:14px 0; font-size:13.5px; letter-spacing:-.006em; color:var(--ink-faint);
+  border-bottom:1px solid color-mix(in srgb, var(--ink) 8%, transparent); }
+.meta b{ color:var(--ink); font-weight:600; }
+@media(max-width:860px){ .meta .meta-r{ display:none; } }
+
+/* ============================================================
+   KONCEPTET — one sticky stage, everything moved by the scroll
+   ============================================================ */
+/* The scroll span is cut to what the sequence actually needs. The last card
+   lands right before the stage lets go, so the moment the section is finished
+   it is also out of the way. */
+.scene{ position:relative; height:230vh; background:var(--paper-1); }
+.stage{ position:sticky; top:0; height:100vh; overflow:hidden;
+  display:flex; align-items:center; justify-content:center;
+  perspective:1500px; perspective-origin:50% 44%; }
+.glow{ position:absolute; left:50%; top:-18vh; width:min(1500px,140vw); height:110vh;
+  transform:translateX(-50%); pointer-events:none; will-change:transform,opacity;
+  background:radial-gradient(60% 55% at 50% 40%, var(--peach) 0%, transparent 72%); }
+.inner{ position:relative; z-index:1; transform-style:preserve-3d; will-change:transform;
+  width:min(1400px,calc(100% - clamp(20px,5vw,96px))); text-align:center; }
+.veil{ position:absolute; inset:0; pointer-events:none; opacity:0; will-change:opacity;
+  background:linear-gradient(180deg, transparent 0%, var(--paper-2) 78%); }
+
+.scene h1{ margin:0; font-weight:700; color:var(--ink);
+  font-size:clamp(40px,9vw,168px); line-height:.94; letter-spacing:-.045em; }
+.scene h1 .w{ display:inline-block; white-space:pre; }
+.scene h1 .w > span{ display:inline-block; opacity:0; will-change:transform,opacity,filter; }
+.lede{ margin:clamp(14px,2.2vh,24px) auto 0; max-width:42ch; opacity:0;
+  font-size:clamp(16px,1.35vw,21px); line-height:1.55; letter-spacing:-.012em;
+  color:var(--ink-soft); will-change:transform,opacity,filter; }
+.lede b{ color:var(--ink); font-weight:600; }
+
+.cards{ display:grid; grid-template-columns:repeat(3,1fr); gap:clamp(12px,1.4vw,22px);
+  margin-top:clamp(18px,3vh,34px); text-align:left; }
+.card{ opacity:0; padding:clamp(22px,2.2vw,30px) clamp(20px,2vw,28px); border-radius:24px;
+  background:linear-gradient(180deg,#fffdf9,#f8f1e6);
+  border:1px solid color-mix(in srgb, var(--ink) 7%, transparent);
+  box-shadow:0 30px 60px -30px rgba(33,29,24,.28), 0 2px 6px rgba(33,29,24,.05);
+  will-change:transform,opacity,filter; }
+.card h2{ margin:0 0 10px; font-weight:700; color:var(--ink);
+  font-size:clamp(26px,2.9vw,42px); line-height:1.02; letter-spacing:-.038em; }
+.card h2 .w{ display:inline-block; white-space:pre; }
+.card h2 .w > span{ display:inline-block; opacity:0; will-change:transform,opacity,filter; }
+.card p{ margin:0; opacity:0; color:var(--ink-soft);
+  font-size:clamp(14px,1.05vw,16.5px); line-height:1.55; letter-spacing:-.006em;
+  will-change:transform,opacity; }
+.card p b{ color:var(--ink); font-weight:600; }
+
+/* the veil closes the stage into --paper-2, so the section that follows opens
+   in that same tone and walks back to the page's own paper */
+.scene.intro{ background:linear-gradient(180deg, var(--paper-2) 0, var(--paper-1) 46vh); }
+
+@media(max-width:860px){
+  .scene{ height:270vh; }
+  .cards{ grid-template-columns:1fr; gap:10px; }
+  .card{ padding:18px 20px; border-radius:18px; }
+}
+
+/* the stage does its own placing, so nothing here answers to a viewer */
+@media (prefers-reduced-motion: reduce){
+  .scene{ height:auto; }
+  .stage{ position:static; height:auto; padding:12vh 0; perspective:none; }
+  .scene h1 .w > span, .lede, .card, .card h2 .w > span, .card p{
+    opacity:1 !important; transform:none !important; filter:none !important; }
+  .glow{ opacity:.55; } .veil{ opacity:1; }
+}
+
+/* ============================================================
+   the sections that follow, in the same quiet voice
+   ============================================================ */
+.s{ padding:clamp(96px,15vh,190px) 0; }
+.s-inner{ width:min(1120px,calc(100% - clamp(20px,6vw,80px))); margin:0 auto; }
+.gk{ font-size:12px; font-weight:600; letter-spacing:.16em; text-transform:uppercase;
+  color:var(--ink-faint); margin:0 0 20px; }
+.sec-h{ margin:0; font-weight:700; letter-spacing:-.04em; line-height:1.03;
+  font-size:clamp(2.1rem,5.4vw,4.4rem); color:var(--ink); }
+.sec-p{ margin:22px auto 0; max-width:42ch; font-size:clamp(16px,1.35vw,21px);
+  line-height:1.55; color:var(--ink-soft); letter-spacing:-.012em; }
+.center{ text-align:center; }
+
+.pf{ margin-top:clamp(64px,9vh,120px); }
+.pf-head{ display:flex; align-items:baseline; gap:14px; flex-wrap:wrap;
+  justify-content:center; margin-bottom:10px; }
+.pf-name{ margin:0; font-weight:700; letter-spacing:-.035em;
+  font-size:clamp(1.7rem,3.6vw,3rem); color:var(--ink); }
+.pf-live{ display:inline-flex; align-items:center; gap:7px; font-size:12px; font-weight:600;
+  letter-spacing:.1em; text-transform:uppercase; color:var(--accent); }
+.pf-live i{ width:7px; height:7px; border-radius:50%; background:var(--accent);
+  box-shadow:0 0 0 4px color-mix(in srgb, var(--accent) 16%, transparent); }
+.pf-url{ display:inline-block; margin-top:2px; font-size:14.5px; color:var(--ink-soft);
+  border-bottom:1px solid var(--ax-line); }
+.pf-url:hover{ color:var(--ink); border-bottom-color:currentColor; }
+.pf-p{ margin:20px auto 0; max-width:42ch; text-align:center;
+  font-size:clamp(15.5px,1.35vw,19px); line-height:1.55; color:var(--ink-soft); }
+.pf-list{ list-style:none; margin:26px auto 0; padding:0; max-width:760px;
+  display:grid; grid-template-columns:repeat(3,1fr); gap:clamp(12px,1.8vw,22px); }
+.pf-list li{ font-size:14.5px; line-height:1.5; color:var(--ink-soft); text-align:left;
+  padding-top:14px; border-top:1px solid var(--ax-line); }
+.pf-list b{ display:block; color:var(--ink); font-weight:600; margin-bottom:4px; }
+@media(max-width:760px){ .pf-list{ grid-template-columns:1fr; gap:0; }
+  .pf-list li{ padding:12px 0; } }
+
+.pf-shots{ display:flex; justify-content:center; align-items:flex-start;
+  gap:clamp(16px,3vw,44px); margin-top:clamp(40px,6vh,70px); }
+.pf-phone{ position:relative; width:clamp(168px,21vw,262px); flex:none;
+  border-radius:clamp(26px,3.2vw,40px); padding:clamp(6px,.8vw,10px);
+  background:linear-gradient(160deg,#3a352e,#1d1a16 45%,#3a352e);
+  box-shadow:0 30px 60px -34px rgba(33,29,24,.7), inset 0 0 0 1px rgba(255,255,255,.1); }
+.pf-phone img{ display:block; width:100%; height:auto; border-radius:clamp(20px,2.5vw,31px); }
+.pf-phone:nth-child(2){ margin-top:clamp(22px,4vw,56px); }
+@media(max-width:600px){ .pf-shots{ gap:12px; } .pf-phone:nth-child(2){ margin-top:26px; } }
+
+.way-list{ list-style:none; margin:clamp(44px,6vh,76px) auto 0; padding:0;
+  display:grid; gap:clamp(18px,2.4vw,26px); max-width:900px; }
+.way-list li{ padding:clamp(24px,3vw,34px) clamp(22px,2.6vw,34px); border-radius:24px;
+  background:linear-gradient(180deg,#fffdf9,#f8f1e6);
+  border:1px solid color-mix(in srgb, var(--ink) 7%, transparent); text-align:left; }
+.way-list b{ display:block; font-size:clamp(17px,2vw,22px); font-weight:600;
+  letter-spacing:-.024em; color:var(--ink); margin-bottom:8px; }
+.way-list p{ margin:0; font-size:clamp(14.5px,1.35vw,17px); line-height:1.55; color:var(--ink-soft); }
+
+/* The hero statement is the page's one big gesture, so it is sized to the
+   glass: as wide as the screen allows, held back only by the height the three
+   lines and the strip under them actually need. The room around it is cut
+   back to the least the bar and the strip can live with, because every pixel
+   given to padding is a pixel taken off the type. */
+.khero{ padding:84px clamp(18px,4vw,48px) clamp(24px,3.4vh,40px); }
+/* The headline was three one-word lines, so it could be set at whatever
+   the height of the screen allowed — a word has no width worth speaking
+   of. It is a sentence now, and a sentence is held by two things at
+   once: the height of three lines, and the width of the longest one.
+   The size is the smaller of the two, so it fills the screen on a wide
+   monitor and still fits on a laptop with a short window. */
+.kh{ font-weight:700; text-transform:none; padding-top:clamp(10px,2.2vh,26px);
+  font-size:clamp(30px, min(7.9vw, calc((100vh - 270px) / 3.5)), 132px);
+  line-height:.96; letter-spacing:-.04em; }
+@media(max-width:700px){
+  .kh{ font-size:clamp(32px, min(10.4vw, calc((100vh - 230px) / 5.2)), 62px); }
+}
+.kh .em{ color:var(--accent); }
+.kmeta{ font-size:13.5px; letter-spacing:-.006em; }
+.abtn{ font-family:var(--sys); font-weight:600; letter-spacing:-.01em; }
+.fin-h{ font-family:var(--sys); font-weight:700; letter-spacing:-.04em; line-height:1.05; }
+.fin-h em{ font-style:normal; }
+.fin-p, .fin-steps b, .fin-steps p, .fin-re{ font-family:var(--sys); }
+
+/* ---------- layers ----------
+   will-change is a promise to the compositor, not a decoration. An element
+   that carries it permanently keeps a composited layer for the whole life
+   of the page, whether or not anything is moving.
+
+   Measured: 95 elements carried it, 19.4 million pixels of layer between
+   them — about 296 MB at two-times pixel density. That is past what a
+   browser will hold, so it evicts layers and rasterises them again while
+   the page scrolls, and it bites hardest crossing from one section into
+   the next, where a new set of large layers has to come in.
+
+   They are handed out per scene now. The engine marks the scene the scroll
+   is actually in, and only that one gets to keep its layers. */
+.scene:not(.live) *{ will-change:auto !important; }
+/* and the flight's own full-window layers go when the flight is over */
+.dro-track.dro-done *{ will-change:auto !important; }

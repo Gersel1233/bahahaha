@@ -1,0 +1,136 @@
+/* ============================================================
+   LESREG — dybden.
+
+   The contact scene got something the rest of the page did not: light
+   with a position in it. Two soft discs behind the glass and a vignette
+   closing the corners, so the content sits inside a room instead of on
+   a flat field. On a dark page that is most of the difference between
+   "black background" and "lit from somewhere".
+
+   This puts the same three layers under every section. It is written
+   with gradients rather than a blur: the contact scene can afford
+   filter:blur(74px) on two big discs because there is one of it, and
+   the same thing on six sections at once is six full-window layers
+   being rasterised. A radial gradient with a long falloff is the same
+   picture for none of the cost.
+
+   And nothing drifts unless it is being looked at — the drift is tied
+   to the .live class the engine already hands out, so only the section
+   the scroll is actually in is running an animation.
+   ============================================================ */
+
+/* ---------- the glass, under the middle of the page ----------
+   The same frame the page opens on, held far back: blurred hard, taken
+   down to two fifths, and small — a blurred picture needs almost no
+   resolution, so the whole backdrop is twenty kilobytes against the two
+   hundred the sharp one at the top costs.
+
+   One layer, fixed to the window. It was on each pinned stage, and a
+   stage is exactly one screen tall: every section started the picture
+   over, and where two of them met there was a hard line across the page.
+   Fixed, the sections scroll over one continuous picture and there is
+   nothing between them to see. The vignette and the lift that were also
+   drawn per stage are on it as well, for the same reason — three
+   full-window gradient layers and an animation come off the page with
+   them.
+
+   The three sections in the middle let it through. The opening keeps the
+   sharp frame, because that is the statement; the letter at the bottom
+   keeps its own room, because a letter is read and not looked at. */
+/* The two washes over the picture fall away on a smootherstep as well.
+   A radial that ends in "transparent 70%" reaches nought with the slope
+   it had, and that ring is a change in the slope, which is a line — and
+   because this layer is fixed to the window it is the same line in the
+   same place in every section, which is why it kept being reported as a
+   section border in four different places. It was one artefact, and it
+   was never at a boundary at all. */
+.bg-glass{ position:fixed; inset:0; z-index:0; pointer-events:none;
+  background-image:
+    radial-gradient(38% 34% at 42% 38%, rgba(162,186,214,0.12) 0%, rgba(162,186,214,0.11897) 8.6%, rgba(162,186,214,0.11305) 17.2%, rgba(162,186,214,0.10043) 25.8%, rgba(162,186,214,0.08191) 34.4%, rgba(162,186,214,0.06) 43%, rgba(162,186,214,0.03809) 51.6%, rgba(162,186,214,0.01957) 60.2%, rgba(162,186,214,0.00695) 68.8%, rgba(162,186,214,0.00103) 77.4%, rgba(162,186,214,0) 86%),
+    radial-gradient(96% 88% at 50% 46%, rgba(4,5,7,0) 30%, rgba(4,5,7,0.00531) 37%, rgba(4,5,7,0.03591) 44%, rgba(4,5,7,0.10111) 51%, rgba(4,5,7,0.19681) 58%, rgba(4,5,7,0.31) 65%, rgba(4,5,7,0.42319) 72%, rgba(4,5,7,0.51889) 79%, rgba(4,5,7,0.58409) 86%, rgba(4,5,7,0.61469) 93%, rgba(4,5,7,0.62) 100%),
+    url("/photos/glas-dyb.jpg?v=1");
+  background-size:auto, auto, cover;
+  background-position:50% 50%, 50% 50%, 50% 50%;
+  background-repeat:no-repeat; }
+@media(max-width:820px){
+  .bg-glass{ background-image:
+    radial-gradient(44% 30% at 44% 34%, rgba(162,186,214,0.12) 0%, rgba(162,186,214,0.11897) 8.6%, rgba(162,186,214,0.11305) 17.2%, rgba(162,186,214,0.10043) 25.8%, rgba(162,186,214,0.08191) 34.4%, rgba(162,186,214,0.06) 43%, rgba(162,186,214,0.03809) 51.6%, rgba(162,186,214,0.01957) 60.2%, rgba(162,186,214,0.00695) 68.8%, rgba(162,186,214,0.00103) 77.4%, rgba(162,186,214,0) 86%),
+    radial-gradient(100% 86% at 50% 46%, rgba(4,5,7,0) 28%, rgba(4,5,7,0.00531) 35.2%, rgba(4,5,7,0.03591) 42.4%, rgba(4,5,7,0.10111) 49.6%, rgba(4,5,7,0.19681) 56.8%, rgba(4,5,7,0.31) 64%, rgba(4,5,7,0.42319) 71.2%, rgba(4,5,7,0.51889) 78.4%, rgba(4,5,7,0.58409) 85.6%, rgba(4,5,7,0.61469) 92.8%, rgba(4,5,7,0.62) 100%),
+    url("/photos/glas-dyb-h.jpg?v=1");
+    background-position:50% 50%, 50% 50%, 50% 30%; }
+}
+/* and the sections in the middle stop painting over it */
+.scene.sw, .scene.case, .scene.tel{ background:transparent; }
+
+/* only the scene being looked at is running anything */
+/* nothing drifts per stage any more — the backdrop is one fixed layer */
+
+/* The lift that was already behind the headlines. It was a warm stain
+   inherited from the paper page; on this ground it is the brightest
+   part of the room, and it is the thing the type stands in front of.
+
+   Its geometry is rewritten here as well. It used to hang 18vh above the
+   stage and stand 110vh tall, and a stage clips — so at the stage's top
+   edge the gradient still had about eight per cent of its strength and
+   simply stopped. That is a light switched on at the exact scroll where
+   the section starts, and it measured as a step of three and a half grey
+   levels on a ground of six, right on the boundary between the software
+   house and the clients. It fills the stage now, and the falloff is
+   centred and sized so it reaches nought before it reaches an edge:
+   nothing is cut off, so there is nothing to see at the join. */
+.glow{ left:0; right:0; top:0; width:auto; height:100%; transform:none;
+  background:radial-gradient(58% 39% at 50% 39%,
+    rgba(176,198,224,0.19) 0.0%,
+    rgba(176,198,224,0.18837) 10.0%,
+    rgba(176,198,224,0.179) 20.0%,
+    rgba(176,198,224,0.15901) 30.0%,
+    rgba(176,198,224,0.12969) 40.0%,
+    rgba(176,198,224,0.095) 50.0%,
+    rgba(176,198,224,0.06031) 60.0%,
+    rgba(176,198,224,0.03099) 70.0%,
+    rgba(176,198,224,0.011) 80.0%,
+    rgba(176,198,224,0.00163) 90.0%,
+    rgba(176,198,224,0.0) 100.0%); }
+
+/* ---------- the sections that are not stages ----------
+   The hero, the closer, the team and the footer are ordinary blocks, so
+   they need a box of their own to hang the light in. overflow:hidden
+   keeps the discs inside the section they belong to. */
+.khero, .closer, .s.way, .footer{ position:relative; overflow:hidden; }
+.khero::before, .closer::before, .s.way::before, .footer::before{
+  content:""; position:absolute; left:50%; top:46%; z-index:0;
+  width:130vw; height:150%; transform:translate(-50%,-50%);
+  pointer-events:none; border-radius:50%;
+  background:
+    radial-gradient(36% 40% at 44% 42%, rgba(162,186,214,.12) 0%, rgba(162,186,214,.04) 44%, transparent 68%),
+    radial-gradient(28% 32% at 64% 64%, rgba(116,138,168,.09) 0%, transparent 66%); }
+.khero::after, .closer::after, .s.way::after, .footer::after{
+  content:""; position:absolute; inset:0; z-index:0; pointer-events:none;
+  background:radial-gradient(90% 80% at 50% 46%, transparent 50%, rgba(4,5,7,.55)); }
+/* the content has to sit above its own light */
+.khero > *, .closer > *, .s.way > .s-inner, .footer > .footer-inner{
+  position:relative; z-index:1; }
+
+/* The footer is the bottom of the room, not another lit stage: the light
+   in it leans low and the corners stay closed. */
+.footer::before{ top:96%; opacity:.7; }
+
+/* ---------- the glass, one shade deeper ----------
+   The cards were a flat wash of white at low opacity. The contact cards
+   are lit along one diagonal and fall away along the other, which is
+   what makes them read as a pane with a thickness rather than a tint,
+   and it costs nothing to give the rest of the page the same. */
+.card, .way-list li, .fin-steps li{
+  background:linear-gradient(150deg, rgba(232,238,244,.15), rgba(232,238,244,.05) 44%, rgba(232,238,244,.1));
+  border:1px solid var(--edge);
+  box-shadow:0 40px 90px -42px rgba(0,0,0,.8), inset 0 1px 0 rgba(255,255,255,.3); }
+/* and the same travelling highlight the letter has, held still — a lit
+   edge running across the pane rather than a border all the way round */
+.card, .way-list li{ position:relative; overflow:hidden; }
+.card::after, .way-list li::after{
+  content:""; position:absolute; inset:0; border-radius:inherit;
+  pointer-events:none; mix-blend-mode:screen;
+  background:linear-gradient(105deg, transparent 34%, rgba(255,255,255,.1) 50%, transparent 64%); }
+.card > *, .way-list li > *{ position:relative; z-index:1; }
+
+
