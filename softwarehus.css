@@ -312,13 +312,15 @@
   padding:clamp(18px,2.6vh,34px) clamp(22px,3.4vw,54px);
   border-radius:var(--br);
   border:1px solid rgba(255,255,255,.7);
-  /* A milled face: a fine vertical brush, then light-dark-light down the
-     height, which is what a turned metal surface does under one lamp.
-     Held deliberately narrow in range — the first cut ran from near white
-     to a slate that was almost a shadow, and metal that dark at the
-     bottom stops being metal and starts being a gradient. */
+  /* A milled face: a real brush, then light-dark-light down the height,
+     which is what a turned metal surface does under one lamp. Held
+     deliberately narrow in range — the first cut ran from near white to a
+     slate that was almost a shadow, and metal that dark at the bottom
+     stops being metal and starts being a gradient.
+
+     The brush is a scan of the material, and it is laid on in ::after,
+     over the light rather than under it — see there. */
   background:
-    repeating-linear-gradient(90deg, rgba(255,255,255,.045) 0 1px, rgba(0,0,0,.01) 1px 3px),
     linear-gradient(174deg, #fdfdfe 0%, #f1f4f8 22%, #dae1ea 52%, #f3f6f9 78%, #ccd5e0 100%);
   /* No outer shadow here. The face is clipped while the material sweeps
      across the three, and clip-path takes the shadow with it — so the
@@ -348,25 +350,47 @@
   box-shadow:0 56px 140px -40px rgba(0,0,0,.92), 0 16px 44px -24px rgba(0,0,0,.7),
     0 0 130px -18px rgba(158,196,255,.26);
   will-change:transform,opacity; }
-/* Two lights on it, not one. The first is the hard specular that runs
-   across the face as it settles — wider and brighter than it was, with a
+/* The specular that runs across the face as it settles — wide, with a
    thin white core in the middle of a broad wash, which is what a highlight
-   on turned metal actually looks like. The second is a slow, very soft
-   sheen that never stops: twenty-six seconds to cross, low enough to be
-   invisible when you look for it and the reason the block does not read
-   as a photograph of a block when you do not. */
+   on turned metal actually looks like. Unchanged. */
+.sw-house{ isolation:isolate; }
 .sw-house::before{ content:""; position:absolute; inset:0; border-radius:inherit;
   pointer-events:none;
   background:linear-gradient(102deg,
     transparent 22%, rgba(255,255,255,.34) 40%, rgba(255,255,255,.96) 50%,
     rgba(255,255,255,.34) 60%, transparent 78%);
   transform:translateX(var(--sx,-80%)); will-change:transform; }
-.sw-house::after{ content:""; position:absolute; inset:-40% -10%; pointer-events:none;
-  background:linear-gradient(100deg, transparent 34%, rgba(255,255,255,.4) 50%, transparent 66%);
-  animation:swGleam 26s linear infinite; will-change:transform; }
-@keyframes swGleam{
-  0%   { transform:translateX(-130%) rotate(-2deg); }
-  100% { transform:translateX(130%)  rotate(-2deg); } }
+
+/* ---------- the grain, and where it has to sit ----------
+   The brush was a 3px repeating gradient in the element's own background:
+   a stripe rather than a grain — one frequency where metal has all of
+   them, and it moirés when the block scales. This is a scan of the real
+   material instead.
+
+   It goes on LAST, above the specular, and that is the whole point. Under
+   the light, the band paints over it at .96 white and the face goes
+   perfectly smooth exactly where a brushed surface shows its grain most —
+   which is what made the old block read as plastic. Above it, the streaks
+   run through the highlight too.
+
+   Overlay is what lets it sit there without being a second light: the
+   file is flat mid-grey with the brush as deviation from it, and overlay
+   against mid-grey is the identity, so everything the stylesheet lit
+   stays exactly as lit and only the streaks are added. Adding the light
+   instead — plus-lighter — was tried and measured: the face is already at
+   230–250, so anything additive clipped a quarter to two thirds of it to
+   flat 255.
+
+   Stretched to the box rather than covered, so it is never magnified: the
+   block is at most 678px wide and the file is 1020.
+
+   This replaced a slow sheen that crossed the face every twenty-six
+   seconds. That was there to keep the block from reading as a photograph
+   of a block — a job a real surface does by itself, and it does it
+   without an animation that never stops. */
+.sw-house::after{ content:""; position:absolute; inset:0; border-radius:inherit;
+  pointer-events:none; mix-blend-mode:overlay;
+  background:url("photos/alu-brush.webp?v=2") 0 0 / 100% 100% no-repeat; }
 .sw-house > b, .sw-house > s{ position:relative; z-index:2; }
 
 /* ---------- the way in ----------
