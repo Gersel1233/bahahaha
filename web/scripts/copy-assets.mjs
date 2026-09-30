@@ -13,6 +13,9 @@ const here = dirname(fileURLToPath(import.meta.url));
 const root = join(here, '..', '..');
 const pub = join(here, '..', 'public');
 
+/* the mark the tab shows, which lives at the root like the rest */
+await cp(join(root, 'favicon.svg'), join(pub, 'favicon.svg')).catch(() => console.warn('skip: favicon.svg'));
+
 for (const dir of ['media', 'photos', 'fonts', 'brand']) {
   const from = join(root, dir);
   if (!existsSync(from)) { console.warn('skip (missing):', dir); continue; }

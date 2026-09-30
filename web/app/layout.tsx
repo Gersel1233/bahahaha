@@ -13,6 +13,7 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://lesreg.com'),
   title: 'Lesreg — softwarehus',
   description: 'Vi bygger systemerne der driver forretningen. Ét hus tegner det, bygger det og passer det bagefter.',
+  icons: { icon: [{ url: '/favicon.svg', type: 'image/svg+xml' }] },
   openGraph: {
     title: 'Lesreg — softwarehus',
     description: 'Vi bygger systemerne der driver forretningen.',
