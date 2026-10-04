@@ -8,64 +8,78 @@
 <meta name="robots" content="noindex, nofollow" />
 <title>Lesreg — softwarehus</title>
 <meta name="description" content="Lesreg bygger systemerne der driver forretningen." />
-<meta name="theme-color" content="#1b1714" />
+<meta name="theme-color" content="#0E0F10" />
 <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
-<link rel="preload" href="../fonts/geist-600.woff2" as="font" type="font/woff2" crossorigin />
-<link rel="preload" href="../fonts/geistmono-500.woff2" as="font" type="font/woff2" crossorigin />
-<link rel="stylesheet" href="ny.css?v=1" />
+<link rel="preload" href="../fonts/chivo-500.woff2" as="font" type="font/woff2" crossorigin />
+<link rel="preload" href="../fonts/newsreader-300-italic.woff2" as="font" type="font/woff2" crossorigin />
+<link rel="preload" href="../fonts/fragmentmono-400.woff2" as="font" type="font/woff2" crossorigin />
+<link rel="preload" as="image" href="media/havn-16x9.webp" media="(min-aspect-ratio: 21/20)" />
+<link rel="preload" as="image" href="media/havn-9x16.webp" media="(max-aspect-ratio: 21/20)" />
+<link rel="stylesheet" href="ny.css?v=2" />
 <script>
   /* decided before first paint, so the opening never flashes the page
      underneath it: motion allowed and JS running means the opening is on */
-  if(!matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('ix-on');
+  if(!matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('ix-on','ix-start');
 </script>
 </head>
 <body>
 
-<nav class="nav" aria-label="Lesreg">
-  <a class="brand" href="#top" aria-label="Lesreg">
-    <svg viewBox="0 0 128 128" aria-hidden="true"><path class="b-sq" d="M0 0H94l34 34v94H0Z"/><path class="b-l" d="M44 28h18v62h38v18H44Z"/></svg>
-    Lesreg
-  </a>
-  <div class="nav-r">
-    <div class="lang" role="group" aria-label="Sprog / Language">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <!-- LA2.1 Icon / Arrow right: the stem stops short of the tip -->
+  <symbol id="i-arrow" viewBox="0 0 16 16"><path d="M3 8h9.4M9.1 4.4 12.6 8 9.1 11.6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <!-- LA2.1 Icon / Menu: the lower line short and to the right — "more", not a hamburger -->
+  <symbol id="i-menu" viewBox="0 0 16 16"><path d="M3 6h10M7.5 10.5H13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+</svg>
+
+<!-- LA31 Nav / Top bar; under 760 px it is the Mobile bar -->
+<nav class="tb" aria-label="Lesreg">
+  <a class="tb-brand" href="#top"><b>Lesreg</b><span class="anno" data-da="Softwarehus" data-en="Software house">Softwarehus</span></a>
+  <div class="tb-r">
+    <div class="seg" role="group" aria-label="Sprog / Language">
       <button type="button" data-lang="da" aria-pressed="true">DA</button>
       <button type="button" data-lang="en" aria-pressed="false">EN</button>
-      <i aria-hidden="true"></i>
     </div>
-    <a class="cta" href="mailto:mgersel@lesreg.com">
-      <span data-da="Skriv til os" data-en="Talk to us">Skriv til os</span>
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="square"><path d="M7 17 17 7M8 7h9v9"/></svg>
-    </a>
+    <a class="btn light" href="mailto:mgersel@lesreg.com"><span data-da="Skriv til os" data-en="Talk to us">Skriv til os</span><span class="lens"><svg><use href="#i-arrow"/></svg></span></a>
+    <button class="tb-menu" type="button" aria-expanded="false" aria-controls="mm" aria-label="Menu"><span class="lens"><svg><use href="#i-menu"/></svg></span></button>
   </div>
 </nav>
+<div class="mm" id="mm">
+  <a class="big" href="mailto:mgersel@lesreg.com" data-da="Skriv til os" data-en="Talk to us">Skriv til os</a>
+  <p class="anno">mgersel@lesreg.com</p>
+  <div class="seg" role="group" aria-label="Sprog / Language">
+    <button type="button" data-lang="da" aria-pressed="true">Dansk</button>
+    <button type="button" data-lang="en" aria-pressed="false">English</button>
+  </div>
+</div>
 
 <!-- The opening and the first screen of the page are one stage: the
-     opening ends by opening the mark into paper, and the headline is
-     already standing on it. When the stage lets go, the page simply
-     carries on underneath. Without JS, or with reduced motion, only the
+     opening ends with the plate's porcelain core opening out, and the
+     headline is already standing on it. When the stage lets go, the page
+     carries on underneath. Without JS or with reduced motion, only the
      headline is here. -->
 <section class="ix-track" id="top">
   <div class="ix-stage" id="stage">
     <header class="hero" id="hero">
-      <p class="h-k">
-        <svg viewBox="0 0 128 128" aria-hidden="true"><path d="M0 0H94l34 34v94H0Z" fill="currentColor"/><path d="M44 28h18v62h38v18H44Z" fill="#f1eade"/></svg>
-        <span data-da="Lesreg — softwarehus" data-en="Lesreg — software house">Lesreg — softwarehus</span>
-      </p>
-      <h1 class="h1">
-        <span class="hl"><span data-da="Vi bygger systemerne" data-en="We build the systems">Vi bygger systemerne</span></span>
-        <span class="hl"><span data-da="der driver" data-en="that run">der driver</span></span>
-        <span class="hl"><span data-da="forretningen." data-en="the business.">forretningen.</span></span>
-      </h1>
+      <div class="h-top">
+        <p class="label">
+          <svg viewBox="0 0 128 128" aria-hidden="true"><path d="M0 0H94l34 34v94H0Z" fill="#0E0F10"/><path d="M44 28h18v62h38v18H44Z" fill="#F6F4EF"/></svg>
+          <span data-da="Lesreg — softwarehus" data-en="Lesreg — software house">Lesreg — softwarehus</span>
+        </p>
+        <h1 class="h1">
+          <span class="hl"><span data-da="Vi bygger systemerne" data-en="We build the systems">Vi bygger systemerne</span></span>
+          <span class="hl acc"><span data-da="der driver forretningen." data-en="that run the business.">der driver forretningen.</span></span>
+        </h1>
+      </div>
       <div class="h-row">
-        <p class="h-p" data-da="Bestilling, booking, køkkenskærme og menuer på skærm — tegnet, bygget og drevet af os. <b>Spiis</b> og <b>Mosede Havnecafé</b> tager imod bestillinger på dem lige nu."
-           data-en="Ordering, booking, kitchen screens and menus on screen — designed, built and run by us. <b>Spiis</b> and <b>Mosede Havnecafé</b> are taking orders on them right now.">Bestilling, booking, køkkenskærme og menuer på skærm — tegnet, bygget og drevet af os. <b>Spiis</b> og <b>Mosede Havnecafé</b> tager imod bestillinger på dem lige nu.</p>
-        <div class="h-c">
-          <a class="cta" href="mailto:mgersel@lesreg.com">
-            <span data-da="Skriv til os" data-en="Talk to us">Skriv til os</span>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="square"><path d="M7 17 17 7M8 7h9v9"/></svg>
-          </a>
-          <span class="h-s" data-da="Scroll" data-en="Scroll">Scroll</span>
+        <i class="h-rule" aria-hidden="true"></i>
+        <p class="lead" data-da="Bestilling, booking, køkkenskærme og menuer på skærm — tegnet, bygget og drevet af <b>ét hus</b>."
+           data-en="Ordering, booking, kitchen screens and menus on screen — designed, built and run by <b>one house</b>.">Bestilling, booking, køkkenskærme og menuer på skærm — tegnet, bygget og drevet af <b>ét hus</b>.</p>
+        <div class="fig-l">
+          <span class="n">2</span>
+          <p data-da="<b>I drift lige nu</b>Spiis og Mosede Havnecafé tager imod bestillinger på vores systemer."
+             data-en="<b>Running right now</b>Spiis and Mosede Havnecafé take orders on our systems."><b>I drift lige nu</b>Spiis og Mosede Havnecafé tager imod bestillinger på vores systemer.</p>
         </div>
+        <a class="btn" href="mailto:mgersel@lesreg.com"><span data-da="Skriv til os" data-en="Talk to us">Skriv til os</span><span class="lens"><svg><use href="#i-arrow"/></svg></span></a>
       </div>
     </header>
   </div>
@@ -74,7 +88,7 @@
 <button class="skip" type="button" id="skip" data-da="Spring introen over ↓" data-en="Skip the intro ↓">Spring introen over ↓</button>
 
 <section class="next">
-  <span class="h-s" data-da="Preview" data-en="Preview">Preview</span>
+  <span class="label" data-da="Preview" data-en="Preview">Preview</span>
   <p data-da="Det her er åbningen og overgangen til siden. Resten af siden — hvad vi bygger, hvem der kører på det, og hvordan man kommer i gang — bygges i næste trin."
      data-en="This is the opening and the hand-over to the page. The rest — what we build, who runs on it, and how to get started — is the next step.">Det her er åbningen og overgangen til siden. Resten af siden — hvad vi bygger, hvem der kører på det, og hvordan man kommer i gang — bygges i næste trin.</p>
 </section>
@@ -84,6 +98,6 @@
   <a href="mailto:mgersel@lesreg.com">mgersel@lesreg.com</a>
 </footer>
 
-<script type="module" src="main.js?v=1"></script>
+<script type="module" src="main.js?v=2"></script>
 </body>
 </html>

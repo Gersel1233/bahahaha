@@ -4,7 +4,8 @@ import path from 'node:path';
 const id = process.argv[2] || 'Desktop';
 const scale = Number(process.argv[3] || 1);
 const out = path.resolve('out', id.toLowerCase() + '.mp4');
-const serveUrl = await bundle({ entryPoint: path.resolve('src/index.ts') });
+// the site's own folder is the film's public folder, so the picture is the same file
+const serveUrl = await bundle({ entryPoint: path.resolve('src/index.ts'), publicDir: path.resolve('../ny') });
 const opts = { serveUrl, browserExecutable: '/opt/pw-browsers/chromium-1194/chrome-linux/chrome',
   chromiumOptions: { gl: 'swiftshader' }, chromeMode: 'chrome-for-testing' };
 const composition = await selectComposition({ ...opts, id });

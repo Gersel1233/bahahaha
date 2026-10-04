@@ -3,7 +3,7 @@
    draw on each frame. The scroll is replaced by a hand on a wheel — eased
    moves between the places a reader would stop to read. */
 import React, { useLayoutEffect, useRef, useState } from 'react';
-import { useCurrentFrame, useVideoConfig, delayRender, continueRender } from 'remotion';
+import { useCurrentFrame, useVideoConfig, delayRender, continueRender, staticFile } from 'remotion';
 import '../../ny/ny.css';
 // @ts-ignore — plain JS module from the site
 import { createIntro } from '../../ny/intro.js';
@@ -17,11 +17,11 @@ const smooth = (t: number) => t * t * t * (t * (t * 6 - 15) + 10);
 
 // seconds -> scroll position; each pair is a place the hand stops
 const KEYS: [number, number][] = [
-  [2.6, 0], [4.1, 0.135], [5.7, 0.215], [7.2, 0.325], [8.7, 0.435],
-  [10.2, 0.545], [11.6, 0.64], [13.2, 0.785], [13.8, 0.8], [15.6, 0.945], [17.4, 1],
+  [3.2, 0], [4.6, 0.1], [6.0, 0.2], [7.5, 0.33], [9.0, 0.46], [10.5, 0.59],
+  [11.8, 0.68], [13.2, 0.775], [13.8, 0.8], [15.6, 0.94], [17.4, 1],
 ];
 function timeline(t: number) {
-  const a = clamp(t / 2.3);
+  const a = clamp(t / 2.6);
   if (t <= KEYS[0][0]) return { p: 0, a };
   for (let i = 1; i < KEYS.length; i++) {
     const [t1, p1] = KEYS[i], [t0, p0] = KEYS[i - 1];
@@ -31,10 +31,10 @@ function timeline(t: number) {
 }
 
 const Arrow = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="square"><path d="M7 17 17 7M8 7h9v9" /></svg>
+  <svg viewBox="0 0 16 16"><path d="M3 8h9.4M9.1 4.4 12.6 8 9.1 11.6" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" /></svg>
 );
-const Mark = ({ l = '#f1eade' }: { l?: string }) => (
-  <svg viewBox="0 0 128 128" aria-hidden="true"><path className="b-sq" d="M0 0H94l34 34v94H0Z" fill="currentColor" /><path className="b-l" d="M44 28h18v62h38v18H44Z" fill={l} /></svg>
+const Menu = () => (
+  <svg viewBox="0 0 16 16"><path d="M3 6h10M7.5 10.5H13" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" /></svg>
 );
 
 export const Intro: React.FC = () => {
@@ -42,69 +42,88 @@ export const Intro: React.FC = () => {
   const { fps, width, height } = useVideoConfig();
   const stage = useRef<HTMLDivElement>(null);
   const api = useRef<any>(null);
-  const [handle] = useState(() => delayRender('fonts and layout'));
+  const [handle] = useState(() => delayRender('fonts, picture and layout'));
+  const frameRef = useRef(frame);
+  frameRef.current = frame;
 
   useLayoutEffect(() => {
-    document.documentElement.classList.add('ix-on');
+    const html = document.documentElement;
+    html.classList.add('ix-on');
+    html.lang = 'da';
     // On the page, will-change keeps every moving part on its own layer —
     // that is what makes it run at 60. A film is screenshotted frame by
-    // frame, and a layer that has just become visible may not be rastered
-    // yet when the picture is taken, so here everything paints in place.
+    // frame, and a layer that has just changed may not be painted yet when
+    // the picture is taken, so here everything paints in place.
     const st = document.createElement('style');
     st.textContent = '*{will-change:auto !important; transition:none !important; animation:none !important}';
     document.head.appendChild(st);
-    document.documentElement.lang = 'da';
-    api.current = createIntro(stage.current, { lang: 'da', film: true });
-    api.current.layout(width, height);
+    const probe = 'media/havn-16x9.webp';
+    const base = staticFile(probe).slice(0, -probe.length);
+    api.current = createIntro(stage.current, { lang: 'da', film: true, base });
     Promise.all([
-      document.fonts.load('600 40px Geist'), document.fonts.load('400 16px Geist'),
-      document.fonts.load('500 16px Geist'), document.fonts.load('500 12px "Geist Mono"'),
-    ]).then(() => document.fonts.ready).then(() => continueRender(handle));
+      document.fonts.load('500 40px Chivo'), document.fonts.load('400 16px Chivo'), document.fonts.load('300 40px Chivo'),
+      document.fonts.load('600 11px Chivo'), document.fonts.load('400 12px "Fragment Mono"'), document.fonts.load('italic 300 40px Newsreader'),
+    ]).then(() => document.fonts.ready).then(() => {
+      api.current.layout(width, height); // after the fonts: the windows are measured
+      const pic = stage.current!.querySelector('img') as HTMLImageElement;
+      return pic.decode().catch(() => {});
+    }).then(() => { paint(frameRef.current); continueRender(handle); });
   }, []);
 
-  useLayoutEffect(() => {
-    if (!api.current) return;
-    const { p, a } = timeline(frame / fps);
+  // draws one frame; also called once the layout exists, because the
+  // first frame of every tab is asked for before it does
+  const paint = (f: number) => {
+    if (!api.current || !api.current.geometry) return;
+    const { p, a } = timeline(f / fps);
     const st = api.current.render(p, a);
     const html = document.documentElement;
-    const at = (sel: string) => { const r = document.querySelector(sel)!.getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2]; };
-    const [lx, ly] = at('.brand'), [rx, ry] = at('.nav-r');
-    html.classList.toggle('nav-ink-l', st.onPaper(lx, ly));
-    html.classList.toggle('nav-ink', st.onPaper(rx, ry));
+    const nav = document.querySelector('.tb')!.getBoundingClientRect();
+    const pg = st.page;
+    html.classList.toggle('nav-light', st.done || (pg && p >= 0.8 && pg.top <= nav.top + 4 && pg.left <= nav.left + 8 && pg.right >= nav.right - 8));
     stage.current!.classList.toggle('on-paper', st.done);
-    const els: [Element, number, boolean][] = [];
-    els.push([document.querySelector('.h-k')!, 0.935, false]);
-    document.querySelectorAll('.hl > span').forEach((e, i) => els.push([e, 0.94 + i * 0.012, true]));
-    els.push([document.querySelector('.h-p')!, 0.962, false]);
-    els.push([document.querySelector('.h-c')!, 0.968, false]);
+    const hero = document.getElementById('hero')!;
+    hero.style.visibility = p >= 0.92 ? 'visible' : 'hidden';
+    (document.querySelector('.h-rule') as HTMLElement).style.transform = `scaleX(${Math.max(0.0001, out5(seg(p, 0.945, 0.995)))})`;
+    const els: [HTMLElement, number, boolean][] = [];
+    els.push([document.querySelector('.hero .label')!, 0.925, false]);
+    document.querySelectorAll<HTMLElement>('.h1 .hl > span').forEach((e, i) => els.push([e, 0.93 + i * 0.014, true]));
+    document.querySelectorAll<HTMLElement>('.h-row > :not(.h-rule)').forEach((e, i) => els.push([e, 0.952 + i * 0.008, false]));
     for (const [e, s, line] of els) {
-      const t = out5(seg(p, s, s + 0.045));
-      (e as HTMLElement).style.transform = line ? `translate(0,${(1 - t) * 108}%)` : `translate(0,${(1 - t) * 18}px)`;
-      (e as HTMLElement).style.opacity = line ? '1' : String(t);
+      const t = out5(seg(p, s, s + 0.04));
+      e.style.transform = line ? `translate(0,${(1 - t) * 130}%)` : `translate(0,${(1 - t) * 16}px)`;
+      e.style.opacity = String(line ? Math.min(1, t * 2.5) : t);
     }
-  }, [frame]);
+  };
+  useLayoutEffect(() => { paint(frame); }, [frame]);
 
   return (
-    <div style={{ width, height, position: 'relative', overflow: 'hidden', background: '#1b1714' }}>
-      <nav className="nav" aria-label="Lesreg">
-        <a className="brand"><Mark />Lesreg</a>
-        <div className="nav-r">
-          <div className="lang" style={{ ['--lw' as any]: '17px' }}><button aria-pressed="true">DA</button><button aria-pressed="false">EN</button><i /></div>
-          <a className="cta"><span>Skriv til os</span><Arrow /></a>
+    <div style={{ width, height, position: 'relative', overflow: 'hidden', background: '#0E0F10' }}>
+      <nav className="tb" aria-label="Lesreg">
+        <a className="tb-brand"><b>Lesreg</b><span className="anno">Softwarehus</span></a>
+        <div className="tb-r">
+          <div className="seg"><button aria-pressed="true">DA</button><button aria-pressed="false">EN</button></div>
+          <a className="btn light"><span>Skriv til os</span><span className="lens"><Arrow /></span></a>
+          <button className="tb-menu"><span className="lens"><Menu /></span></button>
         </div>
       </nav>
       <section className="ix-track" style={{ height }}>
         <div className="ix-stage" ref={stage} style={{ height }}>
-          <header className="hero">
-            <p className="h-k"><Mark l="#f1eade" /><span>Lesreg — softwarehus</span></p>
-            <h1 className="h1">
-              <span className="hl"><span>Vi bygger systemerne</span></span>
-              <span className="hl"><span>der driver</span></span>
-              <span className="hl"><span>forretningen.</span></span>
-            </h1>
+          <header className="hero" id="hero">
+            <div className="h-top">
+              <p className="label">
+                <svg viewBox="0 0 128 128"><path d="M0 0H94l34 34v94H0Z" fill="#0E0F10" /><path d="M44 28h18v62h38v18H44Z" fill="#F6F4EF" /></svg>
+                <span>Lesreg — softwarehus</span>
+              </p>
+              <h1 className="h1">
+                <span className="hl"><span>Vi bygger systemerne</span></span>
+                <span className="hl acc"><span>der driver forretningen.</span></span>
+              </h1>
+            </div>
             <div className="h-row">
-              <p className="h-p">Bestilling, booking, køkkenskærme og menuer på skærm — tegnet, bygget og drevet af os. <b>Spiis</b> og <b>Mosede Havnecafé</b> tager imod bestillinger på dem lige nu.</p>
-              <div className="h-c"><a className="cta"><span>Skriv til os</span><Arrow /></a><span className="h-s">lesreg.com</span></div>
+              <i className="h-rule" />
+              <p className="lead">Bestilling, booking, køkkenskærme og menuer på skærm — tegnet, bygget og drevet af <b>ét hus</b>.</p>
+              <div className="fig-l"><span className="n">2</span><p><b>I drift lige nu</b>Spiis og Mosede Havnecafé tager imod bestillinger på vores systemer.</p></div>
+              <a className="btn"><span>Skriv til os</span><span className="lens"><Arrow /></span></a>
             </div>
           </header>
         </div>
