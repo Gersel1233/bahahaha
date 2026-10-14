@@ -99,98 +99,86 @@ html.mm-open .tb-menu .lens{ --lb:var(--ultra); --lc:var(--white); }
 /* ---------- the opening ---------- */
 .ix-track{ position:relative; }
 .ix-stage{ position:relative; overflow:hidden; background:var(--porcelain); }
-html.ix-on .ix-track{ height:640vh; height:640svh; }
-html.ix-on .ix-stage{ position:sticky; top:0; height:100vh; height:100svh; background:var(--obsidian); }
+html.ix-on .ix-track{ height:620vh; height:620svh; }
+html.ix-on .ix-stage{ position:sticky; top:0; height:100vh; height:100svh; background:#040404; }
 html.ix-on .ix-stage.on-paper{ background:var(--porcelain); }
-@media (max-width:760px){ html.ix-on .ix-track{ height:600vh; height:600svh; } }
+@media (max-width:760px){ html.ix-on .ix-track{ height:580vh; height:580svh; } }
 
 .ix{ position:absolute; inset:0; display:none; color:var(--porcelain); }
 html.ix-on .ix{ display:block; }
 .ix.gone{ visibility:hidden; }
-.ix > *, .ix-marks > *, .ix-lines > *, .ix-wins > *, .ix-says > *{ position:absolute; }
-.ix-cam{ left:0; top:0; width:100%; height:100%; transform-origin:0 0; will-change:transform,opacity; }
-.ix-pic{ position:absolute; max-width:none; user-select:none; }
-.ix-soft{ opacity:0; will-change:opacity; }
-.ix-scrim{ left:0; right:0; pointer-events:none; }
-/* LA31 Scrim / Top 40 and Scrim / Bottom 85 */
-.ix-scrim-top{ top:0; height:34%; background:linear-gradient(rgba(14,15,16,.4), rgba(14,15,16,0)); }
-.ix-scrim-bot{ bottom:0; height:62%; background:linear-gradient(rgba(14,15,16,0), rgba(14,15,16,.85)); will-change:opacity; }
-/* LA31 Overlay / Dim */
-.ix-dim{ inset:0; background:var(--obsidian); opacity:.1; will-change:opacity; }
-.ix-lines, .ix-marks, .ix-wins{ inset:0; pointer-events:none; }
+.ix > *, .ix-ann > *, .ix-says > *{ position:absolute; }
+/* the Higgsfield film, drawn frame by frame, and the sharp still it ends on */
+.ix-film{ left:0; top:0; will-change:opacity; }
+.ix-still{ left:0; top:0; max-width:none; transform-origin:0 0; opacity:0; will-change:transform,opacity; user-select:none;
+  -webkit-mask-image:linear-gradient(transparent, #000 5%); mask-image:linear-gradient(transparent, #000 5%); }
+.ix-scrim{ pointer-events:none; }
+/* LA31 Scrim, laid where the words are */
+.ix-scrim-l{ left:0; top:0; bottom:0; width:62%; background:linear-gradient(90deg, rgba(14,15,16,.62), rgba(14,15,16,.22) 55%, rgba(14,15,16,0)); }
+.ix-scrim-b{ left:0; right:0; bottom:0; height:58%; background:linear-gradient(rgba(14,15,16,0), rgba(14,15,16,.85)); will-change:opacity; }
 
-/* LA31 Annotation / Marker — ultramarine means now */
+/* the glass, measured: LA3.1 Annotation in Fragment Mono, hairlines,
+   and one LA31 Annotation / Marker on the specular edge */
+.ix-ann{ inset:0; pointer-events:none; }
+.dim{ left:0; top:0; width:1000px; height:1px; margin-top:-.5px; transform-origin:0 50%;
+  background:rgba(246,244,239,.6); will-change:transform,opacity; }
+.tick{ left:0; top:0; width:1px; height:11px; margin:-5.5px 0 0 -.5px; background:rgba(246,244,239,.8); }
+.alab{ left:0; top:0; white-space:nowrap; font:400 11.5px/16px var(--mono); color:var(--travertine); will-change:transform,opacity; }
+.alab-w{ color:var(--porcelain); }
+.alab-h{ transform-origin:0 0; }
+.is-port .alab-s{ transform-origin:100% 50%; }
 .mk{ left:0; top:0; width:32px; height:32px; margin:-16px 0 0 -16px; border-radius:16px;
   background:var(--ultra); color:var(--white); display:grid; place-items:center;
   font:400 11.5px/16px var(--mono); box-shadow:var(--contact-s); will-change:transform,opacity; }
 .mk span{ position:relative; z-index:1; }
-.mk-halo{ position:absolute; inset:-6px; border-radius:22px; background:var(--ultra-tint); z-index:0;
-  will-change:transform,opacity; }
+.mk-halo{ position:absolute; inset:-6px; border-radius:22px; background:var(--ultra-tint); z-index:0; will-change:transform,opacity; }
 .ld{ left:0; top:0; width:1000px; height:1px; margin-top:-.5px; transform-origin:0 50%;
-  background:rgba(246,244,239,.78); will-change:transform,opacity; }
+  background:rgba(246,244,239,.75); will-change:transform,opacity; }
 
-/* LA31 Media / Product window: Rim (no blur) around a solid porcelain
-   core; content on the core only */
-.win{ padding:calc(5px * var(--u)); border-radius:calc(22px * var(--u));
-  background:var(--rim-tint); border:1px solid var(--rim-edge); box-shadow:var(--rim-shadow);
-  will-change:transform,opacity; }
-.win .core{ background:var(--porcelain); color:var(--obsidian); border-radius:calc(17px * var(--u)); overflow:hidden; }
-.win .bar{ display:flex; align-items:center; justify-content:space-between; gap:10px;
-  height:calc(40px * var(--u)); padding:0 calc(14px * var(--u)) 0 calc(16px * var(--u));
-  border-bottom:1px solid var(--travertine); white-space:nowrap; }
-.win .bar b{ font:500 calc(13.5px * var(--u))/16px var(--sans); }
-.win .ctx{ display:flex; align-items:center; gap:6px; font:400 calc(11px * var(--u))/16px var(--mono); color:var(--graphite); }
-.now{ display:inline-block; width:6px; height:6px; border-radius:3px; background:var(--ultra); flex:none; }
-.win-order:not(.live) .ctx .now{ background:var(--ash); }
-.win .body{ padding:calc(12px * var(--u)) calc(16px * var(--u)) calc(14px * var(--u)); display:grid; gap:calc(4px * var(--u)); }
-.win .body > *{ will-change:transform,opacity; }
-.win .row{ font:400 calc(14px * var(--u))/calc(22px * var(--u)) var(--sans); }
-.win .meta{ display:flex; align-items:center; gap:6px; font:400 calc(11px * var(--u))/16px var(--mono); color:var(--graphite); }
-.win .tk{ display:flex; align-items:flex-end; justify-content:space-between; padding-bottom:calc(6px * var(--u));
-  margin-bottom:calc(2px * var(--u)); border-bottom:1px solid var(--limestone); }
-.win .fig{ font:300 calc(40px * var(--u))/1 var(--sans); letter-spacing:-.05em; }
-.win .led{ display:grid; grid-template-columns:auto 1fr auto; gap:12px; align-items:center;
-  font:400 calc(13px * var(--u))/calc(20px * var(--u)) var(--sans); padding:calc(6px * var(--u)) 0;
-  border-top:1px solid var(--limestone); }
-.win .led:first-child{ border-top:0; }
-.win .led .mono{ font-size:calc(11.5px * var(--u)); color:var(--graphite); }
-.win .tag{ display:inline-flex; align-items:center; gap:6px; font:600 calc(10.5px * var(--u))/14px var(--sans);
-  letter-spacing:.06em; text-transform:uppercase; color:var(--ultra); }
-.win .mrow{ display:flex; align-items:center; justify-content:space-between;
-  font:400 calc(13px * var(--u))/calc(20px * var(--u)) var(--sans); padding:calc(6px * var(--u)) calc(8px * var(--u));
-  margin:0 calc(-8px * var(--u)); border-radius:8px; transition:background-color .4s var(--ease); }
-.win .mrow i{ width:calc(28px * var(--u)); height:1px; background:var(--travertine); }
-.win-menu.live .mrow.hot{ background:var(--ultra-tint); }
-.win .mrow.hot .tag{ background:var(--porcelain); padding:2px 8px; border-radius:999px; }
+/* the systems, inside the glass: the recording sits behind the glass's
+   face, so it gets the glass's own light on top — the -45° sheen and a
+   little of the room's darkness at the rim */
+.ix-screen{ left:0; top:0; transform-origin:0 0; overflow:hidden; background:#0B0C0D; opacity:0;
+  box-shadow:0 0 0 1px rgba(255,255,255,.06); will-change:transform,opacity; }
+.ix-screen .app{ position:absolute; inset:0; overflow:hidden; }
+.ix-screen .app video, .ix-screen .app img{ position:absolute; left:0; width:100%; top:-6.5%; height:111%; object-fit:cover; }
+.ix-screen .app-mosede video, .ix-screen .app-mosede img{ top:-5.5%; height:114%; }
+.ix-screen .app-mosede{ will-change:clip-path; }
+.ix-screen .sheen{ position:absolute; inset:0; pointer-events:none;
+  background:linear-gradient(135deg, rgba(255,255,255,.2), rgba(255,255,255,.04) 22%, rgba(255,255,255,0) 48%, rgba(255,255,255,0) 82%, rgba(255,255,255,.07)),
+    radial-gradient(120% 90% at 50% 50%, rgba(14,15,16,0) 62%, rgba(14,15,16,.38));
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.1); }
+/* which system it is: a Smoke chip under the glass, the dot ultramarine because it is live */
+.apptag{ left:0; top:0; display:flex; align-items:center; gap:8px; height:36px; padding:0 14px 0 12px; border-radius:18px;
+  background:var(--smoke); border:1px solid var(--rim-edge); box-shadow:var(--smoke-shadow);
+  -webkit-backdrop-filter:blur(14px); backdrop-filter:blur(14px);
+  font:400 11.5px/16px var(--mono); color:var(--porcelain); white-space:nowrap; will-change:transform,opacity; }
+.apptag .dot{ width:6px; height:6px; border-radius:3px; background:var(--ultra); box-shadow:0 0 0 3px rgba(218,221,251,.25); }
 
 /* the words */
-.ix-open{ left:var(--gut); right:var(--gut); bottom:clamp(64px, 13vh, 140px); }
+.ix-open{ left:var(--gut); width:min(46vw, 660px); bottom:clamp(64px, 14vh, 150px); }
 .ix-kick{ font:600 11px/14px var(--sans); letter-spacing:.06em; text-transform:uppercase; color:var(--travertine);
   margin-bottom:clamp(14px, 2.4vh, 24px); will-change:transform,opacity; }
-/* LA3.1 Display XL, with the Accent Display as its one phrase */
-.ix-display{ font:500 min(calc(136px * var(--u)), 10vw)/.912 var(--sans); letter-spacing:-.05em; }
-.ix-display .ln{ display:block; overflow:hidden; padding-bottom:.12em; margin-bottom:-.12em; }
+/* LA3.1 Display, with the Accent Display as its one phrase */
+.ix-display{ font:500 min(calc(96px * var(--u)), 6.8vw)/.94 var(--sans); letter-spacing:-.045em; }
+.ix-display .ln{ display:block; overflow:hidden; padding-bottom:.14em; margin-bottom:-.14em; }
 .ix-display .ln > span{ display:inline-block; will-change:transform,opacity; }
-.ix-display .acc{ font:300 italic min(calc(136px * var(--u)), 10vw)/.96 var(--accent); letter-spacing:-.03em; }
-.ix-tag{ right:var(--gut); bottom:28px; display:flex; flex-direction:column; align-items:flex-end; gap:14px;
-  font:400 11.5px/16px var(--mono); color:var(--travertine); }
-.ix-tag .cue{ display:flex; align-items:center; gap:10px; color:var(--porcelain); }
-.ix-tag .cue i{ display:block; width:36px; height:1px; background:currentColor; transform-origin:0 50%;
-  animation:cue 2.2s var(--ease) infinite; }
+.ix-display .acc{ font:300 italic min(calc(96px * var(--u)), 6.8vw)/.98 var(--accent); letter-spacing:-.03em; }
+.ix-cue{ right:var(--gut); bottom:28px; display:flex; align-items:center; gap:10px; font:400 11.5px/16px var(--mono); color:var(--porcelain); }
+.ix-cue i{ display:block; width:36px; height:1px; background:currentColor; transform-origin:0 50%; animation:cue 2.2s var(--ease) infinite; }
 @keyframes cue{ 0%{ transform:scaleX(0); } 55%{ transform:scaleX(1); opacity:1; } 100%{ transform:scaleX(1); opacity:0; } }
 
-.ix-says{ left:var(--gut); bottom:clamp(56px, 11vh, 120px); width:min(820px, calc(100% - 2 * var(--gut))); height:0; }
+.ix-says{ left:var(--gut); bottom:clamp(64px, 14vh, 150px); width:min(44vw, 640px); height:0; }
 .say{ left:0; bottom:0; width:100%; }
 .say-k{ display:flex; gap:12px; align-items:baseline; margin-bottom:14px; font:600 11px/14px var(--sans);
   letter-spacing:.06em; text-transform:uppercase; color:var(--travertine); will-change:transform,opacity; }
 .say-k b{ font:400 11.5px/16px var(--mono); letter-spacing:0; color:var(--porcelain); }
 /* LA3.1 H1 */
-.say-t{ font:500 calc(64px * var(--u))/1 var(--sans); letter-spacing:-.035em; text-wrap:balance; }
-.say-t .w{ display:inline-block; overflow:hidden; vertical-align:top; padding-bottom:.12em; margin-bottom:-.12em; }
+.say-t{ font:500 min(calc(56px * var(--u)), 4.2vw)/1.02 var(--sans); letter-spacing:-.035em; text-wrap:balance; }
+.say-t .w{ display:inline-block; overflow:hidden; vertical-align:top; padding-bottom:.14em; margin-bottom:-.14em; }
 .say-t .w > span{ display:inline-block; will-change:transform,opacity; }
 
-/* LA31 Nav / Chapter rail — mirrored to the right edge, so the current
-   chip opens leftwards into the room instead of off the screen */
+/* LA31 Nav / Chapter rail, mirrored to the right edge */
 .ix-rail{ right:var(--gut); top:50%; margin-top:-102px; width:58px; height:206px; }
 .rail-in{ display:flex; flex-direction:column; gap:4px; padding:8px 4px; border-radius:28px;
   background:var(--smoke); border:1px solid var(--rim-edge); box-shadow:var(--smoke-shadow);
@@ -201,15 +189,6 @@ html.ix-on .ix{ display:block; }
   box-shadow:var(--contact-m); white-space:nowrap; will-change:transform; }
 .rail-cur .mono{ font:400 11.5px/16px var(--mono); }
 .rail-cur b{ font:500 14px/16px var(--sans); }
-
-/* the one plate: LA31 Card / Layered plate's Rim and solid core */
-.ix-house{ z-index:3; padding:calc(6px * var(--u)); border-radius:calc(28px * var(--u)); }
-.ix-house .core{ border-radius:calc(22px * var(--u)); padding:calc(28px * var(--u)) calc(32px * var(--u)) calc(30px * var(--u)); }
-.ix-house .core > *{ will-change:opacity; }
-.ix-house .lbl{ font:600 11px/14px var(--sans); letter-spacing:.06em; text-transform:uppercase; color:var(--ash); margin-bottom:12px; }
-/* LA3.1 H2 and Accent Heading */
-.ix-house .h2{ font:500 calc(40px * var(--u))/1.1 var(--sans); letter-spacing:-.025em; }
-.ix-house .acc{ font:300 italic calc(40px * var(--u))/1.1 var(--accent); letter-spacing:-.01em; }
 
 .ix-page{ position:absolute; inset:0; z-index:4; background:var(--porcelain); opacity:0; pointer-events:none; display:none; }
 html.ix-on .ix-page{ display:block; }
@@ -251,15 +230,19 @@ html:not(.ix-on) .h-row .h-rule{ transform:none; }
 html.ix-on .skip{ display:block; }
 html.ix-done .skip, html.ix-start .skip{ opacity:0; pointer-events:none; }
 
-/* phones */
-.is-port .ix-display, .is-port .ix-display .acc{ font-size:min(calc(58px * var(--u)), 15vw); }
-.is-port .say-t{ font-size:min(calc(34px * var(--u)), 9vw); line-height:1.06; }
-.is-port .ix-house .h2, .is-port .ix-house .acc{ font-size:min(calc(30px * var(--u)), 8vw); }
-.is-port .ix-house .core{ padding:22px 22px 24px; }
+/* phones: the glass stands in the middle, the words go under it, on the stone */
+.is-port .ix-open, .is-port .ix-says{ left:20px; right:20px; width:auto; bottom:clamp(56px, 9vh, 90px); }
+.is-port .ix-display, .is-port .ix-display .acc{ font-size:min(calc(46px * var(--u)), 12vw); }
+.is-port .say-t{ font-size:min(calc(30px * var(--u)), 8vw); line-height:1.08; }
+.is-port .ix-cue{ display:none; }
 @media (max-width:760px){
-  .ix-tag{ display:none; }
   .h-row{ grid-template-columns:1fr; gap:22px; }
   .lead{ font-size:17px; line-height:26px; }
   .skip{ bottom:16px; }
 }
 html:not(.ix-on) .tb{ background:var(--smoke-dense); }
+/* Over the film the Smoke bars stand on near-black, where their blur
+   shows nothing and costs a full re-blur every frame the film moves
+   (measured: 49 fps with it, 58 without). It comes back the moment the
+   bar stands on the page. */
+html.ix-on:not(.nav-light) .tb, .ix-rail .rail-in{ -webkit-backdrop-filter:none; backdrop-filter:none; }

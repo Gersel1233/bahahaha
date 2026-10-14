@@ -1,93 +1,74 @@
-/* Lesreg — the opening, on Liquid Atelier 3.2.
+/* Lesreg — the opening, third cut.
 
-   One function of one number, as before: render(p, a) draws everything
-   for a scroll position p (0..1) and a load clock a (0..1), with no state
-   carried between frames. It plays backwards as well as forwards, and the
-   same file is filmed frame by frame by Remotion.
+   A Higgsfield film is the substrate: a drop of molten glass that flows
+   and sets into a slab, filmed locked-off on engraved travertine. It is
+   scrubbed by the scroll from a frame sequence, so it can run backwards as
+   cleanly as forwards. Over it, everything is in the library's own
+   language (LESREG · Liquid Atelier): the glass is measured as it sets,
+   the way the Glass material laboratory measures it; then the slab lights
+   up with the systems Lesreg has actually built — Spiis, then Mosede
+   Havnecafé — and finally its face opens out into the page.
 
-   The world is a Higgsfield photograph of a harbour restaurant at blue
-   hour, before opening. Over it, the system is shown the way the library
-   says software is shown: Product windows — a clear Rim around a solid
-   porcelain core — that float in the room, each tied to a place in the
-   picture by an ultramarine Annotation marker. Ultramarine means "now",
-   and nothing else. Then the windows fold into one plate, and the plate's
-   porcelain core opens out into the page.
-
-   Rim has no blur in the library (Glass radius 0), so the windows cost
-   nothing to move. Only transform, opacity and one clip-path are written
-   per frame. */
+   render(p, a) is still one function of the scroll position and the load
+   clock, and still writes only transform, opacity and one clip-path to
+   the page. The film is drawn into one canvas. */
 
 const clamp = (v, a = 0, b = 1) => (v < a ? a : v > b ? b : v);
 const seg = (p, a, b) => clamp((p - a) / (b - a));
 const out = t => 1 - Math.pow(1 - t, 3);
 const out5 = t => 1 - Math.pow(1 - t, 5);
 const io = t => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
-const back = (t, s = 1.5) => {
-  if (t <= 0) return 0;
-  if (t >= 1) return 1;
-  const c = s + 1;
-  return 1 + c * Math.pow(t - 1, 3) + s * Math.pow(t - 1, 2);
-};
 const lerp = (a, b, t) => a + (b - a) * t;
 
 export const TXT = {
   da: {
     kicker: 'Lesreg · Softwarehus',
-    open: ['Stille systemer', 'til travle aftener.'],
-    scene: 'Scene 01 — blå time, før åbning',
+    open: ['Software,', 'formet efter forretningen.'],
     cue: 'Scroll',
     ch: [
-      ['01', 'Bestilling', 'En bestilling kommer ind.'],
-      ['02', 'Køkken', 'Køkkenskærmen har den med det samme.'],
-      ['03', 'Booking', 'Bookingen ligger i samme system.'],
-      ['04', 'Skærme', 'Og menuen over disken rettes ét sted.'],
+      ['01', 'Materiale', 'Alt starter flydende.'],
+      ['02', 'Form', 'Så får det en form, der holder.'],
+      ['03', 'Spiis', 'Til Spiis blev det bestilling, booking og køkkenskærm.'],
+      ['04', 'Mosede Havnecafé', 'Til Mosede Havnecafé blev det menuen og skærmene over disken.'],
     ],
-    one: ['Ét system.', 'Bygget af ét hus.'],
-    house: { label: 'Lesreg', a: 'Ét hus. Én regning.', b: 'Ét ansvar.' },
-    order: { name: 'Bestilling', ctx: 'Ny · lige nu', rows: ['2 × Dagens ret', '1 × Kaffe'], meta: 'Til afhentning · 18:30' },
-    kitchen: { name: 'Køkkenskærm', ctx: '3 i kø', no: '#214', rows: ['2 × Dagens ret', '1 × Kaffe'], meta: '00:12' },
-    booking: { name: 'Booking', ctx: 'I aften', rows: [['18:00', '4 pers.'], ['19:30', '2 pers.'], ['20:00', '6 pers.']], fresh: 'Ny' },
-    menu: { name: 'Skærm over disken', ctx: 'Skærm 2', rows: ['Dagens ret', 'Smørrebrød', 'Kaffe & kage'], hot: 'Opdateret' },
+    one: ['Ét hus.', 'Tegnet, bygget og drevet.'],
+    ann: { w: 'LA3 / Glass / Block', d: 'refraktion .75 · dybde 32 · dispersion .1', s: 'Spejlkant −45°', live: 'I drift · lige nu' },
+    app: { spiis: 'Spiis · bestillinger', mosede: 'Mosede Havnecafé · menu' },
   },
   en: {
     kicker: 'Lesreg · Software house',
-    open: ['Quiet systems', 'for busy evenings.'],
-    scene: 'Scene 01 — blue hour, before opening',
+    open: ['Software,', 'shaped to the business.'],
     cue: 'Scroll',
     ch: [
-      ['01', 'Order', 'An order comes in.'],
-      ['02', 'Kitchen', 'The kitchen screen has it instantly.'],
-      ['03', 'Booking', 'The bookings live in the same system.'],
-      ['04', 'Screens', 'And the menu screens are edited in one place.'],
+      ['01', 'Material', 'Everything starts fluid.'],
+      ['02', 'Form', 'Then it takes a shape that holds.'],
+      ['03', 'Spiis', 'For Spiis it became ordering, booking and a kitchen screen.'],
+      ['04', 'Mosede Havnecafé', 'For Mosede Havnecafé it became the menu and the screens over the counter.'],
     ],
-    one: ['One system.', 'Built by one house.'],
-    house: { label: 'Lesreg', a: 'One house. One invoice.', b: 'One responsibility.' },
-    order: { name: 'Order', ctx: 'New · just now', rows: ["2 × Today's special", '1 × Coffee'], meta: 'Pick-up · 18:30' },
-    kitchen: { name: 'Kitchen screen', ctx: '3 in queue', no: '#214', rows: ["2 × Today's special", '1 × Coffee'], meta: '00:12' },
-    booking: { name: 'Booking', ctx: 'Tonight', rows: [['18:00', '4 guests'], ['19:30', '2 guests'], ['20:00', '6 guests']], fresh: 'New' },
-    menu: { name: 'Screen over the counter', ctx: 'Screen 2', rows: ["Today's special", 'Open sandwich', 'Coffee & cake'], hot: 'Updated' },
+    one: ['One house.', 'Designed, built and run.'],
+    ann: { w: 'LA3 / Glass / Block', d: 'refraction .75 · depth 32 · dispersion .1', s: 'Specular edge −45°', live: 'Running · right now' },
+    app: { spiis: 'Spiis · orders', mosede: 'Mosede Havnecafé · menu' },
   },
 };
 
-/* ---------- the two pictures and where things are in them ----------
-   Anchors are in picture coordinates (0..1). Windows are placed in
-   fractions of the stage, their width in --u units. */
+/* the film, and where the glass stands in it (picture coordinates 0..1) */
 const SCENES = {
   land: {
-    src: 'media/havn-16x9', w: 1920, h: 1086,
-    focus: [0.5, 0.56],
-    anchors: { order: [0.66, 0.47], kitchen: [0.2, 0.585], booking: [0.745, 0.665], menu: [0.33, 0.52] },
-    wins: { order: [0.655, 0.15, 300], kitchen: [0.075, 0.2, 300], booking: [0.615, 0.585, 300], menu: [0.375, 0.115, 280] },
+    w: 2688, h: 1520, seq: 'media/seq-d/', n: 97, end: 'media/glas-d-end.webp',
+    slab: { l: 0.522, r: 0.75, t: 0.082, b: 0.828 },
+    glint: [0.749, 0.214],
   },
   port: {
-    src: 'media/havn-9x16', w: 1080, h: 1910,
-    focus: [0.42, 0.58],
-    anchors: { order: [0.56, 0.5], kitchen: [0.24, 0.63], booking: [0.88, 0.69], menu: [0.31, 0.45] },
-    wins: { order: [0, 0.135, 300], kitchen: [0, 0.135, 300], booking: [0, 0.135, 300], menu: [0, 0.135, 300] },
+    w: 1520, h: 2688, seq: 'media/seq-m/', n: 65, end: 'media/glas-m-end.webp',
+    slab: { l: 0.28, r: 0.72, t: 0.255, b: 0.762 },
+    glint: [0.69, 0.272],
   },
 };
-const KEYS = ['order', 'kitchen', 'booking', 'menu'];
-const CH0 = 0.1, CHL = 0.13; // chapter i runs from CH0 + i*CHL, for CHL
+
+/* the scroll, in parts */
+const SEQ = [0.035, 0.44];            // the film runs here
+const CH = [[0.07, 0.235], [0.245, 0.45], [0.5, 0.635], [0.645, 0.765]];
+const ONE = [0.775, 0.85];
 
 function h(tag, cls, parent, html) {
   const e = document.createElement(tag);
@@ -97,11 +78,6 @@ function h(tag, cls, parent, html) {
   return e;
 }
 
-/* write-through caches: a frame only touches what changed. A film is
-   rendered out of order and can't trust what the last frame left
-   behind, so it turns them off — and draws in 2D, because a 3D transform
-   puts a part on a layer of its own that a screenshot can catch before it
-   is painted. */
 let CACHE = true;
 const flat = v => v.replace(/translate3d\(([^,]+),([^,]+),\s*0(px)?\)/g, 'translate($1,$2)');
 function setT(e, v) {
@@ -113,51 +89,90 @@ function setO(e, v) {
   if (!CACHE || e._o !== s) { e._o = s; e.style.opacity = s; e.style.visibility = s === '0' ? 'hidden' : 'visible'; }
 }
 function setC(e, v) { if (!CACHE || e._c !== v) { e._c = v; e.style.clipPath = v; e.style.webkitClipPath = v; } }
-const tr = (x, y, s = 1) =>
-  'translate3d(' + x.toFixed(2) + 'px,' + y.toFixed(2) + 'px,0)' + (s === 1 ? '' : ' scale(' + s.toFixed(4) + ')');
-
 const words = t => t.split(' ').map(w => '<span class="w"><span>' + w + '</span></span>').join(' ');
-const dot = '<i class="now" aria-hidden="true"></i>';
 
 export function createIntro(stage, opts = {}) {
   let lang = opts.lang || 'da';
   if (opts.film) CACHE = false;
+  const base = opts.base || '';
 
   const root = h('div', 'ix');
   stage.insertBefore(root, stage.firstChild);
+  const canvas = h('canvas', 'ix-film', root);
+  // in a film the canvas is drawn in software, with the rest of the page:
+  // a GPU canvas can be caught a frame out of step with what is over it
+  const ctx = canvas.getContext('2d', opts.film ? { alpha: false, willReadFrequently: true } : { alpha: false });
+  const still = h('img', 'ix-still', root);
+  still.alt = '';
+  const scrimL = h('i', 'ix-scrim ix-scrim-l', root);
+  const scrimB = h('i', 'ix-scrim ix-scrim-b', root);
 
-  // the picture, sharp and out of focus, moved by one camera
-  const cam = h('div', 'ix-cam', root);
-  const pic = h('img', 'ix-pic', cam);
-  const soft = h('img', 'ix-pic ix-soft', cam);
-  pic.alt = ''; soft.alt = '';
-  const scrimTop = h('i', 'ix-scrim ix-scrim-top', root);
-  const scrimBot = h('i', 'ix-scrim ix-scrim-bot', root);
-  const dim = h('i', 'ix-dim', root);
+  // the measurements drawn on the glass as it sets
+  const ann = h('div', 'ix-ann', root);
+  const dimW = h('i', 'dim dim-w', ann), dimH = h('i', 'dim dim-h', ann);
+  const tick = [0, 1, 2, 3].map(() => h('i', 'tick', ann));
+  const labW = h('span', 'alab alab-w', ann), labH = h('span', 'alab alab-h', ann);
+  const mark = h('div', 'mk', ann, '<span>1</span><i class="mk-halo"></i>');
+  const lead = h('i', 'ld', ann), labS = h('span', 'alab alab-s', ann);
 
-  const lineBox = h('div', 'ix-lines', root);
-  const markBox = h('div', 'ix-marks', root);
-  const winBox = h('div', 'ix-wins', root);
+  // what the glass shows when it is set: the real systems
+  const screen = h('div', 'ix-screen', root);
+  const apps = {
+    spiis: h('div', 'app app-spiis', screen),
+    mosede: h('div', 'app app-mosede', screen),
+  };
+  const sheen = h('i', 'sheen', screen);
+  const tagApp = h('div', 'apptag', root);
 
   const opening = h('div', 'ix-open', root);
-  const sceneTag = h('div', 'ix-tag', root);
+  const cue = h('div', 'ix-cue', root);
   const sayBox = h('div', 'ix-says', root);
   const rail = h('div', 'ix-rail', root);
-  const house = h('div', 'win ix-house', root);
-  // the page is a sibling of the opening, so it outlives it
   const page = h('div', 'ix-page');
   stage.insertBefore(page, root.nextSibling);
 
-  const P = {};
-  KEYS.forEach((k, i) => {
-    P[k] = {
-      m: h('div', 'mk', markBox, '<span>' + (i + 1) + '</span><i class="mk-halo"></i>'),
-      l: h('i', 'ld', lineBox),
-      w: h('div', 'win win-' + k, winBox),
-    };
-  });
-
   let G = null, says = [], oneSay = null, openParts = [], railCur = null;
+  // frames: the compressed pictures (all of them, ~2 MB), and a small
+  // window of decoded ones around where the reader is. Drawing a picture
+  // that is not decoded yet decodes it on the spot and stalls the frame;
+  // decoding all of them would hold ~360 MB, which a phone will not allow.
+  const frames = { list: [], ok: [], scene: null, bmp: new Map(), pending: new Set(), want: 0 };
+  const canBitmap = typeof createImageBitmap === 'function' && !opts.film;
+  function ensureDecoded(want) {
+    if (!canBitmap) return;
+    frames.want = want;
+    const n = frames.list.length;
+    for (let d = 0; d <= 8; d++) {
+      for (const j of d ? [want + d, want - d] : [want]) {
+        if (j < 0 || j >= n || !frames.ok[j] || frames.bmp.has(j) || frames.pending.has(j)) continue;
+        frames.pending.add(j);
+        const S = frames.scene;
+        createImageBitmap(frames.list[j]).then(b => {
+          frames.pending.delete(j);
+          if (frames.scene !== S) { b.close(); return; }
+          frames.bmp.set(j, b);
+          if (Math.abs(j - frames.want) <= 2 && G) render(G.lastP, G.lastA, true);
+        }).catch(() => frames.pending.delete(j));
+      }
+    }
+    for (const [j, b] of frames.bmp) if (Math.abs(j - want) > 14) { b.close(); frames.bmp.delete(j); }
+  }
+
+  function fillApps() {
+    for (const k of ['spiis', 'mosede']) {
+      const el = apps[k];
+      el.innerHTML = '';
+      const poster = base + 'media/app-' + k + '.jpg';
+      if (opts.film) {
+        h('img', '', el).src = poster;
+      } else {
+        const v = h('video', '', el);
+        v.muted = true; v.playsInline = true; v.loop = true; v.preload = 'none'; v.poster = poster;
+        v.setAttribute('muted', ''); v.setAttribute('playsinline', '');
+        v.dataset.src = 'media/app-' + k;
+      }
+    }
+  }
 
   function fill() {
     const T = TXT[lang];
@@ -166,8 +181,7 @@ export function createIntro(stage, opts = {}) {
       '<h2 class="ix-display"><span class="ln"><span>' + T.open[0] + '</span></span>' +
       '<span class="ln acc"><span>' + T.open[1] + '</span></span></h2>';
     openParts = [opening.querySelector('.ix-kick'), ...opening.querySelectorAll('.ln > span')];
-    sceneTag.innerHTML = '<span>' + T.scene + '</span><span class="cue">' + T.cue + '<i></i></span>';
-
+    cue.innerHTML = '<span>' + T.cue + '</span><i></i>';
     sayBox.innerHTML = '';
     says = T.ch.map(([n, label, text]) => {
       const s = h('div', 'say', sayBox);
@@ -179,106 +193,114 @@ export function createIntro(stage, opts = {}) {
     oneSay = h('div', 'say say-one', sayBox);
     const p1 = h('p', 'say-t', oneSay, words(T.one[0]) + '<br>' + words(T.one[1]));
     oneSay.w = Array.from(p1.querySelectorAll('.w > span'));
-
-    rail.innerHTML = '<div class="rail-in">' + T.ch.map(c => '<span>' + c[0] + '</span>').join('') + '</div>' +
-      '<div class="rail-cur"></div>';
+    rail.innerHTML = '<div class="rail-in">' + T.ch.map(c => '<span>' + c[0] + '</span>').join('') + '</div><div class="rail-cur"></div>';
     railCur = rail.querySelector('.rail-cur');
-
-    const O = T.order, K = T.kitchen, B = T.booking, M = T.menu;
-    const bar = (name, ctx, live) => '<div class="bar"><b>' + name + '</b><span class="ctx">' + (live ? dot : '') + ctx + '</span></div>';
-    P.order.w.innerHTML = '<div class="core">' + bar(O.name, O.ctx, true) +
-      '<div class="body">' + O.rows.map(r => '<p class="row">' + r + '</p>').join('') +
-      '<p class="meta">' + O.meta + '</p></div></div>';
-    P.kitchen.w.innerHTML = '<div class="core">' + bar(K.name, K.ctx) +
-      '<div class="body"><div class="tk"><p class="fig">' + K.no + '</p><p class="meta">' + dot + K.meta + '</p></div>' +
-      K.rows.map(r => '<p class="row">' + r + '</p>').join('') + '</div></div>';
-    P.booking.w.innerHTML = '<div class="core">' + bar(B.name, B.ctx) +
-      '<div class="body">' + B.rows.map((r, i) => '<p class="led' + (i === 1 ? ' fresh' : '') + '"><span class="mono">' + r[0] + '</span><span>' + r[1] + '</span>' +
-        (i === 1 ? '<span class="tag">' + dot + B.fresh + '</span>' : '') + '</p>').join('') + '</div></div>';
-    P.menu.w.innerHTML = '<div class="core">' + bar(M.name, M.ctx) +
-      '<div class="body">' + M.rows.map((r, i) => '<p class="mrow' + (i === 0 ? ' hot' : '') + '"><span>' + r + '</span>' +
-        (i === 0 ? '<span class="tag">' + M.hot + '</span>' : '<i></i>') + '</p>').join('') + '</div></div>';
-    KEYS.forEach(k => { P[k].parts = Array.from(P[k].w.querySelectorAll('.bar, .body > *')); });
-    P.kitchen.ev = P.kitchen.w.querySelector('.tk');
-    P.booking.ev = P.booking.w.querySelector('.led.fresh');
-    P.menu.ev = P.menu.w.querySelector('.mrow.hot .tag');
-    P.order.ev = P.order.w.querySelector('.ctx');
-
-    house.innerHTML = '<div class="core"><p class="lbl">' + T.house.label + '</p>' +
-      '<p class="h2">' + T.house.a + '</p><p class="acc">' + T.house.b + '</p></div>';
-
+    labW.textContent = T.ann.w; labH.textContent = T.ann.d; labS.textContent = T.ann.s;
+    tagApp.innerHTML = '<span class="dot"></span><span class="t"></span>';
     root.querySelectorAll('*').forEach(e => { e._t = e._o = e._c = null; });
+  }
+
+  /* the film: the first and last frames at full size straight away, the
+     rest in the background — coarse first, so scrubbing early already has
+     something near every position */
+  function loadFrames(S) {
+    if (frames.scene === S) return frames.ready;
+    for (const b of frames.bmp.values()) b.close();
+    frames.bmp.clear(); frames.pending.clear();
+    frames.scene = S; frames.list = new Array(S.n); frames.ok = new Array(S.n).fill(false);
+    let firstDone;
+    frames.first = new Promise(r => { firstDone = r; });
+    const order = [];
+    for (const step of [16, 8, 4, 2, 1]) for (let i = 0; i < S.n; i += step) if (!order.includes(i)) order.push(i);
+    if (!order.includes(S.n - 1)) order.splice(1, 0, S.n - 1);
+    const one = i => new Promise(res => {
+      const im = new Image();
+      im.decoding = 'async';
+      im.onload = () => {
+        frames.list[i] = im; frames.ok[i] = true; res();
+        if (i === 0) (im.decode ? im.decode() : Promise.resolve()).catch(() => {}).then(firstDone);
+        if (G && G.S === S && Math.abs(i - frames.want) <= 8) ensureDecoded(frames.want);
+      };
+      im.onerror = () => { if (i === 0) firstDone(); res(); };
+      im.src = base + S.seq + String(i).padStart(3, '0') + '.webp';
+    });
+    // a few at a time, in order
+    frames.ready = (async () => {
+      let k = 0;
+      const lanes = Array.from({ length: 6 }, async () => { while (k < order.length) await one(order[k++]); });
+      await Promise.all(lanes);
+    })();
+    return frames.ready;
   }
 
   function layout(W, H) {
-    const land = W / H >= 1.05;
+    const land = W / H >= 1.0;
     const S = land ? SCENES.land : SCENES.port;
-    const src = (opts.base || '') + S.src;
-    if (pic.dataset.src !== src) {
-      pic.dataset.src = src;
-      pic.src = src + (opts.jpg ? '.jpg' : '.webp');
-      soft.src = src + '-glas.jpg';
+    const dpr = Math.min(2, (typeof devicePixelRatio === 'number' ? devicePixelRatio : 1));
+    canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
+    canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
+    let s0 = Math.max(W / S.w, H / S.h);
+    // a phone: a little closer, and the empty dark above the glass cropped
+    // away, so the glass stands high and the words have the stone below it
+    if (!land) s0 *= 1.18;
+    const Dw = S.w * s0, Dh = S.h * s0;
+    let ox = (W - Dw) / 2;
+    // landscape: keep the glass in the right half however wide the window is
+    if (land) ox = clamp(W * 0.64 - ((S.slab.l + S.slab.r) / 2) * Dw, W - Dw, 0);
+    // landscape: the glass's top always clears the bar. The film's top is
+    // black, so the picture can be lowered into the window without an
+    // edge — as long as the stone still reaches the bottom.
+    let oy = land ? (H - Dh) / 2 : H - Dh;
+    if (land) {
+      const want = 100 - S.slab.t * Dh;
+      if (want > oy && want + Dh >= H) oy = want;
+      else if (want > oy) oy = H - Dh;
     }
-    const s0 = Math.max(W / S.w, H / S.h);
-    const Dw = S.w * s0, Dh = S.h * s0, ox = (W - Dw) / 2, oy = (H - Dh) / 2;
-    for (const im of [pic, soft]) {
-      im.style.left = ox + 'px'; im.style.top = oy + 'px';
-      im.style.width = Dw + 'px'; im.style.height = Dh + 'px';
-    }
-    const u = land ? clamp(Math.min(W / 1440, H / 900), 0.78, 1.3) : clamp(W / 390, 0.82, 1.2);
+    if (still.dataset.src !== S.end) { still.dataset.src = S.end; still.src = base + S.end; }
+    still.style.width = Dw + 'px'; still.style.height = Dh + 'px';
+    const u = land ? clamp(Math.min(W / 1440, H / 900), 0.78, 1.3) : clamp(W / 390, 0.86, 1.2);
     stage.style.setProperty('--u', u.toFixed(4));
-    root.classList.toggle('is-land', land);
-    root.classList.toggle('is-port', !land);
+    root.classList.toggle('is-land', land); root.classList.toggle('is-port', !land);
 
-    G = { W, H, land, S, Dw, Dh, ox, oy, u, win: {} };
-    KEYS.forEach(k => {
-      const [fx, fy, w] = S.wins[k];
-      const ww = Math.min(w * u, W - 40);
-      const x = land ? fx * W : W / 2 - ww / 2;
-      const y = land ? fy * H : 84 + fy * 0;
-      const e = P[k].w;
-      e.style.left = x + 'px'; e.style.top = y + 'px'; e.style.width = ww + 'px';
-      G.win[k] = { x, y, w: ww, h: 0 };
-    });
-    // heights come from content: read once, here, never per frame
-    KEYS.forEach(k => { G.win[k].h = P[k].w.offsetHeight; });
-
-    const hw = land ? Math.min(560 * u, W - 96) : W - 40;
-    house.style.width = hw + 'px';
-    house.style.left = (W / 2 - hw / 2) + 'px';
-    const hh = house.offsetHeight;
-    const hy = H * (land ? 0.46 : 0.42) - hh / 2;
-    house.style.top = hy + 'px';
-    G.house = { x: W / 2 - hw / 2, y: hy, w: hw, h: hh, cx: W / 2, cy: hy + hh / 2 };
-
+    // the screen inside the slab: inset by the glass's thickness
+    const sl = S.slab, sw = (sl.r - sl.l) * Dw, sh = (sl.b - sl.t) * Dh;
+    const inset = sw * 0.058;
+    const scr = { u: sl.l, v: sl.t, w: sw - 2 * inset, h: sh - 2 * inset, inset, r: sw * 0.11 };
+    screen.style.width = scr.w + 'px'; screen.style.height = scr.h + 'px';
+    screen.style.borderRadius = scr.r + 'px';
+    G = { W, H, land, S, Dw, Dh, ox, oy, dpr, u, scr, lastP: 0, lastA: 0 };
+    loadFrames(S);
     root.querySelectorAll('*').forEach(e => { e._t = e._o = e._c = null; });
-    page._c = null; page._o = null;
+    page._c = page._o = null;
+    return frames.ready;
   }
 
-  /* the camera: a zoom k about a point C of the picture, kept inside it */
-  function camera(p, a) {
-    const S = G.S;
-    const settle = 1 + 0.07 * (1 - out(seg(a, 0, 1)));
-    const k = settle * (1 + 0.1 * io(seg(p, 0.02, 0.6)) + 0.06 * io(seg(p, 0.6, 0.86)));
-    const m = io(seg(p, 0.02, 0.6));
-    const fx = G.ox + S.focus[0] * G.Dw, fy = G.oy + S.focus[1] * G.Dh;
-    let Cx = lerp(G.W / 2, fx, m), Cy = lerp(G.H / 2, fy, m);
-    const hx = G.W / (2 * k), hy = G.H / (2 * k);
-    Cx = clamp(Cx, G.ox + hx, G.ox + G.Dw - hx);
-    Cy = clamp(Cy, G.oy + hy, G.oy + G.Dh - hy);
-    return { k, tx: G.W / 2 - k * Cx, ty: G.H / 2 - k * Cy, Cx, Cy };
+  /* a gentle push-in about the glass; the film itself never moves */
+  function camera(p) {
+    const k = G.land ? 1 + 0.045 * io(seg(p, 0.0, 0.5)) + 0.05 * io(seg(p, 0.5, 0.8)) : 1;
+    // about the glass's top edge, so the push-in never lifts it under the bar
+    const fu = (G.S.slab.l + G.S.slab.r) / 2, fv = G.S.slab.t;
+    const fx = G.ox + fu * G.Dw, fy = G.oy + fv * G.Dh;
+    // zoom about the glass, so it stays where it is and the room grows
+    return { k, tx: fx - k * fx, ty: fy - k * fy };
   }
   const proj = (c, u, v) => [c.tx + c.k * (G.ox + u * G.Dw), c.ty + c.k * (G.oy + v * G.Dh)];
 
+  function line(e, x0, y0, x1, y1, t) {
+    const dx = x1 - x0, dy = y1 - y0, len = Math.hypot(dx, dy);
+    setT(e, 'translate3d(' + x0.toFixed(2) + 'px,' + y0.toFixed(2) + 'px,0) rotate(' + Math.atan2(dy, dx).toFixed(4) + 'rad) scale(' + Math.max(0.0001, (len / 1000) * t).toFixed(5) + ',1)');
+    setO(e, t > 0.01 ? 1 : 0);
+  }
+
   function sayAt(s, p, a, b) {
-    const tin = seg(p, a, a + 0.035), tout = seg(p, b - 0.03, b);
+    const tin = seg(p, a, a + 0.032), tout = seg(p, b - 0.028, b);
     const vis = tin > 0 && tout < 1;
     setO(s, vis ? 1 : 0);
     if (!vis) return;
     s.w.forEach((w, i) => {
-      const ti = out5(seg(p, a + i * 0.003, a + 0.028 + i * 0.003));
-      const to = io(seg(p, b - 0.03 + i * 0.0015, b - 0.008 + i * 0.0015));
-      setT(w, 'translate3d(0,' + ((1 - ti) * 105 - to * 105).toFixed(1) + '%,0)');
+      const ti = out5(seg(p, a + i * 0.0028, a + 0.026 + i * 0.0028));
+      const to = io(seg(p, b - 0.028 + i * 0.0014, b - 0.008 + i * 0.0014));
+      setT(w, 'translate3d(0,' + ((1 - ti) * 110 - to * 110).toFixed(1) + '%,0)');
       setO(w, ti * (1 - to));
     });
     if (s.k) {
@@ -288,135 +310,156 @@ export function createIntro(stage, opts = {}) {
     }
   }
 
-  function render(p, a = 1) {
-    if (!G) return { paper: 0, done: false, page: null };
-    p = clamp(p);
-    const land = G.land;
+  function drawFilm(c, p, fade) {
+    const S = G.S;
+    // the first stretch of the film is a drop that hardly moves: give it
+    // less of the scroll than the part where the glass actually flows
+    const t = seg(p, SEQ[0], SEQ[1]);
+    const ft = t < 0.5 ? t * 0.7 : 0.35 + (t - 0.5) * 1.3;
+    const want = Math.round(clamp(ft) * (S.n - 1));
+    ensureDecoded(want);
+    // the nearest picture that is ready to draw: decoded if we can, any
+    // that has arrived if we cannot
+    const ready = canBitmap ? (j => frames.bmp.has(j)) : (j => frames.ok[j]);
+    let i = -1;
+    for (let d = 0; d < S.n && i < 0; d++) {
+      if (want - d >= 0 && ready(want - d)) i = want - d;
+      else if (want + d < S.n && ready(want + d)) i = want + d;
+    }
+    // nothing decoded yet at all: the first frame, decoded at load
+    const im = i >= 0 ? (canBitmap ? frames.bmp.get(i) : frames.list[i]) : frames.list[0];
+    const dpr = G.dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.fillStyle = '#040404'; // the film's own black, measured off its top edge
+    ctx.fillRect(0, 0, G.W, G.H);
+    // the fade-in is drawn into the picture rather than set on the canvas:
+    // a canvas with an opacity of its own can be repainted in parts
+    ctx.globalAlpha = fade;
+    if (im) ctx.drawImage(im, c.tx + c.k * G.ox, c.ty + c.k * G.oy, G.Dw * c.k, G.Dh * c.k);
+    ctx.globalAlpha = 1;
+    return i;
+  }
 
-    /* ----- the room ----- */
-    const c = camera(p, a);
-    setT(cam, 'translate3d(' + c.tx.toFixed(2) + 'px,' + c.ty.toFixed(2) + 'px,0) scale(' + c.k.toFixed(4) + ')');
-    setO(cam, out(seg(a, 0, 0.55)));
-    setO(soft, io(seg(p, 0.76, 0.88)));
-    setO(scrimBot, lerp(0.62, 1, io(seg(p, 0, 0.1))));
-    setO(scrimTop, 1);
-    setO(dim, 0.1 + 0.32 * io(seg(p, 0.6, 0.72)));
+  function render(p, a = 1, fromLoad) {
+    if (!G) return { done: false, page: null };
+    p = clamp(p); G.lastP = p; G.lastA = a;
+    const land = G.land, T = TXT[lang];
+    const c = camera(p);
+
+    /* ----- the film, and the sharp still it ends on ----- */
+    drawFilm(c, p, out(seg(a, 0, 0.6)));
+    setT(still, 'translate3d(' + (c.tx + c.k * G.ox).toFixed(2) + 'px,' + (c.ty + c.k * G.oy).toFixed(2) + 'px,0) scale(' + c.k.toFixed(4) + ')');
+    setO(still, seg(p, SEQ[1] - 0.01, SEQ[1] + 0.02));
+    if (fromLoad) return;
+    setO(scrimB, land ? 0.6 + 0.4 * seg(p, 0.05, 0.12) : 1);
+    setO(scrimL, land ? 1 : 0);
 
     /* ----- the opening words ----- */
-    const ex = io(seg(p, 0, 0.075));
     openParts.forEach((e, i) => {
-      const tin = out5(seg(a, 0.35 + i * 0.08, 0.85 + i * 0.08));
-      const tout = io(seg(p, i * 0.006, 0.06 + i * 0.006));
-      const y = i === 0 ? (1 - tin) * 10 - tout * 14 : (1 - tin) * 104 - tout * 104;
+      const tin = out5(seg(a, 0.3 + i * 0.09, 0.8 + i * 0.09));
+      const tout = io(seg(p, 0.012 + i * 0.006, 0.06 + i * 0.006));
+      const y = i === 0 ? (1 - tin) * 10 - tout * 14 : (1 - tin) * 110 - tout * 110;
       setT(e, 'translate3d(0,' + y.toFixed(1) + (i === 0 ? 'px' : '%') + ',0)');
       setO(e, tin * (1 - tout));
     });
-    setO(sceneTag, out(seg(a, 0.8, 1)) * (1 - ex));
+    setO(cue, out(seg(a, 0.8, 1)) * (1 - seg(p, 0, 0.03)));
 
-    // where the room's middle has moved to, for the windows' parallax
-    const midX = c.tx + c.k * (G.ox + G.Dw / 2) - G.W / 2;
-    const midY = c.ty + c.k * (G.oy + G.Dh / 2) - G.H / 2;
-
-    /* ----- four chapters ----- */
-    KEYS.forEach((k, i) => {
-      const s0 = CH0 + i * CHL;
-      const X = P[k], wb = G.win[k];
-      const [mx, my] = proj(c, G.S.anchors[k][0], G.S.anchors[k][1]);
-
-      // the marker, pinned to the room
-      const pop = back(seg(p, s0, s0 + 0.022), 2);
-      const gone = seg(p, 0.64 + i * 0.008, 0.7 + i * 0.008);
-      setT(X.m, tr(mx, my, Math.max(0.0001, pop * (1 - 0.6 * gone))));
-      setO(X.m, clamp(pop * 3) * (1 - gone));
-      const halo = X.m.lastChild, hp = seg(p, s0 + 0.01, s0 + 0.05);
-      setT(halo, 'scale(' + (1 + 1.4 * out(hp)).toFixed(4) + ')');
-      setO(halo, hp > 0 && hp < 1 ? 0.55 * (1 - out(hp)) : 0);
-
-      // the window floats a little with the camera, as if nearer to us
-      const px = midX * 0.12, py = midY * 0.12;
-      const win = out5(seg(p, s0 + 0.026, s0 + 0.05));
-      // a phone has room for one window: it folds back into its marker
-      // when the next chapter starts
-      const dock = !land && i < 3 ? io(seg(p, s0 + CHL - 0.022, s0 + CHL + 0.004)) : 0;
-      // and then all of them fold into one
-      const merge = io(seg(p, 0.64 + i * 0.01, 0.71 + i * 0.01));
-
-      const wcx = wb.x + wb.w / 2, wcy = wb.y + wb.h / 2;
-      let dx = px, dy = py, sc = lerp(0.94, 1, win), o = win;
-      if (dock > 0) {
-        dx = lerp(px, mx - wcx, dock); dy = lerp(py, my - wcy, dock);
-        sc *= 1 - 0.88 * dock; o = win * (1 - out(seg(dock, 0.4, 1)));
-      }
-      if (merge > 0) {
-        // docked windows come back out of their markers to be folded in
-        const ox = land ? px : mx - wcx, oy = land ? py : my - wcy;
-        dx = lerp(ox, G.house.cx - wcx, merge);
-        dy = lerp(oy, G.house.cy - wcy, merge);
-        sc = lerp(land ? 1 : 0.2, 0.5, merge);
-        o = (land ? 1 : clamp(merge * 4)) * (1 - seg(merge, 0.55, 1)) * (p > s0 ? 1 : 0);
-      }
-      setT(X.w, tr(dx, dy, sc));
-      setO(X.w, o);
-
-      // what is on the window settles a beat after the window — but it is
-      // never missing: an empty porcelain card reads as grey on the room
-      X.parts.forEach((e, j) => {
-        const t = out5(seg(p, s0 + 0.026 + j * 0.003, s0 + 0.056 + j * 0.003));
-        setT(e, 'translate3d(0,' + ((1 - t) * 10).toFixed(1) + 'px,0)');
-      });
-      // the thing that is happening now
-      const ev = seg(p, s0 + 0.066, s0 + 0.086);
-      X.w.classList.toggle('live', ev > 0.3 && merge === 0);
-      if (k === 'kitchen') setT(X.ev, 'translate3d(' + ((1 - out5(ev)) * -18).toFixed(1) + 'px,0,0)');
-      if (k === 'booking') setT(X.ev, 'translate3d(' + ((1 - out5(ev)) * 22).toFixed(1) + 'px,0,0)');
-      if (k !== 'order') setO(X.ev, out(ev) * (X.parts.length ? 1 : 1));
-
-      // the leader: marker to the nearest edge of the window
-      const L = X.l;
-      const vx = wb.x + dx + wb.w * (1 - sc) / 2, vy = wb.y + dy + wb.h * (1 - sc) / 2;
-      const ex2 = clamp(mx, vx + 14, vx + wb.w * sc - 14), ey2 = clamp(my, vy + 14, vy + wb.h * sc - 14);
-      const ddx = ex2 - mx, ddy = ey2 - my, len = Math.hypot(ddx, ddy);
-      const draw = out(seg(p, s0 + 0.012, s0 + 0.04)) * (1 - Math.max(dock, merge));
-      setT(L, 'translate3d(' + mx.toFixed(2) + 'px,' + my.toFixed(2) + 'px,0) rotate(' + Math.atan2(ddy, ddx).toFixed(4) + 'rad) scale(' + Math.max(0.0001, (len / 1000) * draw).toFixed(5) + ',1)');
-      setO(L, draw > 0.01 && len > 18 ? 1 : 0);
-
-      sayAt(says[i], p, s0 + 0.008, s0 + CHL - 0.004);
-    });
-    sayAt(oneSay, p, 0.625, 0.715);
-
-    /* the rail: which chapter this is */
-    setO(rail, land ? out(seg(p, 0.08, 0.11)) * (1 - seg(p, 0.62, 0.66)) : 0);
+    /* ----- chapters ----- */
+    CH.forEach(([s0, s1], i) => sayAt(says[i], p, s0, s1));
+    sayAt(oneSay, p, ONE[0], ONE[1]);
+    setO(rail, land ? out(seg(p, 0.06, 0.09)) * (1 - seg(p, 0.77, 0.8)) : 0);
     if (land) {
-      const at = clamp((p - CH0) / CHL, 0, 3.999);
-      const i = Math.floor(at), f = at - i;
-      const pos = i + io(seg(f, 0.88, 1));
+      let at = 0;
+      CH.forEach(([s0], i) => { if (p >= s0 - 0.01) at = i; });
+      const prev = Math.max(0, at - 1), f = io(seg(p, CH[at][0] - 0.012, CH[at][0] + 0.008));
+      const pos = at === 0 ? 0 : lerp(prev, at, f);
       setT(railCur, 'translate3d(0,' + (pos * 48).toFixed(2) + 'px,0)');
-      const T = TXT[lang].ch[Math.min(3, Math.round(pos))];
-      if (railCur._lbl !== T[1]) { railCur._lbl = T[1]; railCur.innerHTML = '<span class="mono">' + T[0] + '</span><b>' + T[1] + '</b>'; }
+      const lab = T.ch[at][1];
+      if (railCur._lbl !== lab) { railCur._lbl = lab; railCur.innerHTML = '<span class="mono">' + T.ch[at][0] + '</span><b>' + lab + '</b>'; }
     }
 
-    /* ----- one house ----- */
-    const hp = back(seg(p, 0.7, 0.745), 1.2);
-    const hOut = seg(p, 0.8, 0.825);
-    setT(house, tr(0, (1 - hp) * 14, lerp(0.94, 1, hp)));
-    setO(house, clamp(hp * 2.5) * (1 - seg(p, 0.83, 0.86)));
-    const hc = house.firstChild.children;
-    setO(hc[0], out(seg(p, 0.72, 0.75)) * (1 - hOut));
-    setO(hc[1], out(seg(p, 0.73, 0.76)) * (1 - hOut));
-    setO(hc[2], out(seg(p, 0.745, 0.775)) * (1 - hOut));
+    /* ----- the glass is measured as it sets ----- */
+    const sl = G.S.slab;
+    const [x0, y0] = proj(c, sl.l, sl.t), [x1, y1] = proj(c, sl.r, sl.b);
+    const aIn = seg(p, 0.33, 0.47), aOut = 1 - seg(p, 0.74, 0.79);
+    const gapY = 26 * G.u, gapX = 30 * G.u;
+    const wT = out(seg(aIn, 0, 0.45)) * aOut, hT = out(seg(aIn, 0.15, 0.6)) * aOut;
+    const dy0 = y1 + gapY;
+    line(dimW, x0, dy0, x1, dy0, land ? wT : 0);
+    line(dimH, x1 + gapX, y0, x1 + gapX, y1, land ? hT : 0);
+    const tk = [[x0, dy0], [x1, dy0], [x1 + gapX, y0], [x1 + gapX, y1]];
+    tick.forEach((e, i) => {
+      const t = land ? (i < 2 ? wT : hT) : 0;
+      const vert = i < 2;
+      setT(e, 'translate3d(' + tk[i][0].toFixed(2) + 'px,' + tk[i][1].toFixed(2) + 'px,0)' + (vert ? '' : ' rotate(90deg)'));
+      setO(e, t > 0.98 ? aOut : 0);
+    });
+    setT(labW, 'translate3d(' + ((x0 + x1) / 2).toFixed(2) + 'px,' + (dy0 + 10).toFixed(2) + 'px,0) translate(-50%,0)');
+    setO(labW, land ? out(seg(aIn, 0.35, 0.6)) * aOut : 0);
+    setT(labH, 'translate3d(' + (x1 + gapX + 10).toFixed(2) + 'px,' + ((y0 + y1) / 2).toFixed(2) + 'px,0) rotate(-90deg) translate(-50%,0)');
+    setO(labH, land ? out(seg(aIn, 0.5, 0.75)) * aOut : 0);
+    const [gx, gy] = proj(c, G.S.glint[0], G.S.glint[1]);
+    const mp = out5(seg(aIn, 0.55, 0.8));
+    setT(mark, 'translate3d(' + gx.toFixed(2) + 'px,' + gy.toFixed(2) + 'px,0) scale(' + Math.max(0.0001, mp).toFixed(4) + ')');
+    setO(mark, clamp(mp * 3) * aOut);
+    const halo = mark.lastChild, hp = seg(aIn, 0.7, 1);
+    setT(halo, 'scale(' + (1 + 1.3 * out(hp)).toFixed(4) + ')');
+    setO(halo, hp > 0 && hp < 1 ? 0.55 * (1 - out(hp)) : 0);
+    const lx = land ? x1 + gapX + 30 : gx - 30, ly = land ? gy - 70 * G.u : gy;
+    line(lead, gx, gy, land ? lx - 4 : lx + 4, ly, out(seg(aIn, 0.7, 0.9)) * aOut);
+    setT(labS, 'translate3d(' + lx.toFixed(2) + 'px,' + ly.toFixed(2) + 'px,0) translate(' + (land ? '0' : '-100%') + ',-50%)');
+    setO(labS, out(seg(aIn, 0.8, 1)) * aOut);
 
-    /* ----- the core opens into the page ----- */
+    /* ----- the systems, inside the glass ----- */
+    const sc = G.scr;
+    const sx = x0 + sc.inset * c.k, sy = y0 + sc.inset * c.k;
+    const on = out5(seg(p, 0.475, 0.52));
+    setT(screen, 'translate3d(' + sx.toFixed(2) + 'px,' + sy.toFixed(2) + 'px,0) scale(' + (c.k * lerp(0.965, 1, on)).toFixed(4) + ')');
+    setO(screen, on * (1 - seg(p, 0.83, 0.86)));
+    // Mosede flows in over Spiis from the bottom, the way the glass set
+    const wipe = io(seg(p, 0.625, 0.67));
+    setC(apps.mosede, 'inset(' + ((1 - wipe) * 100).toFixed(2) + '% 0 0 0 round ' + (sc.r * 0.9).toFixed(1) + 'px)');
+    setO(apps.mosede, wipe > 0 ? 1 : 0);
+    setO(sheen, 1);
+    // which system it is, on a label under the glass
+    const tg = out(seg(p, 0.5, 0.53)) * (1 - seg(p, 0.76, 0.79));
+    const which = p < 0.645 ? 'spiis' : 'mosede';
+    const tt = tagApp.lastChild;
+    if (tt._w !== which + lang) { tt._w = which + lang; tt.textContent = T.app[which]; }
+    const tagY = sy + 14 * c.k;
+    setT(tagApp, 'translate3d(' + ((x0 + x1) / 2).toFixed(2) + 'px,' + tagY.toFixed(2) + 'px,0) translate(-50%,0)');
+    setO(tagApp, tg);
+
+    /* ----- the face of the glass opens into the page ----- */
     const z = io(seg(p, 0.8, 0.935));
-    const r0 = G.house, inset = 5 * G.u + 1;
-    const top = lerp(r0.y + inset, 0, z), left = lerp(r0.x + inset, 0, z);
-    const right = lerp(G.W - (r0.x + r0.w - inset), 0, z), bottom = lerp(G.H - (r0.y + r0.h - inset), 0, z);
-    const rad = lerp(18 * G.u, 0, out(z));
+    const sw = sc.w * c.k, sh = sc.h * c.k;
+    const top = lerp(sy, 0, z), left = lerp(sx, 0, z);
+    const right = lerp(G.W - (sx + sw), 0, z), bottom = lerp(G.H - (sy + sh), 0, z);
+    const rad = lerp(sc.r * c.k, 0, out(z));
     setC(page, 'inset(' + top.toFixed(1) + 'px ' + right.toFixed(1) + 'px ' + bottom.toFixed(1) + 'px ' + left.toFixed(1) + 'px round ' + rad.toFixed(1) + 'px)');
     setO(page, p >= 0.8 ? 1 : 0);
 
     const done = p >= 0.935;
     root.classList.toggle('gone', done);
-    return { paper: z, done, page: { top, left, right: G.W - right, bottom: G.H - bottom } };
+    return { done, page: { top, left, right: G.W - right, bottom: G.H - bottom }, wantApps: p > 0.36 && p < 0.86 };
+  }
+
+  /* the recordings only load when the glass is about to show them */
+  function playApps(want) {
+    for (const el of Object.values(apps)) {
+      const v = el.querySelector('video');
+      if (!v) continue;
+      if (want && !v._loaded) {
+        // cut to the part worth showing (Mosede's opens on a splash); webm
+        // first, because Chromium on Linux cannot decode the mp4
+        const src = base + v.dataset.src;
+        v.innerHTML = '<source src="' + src + '.webm" type="video/webm"><source src="' + src + '.mp4" type="video/mp4">';
+        v.load();
+        v._loaded = true;
+      }
+      if (want && v._loaded && v.paused) v.play().catch(() => {});
+      if (!want && v._loaded && !v.paused) v.pause();
+    }
   }
 
   function setLang(l) {
@@ -425,6 +468,6 @@ export function createIntro(stage, opts = {}) {
     if (G) layout(G.W, G.H);
   }
 
-  fill();
-  return { layout, render, setLang, get geometry() { return G; } };
+  fill(); fillApps();
+  return { layout, render, setLang, playApps, get geometry() { return G; }, get frames() { return frames; } };
 }

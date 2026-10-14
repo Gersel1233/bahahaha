@@ -1,7 +1,7 @@
 /* The page around the opening: the scroll, the language, the headline,
    the bar. The opening itself is in intro.js and knows nothing about any
    of this — it is told a number and draws it. */
-import { createIntro } from './intro.js?v=2';
+import { createIntro } from './intro.js?v=3';
 
 const html = document.documentElement;
 const $ = (s, r = document) => r.querySelector(s);
@@ -102,6 +102,7 @@ function draw(p, a) {
   html.classList.toggle('nav-light', !!light);
   html.classList.toggle('ix-done', p > 0.92);
   stage.classList.toggle('on-paper', st.done);
+  intro.playApps(st.wantApps);
 }
 
 function frame(t) {
@@ -124,11 +125,10 @@ if (on) {
   measure();
   cur = tgt = target();
   draw(cur, 0);
-  // the room fades up when the picture and the type are both there
-  const pic = stage.querySelector('.ix-pic');
+  // the film fades up when its first frame and the type are both there
   const ready = Promise.all([
     document.fonts ? document.fonts.ready : null,
-    pic && pic.decode ? pic.decode().catch(() => {}) : null,
+    intro.frames.first,
   ]);
   Promise.race([ready, new Promise(r => setTimeout(r, 1800))])
     .then(() => { started = true; t0 = null; html.classList.remove('ix-start'); kick(); });

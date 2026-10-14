@@ -8,7 +8,7 @@ import '../../ny/ny.css';
 // @ts-ignore — plain JS module from the site
 import { createIntro } from '../../ny/intro.js';
 
-export const DURATION = 19; // seconds
+export const DURATION = 20; // seconds
 
 const clamp = (v: number, a = 0, b = 1) => (v < a ? a : v > b ? b : v);
 const seg = (p: number, a: number, b: number) => clamp((p - a) / (b - a));
@@ -17,8 +17,8 @@ const smooth = (t: number) => t * t * t * (t * (t * 6 - 15) + 10);
 
 // seconds -> scroll position; each pair is a place the hand stops
 const KEYS: [number, number][] = [
-  [3.2, 0], [4.6, 0.1], [6.0, 0.2], [7.5, 0.33], [9.0, 0.46], [10.5, 0.59],
-  [11.8, 0.68], [13.2, 0.775], [13.8, 0.8], [15.6, 0.94], [17.4, 1],
+  [3.0, 0], [5.0, 0.12], [8.2, 0.31], [10.2, 0.43], [11.2, 0.475], [12.6, 0.575],
+  [14.2, 0.705], [15.4, 0.8], [17.0, 0.94], [18.4, 1],
 ];
 function timeline(t: number) {
   const a = clamp(t / 2.6);
@@ -57,16 +57,18 @@ export const Intro: React.FC = () => {
     const st = document.createElement('style');
     st.textContent = '*{will-change:auto !important; transition:none !important; animation:none !important}';
     document.head.appendChild(st);
-    const probe = 'media/havn-16x9.webp';
+    const probe = 'media/glas-d-end.webp';
     const base = staticFile(probe).slice(0, -probe.length);
     api.current = createIntro(stage.current, { lang: 'da', film: true, base });
     Promise.all([
       document.fonts.load('500 40px Chivo'), document.fonts.load('400 16px Chivo'), document.fonts.load('300 40px Chivo'),
       document.fonts.load('600 11px Chivo'), document.fonts.load('400 12px "Fragment Mono"'), document.fonts.load('italic 300 40px Newsreader'),
     ]).then(() => document.fonts.ready).then(() => {
-      api.current.layout(width, height); // after the fonts: the windows are measured
-      const pic = stage.current!.querySelector('img') as HTMLImageElement;
-      return pic.decode().catch(() => {});
+      // every frame of the film, the still it ends on and the two app
+      // pictures, all in before the first frame is taken
+      const ready = api.current.layout(width, height);
+      const imgs = Array.from(stage.current!.querySelectorAll('img')) as HTMLImageElement[];
+      return Promise.all([ready, ...imgs.map(i => i.decode().catch(() => {}))]);
     }).then(() => { paint(frameRef.current); continueRender(handle); });
   }, []);
 
