@@ -28,7 +28,9 @@ const EVENTS = [
   { at: 3.85, app: 4, title: 'Ny booking', body: 'Torsdag kl. 17.30 · 4 personer' },
 ];
 const IW = 92, IG = 24, IX = (TW - (APPS.length * IW + (APPS.length - 1) * IG)) / 2, IY = 584;
-const CORE_Y = 770, STACK_Y = 852, CH = 122, CG = 12;
+const CORE_Y = 834, STACK_Y = 924, CH = 112, CG = 10;
+// the pane, and where the lines stop short of it
+const PANE_W = 500, PANE_H = 96, LINE_END = 834 - 48 - 24;
 const SHOPIFY = 'M15.337 23.979l7.216-1.561s-2.604-17.613-2.625-17.73c-.018-.116-.114-.192-.211-.192s-1.929-.136-1.929-.136-1.275-1.274-1.439-1.411c-.045-.037-.075-.057-.121-.074l-.914 21.104h.023zM11.71 11.305s-.81-.424-1.774-.424c-1.447 0-1.504.906-1.504 1.141 0 1.232 3.24 1.715 3.24 4.629 0 2.295-1.44 3.76-3.406 3.76-2.354 0-3.54-1.465-3.54-1.465l.646-2.086s1.245 1.066 2.28 1.066c.675 0 .975-.545.975-.932 0-1.619-2.654-1.694-2.654-4.359-.034-2.237 1.571-4.416 4.827-4.416 1.257 0 1.875.361 1.875.361l-.945 2.715-.02.01zM11.17.83c.136 0 .271.038.405.135-.984.465-2.064 1.639-2.508 3.992-.656.213-1.293.405-1.889.578C7.697 3.75 8.951.84 11.17.84V.83zm1.235 2.949v.135c-.754.232-1.583.484-2.394.736.466-1.777 1.333-2.645 2.085-2.971.193.501.309 1.176.309 2.1zm.539-2.234c.694.074 1.141.867 1.429 1.755-.349.114-.735.231-1.158.366v-.252c0-.752-.096-1.371-.271-1.871v.002zm2.992 1.289c-.02 0-.06.021-.078.021s-.289.075-.714.21c-.423-1.233-1.176-2.37-2.508-2.37h-.115C12.135.209 11.669 0 11.265 0 8.159 0 6.675 3.877 6.21 5.846c-1.194.365-2.063.636-2.16.674-.675.213-.694.232-.772.87-.075.462-1.83 14.063-1.83 14.063L15.009 24l.927-21.166z';
 
 const Icon: React.FC<{ a: App; size: number; style?: React.CSSProperties }> = ({ a, size, style }) => {
@@ -51,12 +53,12 @@ export const TileInt: React.FC = () => {
   const live = (i: number) => EVENTS.reduce((m, e) => (e.app === i ? Math.max(m, Math.sin(Math.PI * clamp(seg(t, e.at - 0.45, e.at + 0.35)))) : m), 0);
   const corePulse = EVENTS.reduce((m, e) => Math.max(m, Math.sin(Math.PI * clamp(seg(t, e.at - 0.15, e.at + 0.25)))), 0);
   const done = out5(seg(t, 4.85, 5.25));
-  const y0 = IY + IW + 34, y1 = CORE_Y - 26;
+  const y0 = IY + IW + 34, y1 = LINE_END;
   const curve = (x0: number, u: number) => {
     const iu = 1 - u, x1 = TW / 2;
     return {
       x: iu * iu * iu * x0 + 3 * iu * iu * u * x0 + 3 * iu * u * u * x1 + u * u * u * x1,
-      y: iu * iu * iu * y0 + 3 * iu * iu * u * (CORE_Y - 20) + 3 * iu * u * u * (IY + IW + 30) + u * u * u * y1,
+      y: iu * iu * iu * y0 + 3 * iu * iu * u * (y1 - 10) + 3 * iu * u * u * (y0 + 10) + u * u * u * y1,
     };
   };
 
@@ -66,9 +68,10 @@ export const TileInt: React.FC = () => {
       <svg width={TW} height={1400} style={{ position: 'absolute', inset: 0 }}>
         {APPS.map((a, i) => {
           const x = cx(i), l = live(i);
-          return <path key={a.k} d={`M${x},${y0} C${x},${CORE_Y - 20} ${TW / 2},${IY + IW + 30} ${TW / 2},${y1}`} fill="none"
+          return <path key={a.k} d={`M${x},${y0} C${x},${y1 - 10} ${TW / 2},${y0 + 10} ${TW / 2},${y1}`} fill="none"
             stroke={l > 0 ? `rgba(140,170,255,${0.25 + 0.6 * l})` : 'rgba(255,255,255,.12)'} strokeWidth={2 + 2 * l} />;
         })}
+        <circle cx={TW / 2} cy={y1} r={5 + 2 * corePulse} fill="#C9D6FF" opacity={0.6 + 0.4 * corePulse} />
       </svg>
       {/* the light, from the app that speaks into the middle */}
       {EVENTS.map((e, k) => {
@@ -94,21 +97,25 @@ export const TileInt: React.FC = () => {
           runs under, counting what it has done ---------- */}
       {(() => {
         const n = EVENTS.filter(e => t >= e.at + 0.1).length;
-        const w = 440, h = 104;
         return (
-          <div style={{ position: 'absolute', left: TW / 2 - w / 2, top: CORE_Y - h / 2 + 6, width: w, height: h, borderRadius: h / 2, overflow: 'hidden',
-            backdropFilter: 'blur(16px) saturate(190%) brightness(1.15)', WebkitBackdropFilter: 'blur(16px) saturate(190%) brightness(1.15)',
-            background: 'linear-gradient(165deg, rgba(255,255,255,.26) 0%, rgba(255,255,255,.07) 46%, rgba(255,255,255,.14) 100%)',
-            boxShadow: `inset 0 1.5px 0 rgba(255,255,255,.85), inset 0 -1px 0 rgba(255,255,255,.25), inset 0 0 0 1px rgba(255,255,255,.22), inset 0 -18px 30px -18px rgba(170,195,255,.35), 0 24px 50px rgba(0,0,0,.45), 0 0 ${50 * corePulse}px ${12 * corePulse}px rgba(110,150,255,.5)`,
-            transform: `scale(${1 + 0.04 * corePulse})`, display: 'flex', alignItems: 'center', gap: 16, padding: '0 26px' }}>
-            {/* the light caught on its top edge */}
-            <i style={{ position: 'absolute', left: '8%', top: 5, width: '55%', height: 26, borderRadius: 20, background: 'radial-gradient(60% 100% at 30% 0%, rgba(255,255,255,.55), rgba(255,255,255,0))' }} />
-            <span style={{ position: 'relative', width: 54, height: 54, borderRadius: 15, background: PAPER, display: 'grid', placeItems: 'center', flex: 'none', boxShadow: '0 6px 14px rgba(0,0,0,.3)' }}>
+          <div style={{ position: 'absolute', left: TW / 2 - PANE_W / 2, top: CORE_Y - PANE_H / 2, width: PANE_W, height: PANE_H, borderRadius: PANE_H / 2, overflow: 'hidden',
+            backdropFilter: 'blur(18px) saturate(190%) brightness(1.12)', WebkitBackdropFilter: 'blur(18px) saturate(190%) brightness(1.12)',
+            background: 'linear-gradient(170deg, rgba(255,255,255,.24) 0%, rgba(255,255,255,.08) 48%, rgba(255,255,255,.13) 100%)',
+            boxShadow: `inset 0 1.5px 0 rgba(255,255,255,.9), inset 0 -1px 0 rgba(255,255,255,.22), inset 0 0 0 1px rgba(255,255,255,.2), inset 0 -22px 34px -22px rgba(170,195,255,.4), 0 26px 54px rgba(0,0,0,.45), 0 0 ${46 * corePulse}px ${10 * corePulse}px rgba(110,150,255,.45)`,
+            transform: `scale(${1 + 0.03 * corePulse})`, display: 'flex', alignItems: 'center', gap: 18, padding: '0 30px 0 22px' }}>
+            {/* the light caught along its top edge */}
+            <i style={{ position: 'absolute', left: '6%', right: '30%', top: 4, height: 30, borderRadius: 20, background: 'radial-gradient(70% 100% at 25% 0%, rgba(255,255,255,.5), rgba(255,255,255,0))' }} />
+            <span style={{ position: 'relative', width: 56, height: 56, borderRadius: 16, flex: 'none', display: 'grid', placeItems: 'center',
+              background: 'linear-gradient(160deg, #FFFFFF, #E9E6DF)', boxShadow: 'inset 0 1px 0 #fff, 0 6px 16px rgba(0,0,0,.35)' }}>
               <svg width="32" height="32" viewBox="0 0 128 128"><path d="M0 0H94l34 34v94H0Z" fill={NAVY9} /><path d="M44 28h18v62h38v18H44Z" fill={PAPER} /></svg>
             </span>
-            <span style={{ position: 'relative', display: 'flex', flexDirection: 'column', gap: 8 }}>
-              <b style={{ font: `600 26px/1 ${SANS}`, letterSpacing: -0.4 }}>Lesreg</b>
-              <span style={{ font: `400 16px/1 ${MONO}`, color: done > 0.5 ? '#9BE7B3' : '#B9C5E6', whiteSpace: 'nowrap' }}>{n} {n === 1 ? 'app' : 'apps'} opdateret · 0 indtastet</span>
+            <span style={{ position: 'relative', display: 'flex', flexDirection: 'column', gap: 9, minWidth: 0 }}>
+              <b style={{ font: `600 25px/1 ${SANS}`, letterSpacing: -0.4 }}>Lesreg</b>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 10, font: `500 17px/1 ${SANS}`, color: n === EVENTS.length ? '#A6EBBE' : '#C3CDEA', whiteSpace: 'nowrap', fontVariantNumeric: 'tabular-nums' }}>
+                <span>{n} {n === 1 ? 'app' : 'apps'} opdateret</span>
+                <i style={{ width: 4, height: 4, borderRadius: 2, background: 'currentColor', opacity: 0.6 }} />
+                <span>0 indtastet</span>
+              </span>
             </span>
           </div>
         );
