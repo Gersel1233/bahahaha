@@ -148,24 +148,6 @@ S.talk = el => {
   };
 };
 
-// one sentence, lit word by word as it is read
-S.st = el => {
-  const t = el.querySelector('[data-st]');
-  let ws = [];
-  const split = () => {
-    t.innerHTML = t.textContent.trim().split(/\s+/).map(w => '<span class="w">' + w + '</span>').join(' ');
-    ws = Array.from(t.querySelectorAll('.w')); ws.forEach(w => { w._on = false; });
-  };
-  split();
-  addEventListener('lesreg:lang', () => { split(); kick(); });
-  return () => {
-    const r = t.getBoundingClientRect();
-    const q = clamp((H * 0.82 - r.top) / (r.height + H * 0.35));
-    const n = Math.round(q * ws.length * 1.08);
-    ws.forEach((w, i) => { const on = still || i < n; if (w._on !== on) { w._on = on; w.classList.toggle('on', on); } });
-  };
-};
-
 const live = [];
 for (const el of $$('[data-scrub]')) live.push({ el, draw: S[el.dataset.scrub](el), on: false });
 const talk = document.querySelector('.talk');

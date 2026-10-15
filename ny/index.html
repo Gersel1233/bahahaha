@@ -16,7 +16,7 @@
 <link rel="preload" as="image" href="media/dev/iphone-17-pro-2x.webp" fetchpriority="high" />
 <link rel="stylesheet" href="ny.css?v=16" />
 <link rel="stylesheet" href="page.css?v=16" />
-<link rel="stylesheet" href="hero.css?v=18" />
+<link rel="stylesheet" href="hero.css?v=19" />
 <link rel="stylesheet" href="sections.css?v=16" />
 <script>
   /* decided before first paint: with JS the phone turns as you scroll;
@@ -125,8 +125,8 @@
           <div class="note n1"><span class="ni ic-spiis">S</span><div><b>Spiis</b><span data-da="Ny bestilling · 3 × Mørbradgryde · kl. 17.30" data-en="New order · 3 × pork stew · 5.30 pm">Ny bestilling · 3 × Mørbradgryde · kl. 17.30</span></div><em data-da="nu" data-en="now">nu</em></div>
           <div class="note n2"><span class="ni ic-mosede">M</span><div><b>Mosede Havnecafé</b><span data-da="Menukortet er opdateret på alle skærme" data-en="The menu is updated on every screen">Menukortet er opdateret på alle skærme</span></div><em data-da="nu" data-en="now">nu</em></div>
         </div>
-        <div class="hs-s" data-s="1" style="--sb:#F5F2ED;--sbc:#0E0F10"><video muted playsinline loop preload="none" poster="media/app-spiis.jpg" data-v="media/app-spiis"></video><div class="sb"><span class="t">9:41</span><span class="ic"><svg class="sig"><use href="#sb-sig"/></svg><svg class="wifi"><use href="#sb-wifi"/></svg><svg class="bat"><use href="#sb-bat"/></svg></span></div></div>
-        <div class="hs-s" data-s="2" style="--sb:#F7F3E8;--sbc:#0E0F10"><video muted playsinline loop preload="none" poster="media/app-mosede.jpg" data-v="media/app-mosede"></video><div class="sb"><span class="t">9:41</span><span class="ic"><svg class="sig"><use href="#sb-sig"/></svg><svg class="wifi"><use href="#sb-wifi"/></svg><svg class="bat"><use href="#sb-bat"/></svg></span></div></div>
+        <div class="hs-s" data-s="1" style="--sb:#F5F2ED;--sbc:#0E0F10"><video muted playsinline loop preload="none" poster="media/app-spiis.jpg" data-hv="media/app-spiis"></video><div class="sb"><span class="t">9:41</span><span class="ic"><svg class="sig"><use href="#sb-sig"/></svg><svg class="wifi"><use href="#sb-wifi"/></svg><svg class="bat"><use href="#sb-bat"/></svg></span></div></div>
+        <div class="hs-s" data-s="2" style="--sb:#F7F3E8;--sbc:#0E0F10"><video muted playsinline loop preload="none" poster="media/app-mosede.jpg" data-hv="media/app-mosede"></video><div class="sb"><span class="t">9:41</span><span class="ic"><svg class="sig"><use href="#sb-sig"/></svg><svg class="wifi"><use href="#sb-wifi"/></svg><svg class="bat"><use href="#sb-bat"/></svg></span></div></div>
         <div class="hs-s" data-s="3" style="--sb:#F9F9F9;--sbc:#000"><div class="msg" data-hmsg>
           <div class="msg-nav"><span class="msg-back"><svg viewBox="0 0 12 20"><path d="M10 2 2 10l8 8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><b>12</b></span><span class="msg-who"><i class="msg-av"></i><span>Callster ›</span></span><span class="msg-cam"><svg viewBox="0 0 26 16"><rect x="1" y="1" width="17" height="14" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="m19 6 6-3v10l-6-3z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></span></div>
           <div class="msg-body">
@@ -145,14 +145,20 @@
   </div>
 
   <i class="hs-paper" aria-hidden="true"></i>
+
 </section>
+<!-- the screen has become the page, and on it one sentence, with what it
+     says running inside it -->
+<div class="hs-end">
+  <h2 class="hs-say">
+    <span class="g"><span data-da="Vi bygger" data-en="We build">Vi bygger</span></span>
+    <span class="g"><span class="pill pill-app" aria-hidden="true"><video muted playsinline loop preload="none" poster="media/app-mosede.jpg" data-hv="media/app-mosede"></video></span> <span data-da="apps," data-en="apps,">apps,</span></span>
+    <span class="g"><span class="pill pill-sys" aria-hidden="true"><video muted playsinline loop preload="none" poster="media/app-spiis.jpg" data-hv="media/app-spiis"></video></span> <span data-da="systemer og" data-en="systems and">systemer og</span></span>
+    <span class="g"><span class="pill pill-int" aria-hidden="true"><svg viewBox="0 0 200 100"><path class="ln" d="M38 50H162"/><circle class="run" r="5" cy="50" cx="38"><animate attributeName="cx" values="38;162;38" dur="2.4s" repeatCount="indefinite" calcMode="spline" keySplines=".6 0 .4 1;.6 0 .4 1"/></circle><circle class="nd n-a" cx="38" cy="50" r="17"/><circle class="nd n-c" cx="100" cy="50" r="21"/><circle class="nd n-b" cx="162" cy="50" r="17"/><text x="38" y="56">S</text><text x="100" y="57" class="c">L</text><text x="162" y="56">M</text></svg></span> <span data-da="integrationer." data-en="integrations.">integrationer.</span></span>
+  </h2>
+  <p class="hs-say2"><span class="g" data-da="Hurtigere, billigere og <em>bygget til i dag.</em>" data-en="Faster, cheaper and <em>built for today.</em>">Hurtigere, billigere og <em>bygget til i dag.</em></span></p>
 </div>
-<!-- The white world the phone's screen opens into -->
-<section class="st" id="nu" data-paper data-scrub="st">
-  <p class="st-k label"><span class="mono">00</span> <span data-da="Nutidens softwarehus" data-en="Today's software house">Nutidens softwarehus</span></p>
-  <p class="st-t" data-st data-da="Vi bygger apps, systemer og integrationer, der er hurtigere at få, billigere at eje og bygget til det, folk forventer i dag. Tegnet, bygget og drevet af ét hus — uden mellemled."
-     data-en="We build apps, systems and integrations that are faster to get, cheaper to own and built for what people expect today. Designed, built and run by one house — with nobody in between.">Vi bygger apps, systemer og integrationer, der er hurtigere at få, billigere at eje og bygget til det, folk forventer i dag. Tegnet, bygget og drevet af ét hus — uden mellemled.</p>
-</section>
+</div>
 
 <main class="pg" id="pg">
 
@@ -364,7 +370,7 @@
   <span>© 2026 Lesreg</span>
 </footer>
 
-<script type="module" src="main.js?v=18"></script>
-<script type="module" src="page.js?v=16"></script>
+<script type="module" src="main.js?v=19"></script>
+<script type="module" src="page.js?v=17"></script>
 </body>
 </html>

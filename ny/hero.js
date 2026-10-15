@@ -20,7 +20,9 @@ const io3 = t => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 const OPEN = [0.12, 0.36, 0.6];
 const SAY = [[0.13, 0.34], [0.37, 0.58], [0.61, 0.8]];
 const MSG = [0.65, 0.69, 0.73];
-const WHITE = [0.8, 0.86], ZOOM = [0.83, 0.97], PAPER = [0.93, 0.97];
+const WHITE = [0.8, 0.85], ZOOM = [0.82, 0.93], PAPER = [0.89, 0.93];
+// then the sentence on the paper, one group of words at a time
+const WRITE = 0.905, STEP = 0.012, EACH = 0.03;
 // after the page opens, in seconds: the two notifications
 const NOTE = { 'hs-n1': 0.9, 'hs-n2': 1.6 };
 
@@ -31,6 +33,7 @@ export function startHero() {
   const copy = $('.hs-copy-in'), says = $$('.hs-ch > li > div'), apps = $$('.hs-s[data-s]');
   const white = $('.hs-white'), paper = $('.hs-paper'), msg = $('[data-hmsg]');
   const vids = apps.map(a => $('video', a));
+  const end = $('.hs-end'), words = $$('.hs-end .g'), pillVids = $$('.hs-end video');
   const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   // the date on the lock screen is today's
@@ -62,7 +65,7 @@ export function startHero() {
   /* ---------- the apps' films: fetched when they are close, playing only
      while their app is open ---------- */
   const h264 = document.createElement('video').canPlayType('video/mp4; codecs="avc1.42E01E"') !== '';
-  function load(v) { if (v && !v.src) { v.src = v.dataset.v + (h264 ? '.mp4' : '.webm'); v.load(); } }
+  function load(v) { if (v && !v.src) { v.src = v.dataset.hv + (h264 ? '.mp4' : '.webm'); v.load(); } }
   // the first app's film once the page has settled, so it is in before it is needed
   addEventListener('load', () => setTimeout(() => load(vids[0]), 1200), { once: true });
   let playing = -1;
@@ -122,6 +125,20 @@ export function startHero() {
     const ty = (sy + (H / 2 - sy) * e) - P.y - k * (cy - P.y);
     ph.style.transform = 'translate3d(' + tx.toFixed(2) + 'px,' + ty.toFixed(2) + 'px,0) scale(' + k.toFixed(4) + ')';
     paper.style.opacity = seg(p, PAPER[0], PAPER[1]).toFixed(3);
+
+    // the sentence, written onto it; its film runs while it can be seen
+    words.forEach((w, i) => {
+      const q = out(seg(p, WRITE + i * STEP, WRITE + i * STEP + EACH));
+      w.style.opacity = q.toFixed(3);
+      w.style.transform = q >= 1 ? 'none' : 'translate3d(0,' + ((1 - q) * 34).toFixed(1) + 'px,0)';
+    });
+    end.classList.toggle('on', p >= WRITE + 0.02);
+    const see = p > WRITE - 0.01 && r.bottom > 0;
+    pillVids.forEach(v => {
+      if (p > ZOOM[0]) load(v);
+      if (see && v.paused) { const pr = v.play(); if (pr) pr.catch(() => {}); }
+      else if (!see && !v.paused) v.pause();
+    });
     html.classList.toggle('hx-paper', e > 0.8);
   }
   addEventListener('scroll', () => { if (!raf) raf = requestAnimationFrame(frame); }, { passive: true });
