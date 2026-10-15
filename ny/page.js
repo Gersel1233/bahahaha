@@ -68,25 +68,28 @@ S.three = el => {
     const r = el.getBoundingClientRect();
     const t = clamp(-r.top / Math.max(1, r.height - H));
     const cw = cards[0].offsetWidth, ch = cards[0].offsetHeight;
-    const enter = cards.map((c, i) => out(seg(t, 0.0 + i * 0.04, 0.16 + i * 0.04)));
-    const pull = io(seg(t, 0.3, 0.62));
-    const fuse = out(seg(t, 0.58, 0.78));
+    // in, one after another; the invoices go; the three close up into one
+    // stack; the house lands on top of it
+    const enter = cards.map((c, i) => out(seg(t, 0.02 + i * 0.05, 0.18 + i * 0.05)));
+    const pull = io(seg(t, 0.36, 0.6));
+    const fuse = out(seg(t, 0.6, 0.76));
     cards.forEach((c, i) => {
       const k = i - 1;
-      const x0 = wide ? k * cw * 1.12 : 0, y0 = wide ? 0 : k * ch * 1.18;
-      const rot0 = wide ? k * 5 : k * 2, rot1 = [-4, 2, 6][i];
-      const x = lerp(x0, k * 10, pull), y = lerp(y0, k * 6, pull) + (1 - enter[i]) * 90;
-      const sc = lerp(1, 0.9, pull) * lerp(1, 0.86, fuse);
-      setT(c, 'translate3d(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px,0) rotate(' + lerp(rot0, rot1, pull).toFixed(2) + 'deg) scale(' + sc.toFixed(4) + ')');
-      setO(c, enter[i] * (1 - seg(t, 0.68, 0.8)));
-      // the invoices are the first thing to go
-      const b = io(seg(t, 0.2 + i * 0.03, 0.42 + i * 0.03));
-      setT(bills[i], 'translate3d(' + (k * 40 * b).toFixed(1) + 'px,' + (-120 * b).toFixed(1) + 'px,0) rotate(' + (k * 14 * b).toFixed(1) + 'deg)');
+      // side by side on a wide screen, one under another on a phone, with air
+      const x0 = wide ? k * (cw + 28) : 0, y0 = wide ? 0 : k * (ch + 14);
+      const x = lerp(x0, k * 12, pull), y = lerp(y0, k * 10, pull) + (1 - enter[i]) * 60;
+      const rot = wide ? lerp(0, k * 3, pull) : 0;
+      const sc = lerp(1, 0.94 - (1 - i) * 0.02, pull);
+      setT(c, 'translate3d(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px,0) rotate(' + rot.toFixed(2) + 'deg) scale(' + sc.toFixed(4) + ')');
+      setO(c, enter[i] * (1 - seg(t, 0.62, 0.7)));
+      const b = io(seg(t, 0.22 + i * 0.04, 0.34 + i * 0.04));
+      setT(bills[i], 'scale(' + lerp(1, 0.6, b).toFixed(3) + ')');
       setO(bills[i], 1 - b);
     });
-    setT(one, 'translate3d(0,' + ((1 - fuse) * 24).toFixed(1) + 'px,0) scale(' + lerp(0.62, 1, fuse).toFixed(4) + ')');
-    setO(one, fuse);
-    el.classList.toggle('done', t > 0.76);
+    setT(one, 'translate3d(0,' + ((1 - fuse) * 30).toFixed(1) + 'px,0) scale(' + lerp(0.82, 1, fuse).toFixed(4) + ')');
+    // the house is solid at once, and covers the stack as it lands
+    setO(one, t >= 0.6 ? 1 : 0);
+    el.classList.toggle('done', t > 0.74);
   };
 };
 
