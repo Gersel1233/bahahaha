@@ -63,8 +63,10 @@ const SCENES = {
     glass: 'media/glas-d-end.webp', end: 'media/phone-d-end.webp',
     slab: { l: 0.522, r: 0.75, t: 0.082, b: 0.828 },
     glint: [0.749, 0.214],
-    screen: { l: 0.5339, r: 0.7392, t: 0.0967, b: 0.8191, rad: 0.114 },
-    island: { cx: 0.498, t: 0.012, w: 0.29, h: 0.04 },
+    // measured off the film's last frame: the iPhone 17 Pro's Deep Blue frame,
+    // and the screen inside it in Callster's render's own proportions
+    screen: { l: 0.5326, r: 0.7381, t: 0.0967, b: 0.8134, rad: 0.13 },
+    island: { cx: 0.5, t: 0.0126, w: 0.313, h: 0.042 },
   },
   port: {
     w: 1520, h: 2688, seq: 'media/seq-m/', film: 'media/film-m', nA: 65, n: 106,
