@@ -1,7 +1,7 @@
 /* The page around the opening: the scroll, the language, the headline,
    the bar. The opening itself is in intro.js and knows nothing about any
    of this — it is told a number and draws it. */
-import { createIntro, pAt, tAt, DURATION, FILM_AT, FILM_LEN } from './intro.js?v=12';
+import { createIntro, pAt, tAt, DURATION, FILM_AT, FILM_LEN } from './intro.js?v=13';
 
 const html = document.documentElement;
 const $ = (s, r = document) => r.querySelector(s);

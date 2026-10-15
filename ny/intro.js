@@ -73,8 +73,8 @@ const SCENES = {
     glass: 'media/glas-m-end.webp', end: 'media/phone-m-end.webp',
     slab: { l: 0.28, r: 0.72, t: 0.255, b: 0.762 },
     glint: [0.69, 0.272],
-    screen: { l: 0.3118, r: 0.6862, t: 0.2634, b: 0.7515, rad: 0.105 },
-    island: { cx: 0.496, t: 0.013, w: 0.33, h: 0.038 },
+    screen: { l: 0.3095, r: 0.6836, t: 0.2621, b: 0.7508, rad: 0.13 },
+    island: { cx: 0.5, t: 0.0126, w: 0.313, h: 0.042 },
   },
 };
 
