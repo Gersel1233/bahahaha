@@ -14,8 +14,8 @@ const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 html.classList.add('pg-js');
 
-function setT(e, v) { if (e._pt !== v) { e._pt = v; e.style.transform = v; } }
-function setO(e, v) { const s = v.toFixed(3); if (e._po !== s) { e._po = s; e.style.opacity = s; } }
+function setT(e, v) { if (e && e._pt !== v) { e._pt = v; e.style.transform = v; } }
+function setO(e, v) { if (!e) return; const s = v.toFixed(3); if (e._po !== s) { e._po = s; e.style.opacity = s; } }
 
 /* ---------- what comes in as it is reached ---------- */
 // neighbours come in one after another
@@ -171,7 +171,7 @@ for (const el of $$('[data-scrub]')) live.push({ el, draw: S[el.dataset.scrub](e
 const talk = document.querySelector('.talk');
 if (talk) live.push({ el: talk, draw: S.talk(talk), on: false });
 const band = document.querySelector('.band');
-live.push({ el: band, on: false, draw: (() => {
+if (band) live.push({ el: band, on: false, draw: (() => {
   let t0 = performance.now();
   return now => {
     const drift = ((now - t0) / 1000) * 26;
@@ -220,4 +220,39 @@ if (still) {
   (document.fonts ? document.fonts.ready : Promise.resolve()).then(() => { measureRows(); kick(); });
   measureRows();
   kick();
+}
+
+/* ---------- the tiles: arrows on a wide screen, a swipe everywhere ---------- */
+const tiles = document.getElementById('tiles');
+if (tiles) {
+  const prev = document.querySelector('.tn-prev'), next = document.querySelector('.tn-next');
+  const step = () => (tiles.querySelector('.tile')?.offsetWidth || 400) + 20;
+  const state = () => {
+    if (prev) prev.disabled = tiles.scrollLeft < 8;
+    if (next) next.disabled = tiles.scrollLeft > tiles.scrollWidth - tiles.clientWidth - 8;
+  };
+  prev && prev.addEventListener('click', () => tiles.scrollBy({ left: -step(), behavior: 'smooth' }));
+  next && next.addEventListener('click', () => tiles.scrollBy({ left: step(), behavior: 'smooth' }));
+  tiles.addEventListener('scroll', state, { passive: true });
+  state();
+}
+
+/* ---------- Callster: the owner texts, it is handled ---------- */
+const msg = document.querySelector('[data-msg]');
+if (msg) {
+  let timers = [];
+  const play = () => {
+    timers.forEach(clearTimeout); timers = [];
+    msg.classList.remove('m1', 'm2', 'm3');
+    if (still) { msg.classList.add('m1', 'm3'); return; }
+    timers.push(setTimeout(() => msg.classList.add('m1'), 500));
+    timers.push(setTimeout(() => msg.classList.add('m2'), 1500));
+    timers.push(setTimeout(() => msg.classList.add('m3'), 3300));
+    timers.push(setTimeout(play, 11000));
+  };
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(es => es.forEach(en => {
+      if (en.isIntersecting) play(); else { timers.forEach(clearTimeout); timers = []; }
+    }), { threshold: 0.4 }).observe(msg);
+  } else msg.classList.add('m1', 'm3');
 }

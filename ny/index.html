@@ -18,6 +18,7 @@
 <link rel="stylesheet" href="ny.css?v=16" />
 <link rel="stylesheet" href="page.css?v=16" />
 <link rel="stylesheet" href="hero.css?v=16" />
+<link rel="stylesheet" href="sections.css?v=16" />
 <script>
   /* decided before first paint: with JS the first screen waits behind the
      Lesreg mark until the film can play; without JS it is simply there */
@@ -51,9 +52,9 @@
 <nav class="tb" aria-label="Lesreg">
   <a class="tb-brand" href="#top"><b>Lesreg</b><span class="anno" data-da="Softwarehus" data-en="Software house">Softwarehus</span></a>
   <div class="tb-links">
-    <a href="#hus" data-da="Løsninger" data-en="Solutions">Løsninger</a>
+    <a href="#bygger" data-da="Løsninger" data-en="Solutions">Løsninger</a>
     <a href="#arbejde" data-da="Arbejde" data-en="Work">Arbejde</a>
-    <a href="#hvorfor" data-da="Proces" data-en="Process">Proces</a>
+    <a href="#proces" data-da="Proces" data-en="Process">Proces</a>
     <a href="#kontakt" data-da="Kontakt" data-en="Contact">Kontakt</a>
   </div>
   <div class="tb-r">
@@ -67,9 +68,9 @@
 </nav>
 <div class="mm" id="mm">
   <nav class="mm-links" aria-label="Sektioner">
-    <a href="#hus" data-da="Løsninger" data-en="Solutions">Løsninger</a>
+    <a href="#bygger" data-da="Løsninger" data-en="Solutions">Løsninger</a>
     <a href="#arbejde" data-da="Arbejde" data-en="Work">Arbejde</a>
-    <a href="#hvorfor" data-da="Proces" data-en="Process">Proces</a>
+    <a href="#proces" data-da="Proces" data-en="Process">Proces</a>
     <a href="#kontakt" data-da="Kontakt" data-en="Contact">Kontakt</a>
   </nav>
   <a class="big" href="mailto:mgersel@lesreg.com" data-da="Skriv til os" data-en="Talk to us">Skriv til os</a>
@@ -110,7 +111,7 @@
     <h1 class="hx-h1"><span class="l"><span data-da="Nutidens" data-en="Today's">Nutidens</span></span> <span class="l acc"><span data-da="softwarehus." data-en="software house.">softwarehus.</span></span></h1>
     <p class="hx-lead" data-da="Apps, systemer og integrationer — tegnet, bygget og drevet af ét hus. Hurtigere, billigere og bygget til i dag." data-en="Apps, systems and integrations — designed, built and run by one house. Faster, cheaper and built for today.">Apps, systemer og integrationer — tegnet, bygget og drevet af ét hus. Hurtigere, billigere og bygget til i dag.</p>
     <div class="hx-cta">
-      <a class="btn light" href="#hus"><span data-da="Se hvad vi bygger" data-en="See what we build">Se hvad vi bygger</span><span class="lens"><svg><use href="#i-arrow"/></svg></span></a>
+      <a class="btn light" href="#bygger"><span data-da="Se hvad vi bygger" data-en="See what we build">Se hvad vi bygger</span><span class="lens"><svg><use href="#i-arrow"/></svg></span></a>
       <a class="btn glass" href="mailto:mgersel@lesreg.com"><span data-da="Skriv til os" data-en="Talk to us">Skriv til os</span></a>
     </div>
   </div>
@@ -128,21 +129,41 @@
 <main class="pg" id="pg">
 
 <!-- what Lesreg builds, running past: the scroll pushes it -->
-<section class="band" aria-label="Det vi bygger">
-  <div class="band-row" data-mq="1">
-    <span data-da="Bestilling" data-en="Ordering">Bestilling</span><i></i>
-    <span data-da="Bordbooking" data-en="Table booking">Bordbooking</span><i></i>
-    <span class="acc" data-da="Køkkenskærme" data-en="Kitchen screens">Køkkenskærme</span><i></i>
-    <span data-da="Menukort" data-en="Menus">Menukort</span><i></i>
-    <span data-da="Skærme over disken" data-en="Screens over the counter">Skærme over disken</span><i></i>
-    <span class="acc" data-da="Admin-apps" data-en="Admin apps">Admin-apps</span><i></i>
+<!-- what we build: four tiles, swiped through like Apple's "Get to know" -->
+<section class="bygger" id="bygger" data-paper>
+  <header class="sec-head">
+    <p class="label" data-r><span class="mono">01</span> <span data-da="Hvad vi bygger" data-en="What we build">Hvad vi bygger</span></p>
+    <h2 class="h2" data-r><span data-da="Alt det digitale," data-en="Everything digital,">Alt det digitale,</span> <em class="acc" data-da="ét sted." data-en="one place.">ét sted.</em></h2>
+  </header>
+  <div class="tiles" id="tiles">
+    <article class="tile tile-apps">
+      <div class="tile-t"><p class="mono" data-da="Apps" data-en="Apps">Apps</p><h3 data-da="Apps, folk faktisk har på telefonen." data-en="Apps people actually keep on their phone.">Apps, folk faktisk har på telefonen.</h3><p data-da="Til gæsterne og til personalet — med notifikationer, når det gælder." data-en="For guests and for staff — with notifications when it matters.">Til gæsterne og til personalet — med notifikationer, når det gælder.</p></div>
+      <div class="tile-v"><div class="dev dev-iph" style="--sb:#F5F2ED;--sbc:#0E0F10"><div class="scr"><video muted playsinline loop preload="none" poster="media/app-spiis.jpg" data-v="media/app-spiis"></video><div class="sb"><span class="t">9:41</span><span class="ic"><svg class="sig"><use href="#sb-sig"/></svg><svg class="wifi"><use href="#sb-wifi"/></svg><svg class="bat"><use href="#sb-bat"/></svg></span></div></div><img class="frame" src="media/dev/iphone-17-pro.webp" width="560" height="1168" alt="" draggable="false" /></div></div>
+    </article>
+    <article class="tile tile-sys">
+      <div class="tile-t"><p class="mono" data-da="Systemer" data-en="Systems">Systemer</p><h3 data-da="Systemer, der driver forretningen." data-en="Systems that run the business.">Systemer, der driver forretningen.</h3><p data-da="Bestilling, booking, køkkenskærme og menukort — styret ét sted." data-en="Ordering, booking, kitchen screens and menus — run from one place.">Bestilling, booking, køkkenskærme og menukort — styret ét sted.</p></div>
+      <div class="tile-v"><div class="dev dev-mac"><div class="scr"><div class="mb"><b>Safari</b><span class="mb-m" data-da="<span>Arkiv</span><span>Rediger</span><span>Vis</span><span>Historik</span><span>Bogmærker</span><span>Vindue</span><span>Hjælp</span>" data-en="<span>File</span><span>Edit</span><span>View</span><span>History</span><span>Bookmarks</span><span>Window</span><span>Help</span>"><span>Arkiv</span><span>Rediger</span><span>Vis</span><span>Historik</span><span>Bogmærker</span><span>Vindue</span><span>Hjælp</span></span><span class="mb-r"><svg><use href="#mb-bat"/></svg><svg><use href="#sb-wifi"/></svg><svg><use href="#mb-search"/></svg><svg><use href="#mb-cc"/></svg><span>09.41</span></span></div><div class="sf"><div class="sf-tb"><span class="tl"><i></i><i></i><i></i></span><svg class="ti"><use href="#mb-side"/></svg><svg class="ti"><use href="#mb-back"/></svg><svg class="ti dim"><use href="#mb-fwd"/></svg><span class="url"><svg><use href="#mb-lock"/></svg>spiis.dk</span><svg class="ti"><use href="#mb-share"/></svg><svg class="ti"><use href="#mb-plus"/></svg><svg class="ti"><use href="#mb-tabs"/></svg></div><img src="media/pg/spiis-web.webp" width="1500" height="970" alt="Spiis' hjemmeside" loading="lazy" decoding="async" /></div></div><img class="frame" src="media/dev/macbook-pro-14.webp" width="1600" height="938" alt="" draggable="false" loading="lazy" decoding="async" /></div></div>
+    </article>
+    <article class="tile tile-int">
+      <div class="tile-t"><p class="mono" data-da="Integrationer" data-en="Integrations">Integrationer</p><h3 data-da="Koblet på det, I allerede bruger." data-en="Connected to what you already use.">Koblet på det, I allerede bruger.</h3><p data-da="Betaling, kalender, SMS, regnskab og AI — så data kun skal tastes én gang." data-en="Payments, calendar, SMS, accounting and AI — so data is only typed once.">Betaling, kalender, SMS, regnskab og AI — så data kun skal tastes én gang.</p></div>
+      <div class="tile-v int" aria-hidden="true"><div class="int-box">
+        <svg class="int-lines" viewBox="0 0 400 400"><g fill="none" stroke="currentColor" stroke-width="1.4"><path d="M200 200 L200 52"/><path d="M200 200 L328 126"/><path d="M200 200 L328 274"/><path d="M200 200 L200 348"/><path d="M200 200 L72 274"/><path d="M200 200 L72 126"/></g></svg>
+        <span class="int-c"><b>Lesreg</b><i data-da="jeres system" data-en="your system">jeres system</i></span>
+        <span class="int-n" style="--x:50%;--y:13%" data-da="Betaling" data-en="Payments">Betaling</span>
+        <span class="int-n" style="--x:82%;--y:31.5%" data-da="Kalender" data-en="Calendar">Kalender</span>
+        <span class="int-n" style="--x:82%;--y:68.5%">SMS</span>
+        <span class="int-n" style="--x:50%;--y:87%" data-da="Regnskab" data-en="Accounting">Regnskab</span>
+        <span class="int-n" style="--x:18%;--y:68.5%" data-da="Kasse" data-en="Till">Kasse</span>
+        <span class="int-n" style="--x:18%;--y:31.5%">AI</span>
+      </div>
+      </div>
+    </article>
+    <article class="tile tile-web">
+      <div class="tile-t"><p class="mono" data-da="Hjemmesider &amp; motion" data-en="Websites &amp; motion">Hjemmesider &amp; motion</p><h3 data-da="Hjemmesider, man husker." data-en="Websites people remember.">Hjemmesider, man husker.</h3><p data-da="Filmiske sider og motion design — som den, du er på nu." data-en="Cinematic sites and motion design — like the one you are on.">Filmiske sider og motion design — som den, du er på nu.</p></div>
+      <div class="tile-v"><video class="tile-film" muted playsinline loop preload="none" poster="media/film-m-first.webp" data-v="media/film-m-lite"></video></div>
+    </article>
   </div>
-  <div class="band-row band-row-2" data-mq="-1">
-    <span class="live"><b></b>Spiis · <em data-da="i drift" data-en="running">i drift</em></span><i></i>
-    <span class="live"><b></b>Mosede Havnecafé · <em data-da="i drift" data-en="running">i drift</em></span><i></i>
-    <span class="live"><b></b>Spiis · <em data-da="i drift" data-en="running">i drift</em></span><i></i>
-    <span class="live"><b></b>Mosede Havnecafé · <em data-da="i drift" data-en="running">i drift</em></span><i></i>
-  </div>
+  <div class="tiles-nav"><button type="button" class="tn tn-prev" aria-label="Forrige"><svg><use href="#i-arrow"/></svg></button><button type="button" class="tn tn-next" aria-label="Næste"><svg><use href="#i-arrow"/></svg></button></div>
 </section>
 
 <!-- three become one: the scroll pulls the three suppliers together into the house -->
@@ -150,7 +171,7 @@
   <div class="three-pin">
     <div class="three-bg" aria-hidden="true"><img src="media/pg/glas-bg.webp" width="1800" height="1080" alt="" loading="lazy" decoding="async" /></div>
     <div class="three-head">
-      <p class="label" data-r><span class="mono">01</span> <span data-da="Hvad er et softwarehus" data-en="What a software house is">Hvad er et softwarehus</span></p>
+      <p class="label" data-r><span class="mono">02</span> <span data-da="Ét hus" data-en="One house">Ét hus</span></p>
       <h2 class="h2" data-r><span data-da="Normalt skal I hyre" data-en="Normally you hire">Normalt skal I hyre</span> <em class="acc" data-da="tre." data-en="three.">tre.</em></h2>
     </div>
     <div class="three-stage">
@@ -183,12 +204,28 @@
   </div>
 </section>
 
+<!-- the old way and today's -->
+<section class="vs" id="fordi" data-paper>
+  <header class="sec-head">
+    <p class="label" data-r><span class="mono">03</span> <span data-da="Nutidens softwarehus" data-en="Today's software house">Nutidens softwarehus</span></p>
+    <h2 class="h2" data-r><span data-da="Hurtigere. Billigere." data-en="Faster. Cheaper.">Hurtigere. Billigere.</span> <em class="acc" data-da="Bygget til i dag." data-en="Built for today.">Bygget til i dag.</em></h2>
+  </header>
+  <div class="vs-t" role="table">
+    <div class="vs-h" role="row"><span role="columnheader"></span><span role="columnheader" data-da="Det klassiske softwarehus" data-en="The classic software house">Det klassiske softwarehus</span><span role="columnheader" class="us">Lesreg</span></div>
+    <div class="vs-r" role="row" data-r><b role="rowheader" data-da="Pris" data-en="Price">Pris</b><span role="cell" data-da="Timer, der løber" data-en="Hours that keep running">Timer, der løber</span><span role="cell" class="us" data-da="Fast pris, aftalt før vi starter" data-en="A fixed price, agreed before we start">Fast pris, aftalt før vi starter</span></div>
+    <div class="vs-r" role="row" data-r><b role="rowheader" data-da="Tempo" data-en="Speed">Tempo</b><span role="cell" data-da="Uger mellem hver rettelse" data-en="Weeks between changes">Uger mellem hver rettelse</span><span role="cell" class="us" data-da="Rettelser på timer, ikke uger" data-en="Changes in hours, not weeks">Rettelser på timer, ikke uger</span></div>
+    <div class="vs-r" role="row" data-r><b role="rowheader" data-da="Ansvar" data-en="Responsibility">Ansvar</b><span role="cell" data-da="Bureau, udvikler og drift hver for sig" data-en="Agency, developer and hosting, each on their own">Bureau, udvikler og drift hver for sig</span><span role="cell" class="us" data-da="Ét hus tegner, bygger og driver det" data-en="One house designs, builds and runs it">Ét hus tegner, bygger og driver det</span></div>
+    <div class="vs-r" role="row" data-r><b role="rowheader" data-da="Omsætning" data-en="Revenue">Omsætning</b><span role="cell" data-da="Platforme, der tager procenter" data-en="Platforms that take a cut">Platforme, der tager procenter</span><span role="cell" class="us" data-da="Ingen kommission af jeres omsætning" data-en="No commission on your revenue">Ingen kommission af jeres omsætning</span></div>
+    <div class="vs-r" role="row" data-r><b role="rowheader" data-da="Teknik" data-en="Technology">Teknik</b><span role="cell" data-da="Skabeloner fra i går" data-en="Templates from yesterday">Skabeloner fra i går</span><span role="cell" class="us" data-da="Mobil først, hurtigt og levende" data-en="Mobile first, fast and alive">Mobil først, hurtigt og levende</span></div>
+  </div>
+</section>
+
 <!-- the work: two systems taking orders right now -->
 <section class="work" id="arbejde" data-paper>
   <header class="sec-head">
-    <p class="label" data-r><span class="mono">02</span> <span data-da="Arbejde" data-en="Work">Arbejde</span></p>
-    <h2 class="h2" data-r><span data-da="Her er to" data-en="Here are two">Her er to</span> <em class="acc" data-da="live eksempler." data-en="live examples.">live eksempler.</em></h2>
-    <p class="sec-lead" data-r data-da="Begge er tegnet, bygget og passet af os. De tager imod bestillinger lige nu." data-en="Both were drawn, built and looked after by us. They are taking orders right now.">Begge er tegnet, bygget og passet af os. De tager imod bestillinger lige nu.</p>
+    <p class="label" data-r><span class="mono">04</span> <span data-da="Arbejde" data-en="Work">Arbejde</span></p>
+    <h2 class="h2" data-r><span data-da="Det har vi" data-en="What we have">Det har vi</span> <em class="acc" data-da="bygget." data-en="built.">bygget.</em></h2>
+    <p class="sec-lead" data-r data-da="Spiis og Mosede Havnecafé kører på systemer, vi har tegnet, bygget og passer. Callster var vi med til at bygge." data-en="Spiis and Mosede Havnecafé run on systems we designed, built and look after. Callster we helped build.">Spiis og Mosede Havnecafé kører på systemer, vi har tegnet, bygget og passer. Callster var vi med til at bygge.</p>
   </header>
 
   <article class="case" data-scrub="case">
@@ -230,62 +267,60 @@
       <span class="chip mono" data-p="chip"><b class="dot"></b><span data-da="Gæsten · menukort" data-en="The guest · menu">Gæsten · menukort</span></span>
     </div>
   </article>
+
+  <article class="case case-cs" data-scrub="case">
+    <div class="case-txt">
+      <p class="case-k mono"><span class="dot"></span><span data-da="AI-medarbejder · vi var med til at bygge" data-en="AI employee · we helped build it">AI-medarbejder · vi var med til at bygge</span></p>
+      <h3 class="case-n" data-r>Callster</h3>
+      <p class="case-d" data-r data-da="Callster besvarer opkaldene, booker tider og hjælper med det administrative — og ejeren styrer det hele med <b>en besked</b>." data-en="Callster answers the calls, books appointments and helps with the admin — and the owner runs it all with <b>a message</b>.">Callster besvarer opkaldene, booker tider og hjælper med det administrative — og ejeren styrer det hele med <b>en besked</b>.</p>
+      <ol class="case-f">
+        <li data-r><span class="mono">01</span><span data-da="Besvarer opkald og booker tider" data-en="Answers calls and books appointments">Besvarer opkald og booker tider</span></li>
+        <li data-r><span class="mono">02</span><span data-da="Styres med en sms, som en kollega" data-en="Run by text, like a colleague">Styres med en sms, som en kollega</span></li>
+        <li data-r><span class="mono">03</span><span data-da="Spørger kun, når det kræver ejeren" data-en="Only asks when it needs the owner">Spørger kun, når det kræver ejeren</span></li>
+      </ol>
+      <a class="btn" href="https://callster.dk" target="_blank" rel="noopener"><span>callster.dk</span><span class="lens"><svg><use href="#i-arrow"/></svg></span></a>
+    </div>
+    <div class="case-vis cs-vis">
+      <div class="dev dev-iph cs-phone" data-p="ph" style="--sb:#F9F9F9;--sbc:#000">
+        <div class="scr"><div class="msg" data-msg>
+          <div class="msg-nav"><span class="msg-back"><svg viewBox="0 0 12 20"><path d="M10 2 2 10l8 8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><b>12</b></span><span class="msg-who"><i class="msg-av"></i><span>Callster ›</span></span><span class="msg-cam"><svg viewBox="0 0 26 16"><rect x="1" y="1" width="17" height="14" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="m19 6 6-3v10l-6-3z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></span></div>
+          <div class="msg-body">
+            <p class="msg-time"><span data-da="Tekstbesked · SMS" data-en="Text message · SMS">Tekstbesked · SMS</span><br><b data-da="I dag" data-en="Today">I dag</b> 07.02</p>
+            <p class="bub me" data-da="Jeg er syg. Aflys alle i morgen og skriv til dem, at de kan ringe til mig på 12345678" data-en="I'm ill. Cancel everyone tomorrow and tell them they can call me on 12345678">Jeg er syg. Aflys alle i morgen og skriv til dem, at de kan ringe til mig på 12345678</p>
+            <p class="msg-del" data-da="Leveret" data-en="Delivered">Leveret</p>
+            <p class="bub them typing"><i></i><i></i><i></i></p>
+            <p class="bub them reply" data-da="God bedring 🙏 Dine 5 kunder i morgen er aflyst og har fået en sms med dit nummer. Der står ikke hvorfor." data-en="Get well 🙏 Your 5 customers tomorrow are cancelled and have a text with your number. It doesn't say why.">God bedring 🙏 Dine 5 kunder i morgen er aflyst og har fået en sms med dit nummer. Der står ikke hvorfor.</p>
+          </div>
+          <div class="msg-bar"><span class="msg-plus">+</span><span class="msg-field" data-da="Tekstbesked · SMS" data-en="Text message · SMS">Tekstbesked · SMS</span></div>
+        </div><div class="sb"><span class="t">9:41</span><span class="ic"><svg class="sig"><use href="#sb-sig"/></svg><svg class="wifi"><use href="#sb-wifi"/></svg><svg class="bat"><use href="#sb-bat"/></svg></span></div></div>
+        <img class="frame" src="media/dev/iphone-17-pro.webp" width="560" height="1168" alt="" draggable="false" />
+      </div>
+    </div>
+  </article>
 </section>
 
-<!-- what the customers never see -->
-<section class="admin" id="admin">
-  <div class="admin-txt">
-    <p class="label" data-r><span class="mono">03</span> <span data-da="Bag disken" data-en="Behind the counter">Bag disken</span></p>
-    <h2 class="h2" data-r><span data-da="Komplet administration" data-en="Complete administration,">Komplet administration</span> <em class="acc" data-da="for jer." data-en="for you.">for jer.</em></h2>
-    <p class="sec-lead" data-r data-da="Alt det kunderne ikke ser: priser, menukort, bookinger og bestillinger — ét sted, uden en udvikler i røret."
-       data-en="Everything the customers never see: prices, menus, bookings and orders — in one place, with no developer on the phone.">Alt det kunderne ikke ser: priser, menukort, bookinger og bestillinger — ét sted, uden en udvikler i røret.</p>
-    <div class="admin-f">
-      <div data-r><b data-da="Notifikationer" data-en="Notifications">Notifikationer</b><span data-da="Ny bestilling? Telefonen siger det med det samme." data-en="A new order? The phone says so straight away.">Ny bestilling? Telefonen siger det med det samme.</span></div>
-      <div data-r><b data-da="Ét tryk til handling" data-en="One tap to act">Ét tryk til handling</b><span data-da="Nemt at styre — også midt i en travl service, fra telefonen i forklædet." data-en="Easy to run — also in the middle of a busy service, from the phone in your apron.">Nemt at styre — også midt i en travl service, fra telefonen i forklædet.</span></div>
-    </div>
-  </div>
-  <div class="admin-vis" data-scrub="admin">
-    <div class="dev dev-iph dev-lg"><div class="scr"><img class="full" src="media/pg/notif.webp" width="540" height="1170" alt="Notifikationer fra Spiis' admin-app" loading="lazy" decoding="async" /></div><img class="frame" src="media/dev/iphone-17-pro.webp" width="560" height="1168" alt="" draggable="false" /></div>
-    <div class="notes" aria-hidden="true">
-      <div class="note"><span class="ni"></span><div><b data-da="Ny bestilling" data-en="New order">Ny bestilling</b><span data-da="3 × Mørbradgryde med ris · kl. 17:30" data-en="3 × Pork stew with rice · 17:30">3 × Mørbradgryde med ris · kl. 17:30</span></div><em class="mono" data-da="nu" data-en="now">nu</em></div>
-      <div class="note"><span class="ni"></span><div><b data-da="Bord booket" data-en="Table booked">Bord booket</b><span data-da="4 personer · lørdag kl. 19:00" data-en="4 people · Saturday 19:00">4 personer · lørdag kl. 19:00</span></div><em class="mono">2 min</em></div>
-      <div class="note"><span class="ni"></span><div><b data-da="Menukort opdateret" data-en="Menu updated">Menukort opdateret</b><span data-da="Skærmene over disken er skiftet" data-en="The screens over the counter have changed">Skærmene over disken er skiftet</span></div><em class="mono">9 min</em></div>
-    </div>
-  </div>
-</section>
-
-<!-- why Lesreg -->
-<section class="why" id="hvorfor" data-paper>
+<!-- how it goes -->
+<section class="proc" id="proces" data-paper>
   <header class="sec-head">
-    <p class="label" data-r><span class="mono">04</span> <span data-da="Hvorfor Lesreg" data-en="Why Lesreg">Hvorfor Lesreg</span></p>
-    <h2 class="h2" data-r><span data-da="Fordi huset" data-en="Because the house">Fordi huset</span> <em class="acc" data-da="er et team." data-en="is a team.">er et team.</em></h2>
+    <p class="label" data-r><span class="mono">05</span> <span data-da="Proces" data-en="Process">Proces</span></p>
+    <h2 class="h2" data-r><span data-da="Fra idé til drift," data-en="From idea to running,">Fra idé til drift,</span> <em class="acc" data-da="uden omveje." data-en="without detours.">uden omveje.</em></h2>
   </header>
-  <div class="why-grid">
-    <figure class="why-ph" data-r>
-      <img src="media/pg/moede.webp" width="1600" height="900" alt="" loading="lazy" decoding="async" />
-      <figcaption class="mono" data-da="I taler med dem, der bygger det." data-en="You talk to the people who build it.">I taler med dem, der bygger det.</figcaption>
-    </figure>
-    <div class="why-c" data-r><span class="n">01</span><b data-da="Ingen overhead at betale for" data-en="No overhead to pay for">Ingen overhead at betale for</b><p data-da="Én fast pris, aftalt inden vi starter — og ingen kommission af jeres omsætning." data-en="One fixed price, agreed before we start — and no commission on your revenue.">Én fast pris, aftalt inden vi starter — og ingen kommission af jeres omsætning.</p></div>
-    <div class="why-c" data-r><span class="n">02</span><b data-da="Ingen led imellem" data-en="Nothing sitting in between">Ingen led imellem</b><p data-da="I taler med dem, der bygger det. En rettelse tager timer, ikke uger." data-en="You talk to the people building it. A change takes hours, not weeks.">I taler med dem, der bygger det. En rettelse tager timer, ikke uger.</p></div>
-    <div class="why-c" data-r><span class="n">03</span><b data-da="Ingen der forsvinder bagefter" data-en="Nobody who disappears afterwards">Ingen der forsvinder bagefter</b><p data-da="Samme hænder passer det, når det er i drift." data-en="The same hands look after it once it is running.">Samme hænder passer det, når det er i drift.</p></div>
-  </div>
-  <div class="steps" data-scrub="steps">
+  <ol class="proc-l" data-scrub="steps">
     <i class="steps-line"><i></i></i>
-    <div class="step"><span class="mono">01</span><b data-da="Vi tegner det" data-en="We draw it">Vi tegner det</b></div>
-    <div class="step"><span class="mono">02</span><b data-da="Vi bygger det" data-en="We build it">Vi bygger det</b></div>
-    <div class="step"><span class="mono">03</span><b data-da="Vi passer det" data-en="We look after it">Vi passer det</b></div>
-    <p class="steps-note" data-da="Fast pris, aftalt inden vi starter." data-en="A fixed price, agreed before we start.">Fast pris, aftalt inden vi starter.</p>
-  </div>
+    <li class="step" data-r><span class="mono">01</span><b data-da="Vi snakker" data-en="We talk">Vi snakker</b><p data-da="I fortæller, hvad der driller. Vi foreslår, hvad der skal bygges." data-en="You tell us what is in the way. We suggest what to build.">I fortæller, hvad der driller. Vi foreslår, hvad der skal bygges.</p></li>
+    <li class="step" data-r><span class="mono">02</span><b data-da="Fast pris" data-en="Fixed price">Fast pris</b><p data-da="I får en plan og én fast pris, før vi starter." data-en="You get a plan and one fixed price before we start.">I får en plan og én fast pris, før vi starter.</p></li>
+    <li class="step" data-r><span class="mono">03</span><b data-da="Vi bygger" data-en="We build">Vi bygger</b><p data-da="Vi tegner det og bygger det — I taler med dem, der laver det." data-en="We design it and build it — you talk to the people making it.">Vi tegner det og bygger det — I taler med dem, der laver det.</p></li>
+    <li class="step" data-r><span class="mono">04</span><b data-da="Vi passer det" data-en="We look after it">Vi passer det</b><p data-da="Samme hænder holder det kørende. En rettelse tager timer, ikke uger." data-en="The same hands keep it running. A change takes hours, not weeks.">Samme hænder holder det kørende. En rettelse tager timer, ikke uger.</p></li>
+  </ol>
 </section>
 
-<!-- talk to us: back on the glass the opening was made of -->
-<section class="talk" id="kontakt">
-  <div class="talk-bg" aria-hidden="true"><img src="media/glas-d-end.webp" alt="" loading="lazy" decoding="async" data-p="talk" /></div>
-  <div class="talk-in">
-    <p class="label" data-r><span class="mono">05</span> <span data-da="Kontakt" data-en="Contact">Kontakt</span></p>
-    <h2 class="talk-h" data-r><span data-da="Har I noget" data-en="Got something">Har I noget</span><br><em class="acc" data-da="på hjernen?" data-en="on your mind?">på hjernen?</em></h2>
-    <a class="talk-mail" data-r href="mailto:mgersel@lesreg.com">mgersel@lesreg.com</a>
-    <div class="talk-row" data-r>
+<!-- talk to us -->
+<section class="cta" id="kontakt">
+  <div class="cta-in">
+    <p class="label" data-r><span class="mono">06</span> <span data-da="Kontakt" data-en="Contact">Kontakt</span></p>
+    <h2 class="cta-h" data-r><span data-da="Har I noget" data-en="Got something">Har I noget</span><br><em class="acc" data-da="på hjernen?" data-en="on your mind?">på hjernen?</em></h2>
+    <a class="cta-mail" data-r href="mailto:mgersel@lesreg.com">mgersel@lesreg.com</a>
+    <div class="cta-row" data-r>
       <a class="btn light" href="mailto:mgersel@lesreg.com"><span data-da="Skriv til os" data-en="Talk to us">Skriv til os</span><span class="lens"><svg><use href="#i-arrow"/></svg></span></a>
       <span class="mono" data-da="Alt bliver besvaret." data-en="Everything gets an answer.">Alt bliver besvaret.</span>
     </div>
