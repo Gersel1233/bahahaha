@@ -108,7 +108,7 @@ S.case = el => {
 
 // notifications land one after another beside the phone
 S.admin = el => {
-  const notes = $$('.note', el), ph = el.querySelector('.ph');
+  const notes = $$('.note', el), ph = el.querySelector('.dev-iph');
   return () => {
     const r = el.getBoundingClientRect();
     const q = clamp((H - r.top) / (H + r.height));

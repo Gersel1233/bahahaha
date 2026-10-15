@@ -15,8 +15,8 @@
 <link rel="preload" href="../fonts/fragmentmono-400.woff2" as="font" type="font/woff2" crossorigin />
 <link rel="preload" as="image" href="media/seq-d/000.webp" media="(min-aspect-ratio: 1/1)" />
 <link rel="preload" as="image" href="media/seq-m/000.webp" media="(max-aspect-ratio: 1/1)" />
-<link rel="stylesheet" href="ny.css?v=6" />
-<link rel="stylesheet" href="page.css?v=6" />
+<link rel="stylesheet" href="ny.css?v=7" />
+<link rel="stylesheet" href="page.css?v=7" />
 <script>
   /* decided before first paint, so the opening never flashes the page
      underneath it: motion allowed and JS running means the opening is on */
@@ -30,6 +30,20 @@
   <symbol id="i-arrow" viewBox="0 0 16 16"><path d="M3 8h9.4M9.1 4.4 12.6 8 9.1 11.6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
   <!-- LA2.1 Icon / Menu: the lower line short and to the right — "more", not a hamburger -->
   <symbol id="i-menu" viewBox="0 0 16 16"><path d="M3 6h10M7.5 10.5H13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <!-- iOS status bar and macOS menu bar / Safari glyphs, drawn for the device frames -->
+  <symbol id="sb-sig" viewBox="0 0 18 12"><path d="M1 11.5h2.6v-3H1zm4.5 0h2.6V6.2H5.5zm4.5 0h2.6V3.6H10zm4.4 0H17V1h-2.6z" fill="currentColor"/></symbol>
+  <symbol id="sb-wifi" viewBox="0 0 16 12"><path d="M8 11.4 5.7 9a3.3 3.3 0 0 1 4.6 0zM3.4 6.6a6.6 6.6 0 0 1 9.2 0l-1.5 1.5a4.5 4.5 0 0 0-6.2 0zM1 4.2a10 10 0 0 1 14 0l-1.5 1.5a7.9 7.9 0 0 0-11 0z" fill="currentColor"/></symbol>
+  <symbol id="sb-bat" viewBox="0 0 27 13"><rect x=".6" y=".6" width="23" height="11.8" rx="3.6" fill="none" stroke="currentColor" stroke-opacity=".4" stroke-width="1.1"/><rect x="2.2" y="2.2" width="19.8" height="8.6" rx="2.2" fill="currentColor"/><path d="M25 4.5v4a2.1 2.1 0 0 0 0-4z" fill="currentColor" fill-opacity=".45"/></symbol>
+  <symbol id="mb-bat" viewBox="0 0 27 13"><rect x=".6" y=".6" width="23" height="11.8" rx="3.6" fill="none" stroke="currentColor" stroke-opacity=".5" stroke-width="1.1"/><rect x="2.2" y="2.2" width="15" height="8.6" rx="2" fill="currentColor"/><path d="M25 4.5v4a2.1 2.1 0 0 0 0-4z" fill="currentColor" fill-opacity=".5"/></symbol>
+  <symbol id="mb-search" viewBox="0 0 14 14"><circle cx="6" cy="6" r="4.3" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="m9.2 9.2 3.6 3.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
+  <symbol id="mb-cc" viewBox="0 0 16 14"><rect x="1" y="1.5" width="14" height="4.6" rx="2.3" fill="none" stroke="currentColor" stroke-width="1.2"/><circle cx="12.7" cy="3.8" r="1.4" fill="currentColor"/><rect x="1" y="7.9" width="14" height="4.6" rx="2.3" fill="none" stroke="currentColor" stroke-width="1.2"/><circle cx="3.3" cy="10.2" r="1.4" fill="currentColor"/></symbol>
+  <symbol id="mb-side" viewBox="0 0 18 14"><rect x="1" y="1" width="16" height="12" rx="2.6" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M6.4 1.4v11.2" stroke="currentColor" stroke-width="1.3"/></symbol>
+  <symbol id="mb-back" viewBox="0 0 10 14"><path d="M7.5 1.5 2 7l5.5 5.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="mb-fwd" viewBox="0 0 10 14"><path d="M2.5 1.5 8 7l-5.5 5.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="mb-lock" viewBox="0 0 10 13"><rect x="1" y="5.6" width="8" height="6.6" rx="1.4" fill="currentColor"/><path d="M2.9 5.8V4a2.1 2.1 0 0 1 4.2 0v1.8" fill="none" stroke="currentColor" stroke-width="1.3"/></symbol>
+  <symbol id="mb-share" viewBox="0 0 14 16"><path d="M7 1.2v9M3.8 4.2 7 1.2l3.2 3" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M4.6 6.6H3.2a1.6 1.6 0 0 0-1.6 1.6v5.4a1.6 1.6 0 0 0 1.6 1.6h7.6a1.6 1.6 0 0 0 1.6-1.6V8.2a1.6 1.6 0 0 0-1.6-1.6H9.4" fill="none" stroke="currentColor" stroke-width="1.4"/></symbol>
+  <symbol id="mb-plus" viewBox="0 0 14 14"><path d="M7 1.5v11M1.5 7h11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <symbol id="mb-tabs" viewBox="0 0 16 16"><rect x="1.2" y="4.4" width="10.4" height="10.4" rx="2" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M4.4 1.2h8.4a2 2 0 0 1 2 2v8.4" fill="none" stroke="currentColor" stroke-width="1.3"/></symbol>
 </svg>
 
 <!-- LA31 Nav / Top bar; under 760 px it is the Mobile bar -->
@@ -72,8 +86,8 @@
         </h1>
       </div>
       <div class="h-vis" aria-hidden="true">
-        <div class="ph"><img src="media/pg/spiis-phone.webp" width="580" height="1257" alt="" decoding="async" /><i class="ph-isl"></i></div>
-        <div class="ph"><img src="media/pg/mosede-phone.webp" width="608" height="1317" alt="" decoding="async" /><i class="ph-isl"></i></div>
+        <div class="dev dev-iph" style="--sb:#F1ECE0;--sbc:#0E0F10"><div class="scr"><div class="sb"><span class="t">9:41</span><span class="ic"><svg class="sig"><use href="#sb-sig"/></svg><svg class="wifi"><use href="#sb-wifi"/></svg><svg class="bat"><use href="#sb-bat"/></svg></span></div><img class="shot" src="media/pg/spiis-phone.webp" width="580" height="1257" alt="" decoding="async" /></div><img class="frame" src="media/dev/iphone-17-pro.svg" width="368" height="750" alt="" /></div>
+        <div class="dev dev-iph" style="--sb:#22293F;--sbc:#FFFFFF"><div class="scr"><div class="sb"><span class="t">9:41</span><span class="ic"><svg class="sig"><use href="#sb-sig"/></svg><svg class="wifi"><use href="#sb-wifi"/></svg><svg class="bat"><use href="#sb-bat"/></svg></span></div><img class="shot" src="media/pg/mosede-phone.webp" width="608" height="1317" alt="" decoding="async" /></div><img class="frame" src="media/dev/iphone-17-pro.svg" width="368" height="750" alt="" /></div>
       </div>
       <div class="h-row">
         <i class="h-rule" aria-hidden="true"></i>
@@ -171,14 +185,8 @@
       <a class="btn" href="https://spiis.dk" target="_blank" rel="noopener"><span>spiis.dk</span><span class="lens"><svg><use href="#i-arrow"/></svg></span></a>
     </div>
     <div class="case-vis">
-      <div class="win" data-p="win">
-        <div class="win-bar"><i></i><i></i><i></i><span class="mono">spiis.dk</span></div>
-        <img src="media/pg/spiis-web.webp" width="1500" height="970" alt="Spiis' hjemmeside" loading="lazy" decoding="async" />
-      </div>
-      <div class="ph" data-p="ph">
-        <video muted playsinline loop preload="none" poster="media/app-spiis.jpg" data-v="media/app-spiis"></video>
-        <i class="ph-isl"></i>
-      </div>
+      <div class="dev dev-mac" data-p="win"><div class="scr"><div class="mb"><b>Safari</b><span class="mb-m" data-da="<span>Arkiv</span><span>Rediger</span><span>Vis</span><span>Historik</span><span>Bogmærker</span><span>Vindue</span><span>Hjælp</span>" data-en="<span>File</span><span>Edit</span><span>View</span><span>History</span><span>Bookmarks</span><span>Window</span><span>Help</span>"><span>Arkiv</span><span>Rediger</span><span>Vis</span><span>Historik</span><span>Bogmærker</span><span>Vindue</span><span>Hjælp</span></span><span class="mb-r"><svg><use href="#mb-bat"/></svg><svg><use href="#sb-wifi"/></svg><svg><use href="#mb-search"/></svg><svg><use href="#mb-cc"/></svg><span>09.41</span></span></div><div class="sf"><div class="sf-tb"><span class="tl"><i></i><i></i><i></i></span><svg class="ti"><use href="#mb-side"/></svg><svg class="ti"><use href="#mb-back"/></svg><svg class="ti dim"><use href="#mb-fwd"/></svg><span class="url"><svg><use href="#mb-lock"/></svg>spiis.dk</span><svg class="ti"><use href="#mb-share"/></svg><svg class="ti"><use href="#mb-plus"/></svg><svg class="ti"><use href="#mb-tabs"/></svg></div><img src="media/pg/spiis-web.webp" width="1500" height="970" alt="Spiis' hjemmeside" loading="lazy" decoding="async" /></div></div><img class="frame" src="media/dev/macbook-pro-14.svg" width="840" height="563" alt="" /></div>
+      <div class="dev dev-iph" data-p="ph" style="--sb:#F5F2ED;--sbc:#0E0F10"><div class="scr"><video muted playsinline loop preload="none" poster="media/app-spiis.jpg" data-v="media/app-spiis"></video><div class="sb"><span class="t">9:41</span><span class="ic"><svg class="sig"><use href="#sb-sig"/></svg><svg class="wifi"><use href="#sb-wifi"/></svg><svg class="bat"><use href="#sb-bat"/></svg></span></div></div><img class="frame" src="media/dev/iphone-17-pro.svg" width="368" height="750" alt="" /></div>
       <span class="chip mono" data-p="chip"><b class="dot"></b><span data-da="Køkkenet · bestillinger" data-en="Kitchen · orders">Køkkenet · bestillinger</span></span>
     </div>
   </article>
@@ -197,14 +205,8 @@
       <a class="btn" href="https://mosedehavnecafe.dk" target="_blank" rel="noopener"><span>mosedehavnecafe.dk</span><span class="lens"><svg><use href="#i-arrow"/></svg></span></a>
     </div>
     <div class="case-vis">
-      <div class="win" data-p="win">
-        <div class="win-bar"><i></i><i></i><i></i><span class="mono">mosedehavnecafe.dk</span></div>
-        <img src="media/pg/mosede-web.webp" width="1500" height="970" alt="Mosede Havnecafés hjemmeside" loading="lazy" decoding="async" />
-      </div>
-      <div class="ph" data-p="ph">
-        <video muted playsinline loop preload="none" poster="media/app-mosede.jpg" data-v="media/app-mosede"></video>
-        <i class="ph-isl"></i>
-      </div>
+      <div class="dev dev-mac" data-p="win"><div class="scr"><div class="mb"><b>Safari</b><span class="mb-m" data-da="<span>Arkiv</span><span>Rediger</span><span>Vis</span><span>Historik</span><span>Bogmærker</span><span>Vindue</span><span>Hjælp</span>" data-en="<span>File</span><span>Edit</span><span>View</span><span>History</span><span>Bookmarks</span><span>Window</span><span>Help</span>"><span>Arkiv</span><span>Rediger</span><span>Vis</span><span>Historik</span><span>Bogmærker</span><span>Vindue</span><span>Hjælp</span></span><span class="mb-r"><svg><use href="#mb-bat"/></svg><svg><use href="#sb-wifi"/></svg><svg><use href="#mb-search"/></svg><svg><use href="#mb-cc"/></svg><span>09.41</span></span></div><div class="sf"><div class="sf-tb"><span class="tl"><i></i><i></i><i></i></span><svg class="ti"><use href="#mb-side"/></svg><svg class="ti"><use href="#mb-back"/></svg><svg class="ti dim"><use href="#mb-fwd"/></svg><span class="url"><svg><use href="#mb-lock"/></svg>mosedehavnecafe.dk</span><svg class="ti"><use href="#mb-share"/></svg><svg class="ti"><use href="#mb-plus"/></svg><svg class="ti"><use href="#mb-tabs"/></svg></div><img src="media/pg/mosede-web.webp" width="1500" height="970" alt="Mosede Havnecafés hjemmeside" loading="lazy" decoding="async" /></div></div><img class="frame" src="media/dev/macbook-pro-14.svg" width="840" height="563" alt="" /></div>
+      <div class="dev dev-iph" data-p="ph" style="--sb:#F7F3E8;--sbc:#0E0F10"><div class="scr"><video muted playsinline loop preload="none" poster="media/app-mosede.jpg" data-v="media/app-mosede"></video><div class="sb"><span class="t">9:41</span><span class="ic"><svg class="sig"><use href="#sb-sig"/></svg><svg class="wifi"><use href="#sb-wifi"/></svg><svg class="bat"><use href="#sb-bat"/></svg></span></div></div><img class="frame" src="media/dev/iphone-17-pro.svg" width="368" height="750" alt="" /></div>
       <span class="chip mono" data-p="chip"><b class="dot"></b><span data-da="Gæsten · menukort" data-en="The guest · menu">Gæsten · menukort</span></span>
     </div>
   </article>
@@ -223,10 +225,7 @@
     </div>
   </div>
   <div class="admin-vis" data-scrub="admin">
-    <div class="ph ph-lg">
-      <img src="media/pg/notif.webp" width="540" height="1170" alt="Notifikationer fra Spiis' admin-app" loading="lazy" decoding="async" />
-      <i class="ph-isl"></i>
-    </div>
+    <div class="dev dev-iph dev-lg"><div class="scr"><img class="full" src="media/pg/notif.webp" width="540" height="1170" alt="Notifikationer fra Spiis' admin-app" loading="lazy" decoding="async" /></div><img class="frame" src="media/dev/iphone-17-pro.svg" width="368" height="750" alt="" /></div>
     <div class="notes" aria-hidden="true">
       <div class="note"><span class="ni"></span><div><b data-da="Ny bestilling" data-en="New order">Ny bestilling</b><span data-da="3 × Mørbradgryde med ris · kl. 17:30" data-en="3 × Pork stew with rice · 17:30">3 × Mørbradgryde med ris · kl. 17:30</span></div><em class="mono" data-da="nu" data-en="now">nu</em></div>
       <div class="note"><span class="ni"></span><div><b data-da="Bord booket" data-en="Table booked">Bord booket</b><span data-da="4 personer · lørdag kl. 19:00" data-en="4 people · Saturday 19:00">4 personer · lørdag kl. 19:00</span></div><em class="mono">2 min</em></div>
@@ -282,7 +281,7 @@
   <span>© 2026 Lesreg</span>
 </footer>
 
-<script type="module" src="main.js?v=6"></script>
-<script type="module" src="page.js?v=6"></script>
+<script type="module" src="main.js?v=7"></script>
+<script type="module" src="page.js?v=7"></script>
 </body>
 </html>

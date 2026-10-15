@@ -1,7 +1,7 @@
 /* The page around the opening: the scroll, the language, the headline,
    the bar. The opening itself is in intro.js and knows nothing about any
    of this — it is told a number and draws it. */
-import { createIntro } from './intro.js?v=6';
+import { createIntro } from './intro.js?v=7';
 
 const html = document.documentElement;
 const $ = (s, r = document) => r.querySelector(s);
@@ -88,10 +88,15 @@ function measure() {
 }
 
 let cur = 0, tgt = 0, raf = 0, last = 0, t0 = null, started = false, pinned = false;
-const coarse = matchMedia('(pointer: coarse)').matches;
-// A wheel moves in steps, so it is eased; a finger already moves smoothly
-// and anything added to it is felt as lag, so on touch it is barely eased.
-const TAU = coarse ? 0.03 : 0.075;
+// Only a mouse wheel is eased: it moves in notches, and unsmoothed the film
+// jumps a notch at a time. A finger and a trackpad already move smoothly,
+// and any easing on top of them is felt as the page lagging behind the hand.
+let TAU = 0.012;
+addEventListener('wheel', e => {
+  const notch = e.deltaMode !== 0 || (Math.abs(e.deltaY) >= 50 && Number.isInteger(e.deltaY) && e.deltaX === 0);
+  TAU = notch ? 0.06 : 0.012;
+}, { passive: true });
+addEventListener('touchstart', () => { TAU = 0.012; }, { passive: true });
 const target = () => clamp((scrollY - top0) / span);
 
 function draw(p, a) {

@@ -110,6 +110,8 @@ html.ix-on .ix{ display:block; }
 .ix > *, .ix-ann > *, .ix-says > *{ position:absolute; }
 /* the Higgsfield film, drawn frame by frame, and the sharp still it ends on */
 .ix-film{ left:0; top:0; transform-origin:0 0; will-change:transform; }
+.ix-film canvas{ position:absolute; left:0; top:0; }
+.ix-film canvas + canvas{ will-change:opacity; }
 .ix-still{ left:0; top:0; max-width:none; transform-origin:0 0; opacity:0; will-change:transform,opacity; user-select:none;
   -webkit-mask-image:linear-gradient(transparent, #000 5%); mask-image:linear-gradient(transparent, #000 5%); }
 .ix-scrim{ pointer-events:none; }

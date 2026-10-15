@@ -11,7 +11,7 @@
 
    render(p, a) is still one function of the scroll position and the load
    clock, and still writes only transform, opacity and one clip-path to
-   the page. The film is drawn into one canvas. */
+   the page. The film is drawn into two canvases. */
 
 const clamp = (v, a = 0, b = 1) => (v < a ? a : v > b ? b : v);
 const seg = (p, a, b) => clamp((p - a) / (b - a));
@@ -110,10 +110,16 @@ export function createIntro(stage, opts = {}) {
 
   const root = h('div', 'ix');
   stage.insertBefore(root, stage.firstChild);
-  const canvas = h('canvas', 'ix-film', root);
-  // in a film the canvas is drawn in software, with the rest of the page:
+  // the film is two canvases, one for the even frames and one for the odd:
+  // between two frames the top one is faded over the bottom one by the
+  // compositor, so the film flows with the scroll while each canvas is only
+  // drawn when its frame changes
+  const canvas = h('div', 'ix-film', root);
+  // in a film the canvases are drawn in software, with the rest of the page:
   // a GPU canvas can be caught a frame out of step with what is over it
-  const ctx = canvas.getContext('2d', opts.film ? { alpha: false, willReadFrequently: true } : { alpha: false });
+  const cv = [h('canvas', '', canvas), h('canvas', '', canvas)];
+  const cx = cv.map(c => c.getContext('2d', opts.film ? { alpha: false, willReadFrequently: true } : { alpha: false }));
+  cv.forEach(c => { c._k = null; });
   const glassStill = h('img', 'ix-still', root);
   const still = h('img', 'ix-still', root);
   still.alt = ''; glassStill.alt = '';
@@ -156,41 +162,63 @@ export function createIntro(stage, opts = {}) {
   // window of decoded ones around where the reader is. Drawing a picture
   // that is not decoded yet decodes it on the spot and stalls the frame;
   // decoding all of them would hold ~360 MB, which a phone will not allow.
-  const frames = { list: [], ok: [], scene: null, bmp: new Map(), pending: new Set(), want: 0 };
-  const canBitmap = typeof createImageBitmap === 'function' && !opts.film;
+  const frames = { list: [], ok: [], scene: null, bmp: new Map(), dec: new Set(), pending: new Set(), want: 0, ids: 0 };
+  // Chromium and Firefox decode a file into a bitmap off the main thread.
+  // WebKit (Safari, and every browser on an iPhone) is best left to do what
+  // Apple's own product pages do: plain pictures, decoded ahead with
+  // decode(), drawn once they are. A film for Remotion takes them as they come.
+  const webkit = /AppleWebKit/.test(navigator.userAgent) && !/Chrome|Chromium|CriOS|Edg|Android/.test(navigator.userAgent)
+    || /iPhone|iPad|iPod/.test(navigator.userAgent);
+  const mode = opts.film ? 'film' : (!webkit && typeof createImageBitmap === 'function') ? 'bitmap' : 'img';
+  const canBitmap = mode === 'bitmap';
+  // the picture for frame j, if it can be drawn without stalling the frame
+  const pic = j => (mode === 'bitmap' ? frames.bmp.get(j) : mode === 'img' ? (frames.dec.has(j) ? frames.list[j] : null) : (frames.ok[j] ? frames.list[j] : null)) || null;
   // decoded ahead in the direction the reader is going, so a fling finds
   // its pictures ready; a little behind, for a change of mind
   function ensureDecoded(want) {
-    if (!canBitmap) return;
+    if (mode === 'film') return;
     if (want !== frames.want) frames.dir = want > frames.want ? 1 : -1;
     frames.want = want;
     const n = frames.list.length, dir = frames.dir || 1;
-    const ahead = 20, behind = 6;
+    const ahead = 22, behind = 7;
     const S = frames.scene;
+    const has = mode === 'bitmap' ? (j => frames.bmp.has(j)) : (j => frames.dec.has(j));
     for (let d = 0; d <= ahead; d++) {
       for (const j of d === 0 ? [want] : d <= behind ? [want + d * dir, want - d * dir] : [want + d * dir]) {
-        if (j < 0 || j >= n || !frames.ok[j] || frames.bmp.has(j) || frames.pending.has(j)) continue;
+        if (j < 0 || j >= n || !frames.ok[j] || has(j) || frames.pending.has(j)) continue;
         // a few at a time, nearest first: a queue of forty decodes would
         // put the next picture behind all of them
         if (frames.pending.size >= 4) return evict(want, dir);
         frames.pending.add(j);
-        createImageBitmap(frames.list[j]).then(b => {
+        const done = () => {
           frames.pending.delete(j);
-          if (frames.scene !== S) { b.close(); return; }
-          frames.bmp.set(j, b);
           if (Math.abs(j - frames.want) <= 2 && G) render(G.lastP, G.lastA, true);
           ensureDecoded(frames.want);
-        }).catch(() => frames.pending.delete(j));
+        };
+        if (mode === 'bitmap') {
+          createImageBitmap(frames.list[j]).then(b => {
+            if (frames.scene !== S) { b.close(); frames.pending.delete(j); return; }
+            frames.bmp.set(j, b); done();
+          }).catch(() => frames.pending.delete(j));
+        } else {
+          const im = frames.list[j];
+          (im.decode ? im.decode() : Promise.resolve()).then(() => {
+            if (frames.scene !== S) { frames.pending.delete(j); return; }
+            frames.dec.add(j); done();
+          }).catch(() => frames.pending.delete(j));
+        }
       }
     }
     evict(want, dir);
   }
   function evict(want, dir) {
-    for (const [j, b] of frames.bmp) {
-      const d = (j - want) * dir;
-      if ((d > 26 || d < -10) && b !== frames.last && b !== frames.keyIm) { b.close(); frames.bmp.delete(j); }
-    }
+    const keep = j => { const d = (j - want) * dir; return d <= 28 && d >= -12; };
+    for (const [j, b] of frames.bmp) if (!keep(j) && b !== frames.last && !frames.keyIms.includes(b)) { b.close(); frames.bmp.delete(j); }
+    // WebKit frees what it decoded on its own; forgetting it here only means
+    // it is decoded again before it is drawn again
+    for (const j of frames.dec) if (!keep(j) && j !== 0) frames.dec.delete(j);
   }
+  frames.keyIms = [];
 
   function fillApps() {
     for (const k of ['spiis', 'mosede']) {
@@ -240,7 +268,7 @@ export function createIntro(stage, opts = {}) {
   function loadFrames(S) {
     if (frames.scene === S) return frames.ready;
     for (const b of frames.bmp.values()) b.close();
-    frames.bmp.clear(); frames.pending.clear();
+    frames.bmp.clear(); frames.dec.clear(); frames.pending.clear(); frames.keyIms = [];
     frames.scene = S; frames.list = new Array(S.n); frames.ok = new Array(S.n).fill(false);
     let firstDone;
     frames.first = new Promise(r => { firstDone = r; });
@@ -261,7 +289,7 @@ export function createIntro(stage, opts = {}) {
       im.decoding = 'async';
       im.onload = () => {
         frames.list[i] = im; frames.ok[i] = true; res();
-        if (i === 0) (im.decode ? im.decode() : Promise.resolve()).catch(() => {}).then(firstDone);
+        if (i === 0) (im.decode ? im.decode() : Promise.resolve()).catch(() => {}).then(() => { frames.dec.add(0); frames.last = im; firstDone(); });
         if (G && G.S === S && Math.abs(i - frames.want) <= 8) ensureDecoded(frames.want);
       };
       im.onerror = () => { if (i === 0) firstDone(); res(); };
@@ -280,8 +308,10 @@ export function createIntro(stage, opts = {}) {
     const land = W / H >= 1.0;
     const S = land ? SCENES.land : SCENES.port;
     const dpr = Math.min(2, (typeof devicePixelRatio === 'number' ? devicePixelRatio : 1));
-    canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
-    canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
+    for (const c of cv) {
+      c.width = Math.round(W * dpr); c.height = Math.round(H * dpr);
+      c.style.width = W + 'px'; c.style.height = H + 'px'; c._k = null;
+    }
     let s0 = Math.max(W / S.w, H / S.h);
     // a phone: a little closer, and the empty dark above the glass cropped
     // away, so the glass stands high and the words have the stone below it
@@ -322,7 +352,7 @@ export function createIntro(stage, opts = {}) {
     statusBar.style.height = ((isl.t * 2 + isl.h) * 100) + '%';
     screen.style.setProperty('--sw', scr.w + 'px');
     G = { W, H, land, S, Dw, Dh, ox, oy, dpr, u, scr, lastP: 0, lastA: 0 };
-    frames.key = null;
+    frames.key = null; frames.keyIms = [];
     loadFrames(S);
     root.querySelectorAll('*').forEach(e => { e._t = e._o = e._c = null; });
     page._c = page._o = null;
@@ -372,36 +402,65 @@ export function createIntro(stage, opts = {}) {
     // less of the scroll than the part where the glass actually flows
     const t = seg(p, SEQ[0], SEQ[1]);
     const ft = t < 0.5 ? t * 0.7 : 0.35 + (t - 0.5) * 1.3;
-    let want = Math.round(clamp(ft) * (S.nA - 1));
-    if (S.n > S.nA && p > SEQB[0]) want = S.nA + Math.round(io(seg(p, SEQB[0], SEQB[1])) * (S.n - S.nA - 1));
+    // where the scroll is, in frames, with the fraction kept: between two
+    // frames both are drawn, the second over the first by that fraction,
+    // so the film flows with the scroll instead of stepping frame to frame
+    let f = clamp(ft) * (S.nA - 1), last = S.nA - 1;
+    if (S.n > S.nA && p > SEQB[0]) { f = S.nA + io(seg(p, SEQB[0], SEQB[1])) * (S.n - S.nA - 1); last = S.n - 1; }
+    const want = Math.round(f);
     ensureDecoded(want);
-    // the nearest picture that is ready to draw: decoded if we can, any
-    // that has arrived if we cannot
-    const ready = canBitmap ? (j => frames.bmp.has(j)) : (j => frames.ok[j]);
-    let i = -1;
-    for (let d = 0; d < S.n && i < 0; d++) {
-      if (want - d >= 0 && ready(want - d)) i = want - d;
-      else if (want + d < S.n && ready(want + d)) i = want + d;
+    let i0 = Math.floor(f), q = f - i0;
+    if (q > 0.985) { i0 += 1; q = 0; } else if (q < 0.015) q = 0;
+    // a film draws both into one canvas, in steps it can cache
+    if (!CACHE) q = Math.round(q * 12) / 12;
+    const i1 = Math.min(i0 + 1, last);
+    let a = pic(i0), b = q > 0 && i1 !== i0 ? pic(i1) : null;
+    let i = i0;
+    if (!a || (q > 0 && !b)) {
+      // not both there: the nearest picture that is ready, alone
+      b = null; q = 0; i = -1; a = null;
+      for (let d = 0; d < S.n && i < 0; d++) {
+        if (want - d >= 0 && pic(want - d)) i = want - d;
+        else if (want + d < S.n && pic(want + d)) i = want + d;
+      }
+      // nothing near is ready yet: hold the picture already on screen
+      a = i >= 0 ? pic(i) : (frames.last || null);
     }
-    // nothing near is ready yet: hold the picture already on screen
-    let im = i >= 0 ? (canBitmap ? frames.bmp.get(i) : frames.list[i]) : (canBitmap ? frames.last : frames.list[0]);
-    if (canBitmap && im) frames.last = im;
-    frames.drawn = i; frames.wantNow = want;
-    // the push-in is the canvas's own transform, on the compositor; the
-    // picture itself is only drawn again when it is a different picture
+    if (a) frames.last = a;
+    frames.drawn = b ? want : i; frames.wantNow = want;
+    // the push-in is the film's own transform, on the compositor
     setT(canvas, 'translate3d(' + c.tx.toFixed(2) + 'px,' + c.ty.toFixed(2) + 'px,0) scale(' + c.k.toFixed(4) + ')');
-    const key = (im ? i : -2) + '|' + fade.toFixed(3);
-    if (CACHE && frames.key === key && frames.keyIm === im) return i;
-    frames.key = key; frames.keyIm = im;
-    const dpr = G.dpr;
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    ctx.fillStyle = '#040404'; // the film's own black, measured off its top edge
-    ctx.fillRect(0, 0, G.W, G.H);
-    // the fade-in is drawn into the picture rather than set on the canvas:
-    // a canvas with an opacity of its own can be repainted in parts
-    ctx.globalAlpha = fade;
-    if (im) ctx.drawImage(im, G.ox, G.oy, G.Dw, G.Dh);
-    ctx.globalAlpha = 1;
+    const paint = (k, imA, imB, qb) => {
+      const el = cv[k], g = cx[k];
+      const key = (imA ? (imA._id || (imA._id = ++frames.ids)) : 0) + '|' + (imB ? (imB._id || (imB._id = ++frames.ids)) + ':' + qb.toFixed(3) : '') + '|' + fade.toFixed(3);
+      if (CACHE && el._k === key) return;
+      el._k = key;
+      const dpr = G.dpr;
+      g.setTransform(dpr, 0, 0, dpr, 0, 0);
+      g.globalAlpha = 1;
+      g.fillStyle = '#040404'; // the film's own black, measured off its top edge
+      g.fillRect(0, 0, G.W, G.H);
+      // the fade-in is drawn into the picture rather than set on the canvas:
+      // a canvas with an opacity of its own can be repainted in parts
+      g.globalAlpha = fade;
+      if (imA) g.drawImage(imA, G.ox, G.oy, G.Dw, G.Dh);
+      if (imB) { g.globalAlpha = fade * qb; g.drawImage(imB, G.ox, G.oy, G.Dw, G.Dh); }
+      g.globalAlpha = 1;
+    };
+    if (!CACHE) {
+      // a film: both frames into one canvas, the other one out of the way
+      paint(0, a, b, q); setO(cv[1], 0);
+    } else if (b) {
+      // even frame below, odd frame above, the top faded by the fraction
+      const evenFirst = i0 % 2 === 0;
+      paint(0, evenFirst ? a : b, null, 0);
+      paint(1, evenFirst ? b : a, null, 0);
+      setO(cv[1], evenFirst ? q : 1 - q);
+    } else {
+      const odd = i > 0 && i % 2 === 1;
+      paint(odd ? 1 : 0, a, null, 0);
+      setO(cv[1], odd ? 1 : 0);
+    }
     return i;
   }
 
@@ -424,7 +483,7 @@ export function createIntro(stage, opts = {}) {
     setO(still, oP);
     // under a still that covers it the film is not composited at all
     const cover = oG >= 0.999 || oP >= 0.999 ? 'hidden' : 'visible';
-    if (canvas._v !== cover) { canvas._v = cover; canvas.style.visibility = cover; }
+    if (canvas._v !== cover) { canvas._v = cover; canvas.style.display = cover === 'hidden' ? 'none' : ''; }
     if (fromLoad) return;
     setO(scrimB, land ? 0.6 + 0.4 * seg(p, 0.05, 0.12) : 1);
     setO(scrimL, land ? 1 : 0);
