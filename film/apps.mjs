@@ -8,7 +8,7 @@ const [mode, id, times] = process.argv.slice(2);
 // only what the films use goes in the public folder, at the same paths as in
 // the repository; every render copies the whole folder, so it is kept small
 const USED = ['fonts/chivo-400.woff2', 'fonts/chivo-500.woff2', 'fonts/chivo-600.woff2', 'fonts/newsreader-300-italic.woff2', 'fonts/fragmentmono-400.woff2',
-  'ny/media/dev/iphone-17-pro-2x.webp', 'ny/media/dev/macbook-pro-14.webp', 'ny/media/pg/mosede-web.webp', 'film/assets/dish.webp', 'film/assets/int-plate.mp4'];
+  'ny/media/dev/iphone-17-pro-2x.webp', 'ny/media/dev/macbook-pro-14.webp', 'ny/media/pg/mosede-web.webp', 'film/assets/dish.webp'];
 const pub = path.resolve('pub');
 for (const f of USED) { fs.mkdirSync(path.dirname(path.join(pub, f)), { recursive: true }); fs.copyFileSync(path.resolve('..', f), path.join(pub, f)); }
 const serveUrl = await bundle({ entryPoint: path.resolve('src/apps/index.ts'), publicDir: pub });

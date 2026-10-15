@@ -69,6 +69,13 @@ const to = 'IntersectionObserver' in window && new IntersectionObserver(es => es
   }
 }), { threshold: [0, 0.55], rootMargin: '0px 200px 0px 200px' });
 if (to) $$('video.tile-film').forEach(v => to.observe(v));
+// all four are fetched while the tiles are still a screen or so away, so a
+// swipe never waits for one
+const tileRow = document.getElementById('tiles');
+if (tileRow && 'IntersectionObserver' in window) {
+  const near = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) { $$('video.tile-film').forEach(v => { v.preload = 'auto'; src(v); }); near.disconnect(); } }, { rootMargin: '900px 0px' });
+  near.observe(tileRow);
+}
 
 /* ---------- the band: two rows that the scroll pushes, opposite ways ---------- */
 const rows = $$('[data-mq]');
