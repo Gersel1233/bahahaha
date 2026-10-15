@@ -141,8 +141,14 @@ html.ix-on .ix{ display:block; }
 .ix-screen{ left:0; top:0; transform-origin:0 0; overflow:hidden; background:#0B0C0D; opacity:0;
   box-shadow:0 0 0 1px rgba(255,255,255,.06); will-change:transform,opacity; }
 .ix-screen .app{ position:absolute; inset:0; overflow:hidden; }
-.ix-screen .app video, .ix-screen .app img{ position:absolute; left:0; width:100%; top:-6.5%; height:111%; object-fit:cover; }
-.ix-screen .app-mosede video, .ix-screen .app-mosede img{ top:-5.5%; height:114%; }
+.ix-screen .app video, .ix-screen .app img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:50% 0; }
+/* the phone's own status bar and Dynamic Island, over the recordings' */
+.ix-screen .sbar{ position:absolute; left:0; right:0; top:0; z-index:2; background:#000; color:#fff;
+  display:flex; align-items:center; justify-content:space-between; padding:0 9% 0 11%;
+  font:600 calc(var(--sw) * .043)/1 -apple-system, 'SF Pro Text', system-ui, sans-serif; letter-spacing:-.01em; }
+.ix-screen .sbar .ic{ display:flex; align-items:center; gap:calc(var(--sw) * .014); }
+.ix-screen .sbar svg{ height:calc(var(--sw) * .03); width:auto; display:block; }
+.ix-screen .island{ position:absolute; z-index:3; display:block; background:#000; border-radius:999px; }
 .ix-screen .app-mosede{ will-change:clip-path; }
 .ix-screen .sheen{ position:absolute; inset:0; pointer-events:none;
   background:linear-gradient(135deg, rgba(255,255,255,.2), rgba(255,255,255,.04) 22%, rgba(255,255,255,0) 48%, rgba(255,255,255,0) 82%, rgba(255,255,255,.07)),

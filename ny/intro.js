@@ -51,23 +51,35 @@ export const TXT = {
   },
 };
 
-/* the film, and where the glass stands in it (picture coordinates 0..1) */
+/* the film, and where things stand in it (picture coordinates 0..1).
+   One sequence in two parts: frames 0..nA-1 are the drop setting into
+   the glass slab; the rest are the slab turning into an iPhone 17 Pro.
+   glass: the sharp still of the slab; end: the sharp still of the phone.
+   screen: the phone's display, measured off the end still, and its
+   Dynamic Island as fractions of that display. */
 const SCENES = {
   land: {
-    w: 2688, h: 1520, seq: 'media/seq-d/', n: 97, end: 'media/glas-d-end.webp',
+    w: 2688, h: 1520, seq: 'media/seq-d/', nA: 97, n: 158,
+    glass: 'media/glas-d-end.webp', end: 'media/phone-d-end.webp',
     slab: { l: 0.522, r: 0.75, t: 0.082, b: 0.828 },
     glint: [0.749, 0.214],
+    screen: { l: 0.5339, r: 0.7392, t: 0.0967, b: 0.8191, rad: 0.114 },
+    island: { cx: 0.498, t: 0.012, w: 0.29, h: 0.04 },
   },
   port: {
-    w: 1520, h: 2688, seq: 'media/seq-m/', n: 65, end: 'media/glas-m-end.webp',
+    w: 1520, h: 2688, seq: 'media/seq-m/', nA: 65, n: 106,
+    glass: 'media/glas-m-end.webp', end: 'media/phone-m-end.webp',
     slab: { l: 0.28, r: 0.72, t: 0.255, b: 0.762 },
     glint: [0.69, 0.272],
+    screen: { l: 0.3118, r: 0.6862, t: 0.2634, b: 0.7515, rad: 0.105 },
+    island: { cx: 0.496, t: 0.013, w: 0.33, h: 0.038 },
   },
 };
 
 /* the scroll, in parts */
-const SEQ = [0.035, 0.44];            // the film runs here
-const CH = [[0.07, 0.235], [0.245, 0.45], [0.5, 0.635], [0.645, 0.765]];
+const SEQ = [0.035, 0.40];            // the drop sets into the glass
+const SEQB = [0.43, 0.515];           // the glass becomes the phone
+const CH = [[0.07, 0.235], [0.245, 0.52], [0.53, 0.665], [0.67, 0.775]];
 const ONE = [0.775, 0.85];
 
 function h(tag, cls, parent, html) {
@@ -102,8 +114,9 @@ export function createIntro(stage, opts = {}) {
   // in a film the canvas is drawn in software, with the rest of the page:
   // a GPU canvas can be caught a frame out of step with what is over it
   const ctx = canvas.getContext('2d', opts.film ? { alpha: false, willReadFrequently: true } : { alpha: false });
+  const glassStill = h('img', 'ix-still', root);
   const still = h('img', 'ix-still', root);
-  still.alt = '';
+  still.alt = ''; glassStill.alt = '';
   const scrimL = h('i', 'ix-scrim ix-scrim-l', root);
   const scrimB = h('i', 'ix-scrim ix-scrim-b', root);
 
@@ -121,6 +134,13 @@ export function createIntro(stage, opts = {}) {
     spiis: h('div', 'app app-spiis', screen),
     mosede: h('div', 'app app-mosede', screen),
   };
+  // the phone's own top: a status bar over the recordings' (which show the
+  // recording dot), and the Dynamic Island where the photograph has it
+  const statusBar = h('div', 'sbar', screen, '<span class="t">9:41</span><span class="ic">' +
+    '<svg viewBox="0 0 18 12"><path d="M1 11h2V8H1zm4 0h2V6H5zm4 0h2V3.5H9zm4 0h2V1h-2z" fill="currentColor"/></svg>' +
+    '<svg viewBox="0 0 16 12"><path d="M8 11.2 5.6 8.6a3.4 3.4 0 0 1 4.8 0zM3.4 6.4a6.5 6.5 0 0 1 9.2 0l-1.4 1.4a4.5 4.5 0 0 0-6.4 0zM1 4a9.9 9.9 0 0 1 14 0l-1.4 1.4a7.9 7.9 0 0 0-11.2 0z" fill="currentColor"/></svg>' +
+    '<svg viewBox="0 0 27 12"><rect x=".5" y=".5" width="23" height="11" rx="3.5" fill="none" stroke="currentColor" opacity=".45"/><rect x="2" y="2" width="18" height="8" rx="2" fill="currentColor"/><path d="M25 4v4a2 2 0 0 0 0-4z" fill="currentColor" opacity=".45"/></svg></span>');
+  const island = h('i', 'island', screen);
   const sheen = h('i', 'sheen', screen);
   const tagApp = h('div', 'apptag', root);
 
@@ -155,7 +175,7 @@ export function createIntro(stage, opts = {}) {
         }).catch(() => frames.pending.delete(j));
       }
     }
-    for (const [j, b] of frames.bmp) if (Math.abs(j - want) > 14) { b.close(); frames.bmp.delete(j); }
+    for (const [j, b] of frames.bmp) if (Math.abs(j - want) > 14 && b !== frames.last) { b.close(); frames.bmp.delete(j); }
   }
 
   function fillApps() {
@@ -213,7 +233,16 @@ export function createIntro(stage, opts = {}) {
     const order = [];
     for (const step of [16, 8, 4, 2, 1]) for (let i = 0; i < S.n; i += step) if (!order.includes(i)) order.push(i);
     if (!order.includes(S.n - 1)) order.splice(1, 0, S.n - 1);
-    const one = i => new Promise(res => {
+    const url = i => base + S.seq + String(i).padStart(3, '0') + '.webp';
+    // with bitmaps the frames are kept as files and decoded from the file:
+    // createImageBitmap on an <img> decodes on the main thread in Chrome,
+    // which cost 200-330 ms frames where the film jumps into its second half
+    const one = canBitmap ? (i => fetch(url(i)).then(r => (r.ok ? r.blob() : null)).then(b => {
+      if (!b || frames.scene !== S) return;
+      frames.list[i] = b; frames.ok[i] = true;
+      if (i === 0) createImageBitmap(b).then(bm => { frames.bmp.set(0, bm); frames.last = bm; firstDone(); }).catch(firstDone);
+      else if (G && G.S === S && Math.abs(i - frames.want) <= 8) ensureDecoded(frames.want);
+    }).catch(() => { if (i === 0) firstDone(); })) : (i => new Promise(res => {
       const im = new Image();
       im.decoding = 'async';
       im.onload = () => {
@@ -222,8 +251,8 @@ export function createIntro(stage, opts = {}) {
         if (G && G.S === S && Math.abs(i - frames.want) <= 8) ensureDecoded(frames.want);
       };
       im.onerror = () => { if (i === 0) firstDone(); res(); };
-      im.src = base + S.seq + String(i).padStart(3, '0') + '.webp';
-    });
+      im.src = url(i);
+    }));
     // a few at a time, in order
     frames.ready = (async () => {
       let k = 0;
@@ -256,18 +285,28 @@ export function createIntro(stage, opts = {}) {
       if (want > oy && want + Dh >= H) oy = want;
       else if (want > oy) oy = H - Dh;
     }
-    if (still.dataset.src !== S.end) { still.dataset.src = S.end; still.src = base + S.end; }
-    still.style.width = Dw + 'px'; still.style.height = Dh + 'px';
+    // both stills are decoded as soon as they arrive: a picture this size
+    // decoded on the frame it first appears stalls that frame
+    for (const [im, src] of [[still, S.end], [glassStill, S.glass]]) {
+      if (im.dataset.src === src) continue;
+      im.dataset.src = src; im.decoding = 'async'; im.src = base + src;
+      if (im.decode) im.decode().catch(() => {});
+    }
+    for (const im of [still, glassStill]) { im.style.width = Dw + 'px'; im.style.height = Dh + 'px'; }
     const u = land ? clamp(Math.min(W / 1440, H / 900), 0.78, 1.3) : clamp(W / 390, 0.86, 1.2);
     stage.style.setProperty('--u', u.toFixed(4));
     root.classList.toggle('is-land', land); root.classList.toggle('is-port', !land);
 
-    // the screen inside the slab: inset by the glass's thickness
-    const sl = S.slab, sw = (sl.r - sl.l) * Dw, sh = (sl.b - sl.t) * Dh;
-    const inset = sw * 0.058;
-    const scr = { u: sl.l, v: sl.t, w: sw - 2 * inset, h: sh - 2 * inset, inset, r: sw * 0.11 };
+    // the display of the phone, where the systems will run
+    const sd = S.screen, sw = (sd.r - sd.l) * Dw;
+    const scr = { u: sd.l, v: sd.t, w: sw, h: (sd.b - sd.t) * Dh, r: sw * sd.rad };
     screen.style.width = scr.w + 'px'; screen.style.height = scr.h + 'px';
     screen.style.borderRadius = scr.r + 'px';
+    const isl = S.island;
+    island.style.left = ((isl.cx - isl.w / 2) * 100) + '%'; island.style.width = (isl.w * 100) + '%';
+    island.style.top = (isl.t * 100) + '%'; island.style.height = (isl.h * 100) + '%';
+    statusBar.style.height = ((isl.t * 2 + isl.h) * 100) + '%';
+    screen.style.setProperty('--sw', scr.w + 'px');
     G = { W, H, land, S, Dw, Dh, ox, oy, dpr, u, scr, lastP: 0, lastA: 0 };
     loadFrames(S);
     root.querySelectorAll('*').forEach(e => { e._t = e._o = e._c = null; });
@@ -316,7 +355,8 @@ export function createIntro(stage, opts = {}) {
     // less of the scroll than the part where the glass actually flows
     const t = seg(p, SEQ[0], SEQ[1]);
     const ft = t < 0.5 ? t * 0.7 : 0.35 + (t - 0.5) * 1.3;
-    const want = Math.round(clamp(ft) * (S.n - 1));
+    let want = Math.round(clamp(ft) * (S.nA - 1));
+    if (S.n > S.nA && p > SEQB[0]) want = S.nA + Math.round(io(seg(p, SEQB[0], SEQB[1])) * (S.n - S.nA - 1));
     ensureDecoded(want);
     // the nearest picture that is ready to draw: decoded if we can, any
     // that has arrived if we cannot
@@ -326,8 +366,9 @@ export function createIntro(stage, opts = {}) {
       if (want - d >= 0 && ready(want - d)) i = want - d;
       else if (want + d < S.n && ready(want + d)) i = want + d;
     }
-    // nothing decoded yet at all: the first frame, decoded at load
-    const im = i >= 0 ? (canBitmap ? frames.bmp.get(i) : frames.list[i]) : frames.list[0];
+    // nothing near is ready yet: hold the picture already on screen
+    let im = i >= 0 ? (canBitmap ? frames.bmp.get(i) : frames.list[i]) : (canBitmap ? frames.last : frames.list[0]);
+    if (canBitmap && im) frames.last = im;
     const dpr = G.dpr;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.fillStyle = '#040404'; // the film's own black, measured off its top edge
@@ -348,8 +389,15 @@ export function createIntro(stage, opts = {}) {
 
     /* ----- the film, and the sharp still it ends on ----- */
     drawFilm(c, p, out(seg(a, 0, 0.6)));
-    setT(still, 'translate3d(' + (c.tx + c.k * G.ox).toFixed(2) + 'px,' + (c.ty + c.k * G.oy).toFixed(2) + 'px,0) scale(' + c.k.toFixed(4) + ')');
-    setO(still, seg(p, SEQ[1] - 0.01, SEQ[1] + 0.02));
+    const stT = ('translate3d(' + (c.tx + c.k * G.ox).toFixed(2) + 'px,' + (c.ty + c.k * G.oy).toFixed(2) + 'px,0) scale(' + c.k.toFixed(4) + ')');
+    // the glass is held sharp while it is measured, the phone once it is made;
+    // a still that is not showing is not moved either
+    const oG = seg(p, SEQ[1] - 0.008, SEQ[1] + 0.008) * (1 - seg(p, SEQB[0] - 0.004, SEQB[0] + 0.004));
+    const oP = seg(p, SEQB[1] - 0.006, SEQB[1] + 0.008);
+    if (oG > 0.001 || !CACHE) setT(glassStill, stT);
+    if (oP > 0.001 || !CACHE) setT(still, stT);
+    setO(glassStill, oG);
+    setO(still, oP);
     if (fromLoad) return;
     setO(scrimB, land ? 0.6 + 0.4 * seg(p, 0.05, 0.12) : 1);
     setO(scrimL, land ? 1 : 0);
@@ -381,7 +429,7 @@ export function createIntro(stage, opts = {}) {
     /* ----- the glass is measured as it sets ----- */
     const sl = G.S.slab;
     const [x0, y0] = proj(c, sl.l, sl.t), [x1, y1] = proj(c, sl.r, sl.b);
-    const aIn = seg(p, 0.33, 0.47), aOut = 1 - seg(p, 0.74, 0.79);
+    const aIn = seg(p, 0.3, 0.41), aOut = 1 - seg(p, 0.418, 0.438);
     const gapY = 26 * G.u, gapX = 30 * G.u;
     const wT = out(seg(aIn, 0, 0.45)) * aOut, hT = out(seg(aIn, 0.15, 0.6)) * aOut;
     const dy0 = y1 + gapY;
@@ -412,22 +460,23 @@ export function createIntro(stage, opts = {}) {
 
     /* ----- the systems, inside the glass ----- */
     const sc = G.scr;
-    const sx = x0 + sc.inset * c.k, sy = y0 + sc.inset * c.k;
-    const on = out5(seg(p, 0.475, 0.52));
+    const [sx, sy] = proj(c, sc.u, sc.v);
+    const on = out5(seg(p, 0.52, 0.555));
     setT(screen, 'translate3d(' + sx.toFixed(2) + 'px,' + sy.toFixed(2) + 'px,0) scale(' + (c.k * lerp(0.965, 1, on)).toFixed(4) + ')');
     setO(screen, on * (1 - seg(p, 0.83, 0.86)));
     // Mosede flows in over Spiis from the bottom, the way the glass set
-    const wipe = io(seg(p, 0.625, 0.67));
+    const wipe = io(seg(p, 0.655, 0.695));
     setC(apps.mosede, 'inset(' + ((1 - wipe) * 100).toFixed(2) + '% 0 0 0 round ' + (sc.r * 0.9).toFixed(1) + 'px)');
     setO(apps.mosede, wipe > 0 ? 1 : 0);
     setO(sheen, 1);
     // which system it is, on a label under the glass
-    const tg = out(seg(p, 0.5, 0.53)) * (1 - seg(p, 0.76, 0.79));
-    const which = p < 0.645 ? 'spiis' : 'mosede';
+    const tg = out(seg(p, 0.54, 0.57)) * (1 - seg(p, 0.76, 0.79));
+    const which = p < 0.675 ? 'spiis' : 'mosede';
     const tt = tagApp.lastChild;
     if (tt._w !== which + lang) { tt._w = which + lang; tt.textContent = T.app[which]; }
-    const tagY = sy + 14 * c.k;
-    setT(tagApp, 'translate3d(' + ((x0 + x1) / 2).toFixed(2) + 'px,' + tagY.toFixed(2) + 'px,0) translate(-50%,0)');
+    // the system's name, under the phone
+    const tagY = sy + sc.h * c.k + 16 * G.u;
+    setT(tagApp, 'translate3d(' + (sx + sc.w * c.k / 2).toFixed(2) + 'px,' + tagY.toFixed(2) + 'px,0) translate(-50%,0)');
     setO(tagApp, tg);
 
     /* ----- the face of the glass opens into the page ----- */
