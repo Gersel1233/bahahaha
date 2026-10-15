@@ -49,7 +49,26 @@ const vo = 'IntersectionObserver' in window && new IntersectionObserver(es => es
     if (!still) v.play().catch(() => {});
   } else if (!v.paused) v.pause();
 }), { threshold: 0.2 });
-if (vo) $$('video[data-v]').forEach(v => vo.observe(v));
+if (vo) $$('video[data-v]:not(.tile-film)').forEach(v => vo.observe(v));
+
+/* ---------- the tiles' films: each plays once, from its beginning, when
+   its tile is well in view, and then stays on its last picture. It plays
+   again only after its tile has been out of sight altogether. ---------- */
+const src = v => { if (!v._src) { v._src = true; const s = v.dataset.v; v.innerHTML = '<source src="' + s + '.mp4" type="video/mp4"><source src="' + s + '.webm" type="video/webm">'; v.load(); } };
+const to = 'IntersectionObserver' in window && new IntersectionObserver(es => es.forEach(en => {
+  const v = en.target;
+  if (en.intersectionRatio > 0) src(v);
+  if (en.intersectionRatio >= 0.55 && !v._seen) {
+    v._seen = true;
+    if (still) { v.addEventListener('loadeddata', () => { try { v.currentTime = v.duration || 99; } catch (e) {} }, { once: true }); return; }
+    try { v.currentTime = 0; } catch (e) {}
+    v.play().catch(() => {});
+  } else if (en.intersectionRatio === 0 && v._seen) {
+    v._seen = false; v.pause();
+    try { v.currentTime = 0; } catch (e) {}
+  }
+}), { threshold: [0, 0.55], rootMargin: '0px 200px 0px 200px' });
+if (to) $$('video.tile-film').forEach(v => to.observe(v));
 
 /* ---------- the band: two rows that the scroll pushes, opposite ways ---------- */
 const rows = $$('[data-mq]');

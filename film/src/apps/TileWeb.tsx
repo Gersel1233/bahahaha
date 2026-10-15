@@ -14,10 +14,11 @@ const PX = WX, PY = WY + BAR, PW = WW, PH = WH - BAR;
 const FW = 250, FX = PX + PW - FW - 46, FY = PY + 150, FH = FW * 2336 / 1120;
 const SX = FX + FW * 0.0537, SY = FY + FH * 0.024, SW = FW * 0.8917, SH = FH * 0.952;
 
+export const WEB_S = 7;
 export const TileWeb: React.FC = () => {
   useFonts();
   const { t, sp } = useT();
-  const all = seg(t, 0, 0.4) * (1 - seg(t, 7.4, 7.95));
+  const all = 1;
   const win = out5(seg(t, 0.1, 0.7));
   const grid = io3(seg(t, 0.5, 1.3));
   const wire = seg(t, 1.1, 1.8);

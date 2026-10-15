@@ -1,111 +1,134 @@
-/* The Systems tile: a business's own system putting itself together. The
-   day's overview counts up and its curve draws, the kitchen's orders come
-   in and move on, and the menu switches a dish on. Panels in depth, the way
-   a product is shown taken apart. A demonstration, under no client's name. */
+/* The Systems tile, as a story with its cause and its effect: at Spiis, a
+   guest books a table on the phone and the restaurant's system shows it at
+   once; then the guest pre-orders, and the order lands on the kitchen
+   screen. The phone in front, the restaurant's MacBook behind. */
 import React from 'react';
-import { AbsoluteFill } from 'remotion';
+import { AbsoluteFill, Img, staticFile } from 'remotion';
 import { useT, useFonts, seg, out3, out5, io3, mix, clamp, Check, SANS, MONO, SERIF } from './common';
-import { TW, TH } from './TileApps';
+import { TW } from './TileApps';
 
-const INK = '#141517', MUTE = '#8A8780', LINE = 'rgba(20,21,23,.08)', ORANGE = '#D9692E', GREEN = '#2F9E5B', NAVY = '#18264A';
+export const SYS_S = 6.6;
 
-const Panel: React.FC<{ x: number; y: number; w: number; h: number; p: number; z?: number; dark?: boolean; children: React.ReactNode }> = ({ x, y, w, h, p, z = 0, dark, children }) => (
-  <div style={{ position: 'absolute', left: x, top: y, width: w, height: h, borderRadius: 34, padding: 32, overflow: 'hidden',
-    background: dark ? NAVY : 'rgba(255,255,255,.92)', color: dark ? '#F3EEE6' : INK,
-    boxShadow: `0 ${30 + z * 10}px ${70 + z * 20}px rgba(20,33,61,${0.14 + z * 0.04}), 0 2px 6px rgba(20,33,61,.06), inset 0 0 0 1px ${dark ? 'rgba(255,255,255,.08)' : 'rgba(20,21,23,.05)'}`,
-    opacity: clamp(p * 1.6), transform: `translateY(${70 * (1 - p)}px) scale(${mix(0.92, 1, p)})` }}>{children}</div>
+const INK = '#1E1915', MUTE = '#8A7F74', LINE = 'rgba(30,25,21,.08)', ORANGE = '#D9692E', GREEN = '#2F9E5B', CREAM = '#F4EFE7';
+// the MacBook, behind and to the right
+const MW = 800, MX = 100, MY = 680, MH = MW * 938 / 1600;
+const MSX = MX + MW * 0.1034, MSY = MY + MH * 0.0345, MSW = MW * 0.7942, MSH = MW * 938 / 1600 * 0.8553;
+// the phone, in front and to the left
+const PW = 300, PX = 28, PY = 820, PH = PW * 2336 / 1120;
+const PSX = PX + PW * 0.0537, PSY = PY + PH * 0.024, PSW = PW * 0.8917, PSH = PH * 0.952;
+
+const Num: React.FC<{ a: number; b: number; p: number; size: number; color?: string }> = ({ a, b, p, size, color = INK }) => (
+  <span style={{ font: `600 ${size}px/1 ${SANS}`, color: p > 0 ? (p < 1 ? ORANGE : color) : color, fontVariantNumeric: 'tabular-nums', letterSpacing: -size * 0.03 }}>{Math.round(mix(a, b, out3(p)))}</span>
 );
-
-const Count: React.FC<{ to: number; p: number; size: number; color?: string }> = ({ to, p, size, color = INK }) => (
-  <span style={{ font: `600 ${size}px/1 ${SANS}`, letterSpacing: -size * 0.03, color, fontVariantNumeric: 'tabular-nums' }}>{Math.round(to * out3(p))}</span>
-);
-
-const ORDERS = [
-  { at: '17.00', what: '2 × Dagens ret', st: ['Ny', 'I gang', 'Klar'] },
-  { at: '17.15', what: '4 × Dagens ret', st: ['Ny', 'I gang'] },
-  { at: '17.30', what: '3 × Dagens ret', st: ['Ny'] },
-];
-const ST: Record<string, string> = { 'Ny': '#8A8780', 'I gang': ORANGE, 'Klar': GREEN };
 
 export const TileSys: React.FC = () => {
   useFonts();
   const { t, sp } = useT();
-  const all = 1 - seg(t, 7.4, 7.95);
-  const a = sp(0.25, 17, 120), b = sp(0.75, 17, 120), c = sp(1.25, 17, 120);
-  const kpi = seg(t, 0.8, 2.4), curve = io3(seg(t, 1.0, 2.8));
-  const dish = out3(seg(t, 4.6, 4.85));
-  // the curve of the day, drawn
-  const pts = [8, 12, 10, 18, 26, 22, 30, 41, 38, 52, 61, 58, 72];
-  const cw = 690, ch = 150;
-  const path = pts.map((v, i) => `${i ? 'L' : 'M'}${(i / (pts.length - 1)) * cw},${ch - (v / 80) * ch}`).join(' ');
-  const area = path + ` L${cw},${ch} L0,${ch} Z`;
+  // the story, in three lines
+  const say = [[0.2, 1.5, 'Gæsten booker bord'], [1.5, 2.9, 'Restauranten ser det med det samme'], [2.9, 9, 'Bestillingen går lige til køkkenet']] as const;
+  // the guest: book, then pre-order
+  const book = t > 0.95 && t < 1.1 ? 0.96 : 1, booked = out3(seg(t, 1.05, 1.3));
+  const toOrder = io3(seg(t, 2.5, 2.9));
+  const pay = t > 3.35 && t < 3.5 ? 0.96 : 1, paid = out3(seg(t, 3.45, 3.7));
+  // the light, from the phone to the MacBook
+  const pulse = (a: number) => { const q = io3(seg(t, a, a + 0.5)); return q > 0 && q < 1 ? q : -1; };
+  const p1 = pulse(1.3), p2 = pulse(3.7);
+  // and what happens there
+  const row = sp(1.8, 16, 150), guests = seg(t, 1.85, 2.3);
+  const order = sp(4.2, 16, 150), dish = seg(t, 4.25, 4.7);
+  const glow1 = 1 - seg(t, 2.6, 3.4), glow2 = 1 - seg(t, 5.4, 6.2);
+
+  const from = { x: PSX + PSW * 0.75, y: PSY + PSH * 0.55 }, to1 = { x: MSX + MSW * 0.62, y: MSY + MSH * 0.42 }, to2 = { x: MSX + MSW * 0.62, y: MSY + MSH * 0.8 };
+  const arc = (q: number, a: { x: number; y: number }, b: { x: number; y: number }) => ({ x: mix(a.x, b.x, q), y: mix(a.y, b.y, q) - Math.sin(Math.PI * q) * 120 });
 
   return (
-    <AbsoluteFill style={{ background: 'linear-gradient(175deg, #FFFFFF 0%, #F1EDE6 55%, #E7E1D6 100%)', fontFamily: SANS, overflow: 'hidden' }}>
-      <div style={{ position: 'absolute', inset: 0, opacity: all }}>
-        {/* ---------- the day, at a glance ---------- */}
-        <Panel x={28} y={540} w={784} h={470} p={a}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-            <span style={{ font: `600 42px/1 ${SANS}`, letterSpacing: -1.2 }}>Overblik <span style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 300 }}>i dag</span></span>
-            <span style={{ display: 'flex', alignItems: 'center', gap: 10, font: `400 20px/1 ${MONO}`, color: GREEN }}><i style={{ width: 12, height: 12, borderRadius: '50%', background: GREEN, opacity: 0.5 + 0.5 * Math.sin(t * 6) }} />LIVE</span>
-          </div>
-          <div style={{ display: 'flex', gap: 46, marginTop: 34 }}>
-            {[['Bestillinger', 48], ['Bookinger', 12], ['Gæster i aften', 36]].map(([l, v], i) => (
-              <div key={l as string} style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                <span style={{ font: `500 22px/1 ${SANS}`, color: MUTE }}>{l}</span>
-                <Count to={v as number} p={seg(kpi, i * 0.12, 0.7 + i * 0.12)} size={78} />
-              </div>
+    <AbsoluteFill style={{ background: 'linear-gradient(175deg, #FFFFFF 0%, #F3EFE8 55%, #E9E3D8 100%)', fontFamily: SANS, overflow: 'hidden' }}>
+      {/* the line that says what is happening */}
+      <div style={{ position: 'absolute', left: 40, top: 556, height: 50 }}>
+        {say.map(([a, b, s], i) => {
+          const q = out5(seg(t, a + 0.05, a + 0.4)) * (1 - seg(t, b - 0.2, b));
+          return <span key={i} style={{ position: 'absolute', left: 0, top: 0, whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: 12, padding: '12px 20px 12px 14px', borderRadius: 26,
+            background: '#fff', boxShadow: '0 10px 26px rgba(20,33,61,.1), inset 0 0 0 1px rgba(20,21,23,.06)', font: `500 23px/1 ${SANS}`, color: INK,
+            opacity: q, transform: `translateY(${16 * (1 - q)}px)` }}>
+            <i style={{ width: 26, height: 26, borderRadius: '50%', background: i === 0 ? INK : ORANGE, color: '#fff', display: 'grid', placeItems: 'center', font: `600 14px/1 ${SANS}`, fontStyle: 'normal' }}>{i + 1}</i>{s}</span>;
+        })}
+      </div>
+
+      {/* ---------- the restaurant's MacBook ---------- */}
+      <div style={{ position: 'absolute', left: MSX, top: MSY, width: MSW, height: MSH, background: CREAM, overflow: 'hidden', padding: '22px 26px 0 150px' }}>
+        <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', paddingRight: 10 }}>
+          <span style={{ font: `600 30px/1 ${SANS}`, color: INK, letterSpacing: -0.8 }}>Spiis <span style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 300 }}>overblik</span></span>
+          <span style={{ display: 'flex', alignItems: 'center', gap: 8, font: `400 15px/1 ${MONO}`, color: GREEN }}><i style={{ width: 9, height: 9, borderRadius: '50%', background: GREEN }} />LIVE</span>
+        </div>
+        <div style={{ display: 'flex', gap: 14, marginTop: 18 }}>
+          {[['Gæster i aften', 32, 36, guests, glow1], ['Mørbradgryde', 14, 17, dish, glow2]].map(([l, a, b, p, g]) => (
+            <div key={l as string} style={{ flex: 1, background: '#fff', borderRadius: 16, padding: '14px 16px', boxShadow: `inset 0 0 0 2px rgba(217,105,46,${0.8 * (p as number > 0 ? (g as number) : 0)})` }}>
+              <div style={{ font: `500 16px/1 ${SANS}`, color: MUTE }}>{l}</div>
+              <div style={{ marginTop: 10 }}><Num a={a as number} b={b as number} p={p as number} size={40} /></div>
+            </div>
+          ))}
+        </div>
+        {/* tonight's tables */}
+        <div style={{ marginTop: 16, font: `400 13px/1 ${MONO}`, color: MUTE, letterSpacing: 1 }}>BORDE I AFTEN</div>
+        <div style={{ marginTop: 8, display: 'flex', flexDirection: 'column', gap: 6 }}>
+          {[...(t > 1.8 ? [{ k: 'new', at: '19.00', n: '4 pers.', st: 'Ny', g: glow1, p: row }] : []), { k: 'a', at: '18.30', n: '2 pers.', st: 'Bekræftet', g: 0, p: 1 }, { k: 'b', at: '20.00', n: '6 pers.', st: 'Bekræftet', g: 0, p: 1 }].map(r => (
+            <div key={r.k} style={{ display: 'flex', alignItems: 'center', gap: 14, height: 40 * clamp(r.p), overflow: 'hidden', padding: '0 14px', borderRadius: 12, opacity: clamp(r.p * 1.4),
+              background: r.k === 'new' ? `rgba(217,105,46,${0.14 * r.g + 0.02})` : '#fff', boxShadow: r.k === 'new' ? `inset 0 0 0 2px rgba(217,105,46,${0.8 * r.g})` : 'none' }}>
+              <span style={{ font: `600 19px/1 ${SANS}`, color: INK }}>{r.at}</span><span style={{ font: `400 17px/1 ${SANS}`, color: MUTE }}>{r.n}</span>
+              <span style={{ marginLeft: 'auto', font: `600 14px/1 ${SANS}`, color: r.k === 'new' ? ORANGE : GREEN }}>{r.st}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+      {/* the kitchen screen, over the overview once the order is in */}
+      <div style={{ position: 'absolute', left: MSX + 140, top: MSY + MSH * 0.6, width: MSW - 160, borderRadius: 18, padding: '16px 18px', background: '#1E1814', color: CREAM,
+        boxShadow: `0 20px 40px rgba(0,0,0,.25), 0 0 0 2px rgba(217,105,46,${0.9 * glow2 * clamp(order)})`, opacity: clamp(order * 1.5), transform: `translateY(${60 * (1 - order)}px)` }}>
+        <div style={{ font: `400 13px/1 ${MONO}`, color: '#A89B8E', letterSpacing: 1 }}>KØKKENET · NY BESTILLING</div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginTop: 12 }}>
+          <span style={{ font: `600 24px/1 ${SANS}` }}>17.30</span><span style={{ font: `400 19px/1 ${SANS}`, color: '#E7DDD2' }}>3 × Mørbradgryde</span>
+          <span style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 6, font: `600 15px/1 ${SANS}`, color: '#5FD38A' }}><Check p={1} size={9} color="#5FD38A" width={3.2} />Betalt</span>
+        </div>
+      </div>
+      <Img src={staticFile('ny/media/dev/macbook-pro-14.webp')} style={{ position: 'absolute', left: MX, top: MY, width: MW, height: MH }} />
+
+      {/* ---------- the light between them ---------- */}
+      {[[p1, to1], [p2, to2]].map(([q, b], i) => {
+        if ((q as number) < 0) return null;
+        const p = arc(q as number, from, b as { x: number; y: number });
+        return <i key={i} style={{ position: 'absolute', left: p.x - 12, top: p.y - 12, width: 24, height: 24, borderRadius: '50%', background: '#fff', zIndex: 5,
+          boxShadow: '0 0 0 8px rgba(217,105,46,.25), 0 0 40px 10px rgba(217,105,46,.6)' }} />;
+      })}
+
+      {/* ---------- the guest's phone ---------- */}
+      <div style={{ position: 'absolute', left: PSX, top: PSY, width: PSW, height: PSH, borderRadius: '13% / 6.2%', overflow: 'hidden', background: CREAM, zIndex: 3 }}>
+        {/* book a table */}
+        <div style={{ position: 'absolute', inset: 0, padding: '64px 18px 0', opacity: 1 - toOrder, transform: `translateX(${-60 * toOrder}px)` }}>
+          <div style={{ font: `600 26px/1 ${SANS}`, color: INK, letterSpacing: -0.6 }}>Book bord</div>
+          <div style={{ marginTop: 16, display: 'flex', flexDirection: 'column', gap: 10 }}>
+            {[['Dag', 'Lørdag'], ['Tid', '19.00'], ['Gæster', '4 personer']].map(([k, v]) => (
+              <div key={k} style={{ display: 'flex', justifyContent: 'space-between', padding: '14px 14px', borderRadius: 14, background: '#fff', font: `500 18px/1 ${SANS}` }}><span style={{ color: MUTE }}>{k}</span><span style={{ color: INK }}>{v}</span></div>
             ))}
           </div>
-          <svg width={cw} height={ch} style={{ position: 'absolute', left: 46, bottom: 34, overflow: 'visible' }}>
-            <defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor={ORANGE} stopOpacity=".22" /><stop offset="1" stopColor={ORANGE} stopOpacity="0" /></linearGradient>
-              <clipPath id="c"><rect x="0" y="-20" width={cw * curve} height={ch + 40} /></clipPath></defs>
-            {[0.25, 0.5, 0.75].map(y => <line key={y} x1="0" x2={cw} y1={ch * y} y2={ch * y} stroke={LINE} strokeWidth="2" />)}
-            <g clipPath="url(#c)"><path d={area} fill="url(#g)" /><path d={path} fill="none" stroke={ORANGE} strokeWidth="4" strokeLinejoin="round" strokeLinecap="round" /></g>
-            {curve > 0.98 && <circle cx={cw} cy={ch - (72 / 80) * ch} r={8 + 3 * Math.sin(t * 6)} fill={ORANGE} stroke="#fff" strokeWidth="4" />}
-          </svg>
-        </Panel>
-
-        {/* ---------- the kitchen ---------- */}
-        <Panel x={28} y={1036} w={500} h={400} p={b} z={1} dark>
-          <div style={{ font: `400 19px/1 ${MONO}`, color: '#9AA3B8', letterSpacing: 1.4 }}>KØKKENET</div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginTop: 20 }}>
-            {ORDERS.map((o, i) => {
-              const inn = out5(seg(t, 1.4 + i * 0.45, 1.9 + i * 0.45));
-              // each order moves on through its states
-              const k = Math.min(o.st.length - 1, Math.floor(seg(t, 2.8 + i * 0.3, 6.2) * o.st.length));
-              const s = o.st[Math.max(0, k)];
-              return (
-                <div key={o.at} style={{ display: 'flex', alignItems: 'center', gap: 16, padding: '18px 20px', borderRadius: 20, background: 'rgba(255,255,255,.06)',
-                  opacity: inn, transform: `translateX(${-40 * (1 - inn)}px)` }}>
-                  <span style={{ font: `600 30px/1 ${SANS}` }}>{o.at}</span>
-                  <span style={{ font: `400 22px/1.2 ${SANS}`, color: '#C9CFDC', flex: 1 }}>{o.what}</span>
-                  <span style={{ font: `600 19px/1 ${SANS}`, color: ST[s], padding: '9px 14px', borderRadius: 20, background: 'rgba(255,255,255,.07)', display: 'flex', alignItems: 'center', gap: 6 }}>
-                    {s === 'Klar' && <Check p={1} size={9} color={GREEN} width={3.2} />}{s}</span>
-                </div>
-              );
-            })}
+          <div style={{ position: 'absolute', left: 18, right: 18, bottom: 40, height: 56, borderRadius: 28, display: 'grid', placeItems: 'center', color: '#fff', font: `600 20px/1 ${SANS}`,
+            background: booked > 0 ? `rgb(${mix(217, 47, booked)},${mix(105, 158, booked)},${mix(46, 91, booked)})` : ORANGE, transform: `scale(${book})` }}>
+            <span style={{ position: 'absolute', opacity: 1 - booked }}>Book</span>
+            <span style={{ position: 'absolute', opacity: booked, display: 'flex', alignItems: 'center', gap: 8 }}><Check p={seg(t, 1.1, 1.4)} size={10} color="#fff" width={3.4} />Booket</span>
           </div>
-        </Panel>
-
-        {/* ---------- the menu ---------- */}
-        <Panel x={548} y={1090} w={264} h={340} p={c} z={2}>
-          <div style={{ font: `400 19px/1 ${MONO}`, color: MUTE, letterSpacing: 1.4 }}>MENUKORT</div>
-          <div style={{ display: 'flex', flexDirection: 'column', marginTop: 14 }}>
-            {['Dagens ret', 'Brød', 'Dessert', 'Kaffe'].map((n, i) => {
-              const on = i === 2 ? dish : 1;
-              return (
-                <div key={n} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 62, borderTop: i ? `1px solid ${LINE}` : 'none' }}>
-                  <span style={{ font: `500 24px/1 ${SANS}`, opacity: mix(0.4, 1, on) }}>{n}</span>
-                  <span style={{ position: 'relative', width: 50, height: 30, borderRadius: 15, background: on > 0 ? `rgba(52,199,89,${on})` : 'rgba(120,120,128,.25)' }}>
-                    <i style={{ position: 'absolute', top: 2, left: 2 + 20 * on, width: 26, height: 26, borderRadius: '50%', background: '#fff', boxShadow: '0 2px 6px rgba(0,0,0,.2)' }} />
-                  </span>
-                </div>
-              );
-            })}
+        </div>
+        {/* pre-order */}
+        <div style={{ position: 'absolute', inset: 0, padding: '64px 18px 0', opacity: toOrder, transform: `translateX(${60 * (1 - toOrder)}px)` }}>
+          <div style={{ font: `600 26px/1 ${SANS}`, color: INK, letterSpacing: -0.6 }}>Forudbestil</div>
+          <div style={{ marginTop: 16, height: 150, borderRadius: 16, backgroundImage: `url(${staticFile('film/assets/dish.webp')})`, backgroundSize: 'cover', backgroundPosition: '62% 55%' }} />
+          <div style={{ marginTop: 12, font: `600 19px/1.2 ${SANS}`, color: INK }}>3 × Mørbradgryde</div>
+          <div style={{ marginTop: 6, font: `400 16px/1 ${SANS}`, color: MUTE }}>Afhentning kl. 17.30</div>
+          <div style={{ position: 'absolute', left: 18, right: 18, bottom: 40, height: 56, borderRadius: 28, display: 'grid', placeItems: 'center', color: '#fff', font: `600 19px/1 ${SANS}`,
+            background: paid > 0 ? `rgb(${mix(217, 47, paid)},${mix(105, 158, paid)},${mix(46, 91, paid)})` : ORANGE, transform: `scale(${pay})` }}>
+            <span style={{ position: 'absolute', opacity: 1 - paid }}>Bestil og betal</span>
+            <span style={{ position: 'absolute', opacity: paid, display: 'flex', alignItems: 'center', gap: 8 }}><Check p={seg(t, 3.5, 3.8)} size={10} color="#fff" width={3.4} />Betalt</span>
           </div>
-        </Panel>
+        </div>
       </div>
+      <Img src={staticFile('ny/media/dev/iphone-17-pro-2x.webp')} style={{ position: 'absolute', left: PX, top: PY, width: PW, height: PH, zIndex: 4 }} />
     </AbsoluteFill>
   );
 };

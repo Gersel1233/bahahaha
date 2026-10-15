@@ -8,6 +8,7 @@ import { AbsoluteFill, Img, staticFile } from 'remotion';
 import { useT, useFonts, seg, out3, out5, io3, mix, clamp, Check, SANS } from './common';
 
 export const TILE_S = 8;
+export const APPS_S = 6.4;
 export const TW = 840, TH = 1400;
 
 const NAVY9 = '#05080F', NAVY8 = '#101A33', DEEP = '#2B3F7C', ORANGE = '#E07A3A', GREEN = '#34C759';
@@ -23,8 +24,8 @@ const Fork: React.FC<{ s: number }> = ({ s }) => (
 export const TileApps: React.FC = () => {
   useFonts();
   const { t, sp } = useT();
-  const all = seg(t, 0, 0.7) * (1 - seg(t, 7.4, 7.95));
-  const rise = out5(seg(t, 0, 1.1));
+  // it is already there when it starts, and it ends on its last state
+  const all = 1, rise = 1;
   const note = sp(0.9, 16, 170);
   const up = io3(seg(t, 1.9, 2.25)); // the notification goes up into the island
   const open = sp(2.15, 15, 150); // and the island opens

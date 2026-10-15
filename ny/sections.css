@@ -20,7 +20,7 @@
 @media (min-width:700px){ .tile{ height:clamp(600px, 82vh, 760px); } }
 .tile-apps{ background:#05080F; color:var(--porcelain); }
 .tile-sys{ background:#FFFFFF; color:var(--obsidian); }
-.tile-int{ background:#F6F4EF; color:var(--obsidian); }
+.tile-int{ background:#EFE9DF; color:var(--obsidian); }
 .tile-web{ background:#05080F; color:var(--porcelain); }
 .tiles-nav{ display:none; gap:10px; justify-content:flex-end; padding:0 var(--gut); max-width:1440px; margin:0 auto; }
 @media (hover:hover) and (min-width:900px){ .tiles-nav{ display:flex; } }
