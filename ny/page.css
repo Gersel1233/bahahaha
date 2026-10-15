@@ -88,31 +88,36 @@ html.pg-js [data-r].in{ opacity:1; transform:none; }
 .case-f .mono{ color:var(--ash); }
 .work .btn{ background:var(--porcelain); color:var(--obsidian); }
 .work .btn .lens{ --lb:var(--travertine); --lc:var(--graphite); }
-.case-vis{ position:relative; padding:0 0 12% 9%; }
-.case-r .case-vis{ padding:0 9% 12% 0; }
+.case-vis{ --pad:7%; position:relative; padding:0 0 1% var(--pad); }
+.case-r .case-vis{ padding:0 var(--pad) 1% 0; }
 /* ---------- the devices: iPhone 17 Pro and MacBook Pro 14", drawn to Apple's
    dimensions (media/dev/*.svg). The screen sits under the frame; everything
    on it is sized in container units, so it is the same picture at any size. */
 .dev{ position:relative; }
 .dev > .frame{ position:relative; z-index:2; display:block; width:100%; height:auto; pointer-events:none; user-select:none; }
 .dev .scr{ position:absolute; z-index:1; overflow:hidden; background:#000; container-type:inline-size; }
-.dev-iph::before{ content:""; position:absolute; z-index:0; left:1.2%; right:1.2%; top:0; bottom:0; border-radius:18% / 8.6%;
-  box-shadow:0 2.5vw 5vw rgba(0,0,0,.42), 0 .6vw 1.2vw rgba(0,0,0,.25); }
-.dev-iph .scr{ left:4.69%; top:1.73%; width:90.61%; height:96.53%; border-radius:15.42% / 7.09%; }
+/* iPhone 17 Pro: the Higgsfield render (560 x 1168) from Callster, its screen
+   transparent at 5.37-94.54 % x 2.40-97.60 %; the screen is 402 pt wide, so
+   1 pt = 100/402 cqw, and the status bar is iOS's own: 58 pt, the clock 17 pt */
+.dev-iph{ aspect-ratio:560 / 1168; }
+.dev-iph > .frame{ position:absolute; inset:0; height:100%; }
+.dev-iph::before{ content:""; position:absolute; z-index:0; left:1.2%; right:1.2%; top:.6%; bottom:.6%; border-radius:15% / 7.2%;
+  box-shadow:0 30px 40px rgba(20,33,61,.22), 0 8px 12px rgba(20,33,61,.12); }
+.dev-iph .scr{ left:5.37%; top:2.4%; width:89.17%; height:95.2%; border-radius:13% / 6.2%; background:#fff; }
 .dev-iph video, .dev-iph .full{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:50% 0; }
-.dev-iph .shot{ position:absolute; left:0; top:13.43cqw; width:100%; height:calc(100% - 13.43cqw); object-fit:cover; object-position:50% 0; }
-/* iOS status bar: 54 pt, its middle level with the Dynamic Island's */
-.dev-iph .sb{ position:absolute; z-index:2; left:0; right:0; top:0; height:13.43cqw; padding-top:1.3cqw;
-  display:grid; grid-template-columns:34.3cqw 1fr 34.3cqw; align-items:center; background:var(--sb, #000); color:var(--sbc, #fff);
-  font:600 4.23cqw/1 -apple-system, 'SF Pro Text', system-ui, sans-serif; letter-spacing:-.02em; }
-.dev-iph .sb .t{ text-align:center; padding-left:3cqw; }
-.dev-iph .sb .ic{ grid-column:3; display:flex; justify-content:center; align-items:center; gap:1.4cqw; padding-right:2cqw; }
-.dev-iph .sb svg{ display:block; height:2.9cqw; width:auto; }
-.dev-iph .sb .sig{ width:4.4cqw; } .dev-iph .sb .wifi{ width:3.9cqw; } .dev-iph .sb .bat{ width:6.6cqw; height:3.2cqw; }
+.dev-iph .shot{ position:absolute; left:0; top:14.43cqw; width:100%; height:calc(100% - 14.43cqw); object-fit:cover; object-position:50% 0; }
+.dev-iph .sb{ position:absolute; z-index:2; left:0; right:0; top:0; height:14.43cqw; padding:1.49cqw 7.46cqw 0 10.95cqw;
+  display:flex; align-items:center; justify-content:space-between; background:var(--sb, #fff); color:var(--sbc, #000);
+  font:600 4.23cqw/1 -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif; letter-spacing:-.07cqw; -webkit-font-smoothing:antialiased; }
+.dev-iph .sb .ic{ display:flex; align-items:center; gap:1.49cqw; }
+.dev-iph .sb svg{ display:block; height:4.23cqw; width:4.23cqw; }
+.dev-iph .sb .bat{ width:6.22cqw; height:4.23cqw; }
 
-.dev-mac::before{ content:""; position:absolute; z-index:0; left:6%; right:6%; bottom:0; height:6%; border-radius:50%;
-  box-shadow:0 1.6vw 3.4vw 1vw rgba(0,0,0,.45); }
-.dev-mac .scr{ left:5%; top:2.04%; width:90%; height:87.21%; border-radius:.66% .66% 0 0 / 1.02% 1.02% 0 0; background:#0c0c0d; }
+/* MacBook Pro 14" in Space Black: a Higgsfield render (1600 x 938), its
+   screen keyed out at 10.34-89.76 % x 3.45-88.98 % */
+.dev-mac{ aspect-ratio:1600 / 938; }
+.dev-mac > .frame{ position:absolute; inset:0; height:100%; }
+.dev-mac .scr{ left:10.34%; top:3.45%; width:79.42%; height:85.53%; border-radius:.8% .8% 0 0 / 1.2% 1.2% 0 0; background:#0c0c0d; }
 /* macOS menu bar, dark so the notch sits in it as it does on the machine */
 .dev-mac .mb{ position:absolute; left:0; right:0; top:0; height:2.45cqw; display:flex; align-items:center; gap:1.25cqw; padding:0 1.15cqw 0 1.5cqw;
   background:#0c0c0d; color:#f2f2f2; font:500 .84cqw/1 -apple-system, 'SF Pro Text', system-ui, sans-serif; white-space:nowrap; }
@@ -136,17 +141,19 @@ html.pg-js [data-r].in{ opacity:1; transform:none; }
 .dev-mac .sf > img{ position:absolute; left:0; top:3.44cqw; width:100%; height:calc(100% - 3.44cqw); object-fit:cover; object-position:50% 0; }
 
 .case .dev-mac{ will-change:transform; transform-origin:50% 100%; }
-.case .dev-iph{ position:absolute; z-index:3; left:-2%; bottom:-6%; width:25%; will-change:transform; }
-.case-r .dev-iph{ left:auto; right:-2%; }
+.case .dev-mac{ width:100%; }
+/* at true scale: an iPhone 17 Pro is 71.9 mm wide, the MacBook Pro's lid
+   312.6 mm, and the lid is 82.5 % of the Mac's picture: 19 % of its width */
+.case .dev-iph{ position:absolute; z-index:3; left:0; bottom:0; width:calc((100% - var(--pad)) * .19); will-change:transform; }
+.case-r .dev-iph{ left:auto; right:0; }
 .chip{ position:absolute; right:6%; bottom:2%; display:flex; align-items:center; gap:10px; height:40px; padding:0 18px 0 14px; border-radius:20px;
   background:var(--porcelain); color:var(--obsidian); box-shadow:var(--contact-m); white-space:nowrap; will-change:transform; }
 .case-r .chip{ right:auto; left:6%; }
 @media (max-width:900px){
   .case, .case-r{ grid-template-columns:1fr; }
   .case-r .case-txt{ order:0; }
-  .case-vis, .case-r .case-vis{ padding:0 0 18% 12%; }
-  .case-r .dev-iph{ left:-2%; right:auto; }
-  .case .dev-iph{ width:29%; }
+  .case-vis, .case-r .case-vis{ --pad:6%; padding:0 0 1% var(--pad); }
+  .case-r .dev-iph{ left:0; right:auto; }
   .chip, .case-r .chip{ right:4%; left:auto; bottom:4%; }
 }
 
@@ -242,10 +249,81 @@ html.pg-js [data-r].in{ opacity:1; transform:none; }
 
 /* ---------- the hero's two phones: the systems the headline is about ---------- */
 .h-vis{ position:relative; flex:1 1 0; min-height:0; container-type:size; pointer-events:none; }
-.h-vis .dev{ position:absolute; top:50%; height:min(100%, 460px); width:auto; aspect-ratio:735 / 1500; }
+.h-vis .dev{ position:absolute; top:50%; height:min(100%, 460px); width:auto; }
 .h-vis .dev > .frame{ height:100%; width:100%; }
 .h-vis .dev:nth-child(1){ right:calc(var(--gut) * .2 + 4%); transform:translateY(-54%) rotate(5deg); z-index:2; }
 .h-vis .dev:nth-child(2){ right:calc(var(--gut) * .2 + 4% + min(100cqh, 460px) * .36); transform:translateY(-44%) rotate(-7deg); }
 .h-vis .dev-iph::before{ box-shadow:0 30px 60px rgba(14,15,16,.24), 0 8px 18px rgba(14,15,16,.14); }
 @container (max-height:170px){ .h-vis .dev{ display:none; } }
 @media (max-width:760px){ .h-vis{ margin:-8px 0; } .h-vis .dev:nth-child(1){ right:2%; } }
+
+/* ================= Liquid glass =================
+   The library's glass, as material: a pane that bends what is behind it
+   (blur and a lift in saturation), lit from above (a bright top edge and a
+   soft inner glow), held by a rim, and carrying one specular highlight. */
+.glass-d, .glass-l{ position:relative; isolation:isolate; overflow:hidden; }
+.glass-d{ background:linear-gradient(160deg, rgba(255,255,255,.16), rgba(255,255,255,.04) 55%, rgba(255,255,255,.08));
+  -webkit-backdrop-filter:blur(18px) saturate(170%); backdrop-filter:blur(18px) saturate(170%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.5), inset 0 -1px 0 rgba(255,255,255,.1), inset 0 0 0 1px rgba(255,255,255,.14),
+    inset 0 -18px 30px -18px rgba(255,255,255,.12), 0 24px 60px -24px rgba(0,0,0,.7); }
+.glass-l{ background:linear-gradient(160deg, rgba(255,255,255,.82), rgba(255,255,255,.42) 60%, rgba(255,255,255,.6));
+  -webkit-backdrop-filter:blur(18px) saturate(180%); backdrop-filter:blur(18px) saturate(180%);
+  box-shadow:inset 0 1px 0 #fff, inset 0 0 0 1px rgba(255,255,255,.7), inset 0 -14px 24px -16px rgba(255,255,255,.9),
+    0 20px 44px -20px rgba(14,15,16,.32), 0 2px 6px rgba(14,15,16,.06); }
+.glass-d::after, .glass-l::after{ content:""; position:absolute; inset:0; z-index:-1; pointer-events:none; border-radius:inherit;
+  background:radial-gradient(120% 70% at 18% -10%, rgba(255,255,255,.28), rgba(255,255,255,0) 55%); }
+.glass-l::after{ background:radial-gradient(120% 70% at 18% -10%, rgba(255,255,255,.9), rgba(255,255,255,0) 55%); }
+
+/* three becomes one, over liquid glass */
+.three{ background:#060607; color:var(--porcelain); }
+.three-bg{ position:absolute; inset:0; overflow:hidden; }
+.three-bg img{ position:absolute; inset:-4%; width:108%; height:108%; object-fit:cover; opacity:.7; }
+.three-bg::after{ content:""; position:absolute; inset:0; background:radial-gradient(90% 80% at 50% 55%, rgba(6,6,7,.1), rgba(6,6,7,.75)); }
+.three-pin > :not(.three-bg){ position:relative; }
+.three-head .label{ color:var(--ash); }
+.t-card{ background:linear-gradient(160deg, rgba(255,255,255,.18), rgba(255,255,255,.05) 55%, rgba(255,255,255,.1)); color:var(--porcelain);
+  -webkit-backdrop-filter:blur(16px) saturate(170%); backdrop-filter:blur(16px) saturate(170%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.55), inset 0 0 0 1px rgba(255,255,255,.16), inset 0 -20px 34px -20px rgba(255,255,255,.14), 0 30px 70px -30px rgba(0,0,0,.8); }
+.t-card > span.mono{ color:var(--travertine); }
+.t-card > span:not(.mono){ color:var(--travertine); }
+.bill{ background:rgba(246,244,239,.92); color:var(--obsidian); }
+.t-one{ background:linear-gradient(165deg, #fff, var(--porcelain) 60%, var(--limestone)); color:var(--obsidian);
+  box-shadow:inset 0 1px 0 #fff, inset 0 0 0 1px rgba(255,255,255,.8), 0 40px 90px -30px rgba(0,0,0,.85); }
+.t-one svg path:first-child{ fill:#0E0F10; } .t-one svg path:last-child{ fill:#F6F4EF; }
+.t-one .mono{ color:var(--graphite); }
+.three-foot{ color:var(--travertine); }
+.three-foot b{ color:var(--porcelain); }
+
+/* the work, on paper: the Space Black Mac reads best on light, as Apple shows it */
+.work{ background:var(--porcelain); color:var(--obsidian); }
+.work .sec-lead{ color:var(--graphite); }
+.case-k{ color:var(--ash); }
+.case-d{ color:var(--graphite); }
+.case-d b{ color:var(--obsidian); }
+.case-f{ border-top-color:rgba(14,15,16,.12); }
+.case-f li{ border-bottom-color:rgba(14,15,16,.12); }
+.work .btn{ background:var(--obsidian); color:var(--porcelain); }
+.work .btn .lens{ --lb:rgba(255,255,255,.14); --lc:var(--porcelain); }
+.chip{ background:linear-gradient(160deg, rgba(255,255,255,.85), rgba(255,255,255,.5)); color:var(--obsidian);
+  -webkit-backdrop-filter:blur(14px) saturate(180%); backdrop-filter:blur(14px) saturate(180%);
+  box-shadow:inset 0 1px 0 #fff, inset 0 0 0 1px rgba(255,255,255,.7), 0 14px 30px -14px rgba(14,15,16,.35); }
+
+/* behind the counter, in the dark: the notifications are iOS's own glass */
+.admin{ background:var(--obsidian); color:var(--porcelain); }
+.admin-txt .label{ color:var(--ash); }
+.admin .sec-lead{ color:var(--travertine); }
+.admin-f > div{ background:linear-gradient(160deg, rgba(255,255,255,.12), rgba(255,255,255,.03)); color:var(--porcelain);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.35), inset 0 0 0 1px rgba(255,255,255,.1); }
+.admin-f span{ color:var(--travertine); }
+.note{ background:linear-gradient(160deg, rgba(255,255,255,.72), rgba(255,255,255,.42)); color:var(--obsidian);
+  -webkit-backdrop-filter:blur(20px) saturate(190%); backdrop-filter:blur(20px) saturate(190%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.95), inset 0 0 0 1px rgba(255,255,255,.55), 0 18px 40px -16px rgba(0,0,0,.6); border-radius:22px; }
+.note div span{ color:var(--graphite); }
+.note .ni{ border-radius:10px; }
+
+/* why: the cards as light glass over a wash of stone */
+.why{ background:radial-gradient(70% 60% at 85% 40%, var(--limestone), var(--porcelain) 70%); }
+.why-c{ background:linear-gradient(160deg, rgba(255,255,255,.85), rgba(255,255,255,.4) 60%, rgba(255,255,255,.6));
+  box-shadow:inset 0 1px 0 #fff, inset 0 0 0 1px rgba(255,255,255,.75), 0 22px 50px -26px rgba(14,15,16,.3); }
+.why-ph figcaption{ background:linear-gradient(160deg, rgba(255,255,255,.22), rgba(255,255,255,.08)); -webkit-backdrop-filter:blur(14px) saturate(160%); backdrop-filter:blur(14px) saturate(160%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.5), inset 0 0 0 1px rgba(255,255,255,.18); }

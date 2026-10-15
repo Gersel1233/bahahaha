@@ -99,10 +99,11 @@ html.mm-open .tb-menu .lens{ --lb:var(--ultra); --lc:var(--white); }
 /* ---------- the opening ---------- */
 .ix-track{ position:relative; }
 .ix-stage{ position:relative; overflow:hidden; background:var(--porcelain); }
-html.ix-on .ix-track{ height:620vh; height:620svh; }
+html.ix-on .ix-track{ height:100vh; height:100svh; }
 html.ix-on .ix-stage{ position:sticky; top:0; height:100vh; height:100svh; background:#040404; }
 html.ix-on .ix-stage.on-paper{ background:var(--porcelain); }
-@media (max-width:760px){ html.ix-on .ix-track{ height:580vh; height:580svh; } }
+/* while it plays, the page holds still; any scroll is taken as "skip" */
+html.ix-playing, html.ix-playing body{ overflow:hidden; overscroll-behavior:none; }
 
 .ix{ position:absolute; inset:0; display:none; color:var(--porcelain); }
 html.ix-on .ix{ display:block; }
@@ -110,6 +111,7 @@ html.ix-on .ix{ display:block; }
 .ix > *, .ix-ann > *, .ix-says > *{ position:absolute; }
 /* the Higgsfield film, drawn frame by frame, and the sharp still it ends on */
 .ix-film{ left:0; top:0; transform-origin:0 0; will-change:transform; }
+.ix-vid{ left:0; top:0; transform-origin:0 0; will-change:transform,opacity; object-fit:fill; background:#040404; pointer-events:none; }
 .ix-film canvas{ position:absolute; left:0; top:0; }
 .ix-film canvas + canvas{ will-change:opacity; }
 .ix-still{ left:0; top:0; max-width:none; transform-origin:0 0; opacity:0; will-change:transform,opacity; user-select:none;
@@ -145,7 +147,7 @@ html.ix-on .ix{ display:block; }
 .ix-screen .app{ position:absolute; inset:0; overflow:hidden; }
 .ix-screen .app video, .ix-screen .app img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:50% 0; }
 /* the phone's own status bar and Dynamic Island, over the recordings' */
-.ix-screen .sbar{ position:absolute; left:0; right:0; top:0; z-index:2; background:#000; color:#fff;
+.ix-screen .sbar{ position:absolute; left:0; right:0; top:0; z-index:2; background:#F6F3EC; color:#000;
   display:flex; align-items:center; justify-content:space-between; padding:0 9% 0 11%;
   font:600 calc(var(--sw) * .043)/1 -apple-system, 'SF Pro Text', system-ui, sans-serif; letter-spacing:-.01em; }
 .ix-screen .sbar .ic{ display:flex; align-items:center; gap:calc(var(--sw) * .014); }

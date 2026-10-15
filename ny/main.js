@@ -1,7 +1,7 @@
 /* The page around the opening: the scroll, the language, the headline,
    the bar. The opening itself is in intro.js and knows nothing about any
    of this — it is told a number and draws it. */
-import { createIntro } from './intro.js?v=7';
+import { createIntro, pAt, tAt, DURATION } from './intro.js?v=10';
 
 const html = document.documentElement;
 const $ = (s, r = document) => r.querySelector(s);
@@ -76,28 +76,14 @@ function drawHero(p) {
   }
 }
 
-let W = 0, H = 0, top0 = 0, span = 1, navBox = null;
+let W = 0, H = 0, navBox = null;
 function measure() {
   const w = stage.clientWidth, h = stage.clientHeight;
   // the address bar on a phone changes the height a little all the time;
   // only a real change of size is worth laying out again
   if (w !== W || Math.abs(h - H) > 120 || !W) { W = w; H = h; intro.layout(W, H); }
-  top0 = track.getBoundingClientRect().top + scrollY;
-  span = Math.max(1, track.offsetHeight - stage.clientHeight);
   navBox = $('.tb').getBoundingClientRect();
 }
-
-let cur = 0, tgt = 0, raf = 0, last = 0, t0 = null, started = false, pinned = false;
-// Only a mouse wheel is eased: it moves in notches, and unsmoothed the film
-// jumps a notch at a time. A finger and a trackpad already move smoothly,
-// and any easing on top of them is felt as the page lagging behind the hand.
-let TAU = 0.012;
-addEventListener('wheel', e => {
-  const notch = e.deltaMode !== 0 || (Math.abs(e.deltaY) >= 50 && Number.isInteger(e.deltaY) && e.deltaX === 0);
-  TAU = notch ? 0.06 : 0.012;
-}, { passive: true });
-addEventListener('touchstart', () => { TAU = 0.012; }, { passive: true });
-const target = () => clamp((scrollY - top0) / span);
 
 function draw(p, a) {
   const st = intro.render(p, a);
@@ -111,42 +97,92 @@ function draw(p, a) {
   intro.playApps(st.wantApps);
 }
 
-function frame(t) {
+/* ---------- the opening plays by itself ----------
+   Nothing starts until the type and the whole film are in: the title comes
+   up while they load, and the film starts only when it cannot run out.
+   Then one clock drives everything; while the film runs, the clock is the
+   film's own, so the words can never drift off the picture. Scrolling,
+   swiping or the skip button cuts to the finished phone and lets the page
+   open from there. */
+const vid = intro && intro.video;
+let state = 'load', clock = 0, last = 0, speed = 1, raf = 0, pinned = false, tA = null;
+const FILM_END = vid ? 11.3 : 0;   // the baked film's length, in timeline seconds
+
+function frame(now) {
   raf = 0;
   if (pinned) return;
-  if (t0 === null) t0 = t;
-  const dt = last ? Math.min(0.064, (t - last) / 1000) : 1 / 60;
-  last = t;
-  const a = started ? Math.min(1, (t - t0) / 2600) : 0;
-  tgt = target();
-  cur += (tgt - cur) * (1 - Math.exp(-dt / TAU));
-  if (Math.abs(tgt - cur) < 0.00004) cur = tgt;
-  draw(cur, a);
-  if (cur !== tgt || a < 1) kick(); else last = 0;
+  if (tA === null) tA = now;
+  const a = Math.min(1, (now - tA) / 2600);
+  if (state === 'play') {
+    const dt = last ? Math.min(0.1, (now - last) / 1000) : 0;
+    clock += dt * speed;
+    // while the film plays, it is the clock: a stall holds the words too
+    if (vid && speed === 1 && clock < FILM_END && !vid.paused && !vid.ended && vid.readyState >= 2) {
+      const vt = vid.currentTime;
+      if (Math.abs(vt - clock) > 0.12) clock = vt;
+    }
+    if (clock >= DURATION) { clock = DURATION; finish(); }
+  }
+  last = now;
+  draw(pAt(clock), a);
+  if (state !== 'done' || a < 1) raf = requestAnimationFrame(frame);
 }
-function kick() { if (on && intro && !raf && !pinned) raf = requestAnimationFrame(frame); }
+function kick() { if (!raf && !pinned) raf = requestAnimationFrame(frame); }
+
+function start() {
+  if (state !== 'load') return;
+  state = 'play';
+  html.classList.remove('ix-start');
+  // the title has had its time while the film loaded: start where it holds
+  const shown = tA === null ? 0 : (performance.now() - tA) / 1000;
+  clock = Math.min(2.2, Math.max(0, shown - 0.4));
+  if (vid) {
+    try { vid.currentTime = clock; } catch (e) {}
+    // without the film (Low Power Mode on an iPhone refuses to play it) the
+    // timeline still runs, and the sharp stills carry the glass and phone
+    vid.play().catch(() => {});
+  }
+  last = 0;
+  kick();
+}
+function skip() {
+  if (state === 'done') return;
+  if (state === 'load') start();
+  const cut = tAt(0.78);
+  if (clock < cut) clock = cut;
+  speed = 1.6;
+  if (vid) vid.pause();
+  kick();
+}
+function finish() {
+  state = 'done';
+  html.classList.remove('ix-playing');
+  if (vid) { vid.pause(); vid.removeAttribute('src'); vid.load(); }
+}
 
 if (on) {
   applyLang(lang);
   measure();
-  cur = tgt = target();
-  draw(cur, 0);
-  // the film fades up when its first frame and the type are both there
-  const ready = Promise.all([
-    document.fonts ? document.fonts.ready : null,
-    intro.frames.first,
-  ]);
-  Promise.race([ready, new Promise(r => setTimeout(r, 1800))])
-    .then(() => { started = true; t0 = null; html.classList.remove('ix-start'); kick(); });
-  addEventListener('scroll', kick, { passive: true });
-  addEventListener('resize', () => { measure(); kick(); });
-  $('#skip').addEventListener('click', () => {
-    scrollTo({ top: top0 + span, behavior: 'instant' });
-    cur = tgt = 1; started = true; t0 = -1e9;
+  // a reload further down the page lands there, without the opening
+  if (scrollY > 40) {
+    state = 'done'; clock = DURATION; tA = -1e9;
+    html.classList.remove('ix-start');
     draw(1, 1);
-  });
-  // a reload halfway down lands where it was, without replaying the way there
-  if (cur > 0.02) { started = true; t0 = -1e9; }
+  } else {
+    html.classList.add('ix-playing');
+    draw(0, 0);
+    const ready = Promise.all([document.fonts ? document.fonts.ready : null, intro.frames.ready]);
+    // the title starts when the type is there; the film when it is all in
+    (document.fonts ? document.fonts.ready : Promise.resolve()).then(() => { html.classList.remove('ix-start'); tA = null; kick(); });
+    Promise.race([ready, new Promise(r => setTimeout(r, 9000))]).then(start);
+    // any attempt to move on is a skip; nothing scrolls while it plays
+    const leave = e => { if (state !== 'done') { if (e.cancelable) e.preventDefault(); skip(); } };
+    addEventListener('wheel', leave, { passive: false });
+    addEventListener('touchmove', leave, { passive: false });
+    addEventListener('keydown', e => { if (['ArrowDown', 'PageDown', ' ', 'End', 'Enter'].includes(e.key)) leave(e); });
+  }
+  addEventListener('resize', () => { measure(); kick(); });
+  $('#skip').addEventListener('click', skip);
 } else {
   applyLang(lang);
   html.classList.add('nav-light');
@@ -154,4 +190,4 @@ if (on) {
 
 // for the film and the tests: pin() stops the page's own loop so any
 // frame can be held
-window.__lesreg = { intro, measure, draw: (p, a = 1) => draw(p, a), pin: v => { pinned = v !== false; } };
+window.__lesreg = { intro, measure, draw: (p, a = 1) => draw(p, a), pin: v => { pinned = v !== false; }, skip, get clock() { return clock; }, get state() { return state; } };

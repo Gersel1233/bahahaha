@@ -42,8 +42,8 @@ const vo = 'IntersectionObserver' in window && new IntersectionObserver(es => es
     if (!v._src) {
       v._src = true;
       const s = v.dataset.v;
-      // webm first: Chromium on Linux cannot decode the mp4
-      v.innerHTML = '<source src="' + s + '.webm" type="video/webm"><source src="' + s + '.mp4" type="video/mp4">';
+      // mp4 first, for Safari and every iPhone; a browser without H.264 takes the webm
+      v.innerHTML = '<source src="' + s + '.mp4" type="video/mp4"><source src="' + s + '.webm" type="video/webm">';
       v.load();
     }
     if (!still) v.play().catch(() => {});
@@ -100,7 +100,9 @@ S.case = el => {
     const inn = out(seg(q, 0.05, 0.42));
     setT(win, 'translate3d(0,' + ((0.5 - q) * 70).toFixed(1) + 'px,0) scale(' + lerp(0.9, 1, inn).toFixed(4) + ')');
     setO(win, lerp(0.3, 1, inn));
-    setT(ph, 'translate3d(' + ((1 - inn) * -40 * flip).toFixed(1) + 'px,' + ((0.5 - q) * 220).toFixed(1) + 'px,0) rotate(' + ((0.5 - q) * -7 * flip).toFixed(2) + 'deg)');
+    // the phone stands on the same table as the Mac: it only slides in
+    setT(ph, 'translate3d(' + ((1 - inn) * -60 * flip).toFixed(1) + 'px,0,0)');
+    setO(ph, inn);
     setT(chip, 'translate3d(0,' + ((0.5 - q) * 320).toFixed(1) + 'px,0)');
     setO(chip, out(seg(q, 0.25, 0.45)));
   };

@@ -59,7 +59,7 @@ export const TXT = {
    Dynamic Island as fractions of that display. */
 const SCENES = {
   land: {
-    w: 2688, h: 1520, seq: 'media/seq-d/', nA: 97, n: 158,
+    w: 2688, h: 1520, seq: 'media/seq-d/', film: 'media/film-d', nA: 97, n: 158,
     glass: 'media/glas-d-end.webp', end: 'media/phone-d-end.webp',
     slab: { l: 0.522, r: 0.75, t: 0.082, b: 0.828 },
     glint: [0.749, 0.214],
@@ -67,7 +67,7 @@ const SCENES = {
     island: { cx: 0.498, t: 0.012, w: 0.29, h: 0.04 },
   },
   port: {
-    w: 1520, h: 2688, seq: 'media/seq-m/', nA: 65, n: 106,
+    w: 1520, h: 2688, seq: 'media/seq-m/', film: 'media/film-m', nA: 65, n: 106,
     glass: 'media/glas-m-end.webp', end: 'media/phone-m-end.webp',
     slab: { l: 0.28, r: 0.72, t: 0.255, b: 0.762 },
     glint: [0.69, 0.272],
@@ -81,6 +81,31 @@ const SEQ = [0.035, 0.40];            // the drop sets into the glass
 const SEQB = [0.43, 0.515];           // the glass becomes the phone
 const CH = [[0.07, 0.235], [0.245, 0.52], [0.53, 0.665], [0.67, 0.775]];
 const ONE = [0.775, 0.85];
+
+/* The opening plays by itself, on a timeline: seconds -> position. The same
+   keys and the same curve (monotone cubic, so it never stops mid-move
+   unless a key says hold) baked the film video, frame for frame. */
+export const KEYS = [[0, 0], [3.0, 0], [3.8, 0.035], [8.4, 0.40], [9.4, 0.43], [10.9, 0.515], [11.5, 0.555], [13.4, 0.64],
+  [14.2, 0.70], [16.0, 0.765], [17.6, 0.85], [18.8, 0.94], [19.4, 1]];
+export const DURATION = KEYS[KEYS.length - 1][0];
+const SLOPES = (() => {
+  const n = KEYS.length, h = [], d = [], m = new Array(n).fill(0);
+  for (let i = 0; i < n - 1; i++) { h[i] = KEYS[i + 1][0] - KEYS[i][0]; d[i] = (KEYS[i + 1][1] - KEYS[i][1]) / h[i]; }
+  for (let i = 1; i < n - 1; i++) {
+    m[i] = d[i - 1] * d[i] <= 0 ? 0 : 3 * (h[i - 1] + h[i]) / ((2 * h[i] + h[i - 1]) / d[i - 1] + (h[i] + 2 * h[i - 1]) / d[i]);
+  }
+  return m;
+})();
+export function pAt(t) {
+  if (t <= 0) return 0;
+  if (t >= DURATION) return 1;
+  let i = 0;
+  while (KEYS[i + 1][0] <= t) i++;
+  const [x0, y0] = KEYS[i], [x1, y1] = KEYS[i + 1], h = x1 - x0, s = (t - x0) / h;
+  return (2 * s ** 3 - 3 * s ** 2 + 1) * y0 + (s ** 3 - 2 * s ** 2 + s) * h * SLOPES[i] + (-2 * s ** 3 + 3 * s ** 2) * y1 + (s ** 3 - s ** 2) * h * SLOPES[i + 1];
+}
+// the time at which the timeline reaches p (for jumps)
+export function tAt(p) { let a = 0, b = DURATION; for (let k = 0; k < 40; k++) { const m = (a + b) / 2; if (pAt(m) < p) a = m; else b = m; } return b; }
 
 function h(tag, cls, parent, html) {
   const e = document.createElement(tag);
@@ -114,7 +139,17 @@ export function createIntro(stage, opts = {}) {
   // between two frames the top one is faded over the bottom one by the
   // compositor, so the film flows with the scroll while each canvas is only
   // drawn when its frame changes
-  const canvas = h('div', 'ix-film', root);
+  // On the page the film is a video, baked at the timeline's pace and fetched
+  // whole before it starts, so it is played by the phone's video hardware
+  // and can never wait for a frame. A film for Remotion draws the frame
+  // sequence instead, position by position.
+  const useVideo = !opts.film;
+  const vid = useVideo ? h('video', 'ix-vid', root) : null;
+  if (vid) {
+    vid.muted = true; vid.playsInline = true; vid.preload = 'auto'; vid.disablePictureInPicture = true;
+    vid.setAttribute('muted', ''); vid.setAttribute('playsinline', ''); vid.setAttribute('aria-hidden', 'true');
+  }
+  const canvas = h('div', 'ix-film', useVideo ? null : root);
   // in a film the canvases are drawn in software, with the rest of the page:
   // a GPU canvas can be caught a frame out of step with what is over it
   const cv = [h('canvas', '', canvas), h('canvas', '', canvas)];
@@ -304,6 +339,24 @@ export function createIntro(stage, opts = {}) {
     return frames.ready;
   }
 
+  /* the whole film is fetched before it is allowed to start */
+  function loadFilm(S) {
+    if (frames.scene === S) return frames.ready;
+    frames.scene = S;
+    let done;
+    frames.first = frames.ready = new Promise(r => { done = r; });
+    const mp4 = vid.canPlayType('video/mp4; codecs="avc1.640028"') !== '';
+    const url = base + S.film + (mp4 ? '.mp4' : '.webm');
+    const go = src => {
+      if (frames.scene !== S) return;
+      vid.onloadeddata = () => { vid.onloadeddata = null; done(); };
+      vid.onerror = () => done();
+      vid.src = src; vid.load();
+    };
+    fetch(url).then(r => (r.ok ? r.blob() : Promise.reject())).then(b => go(URL.createObjectURL(b))).catch(() => go(url));
+    return frames.ready;
+  }
+
   function layout(W, H) {
     const land = W / H >= 1.0;
     const S = land ? SCENES.land : SCENES.port;
@@ -353,7 +406,7 @@ export function createIntro(stage, opts = {}) {
     screen.style.setProperty('--sw', scr.w + 'px');
     G = { W, H, land, S, Dw, Dh, ox, oy, dpr, u, scr, lastP: 0, lastA: 0 };
     frames.key = null; frames.keyIms = [];
-    loadFrames(S);
+    if (vid) { vid.style.width = Dw + 'px'; vid.style.height = Dh + 'px'; loadFilm(S); } else loadFrames(S);
     root.querySelectorAll('*').forEach(e => { e._t = e._o = e._c = null; });
     page._c = page._o = null;
     return frames.ready;
@@ -401,7 +454,7 @@ export function createIntro(stage, opts = {}) {
     // the first stretch of the film is a drop that hardly moves: give it
     // less of the scroll than the part where the glass actually flows
     const t = seg(p, SEQ[0], SEQ[1]);
-    const ft = t < 0.5 ? t * 0.7 : 0.35 + (t - 0.5) * 1.3;
+    const ft = 0.7 * t + 0.3 * t * t;
     // where the scroll is, in frames, with the fraction kept: between two
     // frames both are drawn, the second over the first by that fraction,
     // so the film flows with the scroll instead of stepping frame to frame
@@ -471,7 +524,11 @@ export function createIntro(stage, opts = {}) {
     const c = camera(p);
 
     /* ----- the film, and the sharp still it ends on ----- */
-    drawFilm(c, p, out(seg(a, 0, 0.6)));
+    const fade = out(seg(a, 0, 0.6));
+    if (vid) {
+      setT(vid, 'translate3d(' + (c.tx + c.k * G.ox).toFixed(2) + 'px,' + (c.ty + c.k * G.oy).toFixed(2) + 'px,0) scale(' + c.k.toFixed(4) + ')');
+      setO(vid, fade);
+    } else drawFilm(c, p, fade);
     const stT = ('translate3d(' + (c.tx + c.k * G.ox).toFixed(2) + 'px,' + (c.ty + c.k * G.oy).toFixed(2) + 'px,0) scale(' + c.k.toFixed(4) + ')');
     // the glass is held sharp while it is measured, the phone once it is made;
     // a still that is not showing is not moved either
@@ -483,7 +540,8 @@ export function createIntro(stage, opts = {}) {
     setO(still, oP);
     // under a still that covers it the film is not composited at all
     const cover = oG >= 0.999 || oP >= 0.999 ? 'hidden' : 'visible';
-    if (canvas._v !== cover) { canvas._v = cover; canvas.style.display = cover === 'hidden' ? 'none' : ''; }
+    const fl = vid || canvas;
+    if (fl._v !== cover) { fl._v = cover; fl.style.display = cover === 'hidden' ? 'none' : ''; }
     if (fromLoad) return;
     setO(scrimB, land ? 0.6 + 0.4 * seg(p, 0.05, 0.12) : 1);
     setO(scrimL, land ? 1 : 0);
@@ -591,10 +649,10 @@ export function createIntro(stage, opts = {}) {
       // both are loaded together, but only the one on the screen plays
       const want = !!wantAny && wantAny[k] !== false;
       if (wantAny && !v._loaded) {
-        // cut to the part worth showing (Mosede's opens on a splash); webm
-        // first, because Chromium on Linux cannot decode the mp4
+        // mp4 first, for Safari and every iPhone; a browser without H.264
+        // takes the webm
         const src = base + v.dataset.src;
-        v.innerHTML = '<source src="' + src + '.webm" type="video/webm"><source src="' + src + '.mp4" type="video/mp4">';
+        v.innerHTML = '<source src="' + src + '.mp4" type="video/mp4"><source src="' + src + '.webm" type="video/webm">';
         v.load();
         v._loaded = true;
       }
@@ -610,5 +668,5 @@ export function createIntro(stage, opts = {}) {
   }
 
   fill(); fillApps();
-  return { layout, render, setLang, playApps, get geometry() { return G; }, get frames() { return frames; } };
+  return { layout, render, setLang, playApps, video: vid, get geometry() { return G; }, get frames() { return frames; } };
 }
