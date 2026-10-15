@@ -25,16 +25,18 @@ const FILMS = {
 // the beats, in seconds of the film
 const BEAT = { copy: 4.3 };
 // and after it, in seconds from its last frame
-const AFTER = { 'hx-lock': 0.15, 'hx-n1': 0.95, 'hx-n2': 1.9 };
+const AFTER = { 'hx-lock': 0.05, 'hx-n1': 0.55, 'hx-n2': 1.15 };
+// the film runs faster than it was shot: the glass has somewhere to be
+const RATE = 1.6;
 
 export function startHero() {
   const html = document.documentElement;
   const boot = $('#boot'), bar = $('#boot .boot-bar > i');
-  const hx = $('.hx'), vid = $('.hx-film'), ios = $('.hx-ios'), copy = $('.hx-copy');
+  const hx = $('.hx'), track = $('.hx-track'), media = $('.hx-media'), vid = $('.hx-film'), ios = $('.hx-ios'), white = $('.hx-white'), copy = $('.hx-copy');
   if (!hx || !vid) return;
   const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  let F = null, W = 0, H = 0;
+  let F = null, W = 0, H = 0, S = { x: 0, y: 0, w: 1, h: 1 };
   function fit() {
     W = innerWidth; H = innerHeight;
     const nf = W / H >= 1 ? FILMS.land : FILMS.port;
@@ -47,7 +49,9 @@ export function startHero() {
     const ox = (W - dw) * F.pos[0], oy = (H - dh) * F.pos[1];
     const sc = F.screen;
     const x = ox + sc.l * dw, y = oy + sc.t * dh, w = (sc.r - sc.l) * dw, h = (sc.b - sc.t) * dh;
-    ios.style.cssText = 'left:' + x.toFixed(1) + 'px;top:' + y.toFixed(1) + 'px;width:' + w.toFixed(1) + 'px;height:' + h.toFixed(1) + 'px';
+    const box = 'left:' + x.toFixed(1) + 'px;top:' + y.toFixed(1) + 'px;width:' + w.toFixed(1) + 'px;height:' + h.toFixed(1) + 'px';
+    ios.style.cssText = box; white.style.cssText = box;
+    S = { x, y, w, h };
     hx.classList.toggle('is-port', F === FILMS.port);
     if (changed) {
       // turned from one shape to the other: the other film's picture
@@ -137,6 +141,7 @@ export function startHero() {
     if (boot) { boot.classList.add('out'); setTimeout(() => boot.remove(), 900); }
     // after the dark has lifted, the film
     setTimeout(() => {
+      vid.playbackRate = RATE;
       vid.play().then(() => { t0 = performance.now(); raf = requestAnimationFrame(tick); })
         .catch(() => { vid.poster = F.end; vid.removeAttribute('src'); vid.load(); html.classList.add('hx-copy-in', 'hx-lock', 'hx-n1', 'hx-n2'); });
     }, 350);
@@ -148,18 +153,33 @@ export function startHero() {
     if (boot) boot.remove();
   } else go();
 
-  /* ---------- the page slides up over the film ---------- */
+  /* ---------- on scroll, into the phone: its screen turns to paper and
+     becomes the page. Only the picture is moved and scaled, on the
+     compositor; nothing is drawn again. ---------- */
   let sraf = 0;
-  const dim = $('.hx-dim');
+  const dim = $('.hx-dim'), scrim = $('.hx-scrim');
+  const io3 = t => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
   function onScroll() {
     sraf = 0;
-    const p = clamp(scrollY / H);
-    dim.style.opacity = (p * 0.85).toFixed(3);
-    copy.style.transform = 'translate3d(0,' + (-p * H * 0.18).toFixed(1) + 'px,0)';
-    // once it is covered, the film is not drawn at all
-    const gone = p >= 1;
-    if (hx._g !== gone) { hx._g = gone; hx.style.visibility = gone ? 'hidden' : ''; }
+    const r = track.getBoundingClientRect();
+    const p = clamp(-r.top / Math.max(1, r.height - H));
+    const e = io3(p);
+    // the scale at which the screen covers the window, and the move that
+    // brings its middle to the window's middle
+    const cx = S.x + S.w / 2, cy = S.y + S.h / 2;
+    const full = Math.max(W / S.w, H / S.h) * 1.04;
+    const k = 1 + (full - 1) * e;
+    const tx = (cx + (W / 2 - cx) * e) - k * cx, ty = (cy + (H / 2 - cy) * e) - k * cy;
+    media.style.transform = 'translate3d(' + tx.toFixed(2) + 'px,' + ty.toFixed(2) + 'px,0) scale(' + k.toFixed(4) + ')';
+    white.style.opacity = seg(e, 0.3, 0.8).toFixed(3);
+    const fade = 1 - seg(p, 0, 0.22);
+    copy.style.opacity = fade.toFixed(3);
+    copy.style.transform = 'translate3d(0,' + (-p * 60).toFixed(1) + 'px,0)';
+    scrim.style.opacity = fade.toFixed(3);
+    dim.style.opacity = '0';
+    html.classList.toggle('hx-paper', e > 0.8);
   }
   addEventListener('scroll', () => { if (!sraf) sraf = requestAnimationFrame(onScroll); }, { passive: true });
   addEventListener('resize', () => { fit(); onScroll(); });
+  onScroll();
 }

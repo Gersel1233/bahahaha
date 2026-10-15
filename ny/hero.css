@@ -104,3 +104,17 @@ html.hx-n1 .hx-ios .n1, html.hx-n2 .hx-ios .n2{ opacity:1; transform:none; }
   html.hx-on .hx-kick, html.hx-on .hx-lead, html.hx-on .hx-cta, html.hx-on .hx-h1 .l > span{ opacity:1; transform:none; transition:none; }
   .hx-ios, .hx-ios .note{ transition:none; }
 }
+
+/* ---------- into the phone, on scroll ---------- */
+.hx-track{ position:relative; height:190vh; height:190svh; }
+.hx-media{ position:absolute; inset:0; transform-origin:0 0; will-change:transform; }
+.hx-white{ position:absolute; border-radius:13% / 6%; background:var(--porcelain); opacity:0; pointer-events:none; will-change:opacity; }
+html.hx-paper .tb{ background:var(--smoke-dense); }
+@media (prefers-reduced-motion: reduce){ .hx-track{ height:auto; } }
+
+/* ---------- the white world: one sentence, lit word by word ---------- */
+.st{ position:relative; z-index:1; background:var(--porcelain); padding:clamp(80px, 16vh, 180px) var(--gut) clamp(90px, 18vh, 200px); }
+.st-k{ display:block; color:var(--ash); margin-bottom:clamp(22px, 4vh, 40px); max-width:1240px; margin-left:auto; margin-right:auto; }
+.st-t{ max-width:1240px; margin:0 auto; font:500 clamp(30px, 4.4vw, 68px)/1.12 var(--sans); letter-spacing:-.035em; color:var(--obsidian); text-wrap:pretty; }
+html.pg-js .st-t .w{ opacity:.16; transition:opacity .45s var(--ease); }
+html.pg-js .st-t .w.on{ opacity:1; }

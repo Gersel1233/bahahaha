@@ -15,9 +15,9 @@
 <link rel="preload" href="../fonts/fragmentmono-400.woff2" as="font" type="font/woff2" crossorigin />
 <link rel="preload" as="image" href="media/film-d-first.webp" media="(min-aspect-ratio: 1/1)" />
 <link rel="preload" as="image" href="media/film-m-first.webp" media="(max-aspect-ratio: 1/1)" />
-<link rel="stylesheet" href="ny.css?v=15" />
-<link rel="stylesheet" href="page.css?v=15" />
-<link rel="stylesheet" href="hero.css?v=15" />
+<link rel="stylesheet" href="ny.css?v=16" />
+<link rel="stylesheet" href="page.css?v=16" />
+<link rel="stylesheet" href="hero.css?v=16" />
 <script>
   /* decided before first paint: with JS the first screen waits behind the
      Lesreg mark until the film can play; without JS it is simply there */
@@ -91,7 +91,9 @@
 
 <!-- The first screen: the film plays once by itself, the page scrolls the
      whole time and slides up over it -->
-<section class="hx" id="top">
+<div class="hx-track" id="top">
+<section class="hx">
+  <div class="hx-media">
   <video class="hx-film" muted playsinline preload="none" poster="media/film-d-first.webp" aria-hidden="true"></video>
   <div class="hx-ios" aria-hidden="true">
     <div class="sb"><span class="t">9:41</span><span class="ic"><svg class="sig"><use href="#sb-sig"/></svg><svg class="wifi"><use href="#sb-wifi"/></svg><svg class="bat"><use href="#sb-bat"/></svg></span></div>
@@ -99,6 +101,8 @@
     <p class="clock">9:41</p>
     <div class="note n1"><span class="ni ni-spiis"></span><div><b>Spiis</b><span data-da="Ny bestilling · 3 × Mørbradgryde · kl. 17.30" data-en="New order · 3 × pork stew · 5.30 pm">Ny bestilling · 3 × Mørbradgryde · kl. 17.30</span></div><em data-da="nu" data-en="now">nu</em></div>
     <div class="note n2"><span class="ni ni-mosede"></span><div><b>Mosede Havnecafé</b><span data-da="Menukortet er opdateret på alle skærme" data-en="The menu is updated on every screen">Menukortet er opdateret på alle skærme</span></div><em data-da="nu" data-en="now">nu</em></div>
+  </div>
+  <i class="hx-white" aria-hidden="true"></i>
   </div>
   <i class="hx-scrim" aria-hidden="true"></i>
   <div class="hx-copy">
@@ -111,6 +115,14 @@
     </div>
   </div>
   <i class="hx-dim" aria-hidden="true"></i>
+</section>
+</div>
+
+<!-- The white world the phone's screen opens into -->
+<section class="st" id="nu" data-paper data-scrub="st">
+  <p class="st-k label"><span class="mono">00</span> <span data-da="Nutidens softwarehus" data-en="Today's software house">Nutidens softwarehus</span></p>
+  <p class="st-t" data-st data-da="Vi bygger apps, systemer og integrationer, der er hurtigere at få, billigere at eje og bygget til det, folk forventer i dag. Tegnet, bygget og drevet af ét hus — uden mellemled."
+     data-en="We build apps, systems and integrations that are faster to get, cheaper to own and built for what people expect today. Designed, built and run by one house — with nobody in between.">Vi bygger apps, systemer og integrationer, der er hurtigere at få, billigere at eje og bygget til det, folk forventer i dag. Tegnet, bygget og drevet af ét hus — uden mellemled.</p>
 </section>
 
 <main class="pg" id="pg">
@@ -289,7 +301,7 @@
   <span>© 2026 Lesreg</span>
 </footer>
 
-<script type="module" src="main.js?v=15"></script>
-<script type="module" src="page.js?v=15"></script>
+<script type="module" src="main.js?v=16"></script>
+<script type="module" src="page.js?v=16"></script>
 </body>
 </html>
