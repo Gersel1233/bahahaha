@@ -1,6 +1,7 @@
 /* The Websites & motion tile: this very site, built in front of you. A
-   window, the grid, the wireframe; then it fills in, a cursor finds the
-   button, and the phone opens into the white the way the real page does. */
+   window, the grid, the wireframe; then it fills in, a cursor presses "See
+   what we build", the window steps back, and behind it the sites we have
+   built fan out like a blade drawn: Spiis, Mosede Havnecafé, Callster. */
 import React from 'react';
 import { AbsoluteFill, Img, staticFile } from 'remotion';
 import { useT, useFonts, seg, out3, out5, io3, mix, clamp, SANS, SERIF, MONO } from './common';
@@ -15,6 +16,32 @@ const FW = 250, FX = PX + PW - FW - 46, FY = PY + 150, FH = FW * 2336 / 1120;
 const SX = FX + FW * 0.0537, SY = FY + FH * 0.024, SW = FW * 0.8917, SH = FH * 0.952;
 
 export const WEB_S = 7;
+// callster.dk's first screen, from its own source: its logo, its colours,
+// its words (the live site opens on an animation a screenshot cannot pass)
+const CallsterSite: React.FC<{ h: number }> = ({ h }) => (
+  <div style={{ position: 'relative', height: h, overflow: 'hidden', background: '#f5f5f7', color: '#14213d', fontFamily: SANS }}>
+    <div style={{ position: 'absolute', inset: '-20% -10% auto', height: '120%', background: 'radial-gradient(38% 34% at 72% 30%, rgba(200,162,122,.34), transparent 70%), radial-gradient(30% 32% at 86% 62%, rgba(242,92,60,.2), transparent 70%)' }} />
+    <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '18px 24px' }}>
+      <Img src={staticFile('film/assets/logos/callster-logo.svg')} style={{ height: 22 }} />
+      <span style={{ padding: '9px 16px', borderRadius: 20, background: '#14213d', color: '#fff', font: `500 13px/1 ${SANS}` }}>Kom i gang</span>
+    </div>
+    <div style={{ position: 'relative', padding: '40px 28px 0' }}>
+      <div style={{ font: `600 58px/1 ${SANS}`, letterSpacing: -2.4 }}>Din AI-<br />medarbejder.</div>
+      <div style={{ marginTop: 18, maxWidth: 380, font: `400 16px/1.45 ${SANS}`, color: '#3d4a66' }}>Callster besvarer jeres opkald, booker tider og hjælper med det administrative. Du styrer det hele med en besked.</div>
+      <div style={{ display: 'flex', gap: 10, marginTop: 20 }}>
+        <span style={{ padding: '12px 18px', borderRadius: 22, background: '#14213d', color: '#fff', font: `500 14px/1 ${SANS}` }}>Hør et eksempel</span>
+        <span style={{ padding: '12px 18px', borderRadius: 22, background: 'rgba(255,255,255,.7)', boxShadow: 'inset 0 0 0 1px rgba(20,33,61,.12)', font: `500 14px/1 ${SANS}` }}>Kom i gang nu</span>
+      </div>
+    </div>
+  </div>
+);
+// the fan: each site's window, how far it swings, and how far it rises
+const FW2 = 600, FH2 = 420, FT = 610, PIVOT = 1500;
+const FAN = [
+  { url: 'spiis.dk', img: 'ny/media/pg/spiis-web.webp', pos: '50% 30%', a: -27, y: 10, z: 1 },
+  { url: 'callster.dk', img: '', pos: '', a: 0, y: -20, z: 3 },
+  { url: 'mosedehavnecafe.dk', img: 'ny/media/pg/mosede-web.webp', pos: '50% 40%', a: 27, y: 10, z: 2 },
+];
 export const TileWeb: React.FC = () => {
   useFonts();
   const { t, sp } = useT();
@@ -31,8 +58,9 @@ export const TileWeb: React.FC = () => {
   const hover = out3(seg(t, 4.2, 4.45)) * (1 - seg(t, 4.9, 5.1));
   const click = t > 4.55 && t < 4.7 ? 0.96 : 1;
   // then into the phone, as the page does
-  const zoom = io3(seg(t, 5.15, 6.15));
-  const white = seg(t, 4.95, 5.3), words = out5(seg(t, 5.9, 6.5));
+  const zoom = 0, white = 0;
+  // after the press: the window steps back and the others fan out behind it
+  const back = io3(seg(t, 4.7, 5.35));
   const k = 1 + (Math.max(PW / SW, PH / SH) * 1.12 - 1) * zoom;
   const cx = SX + SW / 2, cy = SY + SH / 2, tcx = PX + PW / 2, tcy = PY + PH / 2;
   const tx = (cx + (tcx - cx) * zoom) - k * cx, ty = (cy + (tcy - cy) * zoom) - k * cy;
@@ -45,8 +73,24 @@ export const TileWeb: React.FC = () => {
   return (
     <AbsoluteFill style={{ background: `radial-gradient(110% 70% at 50% 100%, #0F1730, ${NAVY9} 70%)`, fontFamily: SANS, overflow: 'hidden' }}>
       <div style={{ position: 'absolute', inset: 0, opacity: all }}>
+        {/* ---------- the sites we have built, fanning out behind ---------- */}
+        {FAN.map((f, i) => {
+          const o = sp(4.85 + i * 0.09, 14, 120);
+          if (t < 4.8) return null;
+          return (
+            <div key={f.url} style={{ position: 'absolute', left: TW / 2 - FW2 / 2, top: FT, width: FW2, height: FH2, borderRadius: 20, overflow: 'hidden', background: '#0A0D16',
+              transformOrigin: `${FW2 / 2}px ${PIVOT - FT}px`, transform: `rotate(${f.a * o}deg) translateY(${f.y * o}px)`, opacity: clamp(o * 2),
+              boxShadow: '0 30px 70px rgba(0,0,0,.55), inset 0 0 0 1px rgba(255,255,255,.08)', zIndex: f.z }}>
+              <div style={{ height: 40, display: 'flex', alignItems: 'center', gap: 7, padding: '0 16px', background: '#151A26' }}>
+                {['#FF5F57', '#FEBC2E', '#28C840'].map(c => <i key={c} style={{ width: 10, height: 10, borderRadius: '50%', background: c }} />)}
+                <span style={{ margin: '0 auto', padding: '6px 34px', borderRadius: 8, background: 'rgba(255,255,255,.06)', font: `400 14px/1 ${SANS}`, color: '#A7AFC2' }}>{f.url}</span>
+              </div>
+              {f.img ? <Img src={staticFile(f.img)} style={{ width: '100%', height: FH2 - 40, objectFit: 'cover', objectPosition: f.pos }} /> : <CallsterSite h={FH2 - 40} />}
+            </div>
+          );
+        })}
         <div style={{ position: 'absolute', left: WX, top: WY, width: WW, height: WH, borderRadius: 22, overflow: 'hidden', background: '#0A0D16',
-          boxShadow: '0 40px 90px rgba(0,0,0,.6), inset 0 0 0 1px rgba(255,255,255,.08)', opacity: win, transform: `translateY(${50 * (1 - win)}px) scale(${mix(0.95, 1, win)})` }}>
+          boxShadow: '0 40px 90px rgba(0,0,0,.6), inset 0 0 0 1px rgba(255,255,255,.08)', opacity: win, transformOrigin: '50% 100%', zIndex: 5, transform: `translateY(${50 * (1 - win) + 64 * back}px) scale(${mix(0.95, 1, win) * mix(1, 0.6, back)})` }}>
           {/* the browser's bar */}
           <div style={{ height: BAR, display: 'flex', alignItems: 'center', gap: 8, padding: '0 18px', background: '#151A26', borderBottom: '1px solid rgba(255,255,255,.06)' }}>
             {['#FF5F57', '#FEBC2E', '#28C840'].map(c => <i key={c} style={{ width: 12, height: 12, borderRadius: '50%', background: c }} />)}
@@ -92,13 +136,9 @@ export const TileWeb: React.FC = () => {
             </div>
             <Img src={staticFile('ny/media/dev/iphone-17-pro-2x.webp')} style={{ position: 'absolute', left: FX, top: FY, width: FW, height: FH, opacity: clamp(phone * 1.5), transform: `translateY(${60 * (1 - phone)}px)` }} />
           </div>
-          {/* inside: the white world and its sentence */}
-          <div style={{ position: 'absolute', left: 0, top: BAR, width: PW, height: PH, background: PAPER, opacity: seg(zoom, 0.85, 1), display: 'grid', placeItems: 'center', textAlign: 'center' }}>
-            <div style={{ font: `500 54px/1.1 ${SANS}`, letterSpacing: -2.2, color: '#0E0F10', opacity: words, transform: `translateY(${30 * (1 - words)}px)` }}>Vi bygger apps,<br />systemer og<br /><span style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 300 }}>integrationer.</span></div>
-          </div>
         </div>
         {/* the cursor */}
-        {cur > 0 && t < 5.1 && (
+        {cur > 0 && t < 4.85 && (
           <svg width="34" height="40" viewBox="0 0 17 20" style={{ position: 'absolute', left: mix(TW - 60, btnX + 150, cur), top: mix(1380, btnY + 30, cur), filter: 'drop-shadow(0 3px 6px rgba(0,0,0,.4))', transform: `scale(${click})` }}>
             <path d="M1 1v15l4-4 3 7 3-1.4-3-6.6h6z" fill="#fff" stroke="#000" strokeWidth="1.2" strokeLinejoin="round" />
           </svg>
