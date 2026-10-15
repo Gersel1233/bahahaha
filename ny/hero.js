@@ -1,191 +1,135 @@
-/* The first screen: a film that plays once, by itself, and a page that
-   scrolls the whole time.
+/* The first screen: the phone is the stage.
 
-   Nothing is ever taken from the reader: the scroll is never held, and the
-   film is never skipped or scrubbed. The page simply slides up over it.
+   It is there the moment the page is: no film to fetch, no loader. The
+   lock screen's notifications arrive by themselves; after that the scroll
+   alone turns the phone through what we have built, and at the end its
+   screen turns to paper and opens into the page.
 
-   It does wait for one thing. The film only starts when all of it is in
-   and the device has shown it can draw at full rate; until then the Lesreg
-   mark stands on the dark with a line for how much has arrived. A device
-   that cannot keep up gets a lighter film, never a stuttering one. */
+   Everything on the phone sits in one box, and only that box is moved and
+   scaled, on the compositor; the screens change by opacity and transform. */
 
 const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
 const clamp = (v, a = 0, b = 1) => (v < a ? a : v > b ? b : v);
 const seg = (t, a, b) => clamp((t - a) / (b - a));
 const out = t => 1 - Math.pow(1 - t, 3);
+const io3 = t => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 
-// where the phone's screen is in each film, as fractions of the picture
-// (measured off the last frame: the Deep Blue frame, and Callster's render's
-// own screen proportions inside it)
-const FILMS = {
-  land: { w: 3824, h: 2160, pos: [0.64, 0.5], screen: { l: 0.5326, r: 0.7381, t: 0.0967, b: 0.8134 }, base: 'media/film-d', first: 'media/film-d-first.webp', end: 'media/phone-d-end.webp' },
-  port: { w: 2160, h: 3824, pos: [0.5, 0.42], screen: { l: 0.31, r: 0.6831, t: 0.2621, b: 0.7508 }, base: 'media/film-m', first: 'media/film-m-first.webp', end: 'media/phone-m-end.webp' },
-};
-
-// the beats, in seconds of the film
-const BEAT = { copy: 4.3 };
-// and after it, in seconds from its last frame
-const AFTER = { 'hx-lock': 0.05, 'hx-n1': 0.55, 'hx-n2': 1.15 };
-// the film runs faster than it was shot: the glass has somewhere to be
-const RATE = 1.6;
+// the run of the track, 0 to 1: when each app opens on the phone, and when
+// its words stand beside it
+const OPEN = [0.12, 0.36, 0.6];
+const SAY = [[0.13, 0.34], [0.37, 0.58], [0.61, 0.8]];
+const MSG = [0.65, 0.69, 0.73];
+const WHITE = [0.8, 0.86], ZOOM = [0.83, 0.97], PAPER = [0.93, 0.97];
+// after the page opens, in seconds: the two notifications
+const NOTE = { 'hs-n1': 0.9, 'hs-n2': 1.6 };
 
 export function startHero() {
   const html = document.documentElement;
-  const boot = $('#boot'), bar = $('#boot .boot-bar > i');
-  const hx = $('.hx'), track = $('.hx-track'), media = $('.hx-media'), vid = $('.hx-film'), ios = $('.hx-ios'), white = $('.hx-white'), copy = $('.hx-copy');
-  if (!hx || !vid) return;
+  const track = $('.hs-track'), hs = $('.hs'), ph = $('.hs-ph'), scr = $('.hs-dev .scr');
+  if (!hs || !ph || !scr) return;
+  const copy = $('.hs-copy-in'), says = $$('.hs-ch > li > div'), apps = $$('.hs-s[data-s]');
+  const white = $('.hs-white'), paper = $('.hs-paper'), msg = $('[data-hmsg]');
+  const vids = apps.map(a => $('video', a));
   const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  let F = null, W = 0, H = 0, S = { x: 0, y: 0, w: 1, h: 1 };
-  // measured off the first screen itself, not the window: on a phone the
-  // window grows and shrinks as Safari's bars come and go, the film does not
-  function fit() {
-    W = hx.clientWidth || innerWidth; H = hx.clientHeight || innerHeight;
-    const nf = W / H >= 1 ? FILMS.land : FILMS.port;
-    const changed = nf !== F;
-    F = nf;
-    vid.style.objectPosition = (F.pos[0] * 100) + '% ' + (F.pos[1] * 100) + '%';
-    // the phone's screen on this window: the film covers it, so the
-    // picture is scaled by the larger ratio and offset by its position
-    const s = Math.max(W / F.w, H / F.h), dw = F.w * s, dh = F.h * s;
-    const ox = (W - dw) * F.pos[0], oy = (H - dh) * F.pos[1];
-    const sc = F.screen;
-    const x = ox + sc.l * dw, y = oy + sc.t * dh, w = (sc.r - sc.l) * dw, h = (sc.b - sc.t) * dh;
-    const box = 'left:' + x.toFixed(1) + 'px;top:' + y.toFixed(1) + 'px;width:' + w.toFixed(1) + 'px;height:' + h.toFixed(1) + 'px';
-    ios.style.cssText = box; white.style.cssText = box;
-    S = { x, y, w, h };
-    hx.classList.toggle('is-port', F === FILMS.port);
-    if (changed) {
-      // turned from one shape to the other: the other film's picture
-      if (vid.src) { vid.pause(); vid.removeAttribute('src'); vid.load(); vid.poster = F.end; }
-      else vid.poster = html.classList.contains('hx-lock') ? F.end : F.first;
-    }
-    return changed;
-  }
-  fit();
-
   // the date on the lock screen is today's
-  const lang = () => html.lang === 'en' ? 'en-GB' : 'da-DK';
-  const dateEl = $('.hx-ios .d');
-  const setDate = () => { try { dateEl.textContent = new Date().toLocaleDateString(lang(), { weekday: 'long', day: 'numeric', month: 'long' }); } catch (e) {} };
+  const dateEl = $('.hs-lock .d');
+  const setDate = () => { try { dateEl.textContent = new Date().toLocaleDateString(html.lang === 'en' ? 'en-GB' : 'da-DK', { weekday: 'long', day: 'numeric', month: 'long' }); } catch (e) {} };
   setDate();
   addEventListener('lesreg:lang', setDate);
 
-  if (still) {
-    // nothing moves: the phone as the film leaves it, the words already there
-    vid.poster = F.end;
-    html.classList.add('hx-ready', 'hx-copy-in', 'hx-lock', 'hx-n1', 'hx-n2');
-    if (boot) boot.remove();
-    return;
+  if (still) { html.classList.add('hs-n1', 'hs-n2'); return; }
+  for (const [c, at] of Object.entries(NOTE)) setTimeout(() => html.classList.add(c), at * 1000);
+
+  /* ---------- where things are, untransformed ---------- */
+  let W = 0, H = 0, port = false, P = { x: 0, y: 0 }, S = { x: 0, y: 0, w: 1, h: 1 }, rise = 0;
+  function within(el) {
+    // offsets ignore transforms, so this is the box as laid out
+    let x = 0, y = 0, e = el;
+    while (e && e !== hs) { x += e.offsetLeft; y += e.offsetTop; e = e.offsetParent; }
+    return { x, y, w: el.offsetWidth, h: el.offsetHeight };
+  }
+  function measure() {
+    W = hs.clientWidth; H = hs.clientHeight;
+    port = W / H < 1 || W <= 760;
+    P = within(ph); S = within(scr);
+    // held upright, the phone starts low, under the words, and comes up
+    rise = port ? P.h * 0.2 : 0;
+  }
+  measure();
+
+  /* ---------- the apps' films: fetched when they are close, playing only
+     while their app is open ---------- */
+  const h264 = document.createElement('video').canPlayType('video/mp4; codecs="avc1.42E01E"') !== '';
+  function load(v) { if (v && !v.src) { v.src = v.dataset.v + (h264 ? '.mp4' : '.webm'); v.load(); } }
+  // the first app's film once the page has settled, so it is in before it is needed
+  addEventListener('load', () => setTimeout(() => load(vids[0]), 1200), { once: true });
+  let playing = -1;
+  function play(i) {
+    if (i === playing) return;
+    playing = i;
+    vids.forEach((v, j) => { if (!v) return; if (j === i) { load(v); const r = v.play(); if (r) r.catch(() => {}); } else v.pause(); });
   }
 
-  /* ---------- can this device draw at full rate? ---------- */
-  const probe = () => new Promise(res => {
-    const t = []; let last = performance.now(); const end = last + 650;
-    (function f(n) { t.push(n - last); last = n; if (n < end) requestAnimationFrame(f); else { t.sort((a, b) => a - b); res(t[Math.floor(t.length / 2)] || 16.7); } })(last);
-  });
-  const conn = navigator.connection || {};
-  const weakNet = conn.saveData || /(^|-)2g|3g/.test(conn.effectiveType || '');
-  const weakMem = navigator.deviceMemory && navigator.deviceMemory < 4;
-
-  function pick(fast) {
-    const hevc = vid.canPlayType('video/mp4; codecs="hvc1.1.6.L153.B0"') !== '';
-    const h264 = vid.canPlayType('video/mp4; codecs="avc1.640033"') !== '';
-    if (!h264 && !hevc) return F.base + '.webm';
-    if (!fast) return F.base + '-lite.mp4';
-    const devW = W * (devicePixelRatio || 1);
-    if (hevc) return F === FILMS.land && devW > 2000 ? F.base + '-uhd.mp4' : F.base + '-hevc.mp4';
-    return F.base + '.mp4';
-  }
-
-  // the whole film, with a line for how much of it has come
-  async function fetchAll(url) {
-    const r = await fetch(url);
-    if (!r.ok || !r.body) throw new Error('film');
-    const total = +r.headers.get('content-length') || 0, reader = r.body.getReader(), parts = [];
-    let got = 0;
-    for (;;) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      parts.push(value); got += value.length;
-      if (total && bar) bar.style.transform = 'scaleX(' + (0.08 + 0.92 * got / total).toFixed(3) + ')';
-    }
-    return URL.createObjectURL(new Blob(parts, { type: 'video/mp4' }));
-  }
-
-  let t0 = 0, raf = 0;
-  const beats = new Set();
-  function tick() {
+  /* ---------- the scroll ---------- */
+  let raf = 0;
+  function frame() {
     raf = 0;
-    const t = vid.currentTime;
-    if (t >= BEAT.copy && !beats.has('copy')) { beats.add('copy'); html.classList.add('hx-copy-in'); }
-    if (!beats.has('copy')) raf = requestAnimationFrame(tick);
-  }
-  vid.addEventListener('ended', () => {
-    // the words are there whatever happened; then the phone wakes, and the
-    // two systems speak, one after the other
-    html.classList.add('hx-copy-in');
-    for (const [c, at] of Object.entries(AFTER)) setTimeout(() => html.classList.add(c), at * 1000);
-  });
-
-  async function go() {
-    const ms = await probe();
-    const fast = ms < 20 && !weakNet && !weakMem;
-    const url = pick(fast);
-    let src = url;
-    try {
-      src = await Promise.race([fetchAll(url), new Promise((_, rej) => setTimeout(() => rej(new Error('slow')), 9000))]);
-    } catch (e) { src = url; }
-    if (document.fonts) await Promise.race([document.fonts.ready, new Promise(r => setTimeout(r, 1500))]);
-    vid.src = src;
-    await new Promise(r => { if (vid.readyState >= 2) r(); else { vid.addEventListener('loadeddata', r, { once: true }); setTimeout(r, 3000); } });
-    html.classList.add('hx-ready');
-    if (boot) { boot.classList.add('out'); setTimeout(() => boot.remove(), 900); }
-    // after the dark has lifted, the film
-    setTimeout(() => {
-      vid.playbackRate = RATE;
-      vid.play().then(() => { t0 = performance.now(); raf = requestAnimationFrame(tick); })
-        .catch(() => { vid.poster = F.end; vid.removeAttribute('src'); vid.load(); html.classList.add('hx-copy-in', 'hx-lock', 'hx-n1', 'hx-n2'); });
-    }, 350);
-  }
-  // a reload further down the page does not need the opening at all
-  if (scrollY > H * 0.6) {
-    vid.poster = F.end;
-    html.classList.add('hx-ready', 'hx-copy-in', 'hx-lock', 'hx-n1', 'hx-n2');
-    if (boot) boot.remove();
-  } else go();
-
-  /* ---------- on scroll, into the phone: its screen turns to paper and
-     becomes the page. Only the picture is moved and scaled, on the
-     compositor; nothing is drawn again. ---------- */
-  let sraf = 0;
-  const dim = $('.hx-dim'), scrim = $('.hx-scrim');
-  const io3 = t => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
-  function onScroll() {
-    sraf = 0;
     const r = track.getBoundingClientRect();
     const p = clamp(-r.top / Math.max(1, r.height - H));
-    const e = io3(p);
-    // the scale at which the screen covers the window, and the move that
-    // brings its middle to the window's middle
-    const cx = S.x + S.w / 2, cy = S.y + S.h / 2;
-    const full = Math.max(W / S.w, H / S.h) * 1.04;
+
+    // the opening words go as the phone comes up
+    const c = seg(p, 0.01, 0.07);
+    copy.style.opacity = (1 - c).toFixed(3);
+    copy.style.transform = 'translate3d(0,' + (-40 * c).toFixed(1) + 'px,0)';
+    copy.style.visibility = c >= 1 ? 'hidden' : '';
+
+    // each app opens over the last, the way iOS opens one
+    let open = -1;
+    apps.forEach((a, i) => {
+      const q = out(seg(p, OPEN[i], OPEN[i] + 0.05));
+      a.style.opacity = q.toFixed(3);
+      a.style.transform = 'scale(' + (0.86 + 0.14 * q).toFixed(4) + ')';
+      if (q > 0) open = i;
+    });
+    // the next one's film comes in while the one before is showing
+    apps.forEach((a, i) => { if (p > OPEN[i] - 0.1) load(vids[i]); });
+    play(open < 2 ? open : -1);
+
+    // and its words beside it
+    says.forEach((s, i) => {
+      const [a, b] = SAY[i];
+      const inn = out(seg(p, a, a + 0.035)), go = seg(p, b - 0.035, b);
+      s.style.opacity = (inn * (1 - go)).toFixed(3);
+      s.style.transform = 'translate3d(0,' + ((1 - inn) * 28 - go * 28).toFixed(1) + 'px,0)';
+      s.style.visibility = inn > 0 && go < 1 ? 'visible' : 'hidden';
+    });
+
+    // the message, answered
+    if (msg) MSG.forEach((t, i) => msg.classList.toggle('m' + (i + 1), p >= t));
+
+    // into the screen: it turns to paper, then fills the window
+    white.style.opacity = seg(p, WHITE[0], WHITE[1]).toFixed(3);
+    const e = io3(seg(p, ZOOM[0], ZOOM[1]));
+    const up = rise * (1 - out(seg(p, 0.02, 0.12)));
+    // the screen's middle as laid out, where it is to be seen now, and the
+    // scale at which the screen, corners and all, covers the window
+    const cx = S.x + S.w / 2, cy = S.y + S.h / 2, sy = cy + up;
+    const full = Math.max(W / S.w, H / S.h) * 1.1;
     const k = 1 + (full - 1) * e;
-    const tx = (cx + (W / 2 - cx) * e) - k * cx, ty = (cy + (H / 2 - cy) * e) - k * cy;
-    media.style.transform = 'translate3d(' + tx.toFixed(2) + 'px,' + ty.toFixed(2) + 'px,0) scale(' + k.toFixed(4) + ')';
-    white.style.opacity = seg(e, 0.3, 0.8).toFixed(3);
-    const fade = 1 - seg(p, 0, 0.22);
-    copy.style.opacity = fade.toFixed(3);
-    copy.style.transform = 'translate3d(0,' + (-p * 60).toFixed(1) + 'px,0)';
-    scrim.style.opacity = fade.toFixed(3);
-    dim.style.opacity = '0';
+    const tx = (cx + (W / 2 - cx) * e) - P.x - k * (cx - P.x);
+    const ty = (sy + (H / 2 - sy) * e) - P.y - k * (cy - P.y);
+    ph.style.transform = 'translate3d(' + tx.toFixed(2) + 'px,' + ty.toFixed(2) + 'px,0) scale(' + k.toFixed(4) + ')';
+    paper.style.opacity = seg(p, PAPER[0], PAPER[1]).toFixed(3);
     html.classList.toggle('hx-paper', e > 0.8);
   }
-  addEventListener('scroll', () => { if (!sraf) sraf = requestAnimationFrame(onScroll); }, { passive: true });
-  // refit only when the first screen itself changes size (a turn, a new
-  // window), never for the bars
+  addEventListener('scroll', () => { if (!raf) raf = requestAnimationFrame(frame); }, { passive: true });
+
+  // measured again only when the stage itself changes size (a turn, a new
+  // window), never for Safari's bars
   let lw = W, lh = H;
-  const refit = () => { const w = hx.clientWidth, h = hx.clientHeight; if (w === lw && h === lh) return; lw = w; lh = h; fit(); onScroll(); };
-  if (window.ResizeObserver) new ResizeObserver(refit).observe(hx); else addEventListener('resize', refit);
-  onScroll();
+  const refit = () => { const w = hs.clientWidth, h = hs.clientHeight; if (w === lw && h === lh) return; lw = w; lh = h; measure(); frame(); };
+  if (window.ResizeObserver) new ResizeObserver(refit).observe(hs); else addEventListener('resize', refit);
+  frame();
 }
