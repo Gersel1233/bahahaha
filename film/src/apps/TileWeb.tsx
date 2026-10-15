@@ -36,11 +36,11 @@ const CallsterSite: React.FC<{ h: number }> = ({ h }) => (
   </div>
 );
 // the fan: each site's window, how far it swings, and how far it rises
-const FW2 = 600, FH2 = 420, FT = 610, PIVOT = 1500;
+const FW2 = 600, FH2 = 430, FT = 600, PIVOT = 1480;
 const FAN = [
-  { url: 'spiis.dk', img: 'ny/media/pg/spiis-web.webp', pos: '50% 30%', a: -27, y: 10, z: 1 },
+  { url: 'spiis.dk', img: 'ny/media/pg/spiis-web.webp', pos: '50% 30%', a: -32, y: 60, z: 1 },
   { url: 'callster.dk', img: '', pos: '', a: 0, y: -20, z: 3 },
-  { url: 'mosedehavnecafe.dk', img: 'ny/media/pg/mosede-web.webp', pos: '50% 40%', a: 27, y: 10, z: 2 },
+  { url: 'mosedehavnecafe.dk', img: 'ny/media/pg/mosede-web.webp', pos: '50% 40%', a: 32, y: 60, z: 2 },
 ];
 export const TileWeb: React.FC = () => {
   useFonts();
@@ -74,18 +74,24 @@ export const TileWeb: React.FC = () => {
     <AbsoluteFill style={{ background: `radial-gradient(110% 70% at 50% 100%, #0F1730, ${NAVY9} 70%)`, fontFamily: SANS, overflow: 'hidden' }}>
       <div style={{ position: 'absolute', inset: 0, opacity: all }}>
         {/* ---------- the sites we have built, fanning out behind ---------- */}
+        {/* a light behind the fan, as it opens */}
+        <div style={{ position: 'absolute', left: TW / 2 - 520, top: 380, width: 1040, height: 760, borderRadius: '50%', background: 'radial-gradient(closest-side, rgba(70,100,200,.42), rgba(43,63,124,.12) 60%, transparent)', opacity: back }} />
         {FAN.map((f, i) => {
           const o = sp(4.85 + i * 0.09, 14, 120);
           if (t < 4.8) return null;
+          // once open, the fan breathes a little
+          const life = Math.sin((t - 5.6) * 1.6 + i) * 0.5 * clamp(seg(t, 5.4, 6));
           return (
-            <div key={f.url} style={{ position: 'absolute', left: TW / 2 - FW2 / 2, top: FT, width: FW2, height: FH2, borderRadius: 20, overflow: 'hidden', background: '#0A0D16',
-              transformOrigin: `${FW2 / 2}px ${PIVOT - FT}px`, transform: `rotate(${f.a * o}deg) translateY(${f.y * o}px)`, opacity: clamp(o * 2),
-              boxShadow: '0 30px 70px rgba(0,0,0,.55), inset 0 0 0 1px rgba(255,255,255,.08)', zIndex: f.z }}>
+            <div key={f.url} style={{ position: 'absolute', left: TW / 2 - FW2 / 2, top: FT, width: FW2, height: FH2, borderRadius: 22, overflow: 'hidden', background: '#0A0D16',
+              transformOrigin: `${FW2 / 2}px ${PIVOT - FT}px`, transform: `perspective(1600px) rotate(${f.a * o + life}deg) rotateY(${-f.a * 0.25 * o}deg) translateY(${f.y * o}px) translateZ(${-Math.abs(f.a) * 2 * o}px)`, opacity: clamp(o * 2),
+              boxShadow: '0 40px 90px rgba(0,0,0,.6), 0 0 0 1px rgba(255,255,255,.1), inset 0 1px 0 rgba(255,255,255,.18)', zIndex: f.z }}>
               <div style={{ height: 40, display: 'flex', alignItems: 'center', gap: 7, padding: '0 16px', background: '#151A26' }}>
                 {['#FF5F57', '#FEBC2E', '#28C840'].map(c => <i key={c} style={{ width: 10, height: 10, borderRadius: '50%', background: c }} />)}
                 <span style={{ margin: '0 auto', padding: '6px 34px', borderRadius: 8, background: 'rgba(255,255,255,.06)', font: `400 14px/1 ${SANS}`, color: '#A7AFC2' }}>{f.url}</span>
               </div>
               {f.img ? <Img src={staticFile(f.img)} style={{ width: '100%', height: FH2 - 40, objectFit: 'cover', objectPosition: f.pos }} /> : <CallsterSite h={FH2 - 40} />}
+              {/* the glass of the screen: light along its top, a sheen across it */}
+              <i style={{ position: 'absolute', inset: 0, background: 'linear-gradient(155deg, rgba(255,255,255,.14), rgba(255,255,255,0) 32%)', pointerEvents: 'none' }} />
             </div>
           );
         })}
