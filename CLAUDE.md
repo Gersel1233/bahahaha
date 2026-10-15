@@ -1,8 +1,9 @@
 # Lesreg — læs det her først
 
 Det her repo er **lesreg.com**: Mikkels eget udstillingsvindue. Det er ikke et
-kundeprojekt. Siden viser, hvad Lesreg laver — først og fremmest Fyon — og
-dens job er at se skarp ud og indlæse hurtigt.
+kundeprojekt. Siden viser, hvad Lesreg laver — kun Lesreg. Fyon er taget af
+siden (Mikkels beslutning); partnerprogrammet hører til en anden session og
+røres ikke herfra. Sidens job er at se skarp ud og indlæse hurtigt.
 
 Skriv på dansk til Mikkel. Han ejer siden og er ikke programmør.
 

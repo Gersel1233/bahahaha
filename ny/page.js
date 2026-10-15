@@ -121,17 +121,6 @@ S.admin = el => {
   };
 };
 
-// a ring of glass turning behind Fyon
-S.fyon = el => {
-  const ring = el.querySelector('.ring'), ph = el.querySelector('[data-p="fy"]');
-  return () => {
-    const r = el.getBoundingClientRect();
-    const q = clamp((H - r.top) / (H + r.height));
-    setT(ring, 'rotate(' + (q * 220).toFixed(2) + 'deg) scale(' + lerp(0.8, 1.08, out(seg(q, 0.1, 0.6))).toFixed(4) + ')');
-    setT(ph, 'translate3d(0,' + ((0.5 - q) * 110).toFixed(1) + 'px,0)');
-  };
-};
-
 // draw it, build it, look after it: the line runs through the three
 S.steps = el => {
   const line = el.querySelector('.steps-line > i'), steps = $$('.step', el);

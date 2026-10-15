@@ -141,22 +141,6 @@ html.pg-js [data-r].in{ opacity:1; transform:none; }
   .admin-f{ grid-template-columns:1fr; }
 }
 
-/* ---------- Fyon ---------- */
-.fyon{ background:var(--obsidian); color:var(--porcelain); padding:clamp(100px, 16vh, 180px) var(--gut); overflow:hidden; }
-.fyon-in{ max-width:1300px; margin:0 auto; display:grid; grid-template-columns:minmax(0, 1fr) minmax(0, 1fr); gap:clamp(40px, 6vw, 110px); align-items:center; }
-.fyon .label{ color:var(--ash); margin-bottom:22px; display:block; }
-.fyon .h2{ font-size:clamp(64px, 10vw, 168px); }
-.fyon-claim{ margin-top:18px; font:500 clamp(24px, 2.6vw, 38px)/1.12 var(--sans); letter-spacing:-.03em; max-width:22ch; }
-.fyon .sec-lead{ color:var(--travertine); margin-bottom:34px; }
-.fyon-vis{ position:relative; display:grid; place-items:center; padding:6% 0; }
-.fyon .ph-lg{ width:min(56%, 290px); will-change:transform; }
-.ring{ position:absolute; width:min(100%, 560px); aspect-ratio:1; border-radius:50%; will-change:transform;
-  background:conic-gradient(from 0deg, rgba(246,244,239,0), rgba(246,244,239,.5) 12%, rgba(218,221,251,.0) 26%, rgba(246,244,239,.0) 52%, rgba(216,209,197,.45) 66%, rgba(246,244,239,0) 82%);
-  -webkit-mask:radial-gradient(closest-side, transparent 86%, #000 87%, #000 99%, transparent 100%);
-          mask:radial-gradient(closest-side, transparent 86%, #000 87%, #000 99%, transparent 100%); }
-.ring::after{ content:""; position:absolute; inset:9%; border-radius:50%; border:1px solid rgba(255,255,255,.08); }
-@media (max-width:900px){ .fyon-in{ grid-template-columns:1fr; } }
-
 /* ---------- why ---------- */
 .why{ background:var(--porcelain); padding:clamp(100px, 16vh, 180px) 0; }
 .why .sec-head{ margin-bottom:clamp(40px, 7vh, 72px); }

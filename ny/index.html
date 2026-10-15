@@ -15,8 +15,8 @@
 <link rel="preload" href="../fonts/fragmentmono-400.woff2" as="font" type="font/woff2" crossorigin />
 <link rel="preload" as="image" href="media/seq-d/000.webp" media="(min-aspect-ratio: 1/1)" />
 <link rel="preload" as="image" href="media/seq-m/000.webp" media="(max-aspect-ratio: 1/1)" />
-<link rel="stylesheet" href="ny.css?v=5" />
-<link rel="stylesheet" href="page.css?v=5" />
+<link rel="stylesheet" href="ny.css?v=6" />
+<link rel="stylesheet" href="page.css?v=6" />
 <script>
   /* decided before first paint, so the opening never flashes the page
      underneath it: motion allowed and JS running means the opening is on */
@@ -107,10 +107,8 @@
   <div class="band-row band-row-2" data-mq="-1">
     <span class="live"><b></b>Spiis · <em data-da="i drift" data-en="running">i drift</em></span><i></i>
     <span class="live"><b></b>Mosede Havnecafé · <em data-da="i drift" data-en="running">i drift</em></span><i></i>
-    <span class="live"><b></b>Fyon · <em data-da="vores eget" data-en="our own">vores eget</em></span><i></i>
     <span class="live"><b></b>Spiis · <em data-da="i drift" data-en="running">i drift</em></span><i></i>
     <span class="live"><b></b>Mosede Havnecafé · <em data-da="i drift" data-en="running">i drift</em></span><i></i>
-    <span class="live"><b></b>Fyon · <em data-da="vores eget" data-en="our own">vores eget</em></span><i></i>
   </div>
 </section>
 
@@ -237,31 +235,10 @@
   </div>
 </section>
 
-<!-- our own product -->
-<section class="fyon" id="fyon" data-scrub="fyon">
-  <div class="fyon-in">
-    <div class="fyon-txt">
-      <p class="label" data-r><span class="mono">04</span> <span data-da="Vores eget produkt" data-en="Our own product">Vores eget produkt</span></p>
-      <h2 class="h2" data-r>Fyon</h2>
-      <p class="fyon-claim" data-r data-da="Alt andet giver dig en score og går. <em class='acc'>Fyon viser dig.</em>" data-en="Everything else rates you and walks away. <em class='acc'>Fyon shows you.</em>">Alt andet giver dig en score og går. <em class="acc">Fyon viser dig.</em></p>
-      <p class="sec-lead" data-r data-da="En intelligens til selvudvikling, bygget omkring én person. Upload to billeder og mød den version af dig selv, du faktisk kan nå — så lægger Fyon planen og tilpasser den, mens du ændrer dig."
-         data-en="A self-improvement intelligence built around one person. Upload two photos and meet the version of yourself you can actually reach — then Fyon makes the plan and adapts it as you change.">En intelligens til selvudvikling, bygget omkring én person. Upload to billeder og mød den version af dig selv, du faktisk kan nå — så lægger Fyon planen og tilpasser den, mens du ændrer dig.</p>
-      <a class="btn light" href="../fyon.html"><span data-da="Se Fyon" data-en="See Fyon">Se Fyon</span><span class="lens"><svg><use href="#i-arrow"/></svg></span></a>
-    </div>
-    <div class="fyon-vis">
-      <div class="ring" aria-hidden="true"></div>
-      <div class="ph ph-lg" data-p="fy">
-        <video muted playsinline loop preload="none" poster="media/pg/fyon.jpg" data-v="media/pg/fyon"></video>
-        <i class="ph-isl"></i>
-      </div>
-    </div>
-  </div>
-</section>
-
 <!-- why Lesreg -->
 <section class="why" id="hvorfor">
   <header class="sec-head">
-    <p class="label" data-r><span class="mono">05</span> <span data-da="Hvorfor Lesreg" data-en="Why Lesreg">Hvorfor Lesreg</span></p>
+    <p class="label" data-r><span class="mono">04</span> <span data-da="Hvorfor Lesreg" data-en="Why Lesreg">Hvorfor Lesreg</span></p>
     <h2 class="h2" data-r><span data-da="Fordi huset" data-en="Because the house">Fordi huset</span> <em class="acc" data-da="er et team." data-en="is a team.">er et team.</em></h2>
   </header>
   <div class="why-grid">
@@ -286,7 +263,7 @@
 <section class="talk" id="kontakt">
   <div class="talk-bg" aria-hidden="true"><img src="media/glas-d-end.webp" alt="" loading="lazy" decoding="async" data-p="talk" /></div>
   <div class="talk-in">
-    <p class="label" data-r><span class="mono">06</span> <span data-da="Kontakt" data-en="Contact">Kontakt</span></p>
+    <p class="label" data-r><span class="mono">05</span> <span data-da="Kontakt" data-en="Contact">Kontakt</span></p>
     <h2 class="talk-h" data-r><span data-da="Har I noget" data-en="Got something">Har I noget</span><br><em class="acc" data-da="på hjernen?" data-en="on your mind?">på hjernen?</em></h2>
     <a class="talk-mail" data-r href="mailto:mgersel@lesreg.com">mgersel@lesreg.com</a>
     <div class="talk-row" data-r>
@@ -300,12 +277,12 @@
 
 <footer class="foot">
   <span>Lesreg · <span data-da="softwarehus" data-en="software house">softwarehus</span></span>
-  <nav class="foot-n"><a href="#arbejde" data-da="Arbejde" data-en="Work">Arbejde</a><a href="#fyon">Fyon</a><a href="#kontakt" data-da="Kontakt" data-en="Contact">Kontakt</a></nav>
+  <nav class="foot-n"><a href="#arbejde" data-da="Arbejde" data-en="Work">Arbejde</a><a href="#kontakt" data-da="Kontakt" data-en="Contact">Kontakt</a></nav>
   <a href="mailto:mgersel@lesreg.com">mgersel@lesreg.com</a>
   <span>© 2026 Lesreg</span>
 </footer>
 
-<script type="module" src="main.js?v=5"></script>
-<script type="module" src="page.js?v=5"></script>
+<script type="module" src="main.js?v=6"></script>
+<script type="module" src="page.js?v=6"></script>
 </body>
 </html>
