@@ -605,17 +605,20 @@ export function createIntro(stage, opts = {}) {
     /* ----- the systems, inside the glass ----- */
     const sc = G.scr;
     const [sx, sy] = proj(c, sc.u, sc.v);
-    const on = out5(seg(p, 0.52, 0.555));
-    setT(screen, 'translate3d(' + sx.toFixed(2) + 'px,' + sy.toFixed(2) + 'px,0) scale(' + (c.k * lerp(0.965, 1, on)).toFixed(4) + ')');
-    setO(screen, on * (1 - seg(p, 0.83, 0.86)));
-    // Mosede flows in over Spiis from the bottom, the way the glass set
-    const wipe = io(seg(p, 0.655, 0.695));
-    // a window rising over a picture that stays put: two transforms, so the
-    // compositor does it and nothing is painted again
-    const wy = ((1 - wipe) * 100).toFixed(2);
-    setT(apps.mosede, 'translate3d(0,' + wy + '%,0)');
-    if (apps.mosede.firstChild) setT(apps.mosede.firstChild, 'translate3d(0,-' + wy + '%,0)');
-    setO(apps.mosede, wipe > 0 ? 1 : 0);
+    // the screen wakes black on the black glass, then the app opens out of
+    // its middle the way iOS opens an app; the next one slides in from the
+    // right, the way iOS swaps between two apps
+    const wake = seg(p, 0.515, 0.522);
+    setT(screen, 'translate3d(' + sx.toFixed(2) + 'px,' + sy.toFixed(2) + 'px,0) scale(' + c.k.toFixed(4) + ')');
+    setO(screen, wake * (1 - seg(p, 0.83, 0.86)));
+    const open = out5(seg(p, 0.524, 0.566));
+    const swap = io(seg(p, 0.655, 0.695));
+    setT(apps.spiis, 'translate3d(' + (-swap * 100).toFixed(2) + '%,0,0) scale(' + (lerp(0.14, 1, open) * lerp(1, 0.94, Math.sin(swap * Math.PI))).toFixed(4) + ')');
+    setO(apps.spiis, clamp(open * 3) * (swap < 1 ? 1 : 0));
+    setT(apps.mosede, 'translate3d(' + ((1 - swap) * 100).toFixed(2) + '%,0,0) scale(' + lerp(1, 0.94, Math.sin(swap * Math.PI)).toFixed(4) + ')');
+    if (apps.mosede.firstChild) setT(apps.mosede.firstChild, 'none');
+    setO(apps.mosede, swap > 0 ? 1 : 0);
+    setO(statusBar, clamp(open * 3));
     setO(sheen, 1);
     // which system it is, on a label under the glass
     const tg = out(seg(p, 0.54, 0.57)) * (1 - seg(p, 0.76, 0.79));
