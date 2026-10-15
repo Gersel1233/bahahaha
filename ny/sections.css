@@ -19,7 +19,7 @@
 /* wider screens get taller tiles, so the film keeps its place under the words */
 @media (min-width:700px){ .tile{ height:clamp(600px, 82vh, 760px); } }
 .tile-apps{ background:#05080F; color:var(--porcelain); }
-.tile-sys{ background:#FFFFFF; color:var(--obsidian); }
+.tile-sys{ background:#0B0908; color:var(--porcelain); }
 .tile-int{ background:#05080F; color:var(--porcelain); }
 .tile-web{ background:#05080F; color:var(--porcelain); }
 .tiles-nav{ display:none; gap:10px; justify-content:flex-end; padding:0 var(--gut); max-width:1440px; margin:0 auto; }
