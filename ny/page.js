@@ -86,14 +86,19 @@ const measureRows = () => rows.forEach(r => { r._w = r.scrollWidth / 2; });
 /* ---------- the scrubbed pieces ---------- */
 let W = innerWidth, H = innerHeight, wide = W > 760;
 const S = {};
+// each frame reads every rectangle first and only then writes, so the
+// phone never has to lay the page out again halfway through a frame
+const rects = new Map();
+const rect = el => rects.get(el) || el.getBoundingClientRect();
 
 // three suppliers pulled together into one house
 S.three = el => {
   const cards = $$('.t-card', el), bills = cards.map(c => c.querySelector('.bill')), one = el.querySelector('.t-one');
   return () => {
-    const r = el.getBoundingClientRect();
+    const r = rect(el);
     const t = clamp(-r.top / Math.max(1, r.height - H));
-    const cw = cards[0].offsetWidth, ch = cards[0].offsetHeight;
+    if (!el._cw || el._w !== W) { el._w = W; el._cw = cards[0].offsetWidth; el._ch = cards[0].offsetHeight; }
+    const cw = el._cw, ch = el._ch;
     // in, one after another; the invoices go; the three close up into one
     // stack; the house lands on top of it
     const enter = cards.map((c, i) => out(seg(t, 0.02 + i * 0.05, 0.18 + i * 0.05)));
@@ -124,7 +129,7 @@ S.case = el => {
   const win = el.querySelector('[data-p="win"]'), ph = el.querySelector('[data-p="ph"]'), chip = el.querySelector('[data-p="chip"]');
   const flip = el.classList.contains('case-r') ? -1 : 1;
   return () => {
-    const r = el.getBoundingClientRect();
+    const r = rect(el);
     const q = clamp((H - r.top) / (H + r.height));
     const inn = out(seg(q, 0.05, 0.42));
     setT(win, 'translate3d(0,' + ((0.5 - q) * 70).toFixed(1) + 'px,0) scale(' + lerp(0.9, 1, inn).toFixed(4) + ')');
@@ -141,7 +146,7 @@ S.case = el => {
 S.admin = el => {
   const notes = $$('.note', el), ph = el.querySelector('.dev-iph');
   return () => {
-    const r = el.getBoundingClientRect();
+    const r = rect(el);
     const q = clamp((H - r.top) / (H + r.height));
     notes.forEach((n, i) => {
       const t = out(seg(q, 0.22 + i * 0.07, 0.36 + i * 0.07));
@@ -156,7 +161,7 @@ S.admin = el => {
 S.steps = el => {
   const line = el.querySelector('.steps-line > i'), steps = $$('.step', el);
   return () => {
-    const r = el.getBoundingClientRect();
+    const r = rect(el);
     const t = out(seg((H - r.top) / (H * 0.9), 0.35, 1));
     const vert = W <= 640;
     setT(line, (vert ? 'scaleY(' : 'scaleX(') + Math.max(0.0001, t).toFixed(4) + ')');
@@ -168,7 +173,7 @@ S.steps = el => {
 S.talk = el => {
   const img = el.querySelector('[data-p="talk"]');
   return () => {
-    const r = el.getBoundingClientRect();
+    const r = rect(el);
     const q = clamp((H - r.top) / (H + r.height));
     setT(img, 'translate3d(0,' + ((q - 0.5) * -90).toFixed(1) + 'px,0) scale(1.06)');
   };
@@ -197,6 +202,8 @@ let raf = 0;
 function frame(now) {
   raf = 0;
   let any = false;
+  rects.clear();
+  for (const s of live) if (s.on) rects.set(s.el, s.el.getBoundingClientRect());
   for (const s of live) if (s.on) { s.draw(now); if (s.always) any = true; }
   if (any && !still) kick();
 }
@@ -222,7 +229,8 @@ if (still) {
   }, { rootMargin: '10% 0px 10% 0px' });
   live.forEach(s => { if (so) so.observe(s.el); else s.on = true; });
   addEventListener('scroll', kick, { passive: true });
-  addEventListener('resize', () => { W = innerWidth; H = innerHeight; wide = W > 760; measureRows(); kick(); });
+  // only a new width is a new layout; Safari's bars coming and going is not
+  addEventListener('resize', () => { if (innerWidth === W) return; W = innerWidth; H = innerHeight; wide = W > 760; measureRows(); kick(); });
   // the words change length with the language
   $$('.seg button').forEach(b => b.addEventListener('click', () => requestAnimationFrame(() => { measureRows(); kick(); })));
   (document.fonts ? document.fonts.ready : Promise.resolve()).then(() => { measureRows(); kick(); });

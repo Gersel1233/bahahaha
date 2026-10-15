@@ -19,6 +19,8 @@ html.hs-on.hs-past, html.hs-on.hs-past body{ background:var(--porcelain); }
    from theme-color or a translucent bar; on a touch screen there is one */
 .edge{ display:none; }
 @media (hover:none) and (pointer:coarse){
+  /* the lock screen's glass rides on the phone as it zooms: drawn, not blurred */
+  .hs-lock .note{ -webkit-backdrop-filter:none; backdrop-filter:none; background:linear-gradient(160deg, rgba(120,140,190,.5), rgba(70,86,130,.5)); }
   .edge{ display:block; position:fixed; left:0; right:0; height:6px; z-index:70; pointer-events:none; background:var(--porcelain); }
   .edge-t{ top:0; }
   .edge-b{ bottom:0; }
