@@ -1,0 +1,106 @@
+/* The first screen, and the navy the film ties the page to: the Deep Blue
+   of the iPhone 17 Pro the glass becomes, taken down to near-black. */
+:root{
+  --navy-950:#05080F; --navy-900:#0A1020; --navy-800:#101A33; --navy-700:#18264A; --deep:#2B3F7C;
+}
+
+/* ---------- the Lesreg mark while the film loads ---------- */
+.boot{ position:fixed; inset:0; z-index:100; display:grid; place-items:center;
+  background:radial-gradient(90% 70% at 50% 40%, var(--navy-800), var(--navy-950) 70%);
+  transition:opacity .8s var(--ease), visibility .8s; }
+.boot.out{ opacity:0; visibility:hidden; pointer-events:none; }
+.boot-in{ display:flex; flex-direction:column; align-items:center; gap:14px; color:var(--porcelain);
+  animation:boot-in 1s var(--ease) both; }
+.boot-in svg{ width:44px; height:44px; }
+.boot-in b{ font:500 15px/1 var(--sans); letter-spacing:.02em; }
+.boot-bar{ display:block; width:132px; height:2px; border-radius:1px; background:rgba(246,244,239,.14); overflow:hidden; margin-top:6px; }
+.boot-bar > i{ display:block; height:100%; background:var(--porcelain); transform-origin:0 50%; transform:scaleX(.08); transition:transform .3s var(--ease); }
+@keyframes boot-in{ from{ opacity:0; transform:translateY(8px); } to{ opacity:1; transform:none; } }
+/* only while it loads: the page underneath does not move */
+html.hx-on:not(.hx-ready), html.hx-on:not(.hx-ready) body{ overflow:hidden; }
+
+/* ---------- the first screen ---------- */
+.hx{ position:sticky; top:0; z-index:0; height:100vh; height:100svh; overflow:hidden; background:#040404; color:var(--porcelain); }
+.pg, .foot{ position:relative; z-index:1; }
+.hx-film{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; background:#040404; }
+.hx-scrim{ position:absolute; inset:0; pointer-events:none;
+  background:linear-gradient(90deg, rgba(4,4,4,.72), rgba(4,4,4,.35) 42%, rgba(4,4,4,0) 62%), linear-gradient(rgba(4,4,4,0) 60%, rgba(4,4,4,.55)); }
+.hx-dim{ position:absolute; inset:0; background:var(--navy-950); opacity:0; pointer-events:none; }
+.hx.is-port .hx-scrim{ background:linear-gradient(rgba(4,4,4,0) 52%, rgba(4,4,4,.82) 78%, rgba(4,4,4,.92)); }
+
+/* the words: up from their own lines once the phone has formed */
+.hx-copy{ position:absolute; left:var(--gut); bottom:clamp(48px, 11vh, 120px); width:min(48vw, 660px); will-change:transform; }
+.hx-kick{ font:600 11px/14px var(--sans); letter-spacing:.08em; text-transform:uppercase; color:var(--travertine); margin-bottom:clamp(14px, 2.4vh, 22px); }
+.hx-h1{ font:500 clamp(52px, min(7.4vw, 12.5vh), 128px)/.92 var(--sans); letter-spacing:-.05em; }
+.hx-h1 .l{ display:block; overflow:hidden; padding-bottom:.12em; margin-bottom:-.12em; }
+.hx-h1 .l > span{ display:inline-block; }
+.hx-h1 .acc{ font-family:var(--accent); font-style:italic; font-weight:300; letter-spacing:-.03em; }
+.hx-lead{ margin-top:clamp(18px, 3vh, 28px); max-width:40ch; font:400 clamp(16px, 1.35vw, 20px)/1.5 var(--sans); color:var(--travertine); }
+.hx-cta{ display:flex; flex-wrap:wrap; gap:10px; margin-top:clamp(22px, 3.6vh, 34px); }
+.btn.glass{ padding:0 22px; color:var(--porcelain); background:linear-gradient(160deg, rgba(255,255,255,.16), rgba(255,255,255,.05));
+  -webkit-backdrop-filter:blur(14px) saturate(160%); backdrop-filter:blur(14px) saturate(160%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.45), inset 0 0 0 1px rgba(255,255,255,.16); }
+html.hx-on .hx-kick, html.hx-on .hx-lead, html.hx-on .hx-cta{ opacity:0; transform:translate3d(0,14px,0); transition:opacity .9s var(--ease), transform 1s var(--ease); }
+html.hx-on .hx-h1 .l > span{ transform:translate3d(0,112%,0); transition:transform 1.15s cubic-bezier(.16,1,.3,1); }
+html.hx-on .hx-h1 .l + .l > span{ transition-delay:.12s; }
+html.hx-copy-in .hx-kick, html.hx-copy-in .hx-lead, html.hx-copy-in .hx-cta{ opacity:1; transform:none; }
+html.hx-copy-in .hx-lead{ transition-delay:.35s; }
+html.hx-copy-in .hx-cta{ transition-delay:.55s; }
+html.hx-copy-in .hx-h1 .l > span{ transform:none; }
+.hx.is-port .hx-copy{ left:20px; right:20px; width:auto; bottom:calc(24px + env(safe-area-inset-bottom)); }
+.hx.is-port .hx-h1{ font-size:min(14vw, 60px); }
+.hx.is-port .hx-cta{ margin-top:20px; }
+.hx.is-port .hx-lead{ display:none; }
+.hx.is-port .hx-cta .btn{ height:46px; }
+
+/* ---------- the phone wakes: an iOS lock screen on its own glass ---------- */
+.hx-ios{ position:absolute; overflow:hidden; border-radius:13% / 6%; container-type:inline-size; opacity:0; pointer-events:none;
+  background:radial-gradient(130% 70% at 50% 0%, #3A55A8 0%, var(--deep) 18%, var(--navy-800) 52%, var(--navy-950) 100%);
+  transition:opacity .9s var(--ease); }
+html.hx-lock .hx-ios{ opacity:1; }
+.hx-ios .sb{ position:absolute; left:0; right:0; top:0; height:14.43cqw; padding:1.49cqw 7.46cqw 0 10.95cqw; display:flex; align-items:center; justify-content:space-between;
+  color:#fff; font:600 4.23cqw/1 -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif; letter-spacing:-.07cqw; }
+.hx-ios .sb .ic{ display:flex; align-items:center; gap:1.49cqw; }
+.hx-ios .sb svg{ display:block; height:4.23cqw; width:4.23cqw; }
+.hx-ios .sb .bat{ width:6.22cqw; }
+.hx-ios .d{ position:absolute; top:19cqw; left:0; right:0; text-align:center; color:rgba(255,255,255,.88);
+  font:600 4.6cqw/1 -apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, sans-serif; }
+.hx-ios .d::first-letter{ text-transform:uppercase; }
+.hx-ios .clock{ position:absolute; top:24cqw; left:0; right:0; text-align:center; color:rgba(255,255,255,.96);
+  font:700 24cqw/1 -apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, sans-serif; letter-spacing:-.04em; }
+/* notifications in iOS's own glass */
+.hx-ios .note{ position:absolute; left:4.5cqw; right:4.5cqw; display:flex; align-items:center; gap:3cqw; padding:3.2cqw 3.6cqw; border-radius:6.4cqw;
+  background:linear-gradient(160deg, rgba(255,255,255,.26), rgba(255,255,255,.12)); color:#fff;
+  -webkit-backdrop-filter:blur(18px) saturate(170%); backdrop-filter:blur(18px) saturate(170%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.55), inset 0 0 0 1px rgba(255,255,255,.18), 0 3cqw 8cqw rgba(0,0,0,.25);
+  font-family:-apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif;
+  opacity:0; transform:translate3d(0,-6cqw,0) scale(.94); transition:opacity .5s ease, transform .75s cubic-bezier(.2,1.25,.3,1); }
+.hx-ios .note.n1{ top:62%; }
+.hx-ios .note.n2{ top:75%; }
+html.hx-n1 .hx-ios .n1, html.hx-n2 .hx-ios .n2{ opacity:1; transform:none; }
+.hx-ios .note div{ display:flex; flex-direction:column; min-width:0; gap:.6cqw; }
+.hx-ios .note b{ font-weight:600; font-size:3.7cqw; line-height:1.15; }
+.hx-ios .note div span{ font-size:3.4cqw; line-height:1.25; color:rgba(255,255,255,.85); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.hx-ios .note em{ margin-left:auto; align-self:flex-start; font-style:normal; font-size:3cqw; color:rgba(255,255,255,.6); }
+.hx-ios .ni{ position:relative; flex:none; width:9cqw; height:9cqw; border-radius:2.2cqw; box-shadow:inset 0 0 0 1px rgba(255,255,255,.25); }
+.hx-ios .ni::after{ position:absolute; inset:0; display:grid; place-items:center; color:#fff; font:700 4.6cqw/1 -apple-system, system-ui, sans-serif; }
+.ni-spiis{ background:linear-gradient(150deg, #F3954A, #D25E2A); }
+.ni-spiis::after{ content:"S"; }
+.ni-mosede{ background:linear-gradient(150deg, #E04B4B, #A72332); }
+.ni-mosede::after{ content:"M"; }
+
+/* ---------- the bar: links to the sections ---------- */
+.tb-links{ display:none; }
+@media (min-width:1100px){
+  .tb-links{ display:flex; gap:2px; margin:0 auto 0 28px; }
+  .tb-links a{ height:40px; padding:0 14px; display:flex; align-items:center; border-radius:20px; font:400 14px/16px var(--sans); color:var(--porcelain); opacity:.86; transition:background-color .25s var(--ease), opacity .25s; }
+  .tb-links a:hover{ background:rgba(246,244,239,.12); opacity:1; }
+}
+.mm-links{ display:flex; flex-direction:column; }
+.mm-links a{ font:500 34px/1.1 var(--sans); letter-spacing:-.03em; padding:12px 0; border-bottom:1px solid var(--travertine); }
+
+@media (prefers-reduced-motion: reduce){
+  .boot{ display:none; }
+  html.hx-on .hx-kick, html.hx-on .hx-lead, html.hx-on .hx-cta, html.hx-on .hx-h1 .l > span{ opacity:1; transform:none; transition:none; }
+  .hx-ios, .hx-ios .note{ transition:none; }
+}

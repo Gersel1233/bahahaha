@@ -13,14 +13,15 @@
 <link rel="preload" href="../fonts/chivo-500.woff2" as="font" type="font/woff2" crossorigin />
 <link rel="preload" href="../fonts/newsreader-300-italic.woff2" as="font" type="font/woff2" crossorigin />
 <link rel="preload" href="../fonts/fragmentmono-400.woff2" as="font" type="font/woff2" crossorigin />
-<link rel="preload" as="image" href="media/seq-d/000.webp" media="(min-aspect-ratio: 1/1)" />
-<link rel="preload" as="image" href="media/seq-m/000.webp" media="(max-aspect-ratio: 1/1)" />
-<link rel="stylesheet" href="ny.css?v=14" />
-<link rel="stylesheet" href="page.css?v=14" />
+<link rel="preload" as="image" href="media/film-d-first.webp" media="(min-aspect-ratio: 1/1)" />
+<link rel="preload" as="image" href="media/film-m-first.webp" media="(max-aspect-ratio: 1/1)" />
+<link rel="stylesheet" href="ny.css?v=15" />
+<link rel="stylesheet" href="page.css?v=15" />
+<link rel="stylesheet" href="hero.css?v=15" />
 <script>
-  /* decided before first paint, so the opening never flashes the page
-     underneath it: motion allowed and JS running means the opening is on */
-  if(!matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('ix-on','ix-start');
+  /* decided before first paint: with JS the first screen waits behind the
+     Lesreg mark until the film can play; without JS it is simply there */
+  document.documentElement.classList.add('hx-on');
 </script>
 </head>
 <body>
@@ -49,6 +50,12 @@
 <!-- LA31 Nav / Top bar; under 760 px it is the Mobile bar -->
 <nav class="tb" aria-label="Lesreg">
   <a class="tb-brand" href="#top"><b>Lesreg</b><span class="anno" data-da="Softwarehus" data-en="Software house">Softwarehus</span></a>
+  <div class="tb-links">
+    <a href="#hus" data-da="Løsninger" data-en="Solutions">Løsninger</a>
+    <a href="#arbejde" data-da="Arbejde" data-en="Work">Arbejde</a>
+    <a href="#hvorfor" data-da="Proces" data-en="Process">Proces</a>
+    <a href="#kontakt" data-da="Kontakt" data-en="Contact">Kontakt</a>
+  </div>
   <div class="tb-r">
     <div class="seg" role="group" aria-label="Sprog / Language">
       <button type="button" data-lang="da" aria-pressed="true">DA</button>
@@ -59,6 +66,12 @@
   </div>
 </nav>
 <div class="mm" id="mm">
+  <nav class="mm-links" aria-label="Sektioner">
+    <a href="#hus" data-da="Løsninger" data-en="Solutions">Løsninger</a>
+    <a href="#arbejde" data-da="Arbejde" data-en="Work">Arbejde</a>
+    <a href="#hvorfor" data-da="Proces" data-en="Process">Proces</a>
+    <a href="#kontakt" data-da="Kontakt" data-en="Contact">Kontakt</a>
+  </nav>
   <a class="big" href="mailto:mgersel@lesreg.com" data-da="Skriv til os" data-en="Talk to us">Skriv til os</a>
   <p class="anno">mgersel@lesreg.com</p>
   <div class="seg" role="group" aria-label="Sprog / Language">
@@ -67,44 +80,38 @@
   </div>
 </div>
 
-<!-- The opening and the first screen of the page are one stage: the
-     opening ends with the plate's porcelain core opening out, and the
-     headline is already standing on it. When the stage lets go, the page
-     carries on underneath. Without JS or with reduced motion, only the
-     headline is here. -->
-<section class="ix-track" id="top">
-  <div class="ix-stage" id="stage">
-    <header class="hero" id="hero">
-      <div class="h-top">
-        <p class="label">
-          <svg viewBox="0 0 128 128" aria-hidden="true"><path d="M0 0H94l34 34v94H0Z" fill="#0E0F10"/><path d="M44 28h18v62h38v18H44Z" fill="#F6F4EF"/></svg>
-          <span data-da="Lesreg — softwarehus" data-en="Lesreg — software house">Lesreg — softwarehus</span>
-        </p>
-        <h1 class="h1">
-          <span class="hl"><span data-da="Vi bygger systemerne" data-en="We build the systems">Vi bygger systemerne</span></span>
-          <span class="hl acc"><span data-da="der driver forretningen." data-en="that run the business.">der driver forretningen.</span></span>
-        </h1>
-      </div>
-      <div class="h-vis" aria-hidden="true">
-        <div class="dev dev-iph" style="--sb:#F1ECE0;--sbc:#0E0F10"><div class="scr"><div class="sb"><span class="t">9:41</span><span class="ic"><svg class="sig"><use href="#sb-sig"/></svg><svg class="wifi"><use href="#sb-wifi"/></svg><svg class="bat"><use href="#sb-bat"/></svg></span></div><img class="shot" src="media/pg/spiis-phone.webp" width="580" height="1257" alt="" decoding="async" /></div><img class="frame" src="media/dev/iphone-17-pro.webp" width="560" height="1168" alt="" draggable="false" /></div>
-        <div class="dev dev-iph" style="--sb:#22293F;--sbc:#FFFFFF"><div class="scr"><div class="sb"><span class="t">9:41</span><span class="ic"><svg class="sig"><use href="#sb-sig"/></svg><svg class="wifi"><use href="#sb-wifi"/></svg><svg class="bat"><use href="#sb-bat"/></svg></span></div><img class="shot" src="media/pg/mosede-phone.webp" width="608" height="1317" alt="" decoding="async" /></div><img class="frame" src="media/dev/iphone-17-pro.webp" width="560" height="1168" alt="" draggable="false" /></div>
-      </div>
-      <div class="h-row">
-        <i class="h-rule" aria-hidden="true"></i>
-        <p class="lead" data-da="Bestilling, booking, køkkenskærme og menuer på skærm — tegnet, bygget og drevet af <b>ét hus</b>."
-           data-en="Ordering, booking, kitchen screens and menus on screen — designed, built and run by <b>one house</b>.">Bestilling, booking, køkkenskærme og menuer på skærm — tegnet, bygget og drevet af <b>ét hus</b>.</p>
-        <div class="fig-l">
-          <span class="n">2</span>
-          <p data-da="<b>I drift lige nu</b>Spiis og Mosede Havnecafé tager imod bestillinger på vores systemer."
-             data-en="<b>Running right now</b>Spiis and Mosede Havnecafé take orders on our systems."><b>I drift lige nu</b>Spiis og Mosede Havnecafé tager imod bestillinger på vores systemer.</p>
-        </div>
-        <a class="btn" href="mailto:mgersel@lesreg.com"><span data-da="Skriv til os" data-en="Talk to us">Skriv til os</span><span class="lens"><svg><use href="#i-arrow"/></svg></span></a>
-      </div>
-    </header>
+<!-- The Lesreg mark while the film loads; gone the moment it can play -->
+<div class="boot" id="boot" aria-hidden="true">
+  <div class="boot-in">
+    <svg viewBox="0 0 128 128"><path d="M0 0H94l34 34v94H0Z" fill="#F6F4EF"/><path d="M44 28h18v62h38v18H44Z" fill="#0A1020"/></svg>
+    <b>Lesreg</b>
+    <i class="boot-bar"><i></i></i>
   </div>
-</section>
+</div>
 
-<button class="skip" type="button" id="skip" data-da="Spring introen over ↓" data-en="Skip the intro ↓">Spring introen over ↓</button>
+<!-- The first screen: the film plays once by itself, the page scrolls the
+     whole time and slides up over it -->
+<section class="hx" id="top">
+  <video class="hx-film" muted playsinline preload="none" poster="media/film-d-first.webp" aria-hidden="true"></video>
+  <div class="hx-ios" aria-hidden="true">
+    <div class="sb"><span class="t">9:41</span><span class="ic"><svg class="sig"><use href="#sb-sig"/></svg><svg class="wifi"><use href="#sb-wifi"/></svg><svg class="bat"><use href="#sb-bat"/></svg></span></div>
+    <p class="d"></p>
+    <p class="clock">9:41</p>
+    <div class="note n1"><span class="ni ni-spiis"></span><div><b>Spiis</b><span data-da="Ny bestilling · 3 × Mørbradgryde · kl. 17.30" data-en="New order · 3 × pork stew · 5.30 pm">Ny bestilling · 3 × Mørbradgryde · kl. 17.30</span></div><em data-da="nu" data-en="now">nu</em></div>
+    <div class="note n2"><span class="ni ni-mosede"></span><div><b>Mosede Havnecafé</b><span data-da="Menukortet er opdateret på alle skærme" data-en="The menu is updated on every screen">Menukortet er opdateret på alle skærme</span></div><em data-da="nu" data-en="now">nu</em></div>
+  </div>
+  <i class="hx-scrim" aria-hidden="true"></i>
+  <div class="hx-copy">
+    <p class="hx-kick"><span data-da="Lesreg · Softwarehus" data-en="Lesreg · Software house">Lesreg · Softwarehus</span></p>
+    <h1 class="hx-h1"><span class="l"><span data-da="Nutidens" data-en="Today's">Nutidens</span></span> <span class="l acc"><span data-da="softwarehus." data-en="software house.">softwarehus.</span></span></h1>
+    <p class="hx-lead" data-da="Apps, systemer og integrationer — tegnet, bygget og drevet af ét hus. Hurtigere, billigere og bygget til i dag." data-en="Apps, systems and integrations — designed, built and run by one house. Faster, cheaper and built for today.">Apps, systemer og integrationer — tegnet, bygget og drevet af ét hus. Hurtigere, billigere og bygget til i dag.</p>
+    <div class="hx-cta">
+      <a class="btn light" href="#hus"><span data-da="Se hvad vi bygger" data-en="See what we build">Se hvad vi bygger</span><span class="lens"><svg><use href="#i-arrow"/></svg></span></a>
+      <a class="btn glass" href="mailto:mgersel@lesreg.com"><span data-da="Skriv til os" data-en="Talk to us">Skriv til os</span></a>
+    </div>
+  </div>
+  <i class="hx-dim" aria-hidden="true"></i>
+</section>
 
 <main class="pg" id="pg">
 
@@ -165,7 +172,7 @@
 </section>
 
 <!-- the work: two systems taking orders right now -->
-<section class="work" id="arbejde">
+<section class="work" id="arbejde" data-paper>
   <header class="sec-head">
     <p class="label" data-r><span class="mono">02</span> <span data-da="Arbejde" data-en="Work">Arbejde</span></p>
     <h2 class="h2" data-r><span data-da="Her er to" data-en="Here are two">Her er to</span> <em class="acc" data-da="live eksempler." data-en="live examples.">live eksempler.</em></h2>
@@ -236,7 +243,7 @@
 </section>
 
 <!-- why Lesreg -->
-<section class="why" id="hvorfor">
+<section class="why" id="hvorfor" data-paper>
   <header class="sec-head">
     <p class="label" data-r><span class="mono">04</span> <span data-da="Hvorfor Lesreg" data-en="Why Lesreg">Hvorfor Lesreg</span></p>
     <h2 class="h2" data-r><span data-da="Fordi huset" data-en="Because the house">Fordi huset</span> <em class="acc" data-da="er et team." data-en="is a team.">er et team.</em></h2>
@@ -275,14 +282,14 @@
 
 </main>
 
-<footer class="foot">
+<footer class="foot" data-paper>
   <span>Lesreg · <span data-da="softwarehus" data-en="software house">softwarehus</span></span>
   <nav class="foot-n"><a href="#arbejde" data-da="Arbejde" data-en="Work">Arbejde</a><a href="#kontakt" data-da="Kontakt" data-en="Contact">Kontakt</a></nav>
   <a href="mailto:mgersel@lesreg.com">mgersel@lesreg.com</a>
   <span>© 2026 Lesreg</span>
 </footer>
 
-<script type="module" src="main.js?v=14"></script>
-<script type="module" src="page.js?v=14"></script>
+<script type="module" src="main.js?v=15"></script>
+<script type="module" src="page.js?v=15"></script>
 </body>
 </html>
