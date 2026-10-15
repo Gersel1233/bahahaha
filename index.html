@@ -21,7 +21,7 @@
 <link rel="stylesheet" href="bbh.css?v=11" />
 <link rel="stylesheet" href="kunder.css?v=16" />
 <link rel="stylesheet" href="telefon.css?v=7" />
-<link rel="stylesheet" href="softwarehus.css?v=26" />
+<link rel="stylesheet" href="softwarehus.css?v=27" />
 <link rel="stylesheet" href="kontakt.css?v=10" />
 <link rel="stylesheet" href="mork.css?v=5" />
 <link rel="stylesheet" href="dybde.css?v=5" />
@@ -176,6 +176,21 @@
             <div class="sw-sup"><b data-da="Udvikler">Developer</b><s data-da="bygger det">builds it</s></div>
             <div class="sw-sup"><b data-da="Driftleverand&oslash;r">Hosting supplier</b><s data-da="holder det i luften">keeps it up</s></div>
             <div class="sw-house" id="swHouse"><b>Lesreg</b><s data-da="&eacute;t hus &middot; &eacute;n regning &middot; &eacute;t ansvar">one house &middot; one invoice &middot; one responsibility</s></div>
+            <!-- The chrome film (15/10). Mikkel, on the docking: "den her
+                 animation er tilgrin tror du ikke du kan fixer noget meget
+                 mer blæret med higgsfield". Three chrome objects — a pen, a
+                 pair of brackets, a server — melt into one slab, made with
+                 Higgsfield (MiniMax H3 from a first and a last frame) and run
+                 off the section's own clock (act two, below). LAST in the row
+                 on purpose: the cards' corners are set by nth-child, and
+                 anything in front of them would move every one along. Without
+                 the film (no video, no WebGL, reduced motion) the docking
+                 plays as it did.
+                 The files are in media/ and NOT in film/: film/ is the
+                 render project, and the deploy strips it (deploy.yml). -->
+            <canvas class="sw-film" id="swFilmGl" aria-hidden="true" width="720" height="720"></canvas>
+            <video class="sw-film-src" id="swFilm" muted playsinline preload="none" aria-hidden="true" tabindex="-1"
+              disablepictureinpicture width="720" height="720"></video>
           </div>
           <p class="sw-lede" data-da="Tre aftaler, tre regninger, og <b>ingen der har ansvaret</b> n&aring;r noget ikke virker. Et softwarehus er &eacute;t sted at g&aring; hen.">Three contracts, three invoices, and <b>nobody who carries the responsibility</b> when something stops working. A software house is one place to go.</p>
         </div>
@@ -988,7 +1003,138 @@
           swVign=document.getElementById('swVign'),
           swRail=document.getElementById('swRail'),
           swRailFill=document.getElementById('swRailFill'),
-          swRailKnob=document.getElementById('swRailKnob');
+          swRailKnob=document.getElementById('swRailKnob'),
+          swFilm=document.getElementById('swFilm'),
+          swFilmGl=document.getElementById('swFilmGl');
+
+      /* ---------- the film (15/10) ----------
+         Loaded when the section is a screen and a half away, and switched
+         on only once it can show a frame. Until then — and if it never can
+         (no video, a failed download, no WebGL, reduced motion) — the
+         docking below is what plays, untouched. The class is what turns the
+         glass cards into the captions under the objects and the block into
+         the caption under the slab (softwarehus.css, "the film").
+
+         Why a canvas and not the video itself: the film is chrome on black,
+         and the black has to go. mix-blend-mode:screen was the plan and it
+         cannot work here — every act is moved with a transform, a transform
+         makes an isolated group, and inside one the video blends against
+         nothing and the black stays a black square over the room. So the
+         frame is drawn through one small shader that turns brightness into
+         coverage: black is not there at all, the bright chrome is solid,
+         and what is in between lets the room through the way a reflection
+         would.
+
+         Fetched whole into memory before it is used. A film wound by a
+         clock — and by a hand on the line at the side — seeks, and a seek
+         into a file that is still arriving waits on the network. */
+      var swFilmOn=false, swGl=null,
+          /* the section's length in seconds — the film is timed in them */
+          swDur=30.5,
+          /* a frame drawn when the video has a new one and not on every
+             tick of the page: the page ticks sixty times a second and the
+             film has twenty-four */
+          swRvfc=!!(window.HTMLVideoElement && 'requestVideoFrameCallback' in HTMLVideoElement.prototype);
+      function swGlInit(){
+        var gl=null;
+        try{ gl=swFilmGl.getContext('webgl',{premultipliedAlpha:true, alpha:true, antialias:false})
+              || swFilmGl.getContext('experimental-webgl'); }catch(e){}
+        if(!gl) return null;
+        function sh(type, src){
+          var o=gl.createShader(type); gl.shaderSource(o,src); gl.compileShader(o);
+          return gl.getShaderParameter(o, gl.COMPILE_STATUS) ? o : null;
+        }
+        var vs=sh(gl.VERTEX_SHADER,
+              'attribute vec2 p;varying vec2 v;void main(){v=vec2(p.x*.5+.5,.5-p.y*.5);gl_Position=vec4(p,0.,1.);}'),
+            /* Premultiplied: the colour is already "this much light", and
+               the coverage is the brightest channel, so the room behind
+               shows through exactly as far as the frame is dark. The step
+               at the bottom eats the last few codes of compression in the
+               black, which would otherwise be a faint square. */
+            fs=sh(gl.FRAGMENT_SHADER,
+              'precision mediump float;uniform sampler2D t;varying vec2 v;void main(){'
+              +'vec3 c=texture2D(t,v).rgb;float m=max(c.r,max(c.g,c.b));float k=smoothstep(.02,.07,m);'
+              +'gl_FragColor=vec4(c*k,m*k);}');
+        if(!vs || !fs) return null;
+        var pr=gl.createProgram(); gl.attachShader(pr,vs); gl.attachShader(pr,fs); gl.linkProgram(pr);
+        if(!gl.getProgramParameter(pr, gl.LINK_STATUS)) return null;
+        gl.useProgram(pr);
+        var b=gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER,b);
+        gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,1,1]),gl.STATIC_DRAW);
+        var loc=gl.getAttribLocation(pr,'p'); gl.enableVertexAttribArray(loc);
+        gl.vertexAttribPointer(loc,2,gl.FLOAT,false,0,0);
+        var tx=gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D,tx);
+        gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
+        gl.viewport(0,0,swFilmGl.width,swFilmGl.height);
+        gl.clearColor(0,0,0,0);
+        return gl;
+      }
+      /* one frame onto the canvas — only when the film has moved, because
+         a frame handed to the card is a copy, and sixty identical copies a
+         second is what a held frame would otherwise cost */
+      var swFilmDrawn=-1;
+      function swFilmDraw(force){
+        if(!swGl || swFilm.readyState<2) return;
+        var t=swFilm.currentTime;
+        if(!force && t===swFilmDrawn) return;
+        swFilmDrawn=t;
+        try{
+          swGl.texImage2D(swGl.TEXTURE_2D,0,swGl.RGB,swGl.RGB,swGl.UNSIGNED_BYTE,swFilm);
+          swGl.clear(swGl.COLOR_BUFFER_BIT);
+          swGl.drawArrays(swGl.TRIANGLE_STRIP,0,4);
+        }catch(e){ swFilmOff(); }
+      }
+      function swFilmOff(){
+        swFilmOn=false; swGl=null;
+        swMerge.classList.remove('har-film');
+        try{ swFilm.pause(); }catch(e){}
+        /* the docking takes over from wherever the clock is: it writes
+           every card and the block on every frame, so nothing the film
+           left on them survives the next one */
+        swMeasure();
+      }
+      if(swFilm && swFilmGl && !reduce){
+        var swFilmGo=function(){
+          if(swFilm._go) return;
+          swFilm._go=true;
+          /* the same choice as the drone at the top: VP9 where it plays
+             (half a megabyte), H.264 where it does not (0.7) */
+          var src='media/krom-smelt'
+            +(swFilm.canPlayType && swFilm.canPlayType('video/webm; codecs="vp9"')!=='' ? '.webm' : '.mp4')+'?v=1';
+          swFilm.addEventListener('loadeddata', function(){
+            swGl=swGlInit();
+            if(!swGl) return;
+            swFilmOn=true;
+            swMerge.classList.add('har-film');
+            swMeasure();
+            swFilmDraw(true);
+            if(swRvfc){
+              var onFrame=function(){
+                if(!swFilmOn) return;
+                swFilmDraw(true);
+                swFilm.requestVideoFrameCallback(onFrame);
+              };
+              swFilm.requestVideoFrameCallback(onFrame);
+            }
+          }, {once:true});
+          swFilm.addEventListener('seeked', function(){ if(swFilmOn) swFilmDraw(true); });
+          swFilmGl.addEventListener('webglcontextlost', function(ev){ ev.preventDefault(); swFilmOff(); });
+          var use=function(u){ swFilm.preload='auto'; swFilm.src=u; try{ swFilm.load(); }catch(e){} };
+          if(window.fetch && window.URL && URL.createObjectURL){
+            fetch(src).then(function(r){ if(!r.ok) throw 0; return r.blob(); })
+              .then(function(b){ use(URL.createObjectURL(b)); })
+              .catch(function(){ use(src); });
+          } else use(src);
+        };
+        if('IntersectionObserver' in window){
+          new IntersectionObserver(function(es, ob){
+            es.forEach(function(e){ if(e.isIntersecting){ swFilmGo(); ob.disconnect(); } });
+          }, {rootMargin:'150% 0px'}).observe(swEl);
+        } else swFilmGo();
+      }
 
       /* There used to be a proper measuring pass here: the three cards were
          three different widths, so something had to read the layout and
@@ -1058,6 +1204,60 @@
             t.toFixed(3), SC.blur(9*(1-t)));
         }
       }
+      /* ---------- act two with the film ----------
+         The film is 4.8 seconds: the three objects standing still, the
+         brackets reaching out and taking the pen and the server, one body
+         turning over, and a slab. It runs at its own speed — one second of
+         film for one second of the section — from the frame the docking
+         used to start pulling, so it lands on the same beats the room
+         already keeps: the jolt in the studio at contact, the bloom while
+         the slab forms, the lede after it.
+
+         PLAYED, not seeked, while the clock is running. A seek is a decode
+         from the last keyframe every time, and on a phone sixty of them a
+         second is a slideshow. Played, the browser does what it is built
+         for and the clock only corrects it when the two drift apart. Seeked
+         when somebody is winding the line at the side — then the frame has
+         to be wherever the hand is. Which of the two is happening is NOT
+         guessed from how fast the clock moves: measured frame by frame, one
+         slow frame reads as a stop, and the film flickered between playing
+         and paused on exactly the machines that could least afford it. The
+         line says when it has been taken hold of (swHand). */
+      var swFilmNoPlay=false;
+      function swFilmPaint(s){
+        var inS=SC.out(SC.seg(s,.336,.415)),
+            /* the names go as the objects start to move, so they are never
+               standing under something that has left */
+            cap=SC.io(SC.seg(s,.4443,.468)),
+            /* and the name of the one that is left arrives with the slab */
+            hc=SC.out(SC.seg(s,.556,.590)),
+            lean=.03*SC.io(SC.seg(s,.4241,.4719)) - .03*SC.io(SC.seg(s,.5240,.5850));
+        SC.set(swFilmGl,'translateX(-50%) scale('+(.94+inS*.06).toFixed(4)+')',
+          inS.toFixed(3), SC.blur((1-inS)*10));
+        for(var i=0;i<swA[1].sups.length;i++){
+          SC.set(swA[1].sups[i],
+            'translate(-50%,0) translateX(calc(var(--fw) * '+(swSpread[i]/3).toFixed(4)+')) translate3d(0,'+((1-inS)*14-cap*6).toFixed(2)+'px,0)',
+            (inS*(1-cap)).toFixed(3), SC.blur((1-inS)*8+cap*6));
+        }
+        SC.set(swMerge,'scale('+(1+lean).toFixed(4)+')', null);
+        if(swHouse.style.clipPath!=='none') swHouse.style.clipPath='none';
+        SC.set(swHouse,'translate(-50%,0) translate3d(0,'+((1-hc)*12).toFixed(2)+'px,0)',
+          hc.toFixed(3), SC.blur((1-hc)*8));
+
+        var end=(swFilm.duration||4.79)-.05,
+            ft=Math.max(.3, Math.min(end, .3+(s-.4443)*swDur));
+        if(!swHand && !swFilmNoPlay && ft>.3 && ft<end){
+          if(swFilm.paused){
+            if(!swFilm.seeking) swFilm.currentTime=ft;
+            var pp=swFilm.play();
+            if(pp && pp.catch) pp.catch(function(){ swFilmNoPlay=true; });
+          } else if(Math.abs(swFilm.currentTime-ft)>.25 && !swFilm.seeking) swFilm.currentTime=ft;
+        } else {
+          if(!swFilm.paused) swFilm.pause();
+          if(Math.abs(swFilm.currentTime-ft)>.02 && !swFilm.seeking) swFilm.currentTime=ft;
+        }
+        if(!swRvfc) swFilmDraw(false);
+      }
       /* ---------- how a picture arrives ----------
          Out of nothing. It is already there before it has any size — the
          opacity is up inside the first tenth of the window, so what
@@ -1094,7 +1294,10 @@
          too slowly is gone. So it stays. Take hold of the line and the
          clock lets go, and the twenty-eight seconds become a thing you can
          move through a frame at a time. */
-      var swDone=false, swDrag=false, swRailP=-1;
+      /* swHand: the line has been taken hold of, and the clock is out of
+         it for good (SC.scrub never hands it back) — the film reads it to
+         know it is being wound and not played */
+      var swDone=false, swDrag=false, swHand=false, swRailP=-1;
       function swRailAt(ev){
         var r=swRail.getBoundingClientRect();
         return r.height ? Math.max(0,Math.min(1,(ev.clientY-r.top)/r.height)) : 0;
@@ -1108,7 +1311,7 @@
       if(swRail && !reduce){
         swRail.addEventListener('pointerdown', function(ev){
           if(!swDone) return;
-          swDrag=true;
+          swDrag=true; swHand=true;
           try{ swRail.setPointerCapture(ev.pointerId); }catch(e){}
           SC.scrub(swEl, swRailAt(ev));
           ev.preventDefault();
@@ -1126,6 +1329,7 @@
                 : (ev.key==='ArrowUp'||ev.key==='ArrowLeft') ? -.02
                 : (ev.key==='Home') ? -2 : (ev.key==='End') ? 2 : 0;
           if(!d) return;
+          swHand=true;
           SC.scrub(swEl, Math.max(0,Math.min(1,(swRailP<0?0:swRailP/1000)+d)));
           ev.preventDefault();
         });
@@ -1139,7 +1343,7 @@
            each other rather than against how fast somebody happens to be
            moving a thumb. So it is back on its own clock, and the line at
            the side is back with it, because a film wants a timeline. */
-        el:swEl, leadF:0, auto:true, liveF:0.06, dur:30500,
+        el:swEl, leadF:0, auto:true, liveF:0.06, dur:swDur*1000,
         build:function(){ swA.forEach(function(a){ if(a.hd) a.w=SC.split(a.hd); }); },
         base:function(){
           swSrc=(swBio.firstChild && swBio.firstChild.nodeValue)||'';
@@ -1264,100 +1468,106 @@
              the whole act that an actual object could have made. */
           if(swAct(swA[1],.2754,.7515,s,false,.10)){
             swWords(swA[1].w,.2892,.3718,s);
-            /* On a phone the three are rows, so they dock downwards and
-               the material sweeps out top and bottom instead. */
-            var narrow=window.innerWidth<900, gap=narrow?20:44,
-                /* up together, not one at a time: a stagger is three
-                   arrivals, and three arrivals is three little events
-                   before the one event this act is about */
-                inS=SC.out(SC.seg(s,.336,.415)),
-                /* and then they are still. Nothing at all for a fifth of
-                   the act, because a move only reads as fast if something
-                   before it was slow. */
-                pull=SC.seg(s,.4443,.47), kk=Math.pow(pull,2.7),
-                /* contact. The row takes it and gives it back — a short,
-                   hard-damped recoil, no bounce anyone could count. */
-                rc=SC.seg(s,.47,.5031),
-                kick=(s>=.47) ? (rc<=0 ? 0 : Math.exp(-7.5*rc)*Math.sin(Math.PI*2*1.7*rc)) : 0,
-                /* The face opens once, not twice.
+            /* With the film, the film IS the merge — the cards are its
+               captions and the block is the name under the slab. The
+               docking is what plays without it. */
+            if(swFilmOn) swFilmPaint(s);
+            else {
+              /* On a phone the three are rows, so they dock downwards and
+                 the material sweeps out top and bottom instead. */
+              var narrow=window.innerWidth<900, gap=narrow?20:44,
+                  /* up together, not one at a time: a stagger is three
+                     arrivals, and three arrivals is three little events
+                     before the one event this act is about */
+                  inS=SC.out(SC.seg(s,.336,.415)),
+                  /* and then they are still. Nothing at all for a fifth of
+                     the act, because a move only reads as fast if something
+                     before it was slow. */
+                  pull=SC.seg(s,.4443,.47), kk=Math.pow(pull,2.7),
+                  /* contact. The row takes it and gives it back — a short,
+                     hard-damped recoil, no bounce anyone could count. */
+                  rc=SC.seg(s,.47,.5031),
+                  kick=(s>=.47) ? (rc<=0 ? 0 : Math.exp(-7.5*rc)*Math.sin(Math.PI*2*1.7*rc)) : 0,
+                  /* The face opens once, not twice.
 
-                   The wipe out of the middle and the breath up to full
-                   height used to be laid end to end, and both were on an
-                   in-out ease — which arrives at zero speed and leaves at
-                   zero speed. So the sideways move stopped dead, held for
-                   a frame, and the upward one set off again from nothing.
-                   Two moves with a full stop between them, which is
-                   exactly what it looked like.
+                     The wipe out of the middle and the breath up to full
+                     height used to be laid end to end, and both were on an
+                     in-out ease — which arrives at zero speed and leaves at
+                     zero speed. So the sideways move stopped dead, held for
+                     a frame, and the upward one set off again from nothing.
+                     Two moves with a full stop between them, which is
+                     exactly what it looked like.
 
-                   They overlap now, and both are on the film ease: hard
-                   off the mark and a long tail. The block is still
-                   spreading sideways as it starts to rise, so what opens
-                   is one thing growing out of a point rather than a bar
-                   that later becomes a box — and there is no frame in the
-                   middle of it where nothing is moving. */
-                seal=SC.film(SC.seg(s,.4719,.5240)),
-                grow=SC.film(SC.seg(s,.4960,.5620)),
-                /* and settles, once it has its height */
-                stl=SC.seg(s,.5240,.6020),
-                settle=(s>=.5240) ? (stl<=0 ? 0 : Math.exp(-5.4*stl)*Math.cos(Math.PI*2*1.15*stl)) : 0,
-                /* the camera leans in for the dock and comes back off it
-                   once the thing is standing — the only move on the page
-                   that belongs to the viewer and not to the objects */
-                lean=.03*SC.io(SC.seg(s,.4241,.4719)) - .03*SC.io(SC.seg(s,.5240,.5850));
+                     They overlap now, and both are on the film ease: hard
+                     off the mark and a long tail. The block is still
+                     spreading sideways as it starts to rise, so what opens
+                     is one thing growing out of a point rather than a bar
+                     that later becomes a box — and there is no frame in the
+                     middle of it where nothing is moving. */
+                  seal=SC.film(SC.seg(s,.4719,.5240)),
+                  grow=SC.film(SC.seg(s,.4960,.5620)),
+                  /* and settles, once it has its height */
+                  stl=SC.seg(s,.5240,.6020),
+                  settle=(s>=.5240) ? (stl<=0 ? 0 : Math.exp(-5.4*stl)*Math.cos(Math.PI*2*1.15*stl)) : 0,
+                  /* the camera leans in for the dock and comes back off it
+                     once the thing is standing — the only move on the page
+                     that belongs to the viewer and not to the objects */
+                  lean=.03*SC.io(SC.seg(s,.4241,.4719)) - .03*SC.io(SC.seg(s,.5240,.5850));
 
-            for(var i=0;i<swA[1].sups.length;i++){
-              var sp=swSpread[i],
-                  /* the gap closes to nothing: the 100% is the card's own
-                     width, so at rest they stand a gap apart and at the
-                     end they are touching, exactly, at any screen size */
-                  off=sp*(gap*(1-kk) + (1-inS)*(narrow?44:96) - kick*5),
-                  pc=narrow ? 'translateY('+(sp*100)+'%)' : 'translateX('+(sp*100)+'%)',
-                  ax=narrow ? '0px,'+off.toFixed(2)+'px' : off.toFixed(2)+'px,0px';
-              SC.set(swA[1].sups[i],
-                'translate(-50%,-50%) '+pc+' translate3d('+ax+','+(-470*(1-inS)).toFixed(0)+'px) scale('+(.92+inS*.08).toFixed(4)+')',
-                (inS*(seal>.996?0:1)).toFixed(3), SC.blur((1-inS)*11));
+              for(var i=0;i<swA[1].sups.length;i++){
+                var sp=swSpread[i],
+                    /* the gap closes to nothing: the 100% is the card's own
+                       width, so at rest they stand a gap apart and at the
+                       end they are touching, exactly, at any screen size */
+                    off=sp*(gap*(1-kk) + (1-inS)*(narrow?44:96) - kick*5),
+                    pc=narrow ? 'translateY('+(sp*100)+'%)' : 'translateX('+(sp*100)+'%)',
+                    ax=narrow ? '0px,'+off.toFixed(2)+'px' : off.toFixed(2)+'px,0px';
+                SC.set(swA[1].sups[i],
+                  'translate(-50%,-50%) '+pc+' translate3d('+ax+','+(-470*(1-inS)).toFixed(0)+'px) scale('+(.92+inS*.08).toFixed(4)+')',
+                  (inS*(seal>.996?0:1)).toFixed(3), SC.blur((1-inS)*11));
+              }
+
+              /* the row leans in, and flinches on the frame they meet */
+              SC.set(swMerge,'translate3d(0,'+(kick*7).toFixed(2)+'px,0) scale('+(1+lean).toFixed(4)+')', null);
+              /* and the corners that are about to touch something square
+                 themselves off on the way in, so what stands at the end of
+                 the slide is one slab and not three rectangles in a row */
+              var kv=+(1-SC.io(SC.seg(s,.4498,.47))).toFixed(2);
+              if(kv!==swK){ swK=kv; swMerge.style.setProperty('--k', kv); }
+
+              /* The wipe. Half the box either side at the start, nothing at
+                 the end — and the corners are carried on the same custom
+                 property the block is rounded with, so the sliver that comes
+                 out of the middle is a rounded object from its first frame
+                 and not a square one that rounds off later. */
+              var hIn=narrow ? 0 : 50*(1-seal),
+                  vIn=narrow ? 50*(1-seal) : 50*(1-(swCh/swBh))*(1-grow),
+                  open=(seal>=1 && grow>=1);
+              swHouse.style.clipPath = open ? 'none'
+                : 'inset('+vIn.toFixed(2)+'% '+hIn.toFixed(2)+'% '+vIn.toFixed(2)+'% '+hIn.toFixed(2)+'% round var(--br))';
+              SC.set(swHouse,'translate(-50%,-50%) scale('+(1+settle*.012).toFixed(4)+')',
+                (s>=.471?1:0).toFixed(0), SC.blur(0));
+
+              /* the weight arrives with the material: the shadow is cast by
+                 exactly the part of the face that has been uncovered */
+              if(swCast) SC.set(swCast,
+                'translate(-50%,-50%) scale('+((1-hIn/50)*(1+settle*.012)).toFixed(4)+','+((1-vIn/50)*(1+settle*.012)).toFixed(4)+')',
+                (s>=.471?Math.min(1,seal*1.6):0).toFixed(3));
+
+              /* And the light runs across the face once, timed so it
+                 crosses on the frames the block is finding its full height
+                 — the highlight and the landing are one event.
+
+                 It accelerates rather than easing in and out. A reflection
+                 is a fixed light on a surface that is turning, so it
+                 gathers pace as it goes and leaves at the edge; an in-out
+                 ease makes it slow down in the middle of the face, which
+                 reads as a white shape being animated across a box, which
+                 is what it was. */
+              var sw2=SC.seg(s,.5230,.5940);
+              swHouse.style.setProperty('--sx',
+                (sw2>0 && sw2<1 ? (-90+195*Math.pow(sw2,1.42)).toFixed(1) : -90) + '%');
             }
-
-            /* the row leans in, and flinches on the frame they meet */
-            SC.set(swMerge,'translate3d(0,'+(kick*7).toFixed(2)+'px,0) scale('+(1+lean).toFixed(4)+')', null);
-            /* and the corners that are about to touch something square
-               themselves off on the way in, so what stands at the end of
-               the slide is one slab and not three rectangles in a row */
-            var kv=+(1-SC.io(SC.seg(s,.4498,.47))).toFixed(2);
-            if(kv!==swK){ swK=kv; swMerge.style.setProperty('--k', kv); }
-
-            /* The wipe. Half the box either side at the start, nothing at
-               the end — and the corners are carried on the same custom
-               property the block is rounded with, so the sliver that comes
-               out of the middle is a rounded object from its first frame
-               and not a square one that rounds off later. */
-            var hIn=narrow ? 0 : 50*(1-seal),
-                vIn=narrow ? 50*(1-seal) : 50*(1-(swCh/swBh))*(1-grow),
-                open=(seal>=1 && grow>=1);
-            swHouse.style.clipPath = open ? 'none'
-              : 'inset('+vIn.toFixed(2)+'% '+hIn.toFixed(2)+'% '+vIn.toFixed(2)+'% '+hIn.toFixed(2)+'% round var(--br))';
-            SC.set(swHouse,'translate(-50%,-50%) scale('+(1+settle*.012).toFixed(4)+')',
-              (s>=.471?1:0).toFixed(0), SC.blur(0));
-
-            /* the weight arrives with the material: the shadow is cast by
-               exactly the part of the face that has been uncovered */
-            if(swCast) SC.set(swCast,
-              'translate(-50%,-50%) scale('+((1-hIn/50)*(1+settle*.012)).toFixed(4)+','+((1-vIn/50)*(1+settle*.012)).toFixed(4)+')',
-              (s>=.471?Math.min(1,seal*1.6):0).toFixed(3));
-
-            /* And the light runs across the face once, timed so it
-               crosses on the frames the block is finding its full height
-               — the highlight and the landing are one event.
-
-               It accelerates rather than easing in and out. A reflection
-               is a fixed light on a surface that is turning, so it
-               gathers pace as it goes and leaves at the edge; an in-out
-               ease makes it slow down in the middle of the face, which
-               reads as a white shape being animated across a box, which
-               is what it was. */
-            var sw2=SC.seg(s,.5230,.5940);
-            swHouse.style.setProperty('--sx',
-              (sw2>0 && sw2<1 ? (-90+195*Math.pow(sw2,1.42)).toFixed(1) : -90) + '%');
 
             var pl=SC.out(SC.seg(s,.5470,.5990));
             SC.set(swA[1].lede,'translate3d(0,'+((1-pl)*16).toFixed(2)+'px,0)', pl.toFixed(3));

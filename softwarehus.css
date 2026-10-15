@@ -472,6 +472,59 @@
   .sw-shot{ --shotmax:44vh; } .sw-shot.port{ --shotmax:42vh; }
 }
 
+/* ---------- the film (15/10) ----------
+   Mikkel, on the docking: "til grin". Act two is a film now — three
+   chrome objects, a pen, a pair of brackets and a server, that melt into
+   one slab (Higgsfield, MiniMax H3). The loop only adds .har-film once the
+   film can show a frame, so everything above is still what stands when it
+   cannot.
+
+   With it, the glass cards stop being objects. The film has the objects;
+   the cards become their names, in a row under them on the same thirds,
+   and the block becomes the name under the slab. No glass, no aluminium,
+   no shadow box — two of everything is how the old version looked cheap.
+
+   --fw is the film's square. Its first frame has the objects in the
+   middle band and nothing in the top quarter, so the square sits a tenth
+   of itself above the row and the names go where the objects end: .64 of
+   the square under the three, .83 under the slab (both measured off the
+   film's own frames, the bottom of the pen at 70%, the slab at 87%). */
+.sw-film, .sw-film-src{ display:none; }
+/* 50vh and not more, and the act a little lower than its centre. Arrive
+   at the top of the section and the last 15vh of the drone's track is
+   still lying over it; the act is centred on the stage, so a taller act
+   reaches up under it. Measured at 1440×900 with a 58vh film: kicker at
+   122px, covered to 135 — invisible. At 50vh, pushed down 3vh, it stands
+   at a fifth of the window on every screen from 1280×720 to 1920×1080,
+   with the lede clear of the bottom. The film's own empty top is the gap
+   under the headline, so the row's margin goes. */
+.sw-merge.har-film{ --fw:min(50vh,84vw,560px); --cw:calc(var(--fw) / 3);
+  height:calc(var(--fw) * .83 + clamp(58px,8vh,84px));
+  margin-top:clamp(6px,1.2vh,14px); }
+@media(min-width:901px){
+  .sw-mid:has(.har-film){ padding-top:6vh; } }
+.har-film .sw-film{ display:block; position:absolute; left:50%; top:calc(var(--fw) * -.1);
+  z-index:2; width:var(--fw); height:var(--fw); transform:translateX(-50%);
+  pointer-events:none; will-change:transform,opacity,filter; }
+/* the video has to be in the page to be decoded, and nowhere anybody can
+   see it — the canvas is what is seen */
+.har-film .sw-film-src{ display:block; position:absolute; left:0; top:0;
+  width:2px; height:2px; opacity:0; pointer-events:none; }
+.har-film .sw-sup{ top:calc(var(--fw) * .64); z-index:3; width:auto; height:auto;
+  padding:0; gap:4px; white-space:nowrap; border:0; border-radius:0;
+  background:none; box-shadow:none; -webkit-backdrop-filter:none; backdrop-filter:none; }
+.har-film .sw-sup b{ font-size:clamp(13px,1.1vw,16px); }
+.har-film .sw-sup s{ font-size:10.5px; letter-spacing:.16em; }
+.har-film .sw-house{ top:calc(var(--fw) * .83); width:auto; height:auto;
+  padding:0; gap:8px; white-space:nowrap; border:0; overflow:visible;
+  background:none; box-shadow:none; }
+.har-film .sw-house::before, .har-film .sw-house::after,
+.har-film .sw-house s::before, .har-film .sw-cast{ display:none; }
+.har-film .sw-house b{ font-size:clamp(26px,2.6vw,40px); letter-spacing:-.045em;
+  color:var(--ink); text-shadow:none; }
+.har-film .sw-house s{ padding-top:0; font-size:clamp(9.5px,.8vw,11.5px);
+  letter-spacing:.24em; color:var(--ink-soft); text-shadow:none; }
+
 /* The stage does its own placing, so nothing here answers to a viewer.
    The acts have to come out of absolute, or all three stack on one line. */
 @media (prefers-reduced-motion: reduce){
