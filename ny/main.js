@@ -139,7 +139,7 @@ function start() {
   html.classList.remove('ix-start');
   // the title has had its time while the film loaded: start where it holds
   const shown = tA === null ? 0 : (performance.now() - tA) / 1000;
-  clock = Math.min(2.2, Math.max(0, shown - 0.4));
+  clock = Math.min(FILM_AT - 0.4, Math.max(0, shown - 0.4));
   // the film waits on its first frame until its mark; without it (Low Power
   // Mode on an iPhone refuses to play video) the timeline still runs, and
   // the sharp still of the phone carries the end

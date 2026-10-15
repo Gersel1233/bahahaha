@@ -79,18 +79,18 @@ const SCENES = {
 /* the scroll, in parts */
 const SEQ = [0.035, 0.40];            // the drop sets into the glass
 const SEQB = [0.43, 0.515];           // the glass becomes the phone
-const CH = [[0.07, 0.235], [0.245, 0.52], [0.53, 0.665], [0.67, 0.775]];
+const CH = [[0.11, 0.235], [0.245, 0.52], [0.53, 0.665], [0.67, 0.775]];
 const ONE = [0.775, 0.85];
 
 /* The opening plays by itself, on a timeline: seconds -> position. The same
    keys and the same curve (monotone cubic, so it never stops mid-move
    unless a key says hold) baked the film video, frame for frame. */
-export const KEYS = [[0, 0], [2.8, 0], [3.2, 0.035], [6.7, 0.275], [10.2, 0.515], [10.8, 0.555], [12.7, 0.64],
-  [13.5, 0.70], [15.3, 0.765], [16.9, 0.85], [18.1, 0.94], [18.7, 1]];
+export const KEYS = [[0, 0], [1.0, 0], [1.4, 0.035], [4.9, 0.275], [8.4, 0.515], [9.0, 0.555], [10.9, 0.64],
+  [11.7, 0.70], [13.5, 0.765], [15.1, 0.85], [16.3, 0.94], [16.9, 1]];
 // the film itself: 7 s, played at its own pace from FILM_AT; from there to
 // the end of it the timeline runs in a straight line, so picture and words
 // cannot drift apart
-export const FILM_AT = 3.2, FILM_LEN = 7.0;
+export const FILM_AT = 1.4, FILM_LEN = 7.0;
 export const DURATION = KEYS[KEYS.length - 1][0];
 const SLOPES = (() => {
   const n = KEYS.length, h = [], d = [], m = new Array(n).fill(0);
@@ -426,7 +426,7 @@ export function createIntro(stage, opts = {}) {
   function camera(p) {
     // it settles before the phone is made: from there on nothing under the
     // screen moves, and the page only has the screen to draw
-    const k = G.land ? 1 + 0.07 * io(seg(p, 0.0, 0.5)) : 1;
+    const k = G.land && !vid ? 1 + 0.07 * io(seg(p, 0.0, 0.5)) : 1;
     // about the glass's top edge, so the push-in never lifts it under the bar
     const fu = (G.S.slab.l + G.S.slab.r) / 2, fv = G.S.slab.t;
     const fx = G.ox + fu * G.Dw, fy = G.oy + fv * G.Dh;
@@ -559,7 +559,7 @@ export function createIntro(stage, opts = {}) {
     /* ----- the opening words ----- */
     openParts.forEach((e, i) => {
       const tin = out5(seg(a, 0.3 + i * 0.09, 0.8 + i * 0.09));
-      const tout = io(seg(p, 0.012 + i * 0.006, 0.06 + i * 0.006));
+      const tout = io(seg(p, 0.05 + i * 0.006, 0.095 + i * 0.006));
       const y = i === 0 ? (1 - tin) * 10 - tout * 14 : (1 - tin) * 110 - tout * 110;
       setT(e, 'translate3d(0,' + y.toFixed(1) + (i === 0 ? 'px' : '%') + ',0)');
       setO(e, tin * (1 - tout));
@@ -580,7 +580,8 @@ export function createIntro(stage, opts = {}) {
       if (railCur._lbl !== lab) { railCur._lbl = lab; railCur.innerHTML = '<span class="mono">' + T.ch[at][0] + '</span><b>' + lab + '</b>'; }
     }
 
-    /* ----- the glass is measured as it sets ----- */
+    /* ----- the glass is measured as it sets (the frame-sequence film only) ----- */
+    ann.style.display = vid ? 'none' : '';
     const sl = G.S.slab;
     const [x0, y0] = proj(c, sl.l, sl.t), [x1, y1] = proj(c, sl.r, sl.b);
     const aIn = seg(p, 0.3, 0.41), aOut = 1 - seg(p, 0.418, 0.438);
