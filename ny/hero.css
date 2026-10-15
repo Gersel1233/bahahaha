@@ -11,9 +11,13 @@
 /* the stage holds still while the track runs past it: as tall as the screen
    with Safari's bars away, so it never changes size when they come and go */
 .hs-track{ position:relative; }
+/* Safari colours its own bars from the page behind them: navy while the
+   phone is on the stage, paper once its screen has become the page */
+html.hs-on, html.hs-on body{ background:var(--navy-950); }
+html.hs-on.hs-past, html.hs-on.hs-past body{ background:var(--porcelain); }
 html.hs-on .hs-track{ height:600vh; height:600svh; }
 .hs{ position:sticky; top:0; z-index:0; height:100vh; height:100lvh; overflow:hidden; color:var(--porcelain);
-  background:radial-gradient(70% 60% at 66% 46%, var(--navy-800), var(--navy-950) 72%); }
+  background-color:var(--navy-950); background-image:radial-gradient(70% 60% at 66% 46%, var(--navy-800), var(--navy-950) 72%); }
 .pg, .foot{ position:relative; z-index:1; }
 .hs-glow{ position:absolute; left:66%; top:calc(50% + 30px); width:min(70vh, 720px); height:min(70vh, 720px); margin:calc(min(70vh, 720px) / -2) 0 0 calc(min(70vh, 720px) / -2);
   border-radius:50%; background:radial-gradient(closest-side, rgba(58,85,168,.42), rgba(43,63,124,.14) 55%, transparent); pointer-events:none; }
@@ -104,7 +108,7 @@ html.hx-paper .tb{ background:var(--smoke-dense); }
 
 /* ---------- a phone held upright ---------- */
 @media (max-aspect-ratio:1/1), (max-width:760px){
-  .hs{ background:radial-gradient(90% 55% at 50% 66%, var(--navy-800), var(--navy-950) 72%); }
+  .hs{ background-image:radial-gradient(90% 55% at 50% 66%, var(--navy-800), var(--navy-950) 72%); }
   .hs-glow{ left:50%; top:66%; width:110vw; height:110vw; margin:-55vw 0 0 -55vw; }
   .hs-copy{ left:20px; right:20px; width:auto; top:calc(76px + env(safe-area-inset-top)); transform:none; }
   .hs-h1{ font-size:min(14vw, 60px); }

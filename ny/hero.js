@@ -19,7 +19,6 @@ const io3 = t => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 // its words stand beside it
 const OPEN = [0.12, 0.36, 0.6];
 const SAY = [[0.13, 0.34], [0.37, 0.58], [0.61, 0.8]];
-const MSG = [0.65, 0.69, 0.73];
 const WHITE = [0.8, 0.85], ZOOM = [0.82, 0.93], PAPER = [0.89, 0.93];
 // then the sentence on the paper, one group of words at a time
 const WRITE = 0.905, STEP = 0.012, EACH = 0.03;
@@ -31,7 +30,7 @@ export function startHero() {
   const track = $('.hs-track'), hs = $('.hs'), ph = $('.hs-ph'), scr = $('.hs-dev .scr');
   if (!hs || !ph || !scr) return;
   const copy = $('.hs-copy-in'), says = $$('.hs-ch > li > div'), apps = $$('.hs-s[data-s]');
-  const white = $('.hs-white'), paper = $('.hs-paper'), msg = $('[data-hmsg]');
+  const white = $('.hs-white'), paper = $('.hs-paper');
   const vids = apps.map(a => $('video', a));
   const end = $('.hs-end'), words = $$('.hs-end .g'), pillVids = $$('.hs-end video');
   const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -42,7 +41,13 @@ export function startHero() {
   setDate();
   addEventListener('lesreg:lang', setDate);
 
-  if (still) { html.classList.add('hs-n1', 'hs-n2'); return; }
+  if (still) {
+    html.classList.add('hs-n1', 'hs-n2');
+    // the page's colour behind Safari's bars still follows the dark
+    const past = () => html.classList.toggle('hs-past', hs.getBoundingClientRect().bottom < 60);
+    addEventListener('scroll', past, { passive: true }); past();
+    return;
+  }
   for (const [c, at] of Object.entries(NOTE)) setTimeout(() => html.classList.add(c), at * 1000);
 
   /* ---------- where things are, untransformed ---------- */
@@ -62,8 +67,8 @@ export function startHero() {
   }
   measure();
 
-  /* ---------- the apps' films: fetched when they are close, playing only
-     while their app is open ---------- */
+  /* ---------- the apps' films: fetched when they are close; each starts
+     from its beginning when its app opens, and plays once ---------- */
   const h264 = document.createElement('video').canPlayType('video/mp4; codecs="avc1.42E01E"') !== '';
   function load(v) { if (v && !v.src) { v.src = v.dataset.hv + (h264 ? '.mp4' : '.webm'); v.load(); } }
   // the first app's film once the page has settled, so it is in before it is needed
@@ -72,10 +77,16 @@ export function startHero() {
   function play(i) {
     if (i === playing) return;
     playing = i;
-    vids.forEach((v, j) => { if (!v) return; if (j === i) { load(v); const r = v.play(); if (r) r.catch(() => {}); } else v.pause(); });
+    vids.forEach((v, j) => {
+      if (!v) return;
+      if (j === i) { load(v); try { v.currentTime = 0; } catch (e) {} const r = v.play(); if (r) r.catch(() => {}); }
+      else v.pause();
+    });
   }
 
   /* ---------- the scroll ---------- */
+  const tone = $('meta[name="theme-color"]');
+  let wasPast = null;
   let raf = 0;
   function frame() {
     raf = 0;
@@ -98,7 +109,7 @@ export function startHero() {
     });
     // the next one's film comes in while the one before is showing
     apps.forEach((a, i) => { if (p > OPEN[i] - 0.1) load(vids[i]); });
-    play(open < 2 ? open : -1);
+    play(open);
 
     // and its words beside it
     says.forEach((s, i) => {
@@ -109,8 +120,6 @@ export function startHero() {
       s.style.visibility = inn > 0 && go < 1 ? 'visible' : 'hidden';
     });
 
-    // the message, answered
-    if (msg) MSG.forEach((t, i) => msg.classList.toggle('m' + (i + 1), p >= t));
 
     // into the screen: it turns to paper, then fills the window
     white.style.opacity = seg(p, WHITE[0], WHITE[1]).toFixed(3);
@@ -140,6 +149,9 @@ export function startHero() {
       else if (!see && !v.paused) v.pause();
     });
     html.classList.toggle('hx-paper', e > 0.8);
+    // and Safari's bars with it
+    const past = p >= PAPER[1] - 0.005;
+    if (past !== wasPast) { wasPast = past; html.classList.toggle('hs-past', past); if (tone) tone.content = past ? '#F6F4EF' : '#05080F'; }
   }
   addEventListener('scroll', () => { if (!raf) raf = requestAnimationFrame(frame); }, { passive: true });
 
