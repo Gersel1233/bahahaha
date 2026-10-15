@@ -85,8 +85,12 @@ const ONE = [0.775, 0.85];
 /* The opening plays by itself, on a timeline: seconds -> position. The same
    keys and the same curve (monotone cubic, so it never stops mid-move
    unless a key says hold) baked the film video, frame for frame. */
-export const KEYS = [[0, 0], [3.0, 0], [3.8, 0.035], [8.4, 0.40], [9.4, 0.43], [10.9, 0.515], [11.5, 0.555], [13.4, 0.64],
-  [14.2, 0.70], [16.0, 0.765], [17.6, 0.85], [18.8, 0.94], [19.4, 1]];
+export const KEYS = [[0, 0], [2.8, 0], [3.2, 0.035], [6.7, 0.275], [10.2, 0.515], [10.8, 0.555], [12.7, 0.64],
+  [13.5, 0.70], [15.3, 0.765], [16.9, 0.85], [18.1, 0.94], [18.7, 1]];
+// the film itself: 7 s, played at its own pace from FILM_AT; from there to
+// the end of it the timeline runs in a straight line, so picture and words
+// cannot drift apart
+export const FILM_AT = 3.2, FILM_LEN = 7.0;
 export const DURATION = KEYS[KEYS.length - 1][0];
 const SLOPES = (() => {
   const n = KEYS.length, h = [], d = [], m = new Array(n).fill(0);
@@ -345,8 +349,14 @@ export function createIntro(stage, opts = {}) {
     frames.scene = S;
     let done;
     frames.first = frames.ready = new Promise(r => { done = r; });
-    const mp4 = vid.canPlayType('video/mp4; codecs="avc1.640028"') !== '';
-    const url = base + S.film + (mp4 ? '.mp4' : '.webm');
+    // the biggest picture this screen can use and this browser can play:
+    // 4K (HEVC) on a big screen that plays HEVC, otherwise H.264, otherwise
+    // VP9; a phone's screen is never wider than the 1440 px version
+    const hevc = vid.canPlayType('video/mp4; codecs="hvc1.1.6.L153.B0"') !== '';
+    const h264 = vid.canPlayType('video/mp4; codecs="avc1.640033"') !== '';
+    const dev = Math.max(G ? G.W : innerWidth, 1) * (devicePixelRatio || 1);
+    const big = S === SCENES.land ? dev > 2000 : false;
+    const url = base + S.film + (hevc ? (big ? '-uhd.mp4' : '-hevc.mp4') : h264 ? '.mp4' : '.webm');
     const go = src => {
       if (frames.scene !== S) return;
       vid.onloadeddata = () => { vid.onloadeddata = null; done(); };
@@ -532,7 +542,7 @@ export function createIntro(stage, opts = {}) {
     const stT = ('translate3d(' + (c.tx + c.k * G.ox).toFixed(2) + 'px,' + (c.ty + c.k * G.oy).toFixed(2) + 'px,0) scale(' + c.k.toFixed(4) + ')');
     // the glass is held sharp while it is measured, the phone once it is made;
     // a still that is not showing is not moved either
-    const oG = seg(p, SEQ[1] - 0.008, SEQ[1] + 0.008) * (1 - seg(p, SEQB[0] - 0.004, SEQB[0] + 0.004));
+    const oG = vid ? 0 : seg(p, SEQ[1] - 0.008, SEQ[1] + 0.008) * (1 - seg(p, SEQB[0] - 0.004, SEQB[0] + 0.004));
     const oP = seg(p, SEQB[1] - 0.006, SEQB[1] + 0.008);
     if (oG > 0.001 || !CACHE) setT(glassStill, stT);
     if (oP > 0.001 || !CACHE) setT(still, stT);

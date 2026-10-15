@@ -1,7 +1,7 @@
 /* The page around the opening: the scroll, the language, the headline,
    the bar. The opening itself is in intro.js and knows nothing about any
    of this — it is told a number and draws it. */
-import { createIntro, pAt, tAt, DURATION } from './intro.js?v=11';
+import { createIntro, pAt, tAt, DURATION, FILM_AT, FILM_LEN } from './intro.js?v=12';
 
 const html = document.documentElement;
 const $ = (s, r = document) => r.querySelector(s);
@@ -106,7 +106,7 @@ function draw(p, a) {
    open from there. */
 const vid = intro && intro.video;
 let state = 'load', clock = 0, last = 0, speed = 1, raf = 0, pinned = false, tA = null;
-const FILM_END = vid ? 11.3 : 0;   // the baked film's length, in timeline seconds
+const FILM_END = vid ? FILM_AT + FILM_LEN : 0;
 
 function frame(now) {
   raf = 0;
@@ -116,10 +116,14 @@ function frame(now) {
   if (state === 'play') {
     const dt = last ? Math.min(0.1, (now - last) / 1000) : 0;
     clock += dt * speed;
-    // while the film plays, it is the clock: a stall holds the words too
-    if (vid && speed === 1 && clock < FILM_END && !vid.paused && !vid.ended && vid.readyState >= 2) {
-      const vt = vid.currentTime;
-      if (Math.abs(vt - clock) > 0.12) clock = vt;
+    // the film starts on its mark and, while it plays, it is the clock: a
+    // stall holds the words too
+    if (vid && speed === 1 && clock >= FILM_AT && clock < FILM_END) {
+      if (vid.paused && !vid.ended && !vid._go) { vid._go = true; vid.play().catch(() => {}); }
+      else if (!vid.paused && vid.readyState >= 2) {
+        const vt = FILM_AT + vid.currentTime;
+        if (Math.abs(vt - clock) > 0.12) clock = vt;
+      }
     }
     if (clock >= DURATION) { clock = DURATION; finish(); }
   }
@@ -136,12 +140,9 @@ function start() {
   // the title has had its time while the film loaded: start where it holds
   const shown = tA === null ? 0 : (performance.now() - tA) / 1000;
   clock = Math.min(2.2, Math.max(0, shown - 0.4));
-  if (vid) {
-    try { vid.currentTime = clock; } catch (e) {}
-    // without the film (Low Power Mode on an iPhone refuses to play it) the
-    // timeline still runs, and the sharp stills carry the glass and phone
-    vid.play().catch(() => {});
-  }
+  // the film waits on its first frame until its mark; without it (Low Power
+  // Mode on an iPhone refuses to play video) the timeline still runs, and
+  // the sharp still of the phone carries the end
   last = 0;
   kick();
 }
