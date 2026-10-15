@@ -16,8 +16,8 @@
 <link rel="preload" as="image" href="media/dev/iphone-17-pro-2x.webp" fetchpriority="high" />
 <link rel="stylesheet" href="ny.css?v=16" />
 <link rel="stylesheet" href="page.css?v=16" />
-<link rel="stylesheet" href="hero.css?v=20" />
-<link rel="stylesheet" href="sections.css?v=16" />
+<link rel="stylesheet" href="hero.css?v=21" />
+<link rel="stylesheet" href="sections.css?v=17" />
 <script>
   /* decided before first paint: with JS the phone turns as you scroll;
      without it, the first screen simply stands there */
@@ -25,6 +25,8 @@
 </script>
 </head>
 <body>
+<!-- for Safari, which colours its own bars from an opaque fixed edge -->
+<i class="edge edge-t" aria-hidden="true"></i><i class="edge edge-b" aria-hidden="true"></i>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <!-- LA2.1 Icon / Arrow right: the stem stops short of the tip -->
@@ -161,30 +163,20 @@
   </header>
   <div class="tiles" id="tiles">
     <article class="tile tile-apps">
-      <div class="tile-t"><p class="mono" data-da="Apps" data-en="Apps">Apps</p><h3 data-da="Apps, folk faktisk har på telefonen." data-en="Apps people actually keep on their phone.">Apps, folk faktisk har på telefonen.</h3><p data-da="Til gæsterne og til personalet — med notifikationer, når det gælder." data-en="For guests and for staff — with notifications when it matters.">Til gæsterne og til personalet — med notifikationer, når det gælder.</p></div>
-      <div class="tile-v"><div class="dev dev-iph" style="--sb:#F5F2ED;--sbc:#0E0F10"><div class="scr"><video muted playsinline loop preload="none" poster="media/app-spiis.jpg" data-v="media/app-spiis"></video><div class="sb"><span class="t">9:41</span><span class="ic"><svg class="sig"><use href="#sb-sig"/></svg><svg class="wifi"><use href="#sb-wifi"/></svg><svg class="bat"><use href="#sb-bat"/></svg></span></div></div><img class="frame" src="media/dev/iphone-17-pro.webp" width="560" height="1168" alt="" draggable="false" /></div></div>
+      <div class="tile-t"><p class="mono" data-da="Apps" data-en="Apps">Apps</p><h3 data-da="Apps, folk faktisk har på telefonen." data-en="Apps people actually keep on their phone.">Apps, folk faktisk har på telefonen.</h3><p data-da="Notifikationer, Dynamic Island og live-status — sådan som folk forventer det i dag." data-en="Notifications, the Dynamic Island and live status — the way people expect it today.">Notifikationer, Dynamic Island og live-status — sådan som folk forventer det i dag.</p></div>
+      <div class="tile-v"><video class="tile-film" muted playsinline loop preload="none" poster="media/tile-apps.webp" data-v="media/tile-apps"></video></div>
     </article>
     <article class="tile tile-sys">
       <div class="tile-t"><p class="mono" data-da="Systemer" data-en="Systems">Systemer</p><h3 data-da="Systemer, der driver forretningen." data-en="Systems that run the business.">Systemer, der driver forretningen.</h3><p data-da="Bestilling, booking, køkkenskærme og menukort — styret ét sted." data-en="Ordering, booking, kitchen screens and menus — run from one place.">Bestilling, booking, køkkenskærme og menukort — styret ét sted.</p></div>
-      <div class="tile-v"><div class="dev dev-mac"><div class="scr"><div class="mb"><b>Safari</b><span class="mb-m" data-da="<span>Arkiv</span><span>Rediger</span><span>Vis</span><span>Historik</span><span>Bogmærker</span><span>Vindue</span><span>Hjælp</span>" data-en="<span>File</span><span>Edit</span><span>View</span><span>History</span><span>Bookmarks</span><span>Window</span><span>Help</span>"><span>Arkiv</span><span>Rediger</span><span>Vis</span><span>Historik</span><span>Bogmærker</span><span>Vindue</span><span>Hjælp</span></span><span class="mb-r"><svg><use href="#mb-bat"/></svg><svg><use href="#sb-wifi"/></svg><svg><use href="#mb-search"/></svg><svg><use href="#mb-cc"/></svg><span>09.41</span></span></div><div class="sf"><div class="sf-tb"><span class="tl"><i></i><i></i><i></i></span><svg class="ti"><use href="#mb-side"/></svg><svg class="ti"><use href="#mb-back"/></svg><svg class="ti dim"><use href="#mb-fwd"/></svg><span class="url"><svg><use href="#mb-lock"/></svg>spiis.dk</span><svg class="ti"><use href="#mb-share"/></svg><svg class="ti"><use href="#mb-plus"/></svg><svg class="ti"><use href="#mb-tabs"/></svg></div><img src="media/pg/spiis-web.webp" width="1500" height="970" alt="Spiis' hjemmeside" loading="lazy" decoding="async" /></div></div><img class="frame" src="media/dev/macbook-pro-14.webp" width="1600" height="938" alt="" draggable="false" loading="lazy" decoding="async" /></div></div>
+      <div class="tile-v"><video class="tile-film" muted playsinline loop preload="none" poster="media/tile-sys.webp" data-v="media/tile-sys"></video></div>
     </article>
     <article class="tile tile-int">
       <div class="tile-t"><p class="mono" data-da="Integrationer" data-en="Integrations">Integrationer</p><h3 data-da="Koblet på det, I allerede bruger." data-en="Connected to what you already use.">Koblet på det, I allerede bruger.</h3><p data-da="Betaling, kalender, SMS, regnskab og AI — så data kun skal tastes én gang." data-en="Payments, calendar, SMS, accounting and AI — so data is only typed once.">Betaling, kalender, SMS, regnskab og AI — så data kun skal tastes én gang.</p></div>
-      <div class="tile-v int" aria-hidden="true"><div class="int-box">
-        <svg class="int-lines" viewBox="0 0 400 400"><g fill="none" stroke="currentColor" stroke-width="1.4"><path d="M200 200 L200 52"/><path d="M200 200 L328 126"/><path d="M200 200 L328 274"/><path d="M200 200 L200 348"/><path d="M200 200 L72 274"/><path d="M200 200 L72 126"/></g></svg>
-        <span class="int-c"><b>Lesreg</b><i data-da="jeres system" data-en="your system">jeres system</i></span>
-        <span class="int-n" style="--x:50%;--y:13%" data-da="Betaling" data-en="Payments">Betaling</span>
-        <span class="int-n" style="--x:82%;--y:31.5%" data-da="Kalender" data-en="Calendar">Kalender</span>
-        <span class="int-n" style="--x:82%;--y:68.5%">SMS</span>
-        <span class="int-n" style="--x:50%;--y:87%" data-da="Regnskab" data-en="Accounting">Regnskab</span>
-        <span class="int-n" style="--x:18%;--y:68.5%" data-da="Kasse" data-en="Till">Kasse</span>
-        <span class="int-n" style="--x:18%;--y:31.5%">AI</span>
-      </div>
-      </div>
+      <div class="tile-v"><video class="tile-film" muted playsinline loop preload="none" poster="media/tile-int.webp" data-v="media/tile-int"></video></div>
     </article>
     <article class="tile tile-web">
       <div class="tile-t"><p class="mono" data-da="Hjemmesider &amp; motion" data-en="Websites &amp; motion">Hjemmesider &amp; motion</p><h3 data-da="Hjemmesider, man husker." data-en="Websites people remember.">Hjemmesider, man husker.</h3><p data-da="Filmiske sider og motion design — som den, du er på nu." data-en="Cinematic sites and motion design — like the one you are on.">Filmiske sider og motion design — som den, du er på nu.</p></div>
-      <div class="tile-v"><video class="tile-film" muted playsinline loop preload="none" poster="media/film-m-first.webp" data-v="media/film-m-lite"></video></div>
+      <div class="tile-v"><video class="tile-film" muted playsinline loop preload="none" poster="media/tile-web.webp" data-v="media/tile-web"></video></div>
     </article>
   </div>
   <div class="tiles-nav"><button type="button" class="tn tn-prev" aria-label="Forrige"><svg><use href="#i-arrow"/></svg></button><button type="button" class="tn tn-next" aria-label="Næste"><svg><use href="#i-arrow"/></svg></button></div>

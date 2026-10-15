@@ -13,17 +13,13 @@
 .tile-t .mono{ font:400 11.5px/16px var(--mono); opacity:.7; margin-bottom:12px; }
 .tile-t h3{ font:500 clamp(26px, 2.4vw, 34px)/1.05 var(--sans); letter-spacing:-.035em; max-width:14ch; }
 .tile-t p:last-child{ margin-top:12px; font:400 15px/1.45 var(--sans); max-width:30ch; opacity:.78; }
-.tile-v{ position:absolute; left:0; right:0; bottom:0; top:44%; z-index:1; }
-.tile-apps{ background:radial-gradient(120% 80% at 50% 110%, var(--deep), var(--navy-800) 45%, var(--navy-950)); color:var(--porcelain); }
-.tile-apps .dev{ position:absolute; left:50%; top:4%; width:58%; transform:translateX(-50%); }
-.tile-sys{ background:linear-gradient(170deg, #fff, var(--limestone)); color:var(--obsidian); }
-.tile-sys .tile-v{ top:50%; }
-.tile-sys .dev-mac{ position:absolute; left:8%; width:118%; top:4%; }
-.tile-int{ background:linear-gradient(170deg, var(--porcelain), #EDE8DE); color:var(--obsidian); }
-.tile-web{ background:#040404; color:var(--porcelain); }
-.tile-web .tile-film{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:50% 30%; }
-.tile-web .tile-v{ top:0; }
-.tile-web .tile-v::after{ content:""; position:absolute; inset:0; background:linear-gradient(rgba(4,4,4,.85), rgba(4,4,4,0) 46%); }
+.tile-v{ position:absolute; inset:0; z-index:1; }
+/* each tile is a film, filling it; what matters in it sits low, under the words */
+.tile-film{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:50% 100%; }
+.tile-apps{ background:#05080F; color:var(--porcelain); }
+.tile-sys{ background:#FFFFFF; color:var(--obsidian); }
+.tile-int{ background:#F6F4EF; color:var(--obsidian); }
+.tile-web{ background:#05080F; color:var(--porcelain); }
 .tiles-nav{ display:none; gap:10px; justify-content:flex-end; padding:0 var(--gut); max-width:1440px; margin:0 auto; }
 @media (hover:hover) and (min-width:900px){ .tiles-nav{ display:flex; } }
 .tn{ width:44px; height:44px; border-radius:22px; display:grid; place-items:center; color:var(--obsidian);
@@ -33,24 +29,6 @@
 .tn-prev svg{ transform:scaleX(-1); }
 .tn:disabled{ opacity:.35; cursor:default; }
 @media (hover:hover){ .tn:not(:disabled):hover{ transform:scale(1.06); } }
-
-/* the integrations: one system with what it is connected to around it */
-.int{ color:var(--obsidian); }
-.int-box{ position:absolute; left:50%; top:52%; width:min(88%, 330px); aspect-ratio:1; transform:translate(-50%, -50%); }
-.int-lines{ position:absolute; inset:0; width:100%; height:100%; color:rgba(14,15,16,.22); }
-.int-lines path{ stroke-dasharray:4 6; animation:int-flow 1.6s linear infinite; }
-@keyframes int-flow{ to{ stroke-dashoffset:-20; } }
-.int-c{ position:absolute; left:50%; top:50%; transform:translate(-50%, -50%); display:flex; flex-direction:column; align-items:center; gap:2px;
-  padding:16px 22px; border-radius:22px; color:var(--porcelain); background:linear-gradient(160deg, var(--navy-700), var(--navy-950));
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.3), 0 18px 34px -16px rgba(10,16,32,.7); }
-.int-c b{ font:500 18px/1 var(--sans); letter-spacing:-.02em; }
-.int-c i{ font:400 11px/1.4 var(--mono); font-style:normal; opacity:.7; }
-.int-n{ position:absolute; left:var(--x); top:var(--y); transform:translate(-50%, -50%);
-  padding:8px 14px; border-radius:16px; font:500 13px/1 var(--sans); white-space:nowrap;
-  background:linear-gradient(160deg, rgba(255,255,255,.95), rgba(255,255,255,.62)); box-shadow:inset 0 1px 0 #fff, inset 0 0 0 1px rgba(14,15,16,.06), 0 8px 18px -10px rgba(14,15,16,.4);
-  animation:int-bob 4s var(--ease) infinite alternate; }
-.int-n:nth-of-type(2n){ animation-delay:-2s; }
-@keyframes int-bob{ to{ transform:translate(-50%, calc(-50% - 5px)); } }
 
 /* ---------- three become one, on navy ---------- */
 .three{ background:var(--navy-950); }

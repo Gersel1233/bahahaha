@@ -15,6 +15,15 @@
    phone is on the stage, paper once its screen has become the page */
 html.hs-on, html.hs-on body{ background:var(--navy-950); }
 html.hs-on.hs-past, html.hs-on.hs-past body{ background:var(--porcelain); }
+/* Safari 26 reads its colour from an opaque fixed strip at each edge, not
+   from theme-color or a translucent bar; on a touch screen there is one */
+.edge{ display:none; }
+@media (hover:none) and (pointer:coarse){
+  .edge{ display:block; position:fixed; left:0; right:0; height:6px; z-index:70; pointer-events:none; background:var(--porcelain); }
+  .edge-t{ top:0; }
+  .edge-b{ bottom:0; }
+  html.hs-on:not(.hs-past) .edge{ background:var(--navy-950); }
+}
 html.hs-on .hs-track{ height:600vh; height:600svh; }
 .hs{ position:sticky; top:0; z-index:0; height:100vh; height:100lvh; overflow:hidden; color:var(--porcelain);
   background-color:var(--navy-950); background-image:radial-gradient(70% 60% at 66% 46%, var(--navy-800), var(--navy-950) 72%); }
