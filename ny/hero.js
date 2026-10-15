@@ -37,8 +37,10 @@ export function startHero() {
   const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   let F = null, W = 0, H = 0, S = { x: 0, y: 0, w: 1, h: 1 };
+  // measured off the first screen itself, not the window: on a phone the
+  // window grows and shrinks as Safari's bars come and go, the film does not
   function fit() {
-    W = innerWidth; H = innerHeight;
+    W = hx.clientWidth || innerWidth; H = hx.clientHeight || innerHeight;
     const nf = W / H >= 1 ? FILMS.land : FILMS.port;
     const changed = nf !== F;
     F = nf;
@@ -180,6 +182,10 @@ export function startHero() {
     html.classList.toggle('hx-paper', e > 0.8);
   }
   addEventListener('scroll', () => { if (!sraf) sraf = requestAnimationFrame(onScroll); }, { passive: true });
-  addEventListener('resize', () => { fit(); onScroll(); });
+  // refit only when the first screen itself changes size (a turn, a new
+  // window), never for the bars
+  let lw = W, lh = H;
+  const refit = () => { const w = hx.clientWidth, h = hx.clientHeight; if (w === lw && h === lh) return; lw = w; lh = h; fit(); onScroll(); };
+  if (window.ResizeObserver) new ResizeObserver(refit).observe(hx); else addEventListener('resize', refit);
   onScroll();
 }

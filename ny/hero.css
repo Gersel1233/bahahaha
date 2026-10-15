@@ -19,8 +19,10 @@
 /* only while it loads: the page underneath does not move */
 html.hx-on:not(.hx-ready), html.hx-on:not(.hx-ready) body{ overflow:hidden; }
 
-/* ---------- the first screen ---------- */
-.hx{ position:sticky; top:0; z-index:0; height:100vh; height:100svh; overflow:hidden; background:#040404; color:var(--porcelain); }
+/* ---------- the first screen ----------
+   As tall as the screen with Safari's bars away, so it never changes size
+   when they come and go, and what sits on the phone stays on it. */
+.hx{ position:sticky; top:0; z-index:0; height:100vh; height:100lvh; overflow:hidden; background:#040404; color:var(--porcelain); }
 .pg, .foot{ position:relative; z-index:1; }
 .hx-film{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; background:#040404; }
 .hx-scrim{ position:absolute; inset:0; pointer-events:none;
@@ -47,7 +49,7 @@ html.hx-copy-in .hx-kick, html.hx-copy-in .hx-lead, html.hx-copy-in .hx-cta{ opa
 html.hx-copy-in .hx-lead{ transition-delay:.35s; }
 html.hx-copy-in .hx-cta{ transition-delay:.55s; }
 html.hx-copy-in .hx-h1 .l > span{ transform:none; }
-.hx.is-port .hx-copy{ left:20px; right:20px; width:auto; bottom:calc(24px + env(safe-area-inset-bottom)); }
+.hx.is-port .hx-copy{ left:20px; right:20px; width:auto; bottom:calc(24px + env(safe-area-inset-bottom)); bottom:calc(24px + 100lvh - 100svh + env(safe-area-inset-bottom)); }
 .hx.is-port .hx-h1{ font-size:min(14vw, 60px); }
 .hx.is-port .hx-cta{ margin-top:20px; }
 .hx.is-port .hx-lead{ display:none; }
@@ -63,6 +65,7 @@ html.hx-lock .hx-ios{ opacity:1; }
 .hx-ios .sb .ic{ display:flex; align-items:center; gap:1.49cqw; }
 .hx-ios .sb svg{ display:block; height:4.23cqw; width:4.23cqw; }
 .hx-ios .sb .bat{ width:6.22cqw; }
+.hx-ios .di{ position:absolute; top:2.74cqw; left:50%; width:31.2cqw; height:9.2cqw; margin-left:-15.6cqw; border-radius:4.6cqw; background:#000; }
 .hx-ios .d{ position:absolute; top:19cqw; left:0; right:0; text-align:center; color:rgba(255,255,255,.88);
   font:600 4.6cqw/1 -apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, sans-serif; }
 .hx-ios .d::first-letter{ text-transform:uppercase; }
