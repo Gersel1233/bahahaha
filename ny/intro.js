@@ -158,24 +158,38 @@ export function createIntro(stage, opts = {}) {
   // decoding all of them would hold ~360 MB, which a phone will not allow.
   const frames = { list: [], ok: [], scene: null, bmp: new Map(), pending: new Set(), want: 0 };
   const canBitmap = typeof createImageBitmap === 'function' && !opts.film;
+  // decoded ahead in the direction the reader is going, so a fling finds
+  // its pictures ready; a little behind, for a change of mind
   function ensureDecoded(want) {
     if (!canBitmap) return;
+    if (want !== frames.want) frames.dir = want > frames.want ? 1 : -1;
     frames.want = want;
-    const n = frames.list.length;
-    for (let d = 0; d <= 8; d++) {
-      for (const j of d ? [want + d, want - d] : [want]) {
+    const n = frames.list.length, dir = frames.dir || 1;
+    const ahead = 20, behind = 6;
+    const S = frames.scene;
+    for (let d = 0; d <= ahead; d++) {
+      for (const j of d === 0 ? [want] : d <= behind ? [want + d * dir, want - d * dir] : [want + d * dir]) {
         if (j < 0 || j >= n || !frames.ok[j] || frames.bmp.has(j) || frames.pending.has(j)) continue;
+        // a few at a time, nearest first: a queue of forty decodes would
+        // put the next picture behind all of them
+        if (frames.pending.size >= 4) return evict(want, dir);
         frames.pending.add(j);
-        const S = frames.scene;
         createImageBitmap(frames.list[j]).then(b => {
           frames.pending.delete(j);
           if (frames.scene !== S) { b.close(); return; }
           frames.bmp.set(j, b);
           if (Math.abs(j - frames.want) <= 2 && G) render(G.lastP, G.lastA, true);
+          ensureDecoded(frames.want);
         }).catch(() => frames.pending.delete(j));
       }
     }
-    for (const [j, b] of frames.bmp) if (Math.abs(j - want) > 14 && b !== frames.last) { b.close(); frames.bmp.delete(j); }
+    evict(want, dir);
+  }
+  function evict(want, dir) {
+    for (const [j, b] of frames.bmp) {
+      const d = (j - want) * dir;
+      if ((d > 26 || d < -10) && b !== frames.last && b !== frames.keyIm) { b.close(); frames.bmp.delete(j); }
+    }
   }
 
   function fillApps() {
@@ -308,6 +322,7 @@ export function createIntro(stage, opts = {}) {
     statusBar.style.height = ((isl.t * 2 + isl.h) * 100) + '%';
     screen.style.setProperty('--sw', scr.w + 'px');
     G = { W, H, land, S, Dw, Dh, ox, oy, dpr, u, scr, lastP: 0, lastA: 0 };
+    frames.key = null;
     loadFrames(S);
     root.querySelectorAll('*').forEach(e => { e._t = e._o = e._c = null; });
     page._c = page._o = null;
@@ -316,7 +331,9 @@ export function createIntro(stage, opts = {}) {
 
   /* a gentle push-in about the glass; the film itself never moves */
   function camera(p) {
-    const k = G.land ? 1 + 0.045 * io(seg(p, 0.0, 0.5)) + 0.05 * io(seg(p, 0.5, 0.8)) : 1;
+    // it settles before the phone is made: from there on nothing under the
+    // screen moves, and the page only has the screen to draw
+    const k = G.land ? 1 + 0.07 * io(seg(p, 0.0, 0.5)) : 1;
     // about the glass's top edge, so the push-in never lifts it under the bar
     const fu = (G.S.slab.l + G.S.slab.r) / 2, fv = G.S.slab.t;
     const fx = G.ox + fu * G.Dw, fy = G.oy + fv * G.Dh;
@@ -369,6 +386,13 @@ export function createIntro(stage, opts = {}) {
     // nothing near is ready yet: hold the picture already on screen
     let im = i >= 0 ? (canBitmap ? frames.bmp.get(i) : frames.list[i]) : (canBitmap ? frames.last : frames.list[0]);
     if (canBitmap && im) frames.last = im;
+    frames.drawn = i; frames.wantNow = want;
+    // the push-in is the canvas's own transform, on the compositor; the
+    // picture itself is only drawn again when it is a different picture
+    setT(canvas, 'translate3d(' + c.tx.toFixed(2) + 'px,' + c.ty.toFixed(2) + 'px,0) scale(' + c.k.toFixed(4) + ')');
+    const key = (im ? i : -2) + '|' + fade.toFixed(3);
+    if (CACHE && frames.key === key && frames.keyIm === im) return i;
+    frames.key = key; frames.keyIm = im;
     const dpr = G.dpr;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.fillStyle = '#040404'; // the film's own black, measured off its top edge
@@ -376,7 +400,7 @@ export function createIntro(stage, opts = {}) {
     // the fade-in is drawn into the picture rather than set on the canvas:
     // a canvas with an opacity of its own can be repainted in parts
     ctx.globalAlpha = fade;
-    if (im) ctx.drawImage(im, c.tx + c.k * G.ox, c.ty + c.k * G.oy, G.Dw * c.k, G.Dh * c.k);
+    if (im) ctx.drawImage(im, G.ox, G.oy, G.Dw, G.Dh);
     ctx.globalAlpha = 1;
     return i;
   }
@@ -398,6 +422,9 @@ export function createIntro(stage, opts = {}) {
     if (oP > 0.001 || !CACHE) setT(still, stT);
     setO(glassStill, oG);
     setO(still, oP);
+    // under a still that covers it the film is not composited at all
+    const cover = oG >= 0.999 || oP >= 0.999 ? 'hidden' : 'visible';
+    if (canvas._v !== cover) { canvas._v = cover; canvas.style.visibility = cover; }
     if (fromLoad) return;
     setO(scrimB, land ? 0.6 + 0.4 * seg(p, 0.05, 0.12) : 1);
     setO(scrimL, land ? 1 : 0);
@@ -466,7 +493,11 @@ export function createIntro(stage, opts = {}) {
     setO(screen, on * (1 - seg(p, 0.83, 0.86)));
     // Mosede flows in over Spiis from the bottom, the way the glass set
     const wipe = io(seg(p, 0.655, 0.695));
-    setC(apps.mosede, 'inset(' + ((1 - wipe) * 100).toFixed(2) + '% 0 0 0 round ' + (sc.r * 0.9).toFixed(1) + 'px)');
+    // a window rising over a picture that stays put: two transforms, so the
+    // compositor does it and nothing is painted again
+    const wy = ((1 - wipe) * 100).toFixed(2);
+    setT(apps.mosede, 'translate3d(0,' + wy + '%,0)');
+    if (apps.mosede.firstChild) setT(apps.mosede.firstChild, 'translate3d(0,-' + wy + '%,0)');
     setO(apps.mosede, wipe > 0 ? 1 : 0);
     setO(sheen, 1);
     // which system it is, on a label under the glass
@@ -490,15 +521,17 @@ export function createIntro(stage, opts = {}) {
 
     const done = p >= 0.935;
     root.classList.toggle('gone', done);
-    return { done, page: { top, left, right: G.W - right, bottom: G.H - bottom }, wantApps: p > 0.36 && p < 0.86 };
+    return { done, page: { top, left, right: G.W - right, bottom: G.H - bottom }, wantApps: p > 0.36 && p < 0.86 && { spiis: p > 0.5 && p < 0.7, mosede: p > 0.64 } };
   }
 
   /* the recordings only load when the glass is about to show them */
-  function playApps(want) {
-    for (const el of Object.values(apps)) {
+  function playApps(wantAny) {
+    for (const [k, el] of Object.entries(apps)) {
       const v = el.querySelector('video');
       if (!v) continue;
-      if (want && !v._loaded) {
+      // both are loaded together, but only the one on the screen plays
+      const want = !!wantAny && wantAny[k] !== false;
+      if (wantAny && !v._loaded) {
         // cut to the part worth showing (Mosede's opens on a splash); webm
         // first, because Chromium on Linux cannot decode the mp4
         const src = base + v.dataset.src;

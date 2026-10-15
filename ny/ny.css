@@ -109,7 +109,7 @@ html.ix-on .ix{ display:block; }
 .ix.gone{ visibility:hidden; }
 .ix > *, .ix-ann > *, .ix-says > *{ position:absolute; }
 /* the Higgsfield film, drawn frame by frame, and the sharp still it ends on */
-.ix-film{ left:0; top:0; will-change:opacity; }
+.ix-film{ left:0; top:0; transform-origin:0 0; will-change:transform; }
 .ix-still{ left:0; top:0; max-width:none; transform-origin:0 0; opacity:0; will-change:transform,opacity; user-select:none;
   -webkit-mask-image:linear-gradient(transparent, #000 5%); mask-image:linear-gradient(transparent, #000 5%); }
 .ix-scrim{ pointer-events:none; }
@@ -149,15 +149,14 @@ html.ix-on .ix{ display:block; }
 .ix-screen .sbar .ic{ display:flex; align-items:center; gap:calc(var(--sw) * .014); }
 .ix-screen .sbar svg{ height:calc(var(--sw) * .03); width:auto; display:block; }
 .ix-screen .island{ position:absolute; z-index:3; display:block; background:#000; border-radius:999px; }
-.ix-screen .app-mosede{ will-change:clip-path; }
+.ix-screen .app-mosede, .ix-screen .app-mosede > *{ will-change:transform; }
 .ix-screen .sheen{ position:absolute; inset:0; pointer-events:none;
   background:linear-gradient(135deg, rgba(255,255,255,.2), rgba(255,255,255,.04) 22%, rgba(255,255,255,0) 48%, rgba(255,255,255,0) 82%, rgba(255,255,255,.07)),
     radial-gradient(120% 90% at 50% 50%, rgba(14,15,16,0) 62%, rgba(14,15,16,.38));
   box-shadow:inset 0 0 0 1px rgba(255,255,255,.1); }
 /* which system it is: a Smoke chip under the glass, the dot ultramarine because it is live */
 .apptag{ left:0; top:0; display:flex; align-items:center; gap:8px; height:36px; padding:0 14px 0 12px; border-radius:18px;
-  background:var(--smoke); border:1px solid var(--rim-edge); box-shadow:var(--smoke-shadow);
-  -webkit-backdrop-filter:blur(14px); backdrop-filter:blur(14px);
+  background:var(--smoke-dense); border:1px solid var(--rim-edge); box-shadow:var(--smoke-shadow);
   font:400 11.5px/16px var(--mono); color:var(--porcelain); white-space:nowrap; will-change:transform,opacity; }
 .apptag .dot{ width:6px; height:6px; border-radius:3px; background:var(--ultra); box-shadow:0 0 0 3px rgba(218,221,251,.25); }
 
@@ -251,4 +250,4 @@ html:not(.ix-on) .tb{ background:var(--smoke-dense); }
    shows nothing and costs a full re-blur every frame the film moves
    (measured: 49 fps with it, 58 without). It comes back the moment the
    bar stands on the page. */
-html.ix-on:not(.nav-light) .tb, .ix-rail .rail-in{ -webkit-backdrop-filter:none; backdrop-filter:none; }
+html.ix-on:not(.nav-light) .tb, .ix-rail .rail-in, .apptag{ -webkit-backdrop-filter:none; backdrop-filter:none; }
