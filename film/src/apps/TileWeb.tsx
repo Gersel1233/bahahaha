@@ -53,14 +53,18 @@ export const TileWeb: React.FC = () => {
   const l1 = out5(seg(t, 2.3, 3.0)), l2 = out5(seg(t, 2.45, 3.15));
   const cta = out5(seg(t, 2.8, 3.4));
   const phone = sp(2.5, 16, 120);
-  // the cursor comes in and finds the button
-  const cur = io3(seg(t, 3.4, 4.3));
-  const hover = out3(seg(t, 4.2, 4.45)) * (1 - seg(t, 4.9, 5.1));
-  const click = t > 4.55 && t < 4.7 ? 0.96 : 1;
+  // the cursor comes in from the window's edge on a curve, slows onto the
+  // button, which lights up under it; it presses, and the page answers
+  const CLICK = 4.5;
+  const cq = seg(t, 3.3, 4.25), cur = 1 - Math.pow(1 - cq, 3.2); // fast, then settling
+  const hover = out3(seg(t, 4.05, 4.3));
+  const press = Math.sin(Math.PI * seg(t, CLICK - 0.08, CLICK + 0.16));
+  const click = 1 - 0.05 * press;
+  const curFade = 1 - seg(t, CLICK + 0.2, CLICK + 0.5);
   // then into the phone, as the page does
   const zoom = 0, white = 0;
   // after the press: the window steps back and the others fan out behind it
-  const back = io3(seg(t, 4.7, 5.35));
+  const back = io3(seg(t, CLICK + 0.1, CLICK + 0.8));
   const k = 1 + (Math.max(PW / SW, PH / SH) * 1.12 - 1) * zoom;
   const cx = SX + SW / 2, cy = SY + SH / 2, tcx = PX + PW / 2, tcy = PY + PH / 2;
   const tx = (cx + (tcx - cx) * zoom) - k * cx, ty = (cy + (tcy - cy) * zoom) - k * cy;
@@ -77,10 +81,10 @@ export const TileWeb: React.FC = () => {
         {/* a light behind the fan, as it opens */}
         <div style={{ position: 'absolute', left: TW / 2 - 520, top: 380, width: 1040, height: 760, borderRadius: '50%', background: 'radial-gradient(closest-side, rgba(70,100,200,.42), rgba(43,63,124,.12) 60%, transparent)', opacity: back }} />
         {FAN.map((f, i) => {
-          const o = sp(4.85 + i * 0.09, 14, 120);
-          if (t < 4.8) return null;
-          // once open, the fan breathes a little
-          const life = Math.sin((t - 5.6) * 1.6 + i) * 0.5 * clamp(seg(t, 5.4, 6));
+          // they open on springs that settle without swinging back and forth
+          const o = sp(CLICK + 0.3 + i * 0.08, 24, 120);
+          if (t < CLICK + 0.25) return null;
+          const life = 0;
           return (
             <div key={f.url} style={{ position: 'absolute', left: TW / 2 - FW2 / 2, top: FT, width: FW2, height: FH2, borderRadius: 22, overflow: 'hidden', background: '#0A0D16',
               transformOrigin: `${FW2 / 2}px ${PIVOT - FT}px`, transform: `perspective(1600px) rotate(${f.a * o + life}deg) rotateY(${-f.a * 0.25 * o}deg) translateY(${f.y * o}px) translateZ(${-Math.abs(f.a) * 2 * o}px)`, opacity: clamp(o * 2),
@@ -134,6 +138,13 @@ export const TileWeb: React.FC = () => {
               <span style={{ height: 50, padding: '0 22px', borderRadius: 25, display: 'flex', alignItems: 'center', color: PAPER, font: `500 16px/1 ${SANS}`,
                 background: 'linear-gradient(160deg, rgba(255,255,255,.16), rgba(255,255,255,.05))', boxShadow: 'inset 0 1px 0 rgba(255,255,255,.45), inset 0 0 0 1px rgba(255,255,255,.16)' }}>Skriv til os</span>
             </div>
+            {/* the cursor: inside the window, so it moves with it */}
+            {cur > 0 && curFade > 0 && (() => {
+              const ax = btnX + PW + 120, ay = btnY + 360, bx = btnX + 150, by = btnY + 31, cx2 = btnX + 470, cy2 = btnY + 60;
+              const x = (1 - cur) * (1 - cur) * ax + 2 * (1 - cur) * cur * cx2 + cur * cur * bx, y = (1 - cur) * (1 - cur) * ay + 2 * (1 - cur) * cur * cy2 + cur * cur * by;
+              return <svg width="30" height="36" viewBox="0 0 17 20" style={{ position: 'absolute', left: x, top: y, zIndex: 9, opacity: curFade, transformOrigin: '2px 2px', transform: `scale(${1 - 0.1 * press})`,
+                filter: 'drop-shadow(0 3px 5px rgba(0,0,0,.45))' }}><path d="M1.5 1.2v14.6l3.7-3.6 2.9 6.6 2.7-1.2-2.8-6.4h5.4z" fill="#000" stroke="#fff" strokeWidth="1.3" strokeLinejoin="round" /></svg>;
+            })()}
             {/* the phone, and its screen that turns to paper */}
             <div style={{ position: 'absolute', left: SX, top: SY, width: SW, height: SH, borderRadius: '13% / 6.2%', overflow: 'hidden',
               background: `radial-gradient(130% 70% at 50% 0%, #3A55A8 0%, ${DEEP} 18%, ${NAVY8} 52%, ${NAVY9} 100%)`, opacity: clamp(phone * 1.5), transform: `translateY(${60 * (1 - phone)}px)` }}>
@@ -143,12 +154,6 @@ export const TileWeb: React.FC = () => {
             <Img src={staticFile('ny/media/dev/iphone-17-pro-2x.webp')} style={{ position: 'absolute', left: FX, top: FY, width: FW, height: FH, opacity: clamp(phone * 1.5), transform: `translateY(${60 * (1 - phone)}px)` }} />
           </div>
         </div>
-        {/* the cursor */}
-        {cur > 0 && t < 4.85 && (
-          <svg width="34" height="40" viewBox="0 0 17 20" style={{ position: 'absolute', left: mix(TW - 60, btnX + 150, cur), top: mix(1380, btnY + 30, cur), filter: 'drop-shadow(0 3px 6px rgba(0,0,0,.4))', transform: `scale(${click})` }}>
-            <path d="M1 1v15l4-4 3 7 3-1.4-3-6.6h6z" fill="#fff" stroke="#000" strokeWidth="1.2" strokeLinejoin="round" />
-          </svg>
-        )}
       </div>
     </AbsoluteFill>
   );

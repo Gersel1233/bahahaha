@@ -315,3 +315,42 @@ if (msg) {
     }), { threshold: 0.4 }).observe(msg);
   } else msg.classList.add('m1', 'm3');
 }
+
+/* ---------- Safari's bars, in the colour of what is under them ----------
+   Safari colours its bars from the opaque strips at the top and bottom of
+   the screen; once the first screen has turned to paper, each strip takes
+   the colour of the section passing under it, so the page fills the phone
+   edge to edge whatever part of it is showing. */
+const edgeT = document.querySelector('.edge-t'), edgeB = document.querySelector('.edge-b');
+if (edgeT && edgeB && getComputedStyle(edgeT).display !== 'none') {
+  const tone = document.querySelector('meta[name="theme-color"]');
+  const html = document.documentElement;
+  const solid = c => { const m = c.match(/rgba?\(([^)]+)\)/); if (!m) return null; const p = m[1].split(',').map(Number); return p.length < 4 || p[3] > 0.9 ? c : null; };
+  // the colour of the page at a height, under anything fixed on top of it
+  const under = y => {
+    for (const el of document.elementsFromPoint(3, y)) {
+      if (el.closest('.edge, .tb, .mm')) continue;
+      for (let e = el; e && e !== document.documentElement; e = e.parentElement) {
+        const cs = getComputedStyle(e);
+        if (cs.position === 'fixed') break;
+        const c = solid(cs.backgroundColor); if (c) return c;
+      }
+    }
+    return null;
+  };
+  let raf = 0, lastT = '', lastB = '';
+  const paint = () => {
+    raf = 0;
+    if (html.classList.contains('hs-on') && !html.classList.contains('hs-past')) {
+      if (lastT) { edgeT.style.background = edgeB.style.background = html.style.background = ''; lastT = lastB = ''; }
+      return;
+    }
+    const t = under(8) || '', b = under(innerHeight - 8) || '';
+    if (t !== lastT) { lastT = t; edgeT.style.background = t; if (tone && t) tone.content = t; }
+    if (b !== lastB) { lastB = b; edgeB.style.background = b; html.style.background = b; }
+  };
+  const ask = () => { if (!raf) raf = requestAnimationFrame(paint); };
+  addEventListener('scroll', ask, { passive: true });
+  addEventListener('resize', ask);
+  ask();
+}

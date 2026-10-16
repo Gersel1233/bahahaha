@@ -82,11 +82,15 @@ const Stages: React.FC<{ f: number[] }> = ({ f: fills }) => {
 };
 
 // the status bar, as iOS draws it beside the island
-const Status: React.FC = () => (
-  <div style={{ position: 'absolute', left: 0, right: 0, top: 0, height: P(54), color: '#fff' }}>
+// net: signal and wi-fi, which iOS hides while the island is wide; all:
+// the whole bar, hidden while the island is open over it
+const Status: React.FC<{ net: number; all: number }> = ({ net, all }) => (
+  <div style={{ position: 'absolute', left: 0, right: 0, top: 0, height: P(54), color: '#fff', opacity: all }}>
     <svg style={{ position: 'absolute', right: P(26), top: P(19) }} width={P(76)} height={P(14)} viewBox="0 0 76 14">
-      {[0, 1, 2, 3].map(i => <rect key={i} x={i * 5} y={10 - i * 2.6} width="3.2" height={3.4 + i * 2.6} rx="0.9" fill="#fff" />)}
-      <path d="M31 4.2a9.6 9.6 0 0 1 13 0M33.4 7a6.2 6.2 0 0 1 8.2 0M35.8 9.8a2.8 2.8 0 0 1 3.4 0" fill="none" stroke="#fff" strokeWidth="1.9" strokeLinecap="round" />
+      <g opacity={net}>
+        {[0, 1, 2, 3].map(i => <rect key={i} x={i * 5} y={10 - i * 2.6} width="3.2" height={3.4 + i * 2.6} rx="0.9" fill="#fff" />)}
+        <path d="M31 4.2a9.6 9.6 0 0 1 13 0M33.4 7a6.2 6.2 0 0 1 8.2 0M35.8 9.8a2.8 2.8 0 0 1 3.4 0" fill="none" stroke="#fff" strokeWidth="1.9" strokeLinecap="round" />
+      </g>
       <rect x="50" y="1.5" width="22" height="11" rx="3.4" fill="none" stroke="rgba(255,255,255,.45)" strokeWidth="1.1" />
       <rect x="52" y="3.5" width="18" height="7" rx="1.8" fill="#fff" />
       <path d="M73.6 5.6v2.8a1.5 1.5 0 0 0 0-2.8z" fill="rgba(255,255,255,.45)" />
@@ -124,7 +128,7 @@ export const TileApps: React.FC = () => {
   const done = Math.sin(Math.PI * seg(t, S3, S3 + 0.3)); // a small lift when it is ready
 
   // the island's size: hardware → expanded → compact, never smaller than the hardware's
-  const base = t < CLOSE ? ISL.w + 16 * gulp : 194;
+  const base = t < CLOSE ? ISL.w + 16 * gulp : 190;
   const ge = Math.max(0, g);
   const w = mix(base, 380, g) * (1 + 0.012 * done), h = mix(ISL.h + 2.5 * gulp, 150, ge) * (1 + 0.012 * done), r = mix((ISL.h + 2.5 * gulp) / 2, 44, ge);
 
@@ -139,7 +143,7 @@ export const TileApps: React.FC = () => {
       {/* ---------- the lock screen, iOS 18's ---------- */}
       <div style={{ position: 'absolute', left: SX, top: SY, width: SW, height: SHh, borderRadius: '13% / 6.2%', overflow: 'hidden',
         background: `radial-gradient(130% 70% at 50% 0%, #3A55A8 0%, ${DEEP} 18%, ${NAVY8} 52%, ${NAVY9} 100%)` }}>
-        <Status />
+        <Status net={1 - seg(w, ISL.w + 8, ISL.w + 40)} all={1 - seg(ge, 0.05, 0.3)} />
         <svg style={{ position: 'absolute', left: P(201 - 9.5), top: P(57) }} width={P(19)} height={P(19)} viewBox="0 0 24 24">
           <rect x="5" y="10.5" width="14" height="10" rx="2.6" fill="#fff" /><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5" fill="none" stroke="#fff" strokeWidth="2.2" />
         </svg>
@@ -170,12 +174,13 @@ export const TileApps: React.FC = () => {
       {/* ---------- the Dynamic Island, exactly over the camera's ---------- */}
       <div style={{ position: 'absolute', left: SX + (ISL.cx - w / 2) * pt, top: SY + ISL.top * pt - 0.6 * pt, width: w * pt, height: (h + 1.2) * pt, borderRadius: (r + 0.6) * pt,
         background: '#000', overflow: 'hidden', boxShadow: g > 0.05 ? `0 ${P(12)}px ${P(34)}px rgba(0,0,0,.45)` : 'none' }}>
-        {/* compact: the app to the left of the camera, the tick to its right */}
-        <div style={{ position: 'absolute', left: 0, right: 0, top: 0, height: (ISL.h + 1.2) * pt, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: `0 ${P(7)}px`,
-          ...blurIn(compactVis, 0.7) }}>
-          <Icon src={JERES} s={P(25)} />
-          <span style={{ display: 'flex', alignItems: 'center', gap: P(4), paddingRight: P(4), font: `600 ${P(15)}px/1 ${SANS}`, color: GREEN }}>
-            <Check p={seg(t, CLOSE + 0.32, CLOSE + 0.62)} size={7.5} color={GREEN} width={3.4} />Klar</span>
+        {/* compact, as iOS lays it: the app's icon to the left of the camera,
+            inset from the island's round end; a tick to the right of the lens */}
+        <div style={{ position: 'absolute', left: 0, right: 0, top: 0, height: (ISL.h + 1.2) * pt, ...blurIn(compactVis, 0.7) }}>
+          <span style={{ position: 'absolute', left: P(9.5), top: P((ISL.h + 1.2 - 20) / 2) }}><Icon src={JERES} s={P(20)} /></span>
+          <span style={{ position: 'absolute', right: P(9.5), top: P((ISL.h + 1.2 - 20) / 2), width: P(20), height: P(20), borderRadius: '50%', background: GREEN,
+            display: 'grid', placeItems: 'center', transform: `scale(${mix(0.5, 1, out3(seg(t, CLOSE + 0.28, CLOSE + 0.5)))})` }}>
+            <Check p={seg(t, CLOSE + 0.34, CLOSE + 0.62)} size={5.4} color="#000" width={4} /></span>
         </div>
         {/* expanded, laid out round the camera as iOS lays it: the app to its
             left, the time to its right, the state and its stages under it */}
