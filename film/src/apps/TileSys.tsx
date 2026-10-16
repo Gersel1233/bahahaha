@@ -14,7 +14,7 @@ import React from 'react';
 import { AbsoluteFill, Img, staticFile } from 'remotion';
 import { useT, useFonts, seg, out3, io3, mix, clamp, SANS, MONO, IOS } from './common';
 
-export const SYS_S = 7.2;
+export const SYS_S = 9.4;
 
 // the iPad: an 11-inch iPad Pro, landscape, in its own points
 const UW = 1180, UH = 820, BEZ = 20, FRAME = 3, R_SCREEN = 30;
@@ -172,15 +172,25 @@ export const TileSys: React.FC = () => {
   // the guest is told, by the system, on their phone
   const sms = apple(BACK + 0.55, 0.45, 0.8);
 
+  // and then they keep coming: one order after another from spiis.dk, faster
+  // and faster, each a notification and a new card in Nye
+  const RUSH = [6.05, 6.6, 7.05, 7.42, 7.74, 8.02, 8.26, 8.47, 8.66];
+  const DISHES: [string, string][] = [['Mørbradgryde × 2', 'Rødgrød × 1'], ['Dagens suppe × 3', 'Brød × 3'], ['Mørbradgryde × 1', 'Kartoffelsalat × 1'], ['Frikadeller × 4', 'Kartoffelsalat × 2'],
+    ['Mørbradgryde × 2', 'Dagens suppe × 1'], ['Dagens ret × 2', 'Rødgrød × 2'], ['Mørbradgryde × 3', 'Brød × 1'], ['Frikadeller × 2', 'Rødgrød × 1'], ['Dagens suppe × 2', 'Brød × 2']];
+  const rush = RUSH.map(at => t < at - 0.05 ? 0 : apple(at, 0.42, 0.86));
+  const got = RUSH.filter(at => t >= at).length;
+  const below = (i: number) => rush.slice(i + 1).reduce((a, b) => a + clamp(b), 0); // how many came after it
+  const total = (q: number) => got === 0 ? <Num from={23} to={24} q={q} /> : <Num from={23 + got} to={24 + got} q={out3(seg(t, RUSH[got - 1], RUSH[got - 1] + 0.3))} />;
+
   // the card that is followed, and the others making room for it
   const c214 = lerp(lerp(slot(0, 0), slot(1, 0), m1), slot(2, 0), m2);
   const others: [Pt, number, string, string, string, Stage, number][] = [
     [lerp(slot(2, 0), slot(2, 1), m2), 210, '16.50', 'Mørbradgryde × 1', 'Hentes ved disken', 'ready', 0],
     [lerp(lerp(slot(1, 1), slot(1, 2), m1), slot(1, 1), m2), 211, '17.00', 'Mørbradgryde × 2', 'Kartoffelsalat × 1', 'cooking', 0.72 + 0.2 * cook],
     [lerp(lerp(slot(1, 0), slot(1, 1), m1), slot(1, 0), m2), 212, '17.10', 'Dagens suppe × 1', 'Brød × 2', 'cooking', 0.3 + 0.3 * cook],
-    [lerp(lerp(slot(0, 0), slot(0, 1), appear), slot(0, 0), m1), 213, '17.15', 'Mørbradgryde × 2', 'Rødgrød × 2', 'new', 0],
+    [(p => ({ x: p.x, y: p.y + below(-1) * (CARD_H + GAP) }))(lerp(lerp(slot(0, 0), slot(0, 1), appear), slot(0, 0), m1)), 213, '17.15', 'Mørbradgryde × 2', 'Rødgrød × 2', 'new', 0],
   ];
-  const n = (i: number) => i === 0 ? (t < START + 0.1 ? (appear > 0.5 ? 2 : 1) : 1) : i === 1 ? (m1 > 0.5 && m2 < 0.5 ? 3 : 2) : (m2 > 0.5 ? 2 : 1);
+  const n = (i: number) => i === 0 ? (t < START + 0.1 ? (appear > 0.5 ? 2 : 1) : 1 + got) : i === 1 ? (m1 > 0.5 && m2 < 0.5 ? 3 : 2) : (m2 > 0.5 ? 2 : 1);
 
   // the camera: close on the glass, following the order from column to
   // column, then back, to show the whole iPad
@@ -222,13 +232,13 @@ export const TileSys: React.FC = () => {
           <div key={l} style={{ height: 44, borderRadius: 22, display: 'flex', alignItems: 'center', gap: 12, padding: '0 14px', marginBottom: 2,
             background: i === 0 ? OBS : 'transparent', color: i === 0 ? PORC : OBS, font: `500 16px/1 ${SANS}` }}>
             <Ico d={d} s={19} c={i === 0 ? PORC : GRAPH} />{l}
-            {i === 1 && <span style={{ marginLeft: 'auto', font: `400 13px/1 ${MONO}`, color: GRAPH }}><Num from={23} to={24} q={count} /></span>}
+            {i === 1 && <span style={{ marginLeft: 'auto', font: `400 13px/1 ${MONO}`, color: GRAPH }}>{total(count)}</span>}
           </div>
         ))}
         {/* the evening, in mono, at the foot of the sidebar */}
         <div style={{ position: 'absolute', left: 18, right: 18, bottom: 18, paddingTop: 14, borderTop: `1px solid ${TRAV}`, display: 'flex', flexDirection: 'column', gap: 10, font: `400 12px/1 ${MONO}`, color: GRAPH }}>
           <span style={{ display: 'flex', justifyContent: 'space-between' }}>KOMMISSION<b style={{ font: `500 15px/1 ${SANS}`, color: OBS }}>0 kr</b></span>
-          <span style={{ display: 'flex', justifyContent: 'space-between' }}>I DAG<b style={{ font: `500 15px/1 ${SANS}`, color: OBS }}><Num from={23} to={24} q={count} /> stk.</b></span>
+          <span style={{ display: 'flex', justifyContent: 'space-between' }}>I DAG<b style={{ font: `500 15px/1 ${SANS}`, color: OBS }}>{total(count)} stk.</b></span>
         </div>
       </div>
 
@@ -259,6 +269,12 @@ export const TileSys: React.FC = () => {
         );
       })}
       {/* the cards */}
+      {rush.map((a, i) => a <= 0 ? null : (
+        <div key={'r' + i} style={{ position: 'absolute', left: slot(0, 0).x, top: slot(0, 0).y + below(i) * (CARD_H + GAP), opacity: clamp(a * 1.6), zIndex: 2,
+          transform: `translateY(${-36 * (1 - a)}px) scale(${mix(0.95, 1, clamp(a))})` }}>
+          <Card no={215 + i} at={(m => `${17 + Math.floor(m / 60)}.${String(m % 60).padStart(2, '0')}`)(35 + 5 * i)} what={DISHES[i][0]} more={DISHES[i][1] + ' · fra spiis.dk'} stage="new" now={(1 - seg(t, RUSH[i] + 0.5, RUSH[i] + 0.9)) * clamp(a)} />
+        </div>
+      ))}
       {others.map(([p, no, at, what, more, st, ck]) => (
         <div key={no} style={{ position: 'absolute', left: p.x, top: p.y }}><Card no={no} at={at} what={what} more={more} stage={st} cook={ck} /></div>
       ))}
@@ -317,19 +333,33 @@ export const TileSys: React.FC = () => {
         </div>
       </div>
 
-      {/* ---------- and on the guest's phone, the system's own message ---------- */}
-      <div style={{ position: 'absolute', left: 120, top: 590, width: 600, padding: '22px 24px', borderRadius: 34, display: 'flex', alignItems: 'center', gap: 18, boxSizing: 'border-box',
-        background: 'linear-gradient(160deg, rgba(255,255,255,.32), rgba(255,255,255,.16))', boxShadow: 'inset 0 1.5px 0 rgba(255,255,255,.55), inset 0 0 0 1.5px rgba(255,255,255,.14), 0 30px 60px rgba(0,0,0,.45)',
-        color: '#fff', fontFamily: IOS, opacity: clamp(sms * 1.4), transform: `translateY(${60 * (1 - sms)}px) scale(${mix(0.88, 1, clamp(sms))})`,
-        filter: sms < 0.98 ? `blur(${(1 - clamp(sms)) * 6}px)` : undefined }}>
-        <Img src={staticFile('ny/media/ic/spiis.svg')} style={{ width: 64, height: 64, borderRadius: 15, flex: 'none' }} />
-        <span style={{ display: 'flex', flexDirection: 'column', gap: 6, flex: 1 }}>
-          <span style={{ font: `500 18px/1 ${IOS}`, color: 'rgba(255,255,255,.65)' }}>SPIIS</span>
-          <b style={{ font: `600 25px/1.15 ${IOS}` }}>Din bestilling er klar</b>
-          <span style={{ font: `400 22px/1.2 ${IOS}`, color: 'rgba(255,255,255,.82)' }}>#0214 · hent den ved disken</span>
-        </span>
-        <span style={{ alignSelf: 'flex-start', font: `400 18px/1 ${IOS}`, color: 'rgba(255,255,255,.6)' }}>nu</span>
-      </div>
+      {/* ---------- the notifications: the guest's, then the orders rolling in,
+          stacked as iOS stacks them, the newest on top ---------- */}
+      {([[sms, 'Din bestilling er klar', '#0214 · hent den ved disken'] as [number, string, string]]
+        .concat(RUSH.map((_, i) => [rush[i], `Ny bestilling #0${215 + i}`, `${DISHES[i][0]} · spiis.dk`] as [number, string, string])))
+        .map(([a, title, body], k, all) => {
+          if (a <= 0.001) return null;
+          const d = all.slice(k + 1).reduce((x, [b]) => x + clamp(b), 0); // how deep in the stack
+          if (d > 3.2) return null;
+          return (
+            <div key={k} style={{ position: 'absolute', left: 120, top: 590, width: 600, height: 112, padding: '0 24px', borderRadius: 34, display: 'flex', alignItems: 'center', gap: 18, boxSizing: 'border-box',
+              // frosted, as iOS draws them, so the ones under it are not read through it
+              background: `linear-gradient(160deg, rgba(${mix(92, 70, clamp(d / 2)) | 0},${mix(90, 68, clamp(d / 2)) | 0},${mix(92, 72, clamp(d / 2)) | 0},.88), rgba(52,50,52,.9))`,
+              backdropFilter: 'blur(20px) saturate(1.6)',
+              boxShadow: 'inset 0 1.5px 0 rgba(255,255,255,.55), inset 0 0 0 1.5px rgba(255,255,255,.14), 0 30px 60px rgba(0,0,0,.45)',
+              color: '#fff', fontFamily: IOS, zIndex: 10 + k, opacity: clamp(a * 1.4) * (1 - seg(d, 2.2, 3.2)),
+              transformOrigin: '50% 100%', transform: `translateY(${-70 * (1 - a) + 15 * Math.min(d, 2.5)}px) scale(${mix(0.9, 1, clamp(a)) * (1 - 0.05 * Math.min(d, 2.5))})`,
+              filter: a < 0.98 ? `blur(${(1 - clamp(a)) * 6}px)` : undefined }}>
+              <Img src={staticFile('ny/media/ic/spiis.svg')} style={{ width: 64, height: 64, borderRadius: 15, flex: 'none', opacity: 1 - clamp(d * 1.6) }} />
+              <span style={{ display: 'flex', flexDirection: 'column', gap: 6, flex: 1, opacity: 1 - clamp(d * 1.6) }}>
+                <span style={{ font: `500 18px/1 ${IOS}`, color: 'rgba(255,255,255,.65)' }}>SPIIS</span>
+                <b style={{ font: `600 25px/1.15 ${IOS}` }}>{title}</b>
+                <span style={{ font: `400 22px/1.2 ${IOS}`, color: 'rgba(255,255,255,.82)' }}>{body}</span>
+              </span>
+              <span style={{ alignSelf: 'flex-start', marginTop: 22, font: `400 18px/1 ${IOS}`, color: 'rgba(255,255,255,.6)', opacity: 1 - clamp(d) }}>nu</span>
+            </div>
+          );
+        })}
     </AbsoluteFill>
   );
 };
