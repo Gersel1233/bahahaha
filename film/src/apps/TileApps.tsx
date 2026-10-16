@@ -7,7 +7,7 @@
    demonstration of the kind of app we build, under no client's name. */
 import React from 'react';
 import { AbsoluteFill, Img, staticFile } from 'remotion';
-import { useT, useFonts, seg, out3, out5, mix, clamp, Check, SANS } from './common';
+import { useT, useFonts, seg, out3, out5, mix, clamp, Check, IOS } from './common';
 
 export const TILE_S = 8;
 export const APPS_S = 6.2;
@@ -45,7 +45,7 @@ const Roll: React.FC<{ items: [string, number, string][]; t: number; size: numbe
       const go = next ? out3(seg(t, next[1], next[1] + 0.22)) : 0;
       const o = inn * (1 - go);
       if (o <= 0.001) return null;
-      return <span key={txt} style={{ position: 'absolute', left: 0, top: 0, whiteSpace: 'nowrap', font: `600 ${P(size)}px/1.2 ${SANS}`, color, letterSpacing: P(-0.3),
+      return <span key={txt} style={{ position: 'absolute', left: 0, top: 0, whiteSpace: 'nowrap', font: `600 ${P(size)}px/1.2 ${IOS}`, color, letterSpacing: P(-0.3),
         opacity: o, transform: `translateY(${((1 - inn) * 10 - go * 10) * pt}px)`, filter: o < 0.99 ? `blur(${(1 - o) * P(4)}px)` : undefined }}>{txt}</span>;
     })}
   </span>
@@ -72,7 +72,7 @@ const Stages: React.FC<{ f: number[] }> = ({ f: fills }) => {
         </span>
       ))}
     </div>
-    <div style={{ display: 'flex', gap: P(4), marginTop: P(9), font: `500 ${P(12)}px/1 ${SANS}` }}>
+    <div style={{ display: 'flex', gap: P(4), marginTop: P(9), font: `500 ${P(12)}px/1 ${IOS}` }}>
       {['Modtaget', 'Tilberedes', 'Klar'].map((s, i) => (
         <span key={s} style={{ flex: 1, color: i < 2 ? `rgba(255,255,255,${mix(0.4, 0.7, fills[i])})` : `rgba(${mix(255, 48, last) | 0},${mix(255, 209, last) | 0},${mix(255, 88, last) | 0},${mix(0.4, 1, last)})` }}>{s}</span>
       ))}
@@ -105,11 +105,13 @@ export const TileApps: React.FC = () => {
 
   // 1. the notification lands on the lock screen, from below, on a spring
   const LAND = 0.35;
-  const land = sp(LAND, 18, 170);
+  // Apple's springs, from a response (s) and a damping fraction
+  const apple = (at: number, response: number, df: number) => sp(at, 4 * Math.PI * df / response, (2 * Math.PI / response) ** 2, 1);
+  const land = apple(LAND, 0.42, 0.86);
   // 2. and goes up into the island: its words go out of a blur, its shape
   //    narrows to the island's and darkens to it
   const UP = 1.65;
-  const bm = t < UP ? 1 : 1 - sp(UP, 21, 165);
+  const bm = t < UP ? 1 : 1 - apple(UP, 0.5, 0.9);
   const bContent = 1 - seg(t, UP, UP + 0.16);
   const showBanner = t > LAND - 0.05 && !(t > UP + 0.2 && bm <= 0.004);
   // 3. the island swallows it, and opens straight away as the Live Activity,
@@ -122,7 +124,7 @@ export const TileApps: React.FC = () => {
   const ready = out3(seg(t, S3, S3 + 0.2));
   // 4. ready: its words go, and it folds up round the camera, small, with a tick
   const CLOSE = S3 + 0.95;
-  const g = t < CLOSE ? sp(OPEN, 15, 165) : 1 - sp(CLOSE, 26, 230);
+  const g = t < CLOSE ? apple(OPEN, 0.46, 0.74) : 1 - apple(CLOSE, 0.4, 0.92);
   const openContent = seg(t, OPEN + 0.14, OPEN + 0.42) * (1 - seg(t, CLOSE - 0.12, CLOSE + 0.02));
   const compactVis = seg(t, CLOSE + 0.22, CLOSE + 0.5);
   const done = Math.sin(Math.PI * seg(t, S3, S3 + 0.3)); // a small lift when it is ready
@@ -137,7 +139,7 @@ export const TileApps: React.FC = () => {
   const landed = clamp(land * 1.3);
 
   return (
-    <AbsoluteFill style={{ background: `radial-gradient(120% 70% at 50% 100%, ${DEEP}, ${NAVY8} 48%, ${NAVY9})`, fontFamily: SANS, overflow: 'hidden' }}>
+    <AbsoluteFill style={{ background: `radial-gradient(120% 70% at 50% 100%, ${DEEP}, ${NAVY8} 48%, ${NAVY9})`, fontFamily: IOS, overflow: 'hidden' }}>
       <div style={{ position: 'absolute', left: PX - 120, top: PY - 160, width: PW + 240, height: PW + 240, borderRadius: '50%', background: 'radial-gradient(closest-side, rgba(70,100,200,.35), transparent)' }} />
 
       {/* ---------- the lock screen, iOS 18's ---------- */}
@@ -147,8 +149,8 @@ export const TileApps: React.FC = () => {
         <svg style={{ position: 'absolute', left: P(201 - 9.5), top: P(57) }} width={P(19)} height={P(19)} viewBox="0 0 24 24">
           <rect x="5" y="10.5" width="14" height="10" rx="2.6" fill="#fff" /><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5" fill="none" stroke="#fff" strokeWidth="2.2" />
         </svg>
-        <div style={{ position: 'absolute', top: P(78), left: 0, right: 0, textAlign: 'center', color: 'rgba(255,255,255,.88)', font: `600 ${P(18.5)}px/1 ${SANS}` }}>Torsdag 15. oktober</div>
-        <div style={{ position: 'absolute', top: P(98), left: 0, right: 0, textAlign: 'center', color: 'rgba(255,255,255,.96)', font: `700 ${P(98)}px/1 ${SANS}`, letterSpacing: P(-3.6) }}>9:41</div>
+        <div style={{ position: 'absolute', top: P(78), left: 0, right: 0, textAlign: 'center', color: 'rgba(255,255,255,.88)', font: `600 ${P(18.5)}px/1 ${IOS}` }}>Torsdag 15. oktober</div>
+        <div style={{ position: 'absolute', top: P(98), left: 0, right: 0, textAlign: 'center', color: 'rgba(255,255,255,.96)', font: `700 ${P(98)}px/1 ${IOS}`, letterSpacing: P(-3.6) }}>9:41</div>
       </div>
       <Img src={staticFile('ny/media/dev/iphone-17-pro-2x.webp')} style={{ position: 'absolute', left: PX, top: PY, width: PW, height: PH }} />
 
@@ -161,19 +163,32 @@ export const TileApps: React.FC = () => {
           ...blurIn(bContent, 0.8), transformOrigin: '50% 0' }}>
           <Icon src={JERES} s={P(38)} />
           <span style={{ display: 'flex', flexDirection: 'column', gap: P(3), flex: 1, minWidth: 0 }}>
-            <span style={{ font: `500 ${P(12)}px/1 ${SANS}`, color: 'rgba(255,255,255,.6)', letterSpacing: P(0.3) }}>JERES APP</span>
-            <b style={{ font: `600 ${P(15)}px/1.15 ${SANS}` }}>Din bestilling er modtaget</b>
-            <span style={{ font: `400 ${P(14)}px/1.2 ${SANS}`, color: 'rgba(255,255,255,.8)' }}>3 retter · afhentning kl. 17.30</span>
+            <span style={{ font: `500 ${P(12)}px/1 ${IOS}`, color: 'rgba(255,255,255,.6)', letterSpacing: P(0.3) }}>JERES APP</span>
+            <b style={{ font: `600 ${P(15)}px/1.15 ${IOS}` }}>Din bestilling er modtaget</b>
+            <span style={{ font: `400 ${P(14)}px/1.2 ${IOS}`, color: 'rgba(255,255,255,.8)' }}>3 retter · afhentning kl. 17.30</span>
           </span>
-          <span style={{ alignSelf: 'flex-start', marginTop: P(14), font: `400 ${P(12)}px/1 ${SANS}`, color: 'rgba(255,255,255,.6)' }}>nu</span>
+          <span style={{ alignSelf: 'flex-start', marginTop: P(14), font: `400 ${P(12)}px/1 ${IOS}`, color: 'rgba(255,255,255,.6)' }}>nu</span>
         </div>
         {/* it turns to the island's black on the way up */}
         <i style={{ position: 'absolute', inset: 0, background: '#000', opacity: seg(1 - bm, 0.12, 0.55) }} />
       </div>}
 
+      {/* as the notification nears the island, the island reaches for it: the
+          two black shapes join like drops, the way the island meets things */}
+      {t > UP && bm < 0.55 && bm > 0.004 && (
+        <svg style={{ position: 'absolute', left: 0, top: 0 }} width={TW} height={SY + P(140)}>
+          <defs><filter id="goo" x="-20%" y="-50%" width="140%" height="200%">
+            <feGaussianBlur stdDeviation={P(5)} /><feColorMatrix values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 24 -11" />
+          </filter></defs>
+          <g filter="url(#goo)">
+            <rect x={SX + P(ISL.cx - ISL.w / 2)} y={SY + P(ISL.top)} width={P(ISL.w)} height={P(ISL.h)} rx={P(ISL.h / 2)} fill="#000" />
+            <rect x={SX + P(bl)} y={SY + P(bt)} width={P(bw)} height={P(bh)} rx={P(br)} fill="#000" opacity={seg(1 - bm, 0.45, 0.75)} />
+          </g>
+        </svg>
+      )}
       {/* ---------- the Dynamic Island, exactly over the camera's ---------- */}
       <div style={{ position: 'absolute', left: SX + (ISL.cx - w / 2) * pt, top: SY + ISL.top * pt - 0.6 * pt, width: w * pt, height: (h + 1.2) * pt, borderRadius: (r + 0.6) * pt,
-        background: '#000', overflow: 'hidden', boxShadow: g > 0.05 ? `0 ${P(12)}px ${P(34)}px rgba(0,0,0,.45)` : 'none' }}>
+        background: '#000', overflow: 'hidden' }}>
         {/* compact, as iOS lays it: the app's icon to the left of the camera,
             inset from the island's round end; a tick to the right of the lens */}
         <div style={{ position: 'absolute', left: 0, right: 0, top: 0, height: (ISL.h + 1.2) * pt, ...blurIn(compactVis, 0.7) }}>
@@ -187,8 +202,8 @@ export const TileApps: React.FC = () => {
         <div style={{ position: 'absolute', left: (w - 380) / 2 * pt, top: 0, width: P(380), height: P(150), color: '#fff' }}>
           <div style={{ position: 'absolute', left: P(16), top: P(12), ...blurIn(openContent, 0.85), transformOrigin: '0 0' }}><Icon src={JERES} s={P(40)} /></div>
           <div style={{ position: 'absolute', right: P(20), top: P(13), textAlign: 'right', ...blurIn(openContent, 0.85), transformOrigin: '100% 0' }}>
-            <span style={{ display: 'block', font: `600 ${P(22)}px/1 ${SANS}`, letterSpacing: P(-0.6) }}>17.30</span>
-            <span style={{ display: 'block', marginTop: P(4), font: `500 ${P(12)}px/1 ${SANS}`, color: 'rgba(255,255,255,.55)' }}>afhentning</span>
+            <span style={{ display: 'block', font: `600 ${P(22)}px/1 ${IOS}`, letterSpacing: P(-0.6) }}>17.30</span>
+            <span style={{ display: 'block', marginTop: P(4), font: `500 ${P(12)}px/1 ${IOS}`, color: 'rgba(255,255,255,.55)' }}>afhentning</span>
           </div>
           <div style={{ position: 'absolute', left: P(18), right: P(20), top: P(62), ...blurIn(seg(t, OPEN + 0.22, OPEN + 0.5) * (1 - seg(t, CLOSE - 0.12, CLOSE + 0.02)), 0.95), transformOrigin: '50% 0' }}>
             <Roll t={t} size={20} items={[['Bestilling modtaget', 0, '#fff'], ['Tilberedes', S2 - 0.1, '#fff'], ['Klar til afhentning', S3, GREEN]]} />

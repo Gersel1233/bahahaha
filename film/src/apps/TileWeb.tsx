@@ -56,7 +56,8 @@ export const TileWeb: React.FC = () => {
   // the cursor comes in from the window's edge on a curve, slows onto the
   // button, which lights up under it; it presses, and the page answers
   const CLICK = 4.5;
-  const cq = seg(t, 3.3, 4.25), cur = 1 - Math.pow(1 - cq, 3.2); // fast, then settling
+  // a hand on a trackpad: a minimum-jerk path, gentle out and gentle in
+  const cq = seg(t, 3.25, 4.3), cur = cq * cq * cq * (10 - 15 * cq + 6 * cq * cq);
   const hover = out3(seg(t, 4.05, 4.3));
   const press = Math.sin(Math.PI * seg(t, CLICK - 0.08, CLICK + 0.16));
   const click = 1 - 0.05 * press;
@@ -134,16 +135,18 @@ export const TileWeb: React.FC = () => {
             </div>
             <div style={{ position: 'absolute', left: btnX, top: btnY, display: 'flex', gap: 12, opacity: cta, transform: `translateY(${14 * (1 - cta)}px)` }}>
               <span style={{ height: 50, padding: '0 22px', borderRadius: 25, display: 'flex', alignItems: 'center', background: PAPER, color: '#0E0F10', font: `500 16px/1 ${SANS}`,
-                transform: `scale(${(1 + 0.05 * hover) * click})`, boxShadow: `0 0 ${30 * hover}px rgba(246,244,239,${0.45 * hover})` }}>Se hvad vi bygger →</span>
+                transform: `scale(${(1 + 0.02 * hover) * click})`, boxShadow: `0 0 ${30 * hover}px rgba(246,244,239,${0.45 * hover})` }}>Se hvad vi bygger →</span>
               <span style={{ height: 50, padding: '0 22px', borderRadius: 25, display: 'flex', alignItems: 'center', color: PAPER, font: `500 16px/1 ${SANS}`,
                 background: 'linear-gradient(160deg, rgba(255,255,255,.16), rgba(255,255,255,.05))', boxShadow: 'inset 0 1px 0 rgba(255,255,255,.45), inset 0 0 0 1px rgba(255,255,255,.16)' }}>Skriv til os</span>
             </div>
             {/* the cursor: inside the window, so it moves with it */}
-            {cur > 0 && curFade > 0 && (() => {
-              const ax = btnX + PW + 120, ay = btnY + 360, bx = btnX + 150, by = btnY + 31, cx2 = btnX + 470, cy2 = btnY + 60;
+            {cq > 0 && curFade > 0 && (() => {
+              // from low on the right, on a soft curve, to the button's arrow
+              const ax = btnX + PW - 150, ay = btnY + 300, bx = btnX + 168, by = btnY + 28, cx2 = btnX + 420, cy2 = btnY + 40;
               const x = (1 - cur) * (1 - cur) * ax + 2 * (1 - cur) * cur * cx2 + cur * cur * bx, y = (1 - cur) * (1 - cur) * ay + 2 * (1 - cur) * cur * cy2 + cur * cur * by;
-              return <svg width="30" height="36" viewBox="0 0 17 20" style={{ position: 'absolute', left: x, top: y, zIndex: 9, opacity: curFade, transformOrigin: '2px 2px', transform: `scale(${1 - 0.1 * press})`,
-                filter: 'drop-shadow(0 3px 5px rgba(0,0,0,.45))' }}><path d="M1.5 1.2v14.6l3.7-3.6 2.9 6.6 2.7-1.2-2.8-6.4h5.4z" fill="#000" stroke="#fff" strokeWidth="1.3" strokeLinejoin="round" /></svg>;
+              // macOS's arrow, at the page's own scale
+              return <svg width="19" height="29" viewBox="0 0 12.6 19" style={{ position: 'absolute', left: x, top: y, zIndex: 9, opacity: curFade * clamp(cq / 0.12),
+                filter: 'drop-shadow(0 1px 1.5px rgba(0,0,0,.4))' }}><path d="M1 1v14.6l3.6-3.4 2.4 5.5 2.4-1-2.4-5.4h4.8z" fill="#000" stroke="#fff" strokeWidth="1.1" strokeLinejoin="round" /></svg>;
             })()}
             {/* the phone, and its screen that turns to paper */}
             <div style={{ position: 'absolute', left: SX, top: SY, width: SW, height: SH, borderRadius: '13% / 6.2%', overflow: 'hidden',

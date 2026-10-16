@@ -19,6 +19,7 @@ export const mix = (a: number, b: number, t: number) => a + (b - a) * t;
 export const SANS = "'Chivo', system-ui, sans-serif";
 export const SERIF = "'Newsreader', Georgia, serif";
 export const MONO = "'Fragment Mono', ui-monospace, monospace";
+export const IOS = "'Inter', -apple-system, system-ui, sans-serif";
 
 // seconds, and a spring that starts at a given second
 export function useT() {
@@ -36,6 +37,8 @@ export function useFonts() {
     const faces: [string, string, string, string?][] = [
       ['Chivo', 'fonts/chivo-400.woff2', '400'], ['Chivo', 'fonts/chivo-500.woff2', '500'], ['Chivo', 'fonts/chivo-600.woff2', '600'],
       ['Newsreader', 'fonts/newsreader-300-italic.woff2', '300', 'italic'], ['Fragment Mono', 'fonts/fragmentmono-400.woff2', '400'],
+      // the nearest open face to Apple's own, for what is drawn as iOS
+      ['Inter', 'film/assets/fonts/inter-var.woff2', '100 900'],
     ];
     Promise.all(faces.map(([fam, src, weight, style]) => new FontFace(fam, `url(${staticFile(src)})`, { weight, style: style || 'normal' })
       .load().then(f => { (document.fonts as any).add(f); })))
