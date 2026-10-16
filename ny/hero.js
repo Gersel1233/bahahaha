@@ -32,6 +32,8 @@ export function startHero() {
   const copy = $('.hs-copy-in'), says = $$('.hs-ch > li > div'), apps = $$('.hs-s[data-s]');
   const white = $('.hs-white'), paper = $('.hs-paper');
   const vids = apps.map(a => $('video', a));
+  const lock = $('.hs-lock'), screens = [lock, ...apps], sw = $('.hs-sw'), labs = [null, ...$$('.hs-lab')];
+  const rail = $('.hs-rail'), railItems = $$('.hs-rail li');
   const end = $('.hs-end'), words = $$('.hs-end .g'), pillVids = $$('.hs-end video');
   const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -108,17 +110,48 @@ export function startHero() {
     copy.style.transform = 'translate3d(0,' + (-40 * c).toFixed(1) + 'px,0)';
     copy.style.visibility = c >= 1 ? 'hidden' : '';
 
-    // each app opens over the last, the way iOS opens one
-    let open = -1;
-    apps.forEach((a, i) => {
-      const q = out(seg(p, OPEN[i], OPEN[i] + 0.05));
-      a.style.opacity = q.toFixed(3);
-      a.style.transform = 'scale(' + (0.86 + 0.14 * q).toFixed(4) + ')';
-      if (q > 0) open = i;
+    // from one app to the next the way an iPhone does it: the screen goes
+    // up into the app switcher as a card, the cards slide across, and the
+    // next one opens. Three times: lock screen → Spiis → Mosede → Callster.
+    const tr = k => {
+      const c = OPEN[k - 1], u = seg(p, c - 0.05, c + 0.06);
+      return { u, up: io3(seg(u, 0, 0.34)), across: io3(seg(u, 0.3, 0.7)), into: io3(seg(u, 0.66, 1)) };
+    };
+    const T = [null, tr(1), tr(2), tr(3)];
+    const CARD = 0.62, SLIDE = 0.7, LIFT = 0.04;
+    let cur = 0, back = 0;
+    screens.forEach((el, j) => {
+      const tin = T[j], tout = T[j + 1];
+      let k = 1, x = 0, y = 0, o = 1, lab = 0;
+      if (tin && tin.u <= 0) o = 0;
+      else if (tout && tout.u >= 1) o = 0;
+      else if (tout && tout.u > 0) { k = 1 - (1 - CARD) * tout.up; y = -LIFT * tout.up; x = -SLIDE * tout.across; lab = tout.up * (1 - tout.into); o = 1 - tout.into; }
+      else if (tin && tin.u < 1) { k = CARD + (1 - CARD) * tin.into; y = -LIFT * (1 - tin.into); x = (SLIDE + 0.45 * (1 - tin.up)) * (1 - tin.across); lab = tin.up * (1 - tin.into); o = tin.up > 0 ? 1 : 0; }
+      // its film is already running in its card as it slides in
+      if (tin && tin.u >= 0.3) cur = j;
+      el.style.opacity = o.toFixed(3);
+      el.style.transform = 'translate3d(' + (x * S.w).toFixed(1) + 'px,' + (y * S.h).toFixed(1) + 'px,0) scale(' + k.toFixed(4) + ')';
+      el.style.boxShadow = lab > 0 ? '0 ' + (S.w * 0.05).toFixed(1) + 'px ' + (S.w * 0.12).toFixed(1) + 'px rgba(0,0,0,' + (0.5 * lab).toFixed(3) + ')' : 'none';
+      // the app's icon and name above its card, as the switcher shows it
+      const l = labs[j];
+      if (l) {
+        l.style.opacity = lab.toFixed(3);
+        const left = S.w / 2 + x * S.w - (k * S.w) / 2, top = S.h / 2 + y * S.h - (k * S.h) / 2 - S.w * 0.1;
+        l.style.transform = 'translate3d(' + left.toFixed(1) + 'px,' + top.toFixed(1) + 'px,0)';
+      }
+      if (tout) back = Math.max(back, tout.up * (1 - tout.into));
     });
+    sw.style.opacity = back.toFixed(3);
+    const open = cur - 1;
     // the next one's film comes in while the one before is showing
-    apps.forEach((a, i) => { if (p > OPEN[i] - 0.1) load(vids[i]); });
+    apps.forEach((a, i) => { if (p > OPEN[i] - 0.12) load(vids[i]); });
     play(open);
+
+    // the chapter rail: shown with the chapters, its chip on the current one
+    const rv = seg(p, 0.09, 0.13) * (1 - seg(p, 0.78, 0.82));
+    rail.style.opacity = rv.toFixed(3);
+    let ch = 0; SAY.forEach(([a], i) => { if (p >= a - 0.012) ch = i; });
+    railItems.forEach((li, i) => li.classList.toggle('on', i === ch));
 
     // and its words beside it
     says.forEach((s, i) => {
@@ -153,7 +186,7 @@ export function startHero() {
     end.classList.toggle('on', p >= WRITE + 0.02);
     const see = p > WRITE - 0.01 && r.bottom > 0;
     pillVids.forEach(v => {
-      if (p > ZOOM[0]) load(v);
+      if (p > 0.7) load(v);
       if (see && v.paused) { const pr = v.play(); if (pr) pr.then(() => show(v)).catch(() => {}); }
       else if (!see && !v.paused) v.pause();
     });

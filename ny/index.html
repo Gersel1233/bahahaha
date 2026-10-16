@@ -16,7 +16,7 @@
 <link rel="preload" as="image" href="media/dev/iphone-17-pro-2x.webp" fetchpriority="high" />
 <link rel="stylesheet" href="ny.css?v=16" />
 <link rel="stylesheet" href="page.css?v=18" />
-<link rel="stylesheet" href="hero.css?v=23" />
+<link rel="stylesheet" href="hero.css?v=24" />
 <link rel="stylesheet" href="sections.css?v=22" />
 <script>
   /* decided before first paint: with JS the phone turns as you scroll;
@@ -101,35 +101,47 @@
 
   <ol class="hs-ch">
     <li><div>
-      <p class="hs-ck"><img class="ck-ic" src="media/ic/spiis.svg" alt="" width="22" height="22" /><span data-da="01 · App · Spiis" data-en="01 · App · Spiis">01 · App · Spiis</span></p>
       <h2 class="hs-ct" data-da="Bestillingen går <em>lige ind</em> i køkkenet." data-en="The order goes <em>straight</em> to the kitchen.">Bestillingen går <em>lige ind</em> i køkkenet.</h2>
       <p class="hs-cd" data-da="Gæsterne forudbestiller og betaler på restaurantens egen side. Køkkenet får ét overblik i stedet for opkald." data-en="Guests pre-order and pay on the restaurant's own site. The kitchen gets one overview instead of phone calls.">Gæsterne forudbestiller og betaler på restaurantens egen side. Køkkenet får ét overblik i stedet for opkald.</p>
     </div></li>
     <li><div>
-      <p class="hs-ck"><img class="ck-ic" src="media/ic/mosede.png" alt="" width="22" height="22" /><span data-da="02 · System · Mosede Havnecafé" data-en="02 · System · Mosede Havnecafé">02 · System · Mosede Havnecafé</span></p>
       <h2 class="hs-ct" data-da="Ét menukort. <em>Alle skærme.</em>" data-en="One menu. <em>Every screen.</em>">Ét menukort. <em>Alle skærme.</em></h2>
       <p class="hs-cd" data-da="En pris rettes ét sted og skifter på hjemmesiden, menukortet og skærmene over disken." data-en="A price is changed in one place and changes on the site, the menu and the screens above the counter.">En pris rettes ét sted og skifter på hjemmesiden, menukortet og skærmene over disken.</p>
     </div></li>
     <li><div>
-      <p class="hs-ck"><img class="ck-ic" src="media/ic/callster.png" alt="" width="22" height="22" /><span data-da="03 · AI · Callster" data-en="03 · AI · Callster">03 · AI · Callster</span></p>
       <h2 class="hs-ct" data-da="En sms. <em>Resten klarer den.</em>" data-en="One text. <em>It does the rest.</em>">En sms. <em>Resten klarer den.</em></h2>
       <p class="hs-cd" data-da="Callster besvarer opkald, booker tider og aflyser, når ejeren beder om det. Vi var med til at bygge den." data-en="Callster answers calls, books appointments and cancels when the owner asks. We helped build it.">Callster besvarer opkald, booker tider og aflyser, når ejeren beder om det. Vi var med til at bygge den.</p>
     </div></li>
   </ol>
+
+  <!-- LA31 Nav / Chapter rail: the current chapter extends as a solid chip -->
+  <div class="hs-rail" aria-hidden="true"><ol>
+    <li><span class="n">01</span><span class="t">Spiis</span></li>
+    <li><span class="n">02</span><span class="t">Mosede</span></li>
+    <li><span class="n">03</span><span class="t">Callster</span></li>
+  </ol></div>
 
   <div class="hs-ph" aria-hidden="true">
     <div class="dev dev-iph hs-dev">
       <div class="scr">
         <div class="hs-s hs-lock">
           <div class="sb"><span class="t">9:41</span><span class="ic"><svg class="sig"><use href="#sb-sig"/></svg><svg class="wifi"><use href="#sb-wifi"/></svg><svg class="bat"><use href="#sb-bat"/></svg></span></div>
+          <svg class="lk" viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="10" rx="2.6" fill="#fff"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5" fill="none" stroke="#fff" stroke-width="2.2"/></svg>
           <p class="d"></p>
           <p class="clock">9:41</p>
+          <span class="lkb l"><svg viewBox="0 0 24 24"><path d="M8 2h8l-1 6H9zM9 8h6v13a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1zM12 12v3" fill="none" stroke="#fff" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round"/></svg></span>
+          <span class="lkb r"><svg viewBox="0 0 24 24"><path d="M4 8h3l2-2.5h6L17 8h3v11H4z" fill="none" stroke="#fff" stroke-width="1.7" stroke-linejoin="round"/><circle cx="12" cy="13" r="3.4" fill="none" stroke="#fff" stroke-width="1.7"/></svg></span>
+          <i class="hb"></i>
           <div class="note n1"><img class="ni" src="media/ic/spiis.svg" alt="" /><div><b>Spiis</b><span data-da="Ny bestilling · 3 × Mørbradgryde · kl. 17.30" data-en="New order · 3 × pork stew · 5.30 pm">Ny bestilling · 3 × Mørbradgryde · kl. 17.30</span></div><em data-da="nu" data-en="now">nu</em></div>
           <div class="note n2"><img class="ni" src="media/ic/mosede.png" alt="" /><div><b>Mosede Havnecafé</b><span data-da="Menukortet er opdateret på alle skærme" data-en="The menu is updated on every screen">Menukortet er opdateret på alle skærme</span></div><em data-da="nu" data-en="now">nu</em></div>
         </div>
+        <i class="hs-sw"></i>
         <div class="hs-s" data-s="1"><video muted playsinline preload="none" poster="media/mg-spiis.webp" data-hv="media/mg-spiis"></video></div>
         <div class="hs-s" data-s="2"><video muted playsinline preload="none" poster="media/mg-mosede.webp" data-hv="media/mg-mosede"></video></div>
         <div class="hs-s" data-s="3"><video muted playsinline preload="none" poster="media/mg-callster.webp" data-hv="media/mg-callster"></video></div>
+        <span class="hs-lab" data-l="1"><img src="media/ic/spiis.svg" alt="" />Spiis</span>
+        <span class="hs-lab" data-l="2"><img src="media/ic/mosede.png" alt="" />Mosede Havnecafé</span>
+        <span class="hs-lab" data-l="3"><img src="media/ic/callster.png" alt="" />Callster</span>
         <i class="hs-white"></i>
       </div>
       <img class="frame" src="media/dev/iphone-17-pro-2x.webp" width="1120" height="2336" alt="" draggable="false" fetchpriority="high" />
@@ -352,7 +364,7 @@
   <span>© 2026 Lesreg</span>
 </footer>
 
-<script type="module" src="main.js?v=21"></script>
+<script type="module" src="main.js?v=22"></script>
 <script type="module" src="page.js?v=21"></script>
 </body>
 </html>
