@@ -58,11 +58,13 @@ html.hs-on .hs-cta{ animation:hs-fade .9s var(--ease) .5s both; }
 
 /* ---------- what it has built, one at a time beside the phone ---------- */
 .hs-ch{ display:none; }
-html.hs-on .hs-ch{ display:block; position:absolute; left:calc(var(--gut) + 196px); top:calc(50% + 30px); width:min(33vw, 500px); height:0; list-style:none; margin:0; padding:0; }
+html.hs-on .hs-ch{ display:block; position:absolute; left:var(--gut); top:calc(50% + 30px); width:min(38vw, 560px); height:0; list-style:none; margin:0; padding:0; }
 .hs-ch > li{ position:absolute; left:0; right:0; top:0; transform:translateY(-50%); }
 .hs-ch > li > div{ opacity:0; will-change:transform, opacity; }
 .hs-ck{ display:flex; align-items:center; gap:10px; font:400 12px/16px var(--mono); letter-spacing:.02em; color:var(--travertine); margin-bottom:clamp(14px, 2.4vh, 20px); }
 .hs-ck i{ width:22px; height:22px; border-radius:6px; flex:none; box-shadow:inset 0 0 0 1px rgba(255,255,255,.22); display:grid; place-items:center; font:700 11px/1 var(--sans); font-style:normal; color:#fff; }
+.hs-who{ display:flex; align-items:center; gap:10px; margin:0 0 clamp(14px, 2.2vh, 20px); font:500 15px/1 var(--sans); color:var(--travertine); letter-spacing:-.01em; }
+.hs-who .ck-ic{ width:28px; height:28px; border-radius:7px; }
 .hs-ct{ font:500 clamp(36px, min(4.4vw, 7.6vh), 76px)/1 var(--sans); letter-spacing:-.045em; text-wrap:balance; }
 .hs-ct em{ font-family:var(--accent); font-style:italic; font-weight:300; letter-spacing:-.025em; }
 .hs-cd{ margin-top:clamp(14px, 2.4vh, 22px); max-width:36ch; font:400 clamp(15px, 1.2vw, 19px)/1.5 var(--sans); color:var(--travertine); }
@@ -124,7 +126,7 @@ html.hx-paper .tb{ background:var(--smoke-dense); }
   .hs-lead{ display:none; }
   .hs-cta{ margin-top:20px; }
   .hs-cta .btn{ height:46px; }
-  html.hs-on .hs-ch{ left:20px; right:20px; width:auto; top:calc(142px + env(safe-area-inset-top)); }
+  html.hs-on .hs-ch{ left:20px; right:20px; width:auto; top:calc(92px + env(safe-area-inset-top)); }
   .hs-ch > li{ transform:none; }
   .hs-ck{ margin-bottom:10px; }
   .hs-ct{ font-size:min(8vw, 34px); }
@@ -217,23 +219,7 @@ html.nav-light .tb, html.hx-paper .tb{ background:linear-gradient(165deg, rgba(4
 /* the films are shown once a frame of them is drawn; their first picture lies under them */
 html.hs-on .hs-s video{ opacity:0; }
 
-/* ---------- LA31 Nav / Chapter rail (105:822): a 56 px Smoke rail; the
-   current chapter extends as a solid chip with its title. Upright beside
-   the words on a wide screen; laid along the top on a phone. ---------- */
-.hs-rail{ display:none; }
-html.hs-on .hs-rail{ display:block; position:absolute; z-index:3; left:var(--gut); top:calc(50% + 30px); transform:translateY(-50%); opacity:0; pointer-events:none; }
-.hs-rail ol{ list-style:none; margin:0; padding:6px 4px; width:56px; display:flex; flex-direction:column; gap:4px; border-radius:28px;
-  background:rgba(14,15,16,.5); -webkit-backdrop-filter:blur(14px); backdrop-filter:blur(14px);
-  box-shadow:inset 0 0 0 1px rgba(255,255,255,.2), inset 0 1px 0 rgba(255,255,255,.28), 6px 12px 32px rgba(13,13,15,.16); }
-.hs-rail li{ height:44px; width:max-content; max-width:48px; align-self:flex-start; flex:none; display:flex; align-items:center; gap:12px; padding:0 0 0 13px; overflow:hidden; white-space:nowrap; border-radius:22px;
-  font:400 12px/1 var(--mono); color:var(--ash);
-  transition:max-width .22s var(--ease), background-color .22s var(--ease), color .22s var(--ease), box-shadow .22s var(--ease), padding .22s var(--ease); }
-.hs-rail li .t{ font:500 15px/1 var(--sans); color:var(--obsidian); opacity:0; transition:opacity .18s var(--ease); }
-.hs-rail li.on{ max-width:220px; padding-right:18px; background:var(--porcelain); color:var(--graphite); box-shadow:2px 4px 12px rgba(13,13,15,.18); }
-.hs-rail li.on .t{ opacity:1; }
 @media (max-aspect-ratio:1/1), (max-width:760px){
-  html.hs-on .hs-rail{ left:20px; top:calc(76px + env(safe-area-inset-top)); transform:none; }
-  .hs-rail ol{ flex-direction:row; width:auto; height:56px; padding:6px; }
   .hs-ph{ --ph-h:min(58vh, 560px); }
   @supports (height:1svh){ .hs-ph{ --ph-h:min(58svh, 560px); } }
 }
@@ -257,6 +243,8 @@ html.hs-on .hs-rail{ display:block; position:absolute; z-index:3; left:var(--gut
 /* ---------- the app switcher: what lies behind the cards, and each app's
    icon and name above its card ---------- */
 .hs-s{ border-radius:13% / 6.2%; transform-origin:50% 50%; }
+/* the card left behind in the switcher is dimmed under the next */
+.hs-s::after{ content:""; position:absolute; inset:0; z-index:9; background:#000; opacity:var(--dim, 0); pointer-events:none; }
 .hs-sw{ position:absolute; inset:0; z-index:-1; opacity:0; pointer-events:none;
   background:radial-gradient(120% 70% at 50% 30%, #26314f, #0b1020 60%, #05070c); }
 .hs-lab{ position:absolute; left:0; top:0; z-index:4; display:flex; align-items:center; gap:2.4cqw; opacity:0; pointer-events:none; white-space:nowrap;

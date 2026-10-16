@@ -1,9 +1,9 @@
 /* The Apps tile: what makes an app of today, the way iOS itself does it.
-   The order's notification lands on the lock screen and becomes a Live
-   Activity; the Dynamic Island carries the same order, small, while the
-   bar fills; when it is ready the island opens with the news, then closes
-   back over the camera with a green tick. A demonstration of the kind of
-   app we build, under no client's name. */
+   The order's notification lands on the lock screen, then goes up into the
+   Dynamic Island, which carries the order, small, while it cooks; when it
+   is ready the island opens with the news, then closes back over the
+   camera with a green tick. A demonstration of the kind of app we build,
+   under no client's name. */
 import React from 'react';
 import { AbsoluteFill, Img, staticFile } from 'remotion';
 import { useT, useFonts, seg, out3, out5, io3, mix, clamp, Check, SANS } from './common';
@@ -44,11 +44,11 @@ export const TileApps: React.FC = () => {
 
   // 1. the notification lands
   const note = sp(0.35, 17, 190);
-  // 2. it becomes the Live Activity, and the island takes the order too
-  const live = io3(seg(t, 1.25, 1.75));
-  const compactIn = sp(1.45, 18, 200);
-  const fill = clamp(seg(t, 1.6, 3.55) ** 0.9);
-  const cooking = seg(t, 2.1, 2.35);
+  // 2. and goes up into the island, which takes the order
+  const up = io3(seg(t, 1.3, 1.82));
+  const gulp = Math.sin(Math.PI * seg(t, 1.74, 2.05)); // the island swallows it
+  const compactIn = sp(1.9, 15, 190);
+  const fill = clamp(seg(t, 2.0, 3.55) ** 0.9);
   // 3. ready: the island opens with the news
   const open = sp(3.6, 14, 150);
   const ready = out3(seg(t, 3.55, 3.8));
@@ -58,10 +58,13 @@ export const TileApps: React.FC = () => {
 
   // the island's size: hardware → compact → expanded → compact
   const compactW = 212;
-  const w = mix(mix(ISL.w, compactW, clamp(compactIn)), 384, opened);
-  const h = mix(ISL.h, 172, opened);
-  const r = mix(ISL.h / 2, 46, opened);
-  const status = ready > 0.5 ? 'Klar til afhentning' : cooking > 0.5 ? 'Tilberedes' : 'Modtaget';
+  const w = mix(mix(ISL.w + 18 * gulp, compactW, clamp(compactIn)), 384, opened);
+  const h = mix(ISL.h + 3 * gulp, 172, opened);
+  const r = mix((ISL.h + 3 * gulp) / 2, 46, opened);
+
+  // the notification's way up: from its place on the lock screen to the island's
+  const nW = mix(374, ISL.w, up), nH = mix(70, ISL.h, up);
+  const nL = mix(14, ISL.cx - ISL.w / 2, up), nT = mix(236, ISL.top, up) - 22 * Math.sin(Math.PI * up) * (1 - up);
 
   return (
     <AbsoluteFill style={{ background: `radial-gradient(120% 70% at 50% 100%, ${DEEP}, ${NAVY8} 48%, ${NAVY9})`, fontFamily: SANS, overflow: 'hidden' }}>
@@ -73,13 +76,13 @@ export const TileApps: React.FC = () => {
         <div style={{ position: 'absolute', top: 76 * pt, left: 0, right: 0, textAlign: 'center', color: 'rgba(255,255,255,.88)', font: `600 ${18 * pt}px/1 ${SANS}` }}>Torsdag 15. oktober</div>
         <div style={{ position: 'absolute', top: 98 * pt, left: 0, right: 0, textAlign: 'center', color: '#fff', font: `600 ${92 * pt}px/1 ${SANS}`, letterSpacing: -3 * pt }}>9:41</div>
 
-        {/* the notification, then the Live Activity it becomes: one glass card that grows */}
-        <div style={{ position: 'absolute', left: 14 * pt, right: 14 * pt, top: 236 * pt, height: mix(70, 132, live) * pt, borderRadius: 26 * pt, overflow: 'hidden',
-          background: `linear-gradient(160deg, rgba(255,255,255,${mix(0.28, 0.2, live)}), rgba(255,255,255,${mix(0.13, 0.08, live)}))`,
-          boxShadow: 'inset 0 1px 0 rgba(255,255,255,.5), inset 0 0 0 1px rgba(255,255,255,.12), 0 20px 40px rgba(0,0,0,.25)',
+        {/* the notification: one glass card, that goes up and darkens into the island */}
+        {up < 1 && <div style={{ position: 'absolute', left: nL * pt, top: nT * pt, width: nW * pt, height: nH * pt, borderRadius: mix(26, ISL.h / 2, up) * pt, overflow: 'hidden',
+          background: 'linear-gradient(160deg, rgba(255,255,255,.28), rgba(255,255,255,.13))',
+          boxShadow: `inset 0 1px 0 rgba(255,255,255,${0.5 * (1 - up)}), inset 0 0 0 1px rgba(255,255,255,${0.12 * (1 - up)}), 0 20px 40px rgba(0,0,0,${0.25 * (1 - up)})`,
           opacity: clamp(note * 1.4), transform: `translateY(${40 * pt * (1 - note)}px) scale(${mix(0.92, 1, note)})`, color: '#fff' }}>
-          {/* as a notification */}
-          <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', gap: 12 * pt, padding: `0 ${14 * pt}px`, opacity: 1 - seg(live, 0, 0.4) }}>
+          <div style={{ position: 'absolute', left: 0, top: 0, width: 374 * pt, height: 70 * pt, display: 'flex', alignItems: 'center', gap: 12 * pt, padding: `0 ${14 * pt}px`,
+            opacity: 1 - seg(up, 0, 0.4), transform: `scale(${mix(1, 0.4, seg(up, 0, 0.7))})`, transformOrigin: '50% 0' }}>
             <AppIcon s={38 * pt} />
             <span style={{ display: 'flex', flexDirection: 'column', gap: 3 * pt, flex: 1, minWidth: 0 }}>
               <span style={{ font: `500 ${12 * pt}px/1 ${SANS}`, color: 'rgba(255,255,255,.6)', letterSpacing: 0.3 * pt }}>JERES APP</span>
@@ -88,28 +91,8 @@ export const TileApps: React.FC = () => {
             </span>
             <span style={{ alignSelf: 'flex-start', marginTop: 14 * pt, font: `400 ${12 * pt}px/1 ${SANS}`, color: 'rgba(255,255,255,.6)' }}>nu</span>
           </div>
-          {/* as a Live Activity */}
-          <div style={{ position: 'absolute', inset: 0, padding: `${16 * pt}px ${18 * pt}px`, opacity: seg(live, 0.45, 1) }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12 * pt }}>
-              <AppIcon s={40 * pt} />
-              <span style={{ display: 'flex', flexDirection: 'column', gap: 4 * pt, flex: 1 }}>
-                <span style={{ font: `500 ${13 * pt}px/1 ${SANS}`, color: 'rgba(255,255,255,.65)' }}>Jeres app · din bestilling</span>
-                <span style={{ position: 'relative', height: 20 * pt }}>
-                  {['Modtaget', 'Tilberedes', 'Klar til afhentning'].map((s, i) => {
-                    const on = s === status ? 1 : 0;
-                    return <span key={s} style={{ position: 'absolute', left: 0, top: 0, whiteSpace: 'nowrap', font: `600 ${18 * pt}px/1.1 ${SANS}`, color: i === 2 ? GREEN : '#fff',
-                      opacity: on, transform: `translateY(${(1 - on) * 6 * pt}px)` }}>{s}</span>;
-                  })}
-                </span>
-              </span>
-              <span style={{ textAlign: 'right' }}>
-                <span style={{ display: 'block', font: `600 ${24 * pt}px/1 ${SANS}`, letterSpacing: -0.5 * pt }}>17.30</span>
-                <span style={{ font: `500 ${12 * pt}px/1.5 ${SANS}`, color: 'rgba(255,255,255,.6)' }}>afhentning</span>
-              </span>
-            </div>
-            <div style={{ marginTop: 18 * pt }}><Bar p={fill} done={ready} h={7 * pt} /></div>
-          </div>
-        </div>
+          <i style={{ position: 'absolute', inset: 0, background: '#000', opacity: seg(up, 0.08, 0.55) }} />
+        </div>}
       </div>
       <Img src={staticFile('ny/media/dev/iphone-17-pro-2x.webp')} style={{ position: 'absolute', left: PX, top: PY, width: PW, height: PH }} />
 

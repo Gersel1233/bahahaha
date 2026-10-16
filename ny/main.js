@@ -1,6 +1,6 @@
 /* The page's own frame: the language, the menu, the bar, and the first
    screen (hero.js). The sections below are page.js. */
-import { startHero } from './hero.js?v=22';
+import { startHero } from './hero.js?v=23';
 
 const html = document.documentElement;
 const $ = (s, r = document) => r.querySelector(s);
