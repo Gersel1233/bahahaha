@@ -35,9 +35,40 @@ const blurIn = (q: number, from = 0.9): React.CSSProperties => ({
   opacity: clamp(q), filter: q < 0.999 ? `blur(${(1 - clamp(q)) * P(7)}px)` : undefined, transform: `scale(${mix(from, 1, clamp(q))})`,
 });
 
-// a bar, full
-const Bar: React.FC<{ h: number }> = ({ h }) => (
-  <div style={{ position: 'relative', height: h, borderRadius: h / 2, background: `linear-gradient(90deg, rgba(48,209,88,.75), ${GREEN})` }} />
+// the minutes left, from 8 down to 1, each new number rolling up into place
+// out of a blur, as iOS changes a number
+const Minutes: React.FC<{ fill: number }> = ({ fill }) => {
+  const steps = 7, x = clamp(fill) * steps, n = Math.min(steps, Math.floor(x)), q = n >= steps ? 1 : out3(clamp((x - n) / 0.45));
+  const now = 8 - n, before = now + 1;
+  const num = (v: number, y: number, o: number) => (
+    <span style={{ position: 'absolute', right: P(30), top: 0, height: P(22), display: 'flex', alignItems: 'center', font: `600 ${P(15)}px/1 ${SANS}`, color: ORANGE,
+      transform: `translateY(${y}px)`, opacity: o, filter: o < 0.99 ? `blur(${(1 - o) * P(3)}px)` : undefined }}>{v}</span>
+  );
+  return (
+    <>
+      {n > 0 && q < 1 && num(before, -q * P(12), 1 - q)}
+      {num(now, n > 0 ? (1 - q) * P(12) : 0, n > 0 ? q : 1)}
+      <span style={{ position: 'absolute', right: P(2), top: 0, height: P(22), display: 'flex', alignItems: 'center', font: `600 ${P(15)}px/1 ${SANS}`, color: ORANGE }}>min</span>
+    </>
+  );
+};
+
+// the order's three stages, the last filling as it is reached
+const Stages: React.FC<{ last: number }> = ({ last }) => (
+  <div>
+    <div style={{ display: 'flex', gap: P(4) }}>
+      {[1, 1, last].map((f, i) => (
+        <span key={i} style={{ position: 'relative', flex: 1, height: P(6), borderRadius: P(3), background: 'rgba(255,255,255,.16)', overflow: 'hidden' }}>
+          <i style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: `${100 * f}%`, borderRadius: P(3), background: GREEN }} />
+        </span>
+      ))}
+    </div>
+    <div style={{ display: 'flex', gap: P(4), marginTop: P(9), font: `500 ${P(12)}px/1 ${SANS}` }}>
+      {['Modtaget', 'Tilberedes', 'Klar'].map((s, i) => (
+        <span key={s} style={{ flex: 1, color: i < 2 ? 'rgba(255,255,255,.55)' : `rgba(${mix(255, 48, last) | 0},${mix(255, 209, last) | 0},${mix(255, 88, last) | 0},${mix(0.55, 1, last)})` }}>{s}</span>
+      ))}
+    </div>
+  </div>
 );
 
 // the status bar, as iOS draws it beside the island
@@ -81,7 +112,7 @@ export const TileApps: React.FC = () => {
 
   // the island's size: hardware → compact → expanded → compact
   const cw = mix(ISL.w + 16 * gulp, 194, compactIn);
-  const w = mix(cw, 380, g), h = mix(ISL.h + 2.5 * gulp, 168, g), r = mix((ISL.h + 2.5 * gulp) / 2, 46, Math.max(0, g));
+  const w = mix(cw, 380, g), h = mix(ISL.h + 2.5 * gulp, 142, g), r = mix((ISL.h + 2.5 * gulp) / 2, 46, Math.max(0, g));
 
   // the banner's shape, between the island's and its own
   const bl = mix(ISL.cx - ISL.w / 2, BAN.l, bm), bt = mix(ISL.top, BAN.t, bm) + (t < UP ? 46 * (1 - land) : 0), bw = mix(ISL.w, BAN.w, bm), bh = mix(ISL.h, BAN.h, bm), br = mix(ISL.h / 2, BAN.r, clamp(bm));
@@ -125,35 +156,32 @@ export const TileApps: React.FC = () => {
       {/* ---------- the Dynamic Island, exactly over the camera's ---------- */}
       <div style={{ position: 'absolute', left: SX + (ISL.cx - w / 2) * pt, top: SY + ISL.top * pt - 0.6 * pt, width: w * pt, height: (h + 1.2) * pt, borderRadius: (r + 0.6) * pt,
         background: '#000', overflow: 'hidden', boxShadow: g > 0.05 ? `0 ${P(12)}px ${P(34)}px rgba(0,0,0,.45)` : 'none' }}>
-        {/* compact: the order on the left, its state on the right */}
-        <div style={{ position: 'absolute', left: 0, right: 0, top: 0, height: (ISL.h + 1.2) * pt, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: `0 ${P(8)}px`,
+        {/* compact: the app on the left; on the right the minutes left, rolling
+            down the way iOS rolls a number, and at the end the tick */}
+        <div style={{ position: 'absolute', left: 0, right: 0, top: 0, height: (ISL.h + 1.2) * pt, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: `0 ${P(7)}px 0 ${P(7)}px`,
           ...blurIn(compactVis, 0.7) }}>
-          <Icon src={JERES} s={P(24)} />
-          <span style={{ position: 'relative', width: P(54), height: P(22) }}>
-            {/* while it cooks: a ring that fills; when ready: the tick */}
-            <svg width={P(22)} height={P(22)} viewBox="0 0 24 24" style={{ position: 'absolute', right: 0, top: 0, opacity: 1 - ready }}>
-              <circle cx="12" cy="12" r="9" fill="none" stroke="rgba(255,255,255,.2)" strokeWidth="3" />
-              <circle cx="12" cy="12" r="9" fill="none" stroke={ORANGE} strokeWidth="3" strokeLinecap="round" strokeDasharray={`${56.5 * fill} 56.5`} transform="rotate(-90 12 12)" />
-            </svg>
-            <span style={{ position: 'absolute', right: 0, top: 0, height: P(22), display: 'flex', alignItems: 'center', gap: P(4), font: `600 ${P(14)}px/1 ${SANS}`, color: GREEN, opacity: ready }}>
+          <Icon src={JERES} s={P(25)} />
+          <span style={{ position: 'relative', width: P(58), height: P(22), overflow: 'hidden' }}>
+            <span style={{ position: 'absolute', inset: 0, opacity: 1 - ready }}><Minutes fill={fill} /></span>
+            <span style={{ position: 'absolute', right: P(4), top: 0, height: P(22), display: 'flex', alignItems: 'center', gap: P(4), font: `600 ${P(15)}px/1 ${SANS}`, color: GREEN, opacity: ready }}>
               <Check p={seg(t, CLOSE + 0.2, CLOSE + 0.55)} size={7.5} color={GREEN} width={3.4} />Klar</span>
           </span>
         </div>
-        {/* expanded: the news */}
-        <div style={{ position: 'absolute', left: (w - 380) / 2 * pt, top: 0, width: P(380), height: P(168), padding: `${P(22)}px ${P(24)}px`, color: '#fff',
-          ...blurIn(openContent, 0.88), transformOrigin: '50% 0' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: P(14) }}>
-            <Icon src={JERES} s={P(48)} />
-            <span style={{ display: 'flex', flexDirection: 'column', gap: P(5), flex: 1 }}>
-              <span style={{ font: `500 ${P(13)}px/1 ${SANS}`, color: 'rgba(255,255,255,.6)' }}>Jeres app · din bestilling</span>
-              <span style={{ font: `600 ${P(21)}px/1.1 ${SANS}`, color: GREEN }}>Klar til afhentning</span>
+        {/* expanded: the news, and the order's three stages */}
+        <div style={{ position: 'absolute', left: (w - 380) / 2 * pt, top: 0, width: P(380), height: P(142), padding: `${P(20)}px ${P(22)}px`, color: '#fff' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: P(12), ...blurIn(openContent, 0.9), transformOrigin: '50% 0' }}>
+            <Icon src={JERES} s={P(46)} />
+            <span style={{ display: 'flex', flexDirection: 'column', gap: P(6), flex: 1 }}>
+              <span style={{ font: `500 ${P(13)}px/1 ${SANS}`, color: 'rgba(255,255,255,.55)' }}>Jeres app</span>
+              <span style={{ font: `600 ${P(20)}px/1.05 ${SANS}`, color: GREEN, letterSpacing: P(-0.3) }}>Klar til afhentning</span>
             </span>
-            <span style={{ width: P(46), height: P(46), borderRadius: '50%', background: GREEN, display: 'grid', placeItems: 'center', flex: 'none',
-              transform: `scale(${mix(0.4, 1, out5(seg(t, OPEN + 0.2, OPEN + 0.55)))})` }}><Check p={seg(t, OPEN + 0.3, OPEN + 0.65)} size={12} color="#fff" width={3.4} /></span>
+            <span style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: P(5) }}>
+              <span style={{ font: `600 ${P(26)}px/1 ${SANS}`, letterSpacing: P(-0.8) }}>17.30</span>
+              <span style={{ font: `500 ${P(12)}px/1 ${SANS}`, color: 'rgba(255,255,255,.55)' }}>afhentning</span>
+            </span>
           </div>
-          <div style={{ marginTop: P(22) }}><Bar h={P(7)} /></div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: P(10), font: `500 ${P(12)}px/1 ${SANS}`, color: 'rgba(255,255,255,.55)' }}>
-            <span>Bestilt 17.02</span><span>Hent den ved disken</span>
+          <div style={{ marginTop: P(22), ...blurIn(seg(t, OPEN + 0.2, OPEN + 0.46) * (1 - seg(t, CLOSE - 0.04, CLOSE + 0.08)), 0.96) }}>
+            <Stages last={out3(seg(t, OPEN + 0.32, OPEN + 0.8))} />
           </div>
         </div>
       </div>
