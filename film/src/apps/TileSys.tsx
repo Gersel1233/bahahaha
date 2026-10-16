@@ -27,6 +27,24 @@ const EDGE_ON_LIGHT = 'linear-gradient(135deg,#fff,rgba(0,0,0,.04) 55%,rgba(0,0,
 const edge = (g: string): React.CSSProperties => ({ position: 'absolute', inset: 0, borderRadius: 'inherit', padding: 1, background: g, pointerEvents: 'none',
   WebkitMask: 'linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)', WebkitMaskComposite: 'xor', maskComposite: 'exclude' } as React.CSSProperties);
 
+// Liquid glass, as the system builds it: a tinted, frosted body; a 1 px
+// specular edge with the light from −45°; a bright lip along the top; a
+// darker one along the bottom; and the shadow falling bottom-right
+const glass = (kind: 'light' | 'smoke', depth = 1): React.CSSProperties => ({
+  background: kind === 'light'
+    ? 'linear-gradient(180deg, rgba(255,255,255,.62), rgba(255,255,255,.38))'
+    : 'linear-gradient(180deg, rgba(40,41,44,.62), rgba(14,15,16,.72))',
+  backdropFilter: `blur(${kind === 'light' ? 22 : 16}px) saturate(1.8)`, WebkitBackdropFilter: `blur(${kind === 'light' ? 22 : 16}px) saturate(1.8)`,
+  boxShadow: kind === 'light'
+    ? `inset 0 1.5px 0 rgba(255,255,255,.95), inset 0 -1px 0 rgba(13,13,15,.06), inset 0 0 0 1px rgba(255,255,255,.45), ${6 * depth}px ${12 * depth}px ${32 * depth}px rgba(13,13,15,${0.14 * depth})`
+    : `inset 0 1px 0 rgba(255,255,255,.28), inset 0 -1px 0 rgba(0,0,0,.3), ${6 * depth}px ${12 * depth}px ${32 * depth}px rgba(13,13,15,${0.22 * depth})`,
+});
+// the soft highlight a curved glass catches from the light above-left
+const Catch: React.FC<{ a?: number }> = ({ a = 0.55 }) => (
+  <i style={{ position: 'absolute', inset: 0, borderRadius: 'inherit', pointerEvents: 'none',
+    background: `radial-gradient(120% 70% at 18% 0%, rgba(255,255,255,${a}), rgba(255,255,255,0) 55%)` }} />
+);
+
 // status by shape: ring = waiting, filled = done
 const Shape: React.FC<{ done: number; s?: number; c?: string }> = ({ done, s = 12, c = OBS }) => (
   <svg width={s} height={s} viewBox="0 0 12 12" style={{ flex: 'none' }}>
@@ -68,44 +86,63 @@ const I = {
 };
 
 type Stage = 'new' | 'cooking' | 'ready';
-const Card: React.FC<{ no: number; at: string; what: string; more: string; stage: Stage; cook?: number; now?: number; press?: number; tick?: number }> =
-  ({ no, at, what, more, stage, cook = 0, now = 0, press = 0, tick = 1 }) => (
-  <div style={{ width: CW, height: CARD_H, borderRadius: 22, padding: '18px 20px', boxSizing: 'border-box', position: 'relative', overflow: 'hidden', background: '#fff',
-    boxShadow: `inset 0 0 0 1px ${TRAV}, 2px 4px 12px rgba(13,13,15,.06), 0 0 0 ${2 * now}px ${PORC}, 0 0 0 ${4 * now}px rgba(36,54,232,${now})` }}>
-    <div style={{ display: 'flex', alignItems: 'center', gap: 8, font: `400 15px/1 ${MONO}`, color: GRAPH }}>
-      {now > 0.01 && <i style={{ width: 6, height: 6, borderRadius: '50%', background: ULTRA, opacity: now }} />}
-      <span>#0{no}</span>
-      <span style={{ marginLeft: 'auto', font: `500 18px/1 ${SANS}`, color: OBS, letterSpacing: -0.3 }}>{at}</span>
-    </div>
-    <div style={{ marginTop: 14, font: `500 22px/1.1 ${SANS}`, color: OBS, letterSpacing: -0.4, whiteSpace: 'nowrap' }}>{what}</div>
-    <div style={{ marginTop: 6, font: `400 15px/1.2 ${SANS}`, color: GRAPH, whiteSpace: 'nowrap' }}>{more}</div>
-    {/* what the kitchen can do with it now */}
-    <div style={{ position: 'absolute', left: 20, right: 20, bottom: 16, height: 44 }}>
-      {stage === 'new' && <span style={{ position: 'absolute', left: 0, right: 0, top: 0, height: 44, borderRadius: 22, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 4px 0 20px',
-        background: press > 0.3 ? '#232426' : OBS, color: PORC, font: `500 15px/1 ${SANS}`, boxShadow: press > 0.3 ? 'inset 0 2px 4px rgba(0,0,0,.28)' : 'none' }}>
-        Start tilberedning
-        {/* the button's glass lens, over its arrow; ultramarine as it is pressed */}
-        <span style={{ position: 'relative', width: 36, height: 36, borderRadius: 18, display: 'grid', placeItems: 'center', background: press > 0.3 ? ULTRA : 'rgba(255,255,255,.18)' }}>
-          <svg width="14" height="14" viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="#fff" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" /></svg>
-          <i style={edge(EDGE)} /></span>
-      </span>}
-      {stage === 'cooking' && <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', gap: 12 }}>
-        {/* a meniscus: a hairline track, ultramarine for the part that is happening now */}
-        <span style={{ position: 'relative', flex: 1, height: 14 }}>
-          <i style={{ position: 'absolute', left: 0, right: 0, top: 6.5, height: 1, background: TRAV }} />
-          <i style={{ position: 'absolute', left: 0, top: 6, height: 2, width: `${100 * cook}%`, background: ULTRA }} />
-          <i style={{ position: 'absolute', left: `calc(${100 * cook}% - 7px)`, top: 0, width: 14, height: 14, borderRadius: 7, background: '#fff', boxShadow: `0 0 0 1px ${TRAV}, 2px 4px 12px rgba(13,13,15,.10)` }} />
+// k1: from new to cooking, k2: from cooking to ready, both 0 → 1; carry: how
+// far it is lifted and carried (it turns to glass while it is)
+const Card: React.FC<{ no: number; at: string; what: string; more: string; stage?: Stage; k1?: number; k2?: number; carry?: number; cook?: number; now?: number; press?: number; tick?: number }> =
+  ({ no, at, what, more, stage, k1: K1, k2: K2, carry = 0, cook = 0, now = 0, press = 0, tick = 1 }) => {
+  const k1 = K1 ?? (stage === 'new' ? 0 : 1), k2 = K2 ?? (stage === 'ready' ? 1 : 0);
+  const RW = CW - 40, KW = 84; // the action row, and the Klar button in it
+  // the button: black and full-width, it draws into the small Klar, which
+  // then opens across the row as the done state
+  const bl = mix(mix(0, RW - KW, k1), 0, k2), bw = mix(mix(RW, KW, k1), RW, k2);
+  const dark = 1 - seg(k1, 0.1, 0.6);
+  return (
+    <div style={{ width: CW, height: CARD_H, borderRadius: 22, padding: '18px 20px', boxSizing: 'border-box', position: 'relative', overflow: 'hidden',
+      ...(carry > 0.01 ? glass('light', 1 + carry) : { background: '#fff' }),
+      boxShadow: `${carry > 0.01 ? (glass('light', 1 + 1.4 * carry).boxShadow + ', ') : ''}inset 0 0 0 1px rgba(216,209,197,${1 - 0.7 * carry}), 0 0 0 ${2 * now}px ${PORC}, 0 0 0 ${4 * now}px rgba(36,54,232,${now})` }}>
+      {/* the body goes clear while it is carried, and comes back solid when it lands */}
+      <i style={{ position: 'absolute', inset: 0, background: '#fff', opacity: 1 - 0.55 * carry, borderRadius: 'inherit' }} />
+      {carry > 0.01 && <><Catch a={0.7 * carry} /><i style={{ ...edge(EDGE_ON_LIGHT), opacity: carry }} /></>}
+      <div style={{ position: 'relative', display: 'flex', alignItems: 'center', gap: 8, font: `400 15px/1 ${MONO}`, color: GRAPH }}>
+        {now > 0.01 && <i style={{ width: 6, height: 6, borderRadius: '50%', background: ULTRA, opacity: now }} />}
+        <span>#0{no}</span>
+        <span style={{ marginLeft: 'auto', font: `500 18px/1 ${SANS}`, color: OBS, letterSpacing: -0.3 }}>{at}</span>
+      </div>
+      <div style={{ position: 'relative', marginTop: 14, font: `500 22px/1.1 ${SANS}`, color: OBS, letterSpacing: -0.4, whiteSpace: 'nowrap' }}>{what}</div>
+      <div style={{ position: 'relative', marginTop: 6, font: `400 15px/1.2 ${SANS}`, color: GRAPH, whiteSpace: 'nowrap' }}>{more}</div>
+      {/* what the kitchen can do with it now */}
+      <div style={{ position: 'absolute', left: 20, right: 20, bottom: 16, height: 44 }}>
+        {/* while it cooks: a meniscus that draws in from the left, and the minutes */}
+        <span style={{ position: 'absolute', left: 0, top: 0, width: RW - KW - 12, height: 44, display: 'flex', alignItems: 'center', gap: 10,
+          opacity: seg(k1, 0.35, 0.9) * (1 - seg(k2, 0, 0.4)) }}>
+          <span style={{ position: 'relative', flex: 1, height: 14, transform: `scaleX(${out3(seg(k1, 0.3, 1))})`, transformOrigin: '0 50%' }}>
+            <i style={{ position: 'absolute', left: 0, right: 0, top: 6.5, height: 1, background: TRAV }} />
+            <i style={{ position: 'absolute', left: 0, top: 6, height: 2, width: `${100 * cook}%`, background: ULTRA }} />
+            <i style={{ position: 'absolute', left: `calc(${100 * cook}% - 7px)`, top: 0, width: 14, height: 14, borderRadius: 7, background: '#fff', boxShadow: `0 0 0 1px ${TRAV}, 2px 4px 12px rgba(13,13,15,.10)` }} />
+          </span>
+          <span style={{ font: `400 14px/1 ${MONO}`, color: GRAPH }}>{Math.max(1, Math.round(12 * (1 - cook)))} min</span>
         </span>
-        <span style={{ font: `400 14px/1 ${MONO}`, color: GRAPH }}>{Math.max(1, Math.round(12 * (1 - cook)))} min</span>
-        <span style={{ height: 44, padding: '0 16px', borderRadius: 22, display: 'flex', alignItems: 'center', gap: 8, boxShadow: `inset 0 0 0 1px ${press > 0.3 ? OBS : TRAV}`,
-          color: OBS, font: `500 15px/1 ${SANS}`, background: press > 0.3 ? LIME : '#fff' }}>Klar<Shape done={1} s={9} /></span>
-      </div>}
-      {stage === 'ready' && <span style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', gap: 10, font: `500 15px/1 ${SANS}`, color: OBS, borderTop: `1px solid ${LIME}`, paddingTop: 4 }}>
-        <svg width="18" height="18" viewBox="0 0 24 24"><path d="M5 12.5 10 17.5 19.5 7" fill="none" stroke={OBS} strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" strokeDasharray="24" strokeDashoffset={24 * (1 - tick)} /></svg>
-        Gæsten har fået besked<span style={{ marginLeft: 'auto', font: `400 13px/1 ${MONO}`, color: GRAPH }}>sms</span></span>}
+        {/* the one button, changing shape and meaning */}
+        <span style={{ position: 'absolute', left: bl, top: 0, width: bw, height: 44, borderRadius: 22, overflow: 'hidden',
+          background: k2 > 0 ? `rgba(233,229,221,${k2})` : `rgba(14,15,16,${dark})`,
+          boxShadow: k2 > 0.5 ? 'none' : `inset 0 0 0 1px rgba(216,209,197,${1 - dark})${press > 0.3 ? ', inset 0 2px 4px rgba(0,0,0,.28)' : ''}`,
+          transform: `scale(${1 - 0.03 * press})` }}>
+          <span style={{ position: 'absolute', left: 20, top: 0, height: 44, display: 'flex', alignItems: 'center', font: `500 15px/1 ${SANS}`, color: PORC, whiteSpace: 'nowrap', opacity: 1 - seg(k1, 0, 0.3) }}>Start tilberedning</span>
+          <span style={{ position: 'absolute', right: 4, top: 4, width: 36, height: 36, borderRadius: 18, display: 'grid', placeItems: 'center', opacity: 1 - seg(k1, 0, 0.35),
+            background: press > 0.3 && k1 < 0.5 ? ULTRA : 'rgba(255,255,255,.18)', transform: `scale(${1 - 0.5 * seg(k1, 0, 0.35)})` }}>
+            <svg width="14" height="14" viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="#fff" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" /></svg>
+            <i style={edge(EDGE)} /></span>
+          <span style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, font: `500 15px/1 ${SANS}`, color: OBS,
+            opacity: seg(k1, 0.55, 0.95) * (1 - seg(k2, 0, 0.22)) }}>Klar<Shape done={1} s={9} /></span>
+          <span style={{ position: 'absolute', left: 16, right: 16, top: 0, height: 44, display: 'flex', alignItems: 'center', gap: 10, font: `500 15px/1 ${SANS}`, color: OBS, whiteSpace: 'nowrap',
+            opacity: seg(k2, 0.22, 0.62) }}>
+            <svg width="18" height="18" viewBox="0 0 24 24"><path d="M5 12.5 10 17.5 19.5 7" fill="none" stroke={OBS} strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" strokeDasharray="24" strokeDashoffset={24 * (1 - tick)} /></svg>
+            Gæsten har fået besked<span style={{ marginLeft: 'auto', font: `400 13px/1 ${MONO}`, color: GRAPH }}>sms</span></span>
+        </span>
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 // a finger on the glass
 const Tap: React.FC<{ x: number; y: number; q: number }> = ({ x, y, q }) => q <= 0 || q >= 1 ? null : (
@@ -128,8 +165,9 @@ export const TileSys: React.FC = () => {
   const lift = Math.max(Math.sin(Math.PI * seg(t, START + 0.05, START + 0.55)), Math.sin(Math.PI * seg(t, DONE + 0.05, DONE + 0.55)));
   const cook = io3(seg(t, START + 0.55, DONE - 0.2));
   const press1 = Math.sin(Math.PI * seg(t, START - 0.12, START + 0.1)), press2 = Math.sin(Math.PI * seg(t, DONE - 0.12, DONE + 0.1));
-  const stage: Stage = t < START + 0.22 ? 'new' : t < DONE + 0.22 ? 'cooking' : 'ready';
-  const swap = Math.max(clamp(1 - Math.abs(t - START - 0.22) / 0.14), clamp(1 - Math.abs(t - DONE - 0.22) / 0.14));
+  // the card's own change, on the system's ease, while it is carried
+  const k1 = io3(seg(t, START + 0.12, START + 0.62)), k2 = io3(seg(t, DONE + 0.12, DONE + 0.6));
+  const carry = Math.sin(Math.PI * clamp(t < DONE ? m1 : m2));
   const count = out3(seg(t, NEW + 0.2, NEW + 0.6));
   // the guest is told, by the system, on their phone
   const sms = apple(BACK + 0.55, 0.45, 0.8);
@@ -173,7 +211,8 @@ export const TileSys: React.FC = () => {
 
       {/* the sidebar: floating glass, as iPadOS draws it now */}
       <div style={{ position: 'absolute', left: 10, top: 34, width: SIDE, bottom: 10, borderRadius: 26, padding: '16px 10px', boxSizing: 'border-box',
-        background: 'rgba(255,255,255,.62)', boxShadow: `6px 12px 32px rgba(13,13,15,.10), inset 0 0 0 1px rgba(216,209,197,.6)` }}>
+        ...glass('light') }}>
+        <Catch a={0.6} /><i style={edge(EDGE_ON_LIGHT)} />
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '0 8px 16px' }}>
           <Img src={staticFile('ny/media/ic/spiis.svg')} style={{ width: 34, height: 34, borderRadius: 9 }} />
           <span style={{ font: `500 20px/1 ${SANS}`, color: OBS }}>Spiis</span>
@@ -199,8 +238,8 @@ export const TileSys: React.FC = () => {
         <span style={{ display: 'flex', alignItems: 'center', gap: 6, marginLeft: 16, font: `400 13px/1 ${MONO}`, color: GRAPH }}>
           <i style={{ width: 6, height: 6, borderRadius: '50%', background: ULTRA }} />LIVE · AFTENENS BESTILLINGER</span>
         {/* the toolbar: glass, because it floats */}
-        <span style={{ position: 'relative', marginLeft: 'auto', height: 44, borderRadius: 22, display: 'flex', alignItems: 'center', gap: 4, padding: '0 6px',
-          background: 'rgba(255,255,255,.7)', boxShadow: '2px 4px 12px rgba(13,13,15,.10)' }}>
+        <span style={{ position: 'relative', marginLeft: 'auto', height: 44, borderRadius: 22, display: 'flex', alignItems: 'center', gap: 4, padding: '0 6px', ...glass('light', 0.6) }}>
+          <Catch a={0.7} />
           {[I.search, I.list, I.plus].map(d => <span key={d} style={{ width: 36, height: 36, display: 'grid', placeItems: 'center' }}><Ico d={d} s={19} /></span>)}
           <i style={edge(EDGE_ON_LIGHT)} />
         </span>
@@ -209,8 +248,10 @@ export const TileSys: React.FC = () => {
       {/* the columns, each named by a chip; the one the order is in is solid */}
       {COLS.map((c, i) => {
         const here = i === 0 ? 1 - m1 : i === 1 ? m1 * (1 - m2) : m2;
+        const receive = i === 1 ? Math.sin(Math.PI * clamp(t < DONE ? m1 : 0)) : i === 2 ? Math.sin(Math.PI * clamp(t > DONE ? m2 : 0)) : 0;
         return (
-          <div key={c} style={{ position: 'absolute', left: slot(i, 0).x - 8, top: CY - 62, width: CW + 16, height: UH - CY + 80, borderRadius: 26, background: LIME }}>
+          <div key={c} style={{ position: 'absolute', left: slot(i, 0).x - 8, top: CY - 62, width: CW + 16, height: UH - CY + 80, borderRadius: 26,
+            background: `rgb(${mix(233, 240, receive) | 0},${mix(229, 238, receive) | 0},${mix(221, 236, receive) | 0})`, boxShadow: `inset 0 0 0 ${1.5 * receive}px rgba(36,54,232,${0.45 * receive})` }}>
             <span style={{ position: 'absolute', left: 8, top: 8, height: 40, padding: '0 16px', borderRadius: 20, display: 'flex', alignItems: 'center', gap: 10,
               background: here > 0.5 ? OBS : '#fff', color: here > 0.5 ? PORC : OBS, font: `500 16px/1 ${SANS}`, boxShadow: here > 0.5 ? 'none' : `inset 0 0 0 1px ${TRAV}` }}>
               {c}<span style={{ font: `400 14px/1 ${MONO}`, color: here > 0.5 ? TRAV : GRAPH }}>{n(i)}</span></span>
@@ -222,19 +263,16 @@ export const TileSys: React.FC = () => {
         <div key={no} style={{ position: 'absolute', left: p.x, top: p.y }}><Card no={no} at={at} what={what} more={more} stage={st} cook={ck} /></div>
       ))}
       <div style={{ position: 'absolute', left: c214.x, top: c214.y, opacity: clamp(appear * 1.6), zIndex: 3,
-        transform: `translateY(${-40 * (1 - appear)}px) scale(${mix(0.95, 1, clamp(appear)) * (1 + 0.035 * lift)})`,
-        filter: `drop-shadow(${6 * lift}px ${4 + 18 * lift}px ${8 + 24 * lift}px rgba(13,13,15,${0.06 + 0.16 * lift}))` }}>
-        <div style={{ filter: swap > 0.01 ? `blur(${1.4 * swap}px)` : undefined }}>
-          <Card no={214} at="17.30" what="Mørbradgryde × 3" more="Rødgrød × 1 · fra spiis.dk" stage={stage} cook={cook} now={now}
-            press={stage === 'new' ? press1 : press2} tick={seg(t, DONE + 0.35, DONE + 0.7)} />
-        </div>
+        transform: `translateY(${-40 * (1 - appear) - 22 * carry}px) scale(${mix(0.95, 1, clamp(appear)) * (1 + 0.035 * lift)}) rotate(${-1.2 * carry}deg)` }}>
+        <Card no={214} at="17.30" what="Mørbradgryde × 3" more="Rødgrød × 1 · fra spiis.dk" k1={k1} k2={k2} carry={carry} cook={cook} now={now}
+          press={t < DONE - 0.3 ? press1 : press2} tick={seg(t, DONE + 0.4, DONE + 0.75)} />
       </div>
       {/* the fingers on the glass */}
       <Tap x={slot(0, 0).x + CW / 2} y={slot(0, 0).y + CARD_H - 38} q={seg(t, START - 0.14, START + 0.22)} />
       <Tap x={slot(1, 0).x + CW - 60} y={slot(1, 0).y + CARD_H - 38} q={seg(t, DONE - 0.14, DONE + 0.22)} />
       {/* the order comes in: Smoke glass, because it floats */}
       <div style={{ position: 'absolute', left: slot(0, 0).x + 104, top: CY - 58, height: 44, display: 'flex', alignItems: 'center', gap: 10, padding: '0 18px', borderRadius: 22, color: PORC,
-        background: 'rgba(14,15,16,.74)', boxShadow: '6px 12px 32px rgba(13,13,15,.18)', font: `500 15px/1 ${SANS}`, zIndex: 5, whiteSpace: 'nowrap',
+        ...glass('smoke'), font: `500 15px/1 ${SANS}`, zIndex: 5, whiteSpace: 'nowrap',
         opacity: clamp(toast), transform: `translateY(${-24 * (1 - toast)}px) scale(${mix(0.94, 1, clamp(toast))})` }}>
         <i style={{ width: 7, height: 7, borderRadius: '50%', background: '#6E7BFF' }} />Ny bestilling<span style={{ font: `400 13px/1 ${MONO}`, color: TRAV }}>spiis.dk</span>
         <i style={edge(EDGE)} />
