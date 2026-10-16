@@ -63,14 +63,14 @@ html.pg-js [data-r].in{ opacity:1; transform:none; }
 .three-foot b{ font-weight:500; color:var(--obsidian); }
 .three.done .three-foot{ opacity:1; transform:none; }
 @media (max-width:760px){
-  /* a phone: one row each, the letter, the name over its verb, the invoice */
+  /* a phone: one row each, the name over its verb, the invoice */
   .t-card{ width:min(86vw, 340px); height:84px; margin:-42px 0 0 calc(min(86vw, 340px) / -2); padding:0 14px 0 16px;
-    display:grid; grid-template-columns:32px 1fr auto; grid-template-rows:auto auto; column-gap:14px; row-gap:2px; align-content:center; border-radius:22px; }
+    display:grid; grid-template-columns:1fr auto; grid-template-rows:auto auto; column-gap:14px; row-gap:2px; align-content:center; border-radius:22px; }
   .t-card > span.mono{ position:static; grid-row:1 / 3; grid-column:1; width:32px; height:32px; border-radius:16px; display:grid; place-items:center;
     background:rgba(255,255,255,.1); box-shadow:inset 0 0 0 1px rgba(255,255,255,.18); align-self:center; }
-  .t-card b{ grid-column:2; grid-row:1; font-size:20px; line-height:1.1; white-space:nowrap; }
-  .t-card > span:not(.mono){ grid-column:2; grid-row:2; font-size:16px; line-height:1.2; white-space:nowrap; }
-  .bill{ position:static; grid-column:3; grid-row:1 / 3; align-self:center; height:26px; padding:0 10px; font-size:10.5px; }
+  .t-card b{ grid-column:1; grid-row:1; font-size:20px; line-height:1.1; white-space:nowrap; }
+  .t-card > span:not(.mono){ grid-column:1; grid-row:2; font-size:16px; line-height:1.2; white-space:nowrap; }
+  .bill{ position:static; grid-column:2; grid-row:1 / 3; align-self:center; height:26px; padding:0 10px; font-size:10.5px; }
   .t-one{ width:min(84vw, 340px); height:260px; margin:-130px 0 0 calc(min(84vw, 340px) / -2); padding:24px; }
   .t-one svg{ top:22px; left:24px; }
 }

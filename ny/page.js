@@ -80,9 +80,20 @@ async function pump() {
   busy = true;
   try { const r = await fetch(srcOf(v)); if (!r.ok) throw 0; v.src = URL.createObjectURL(await r.blob()); }
   catch (e) { v.src = srcOf(v); }
+  // should the browser not take the film from memory, it gets it the usual way
+  v.addEventListener('error', () => { if (v.src.startsWith('blob:')) { v.src = srcOf(v); if (v._seen) fromStart(v); } }, { once: true });
+  v.preload = 'auto'; v.load();
   v._ready = true; busy = false;
-  if (v._pending) { v._pending = false; v.addEventListener('loadeddata', () => fromStart(v), { once: true }); if (v.readyState >= 2) fromStart(v); }
+  // a phone draws nothing of a film before it is told to play, so it is told
+  if (v._pending) { v._pending = false; go(v); }
   pump();
+}
+// a tile's film is told to play; if no picture of it is drawn within a few
+// seconds, it is fetched again the usual way
+function go(v) {
+  fromStart(v);
+  clearTimeout(v._dog);
+  v._dog = setTimeout(() => { if (v._seen && v.style.opacity !== '1' && v.src.startsWith('blob:')) { v.src = srcOf(v); fromStart(v); } }, 3500);
 }
 const to = 'IntersectionObserver' in window && new IntersectionObserver(es => es.forEach(en => {
   const v = en.target;
@@ -95,7 +106,7 @@ const to = 'IntersectionObserver' in window && new IntersectionObserver(es => es
       if (v.readyState >= 1) end(); else v.addEventListener('loadedmetadata', end, { once: true });
       return;
     }
-    if (v._ready && v.readyState >= 2) fromStart(v); else v._pending = true;
+    if (v._ready) go(v); else v._pending = true;
   } else if (en.intersectionRatio === 0 && v._seen) {
     // out of sight: it may play again next time, from its start
     v._seen = false; v._pending = false; v.pause();
