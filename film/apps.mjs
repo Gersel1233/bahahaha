@@ -14,7 +14,7 @@ const USED = ['fonts/chivo-400.woff2', 'fonts/chivo-500.woff2', 'fonts/chivo-600
 const pub = path.resolve('pub');
 for (const f of USED) { fs.mkdirSync(path.dirname(path.join(pub, f)), { recursive: true }); fs.copyFileSync(path.resolve('..', f), path.join(pub, f)); }
 const serveUrl = await bundle({ entryPoint: path.resolve('src/apps/index.ts'), publicDir: pub });
-const opts = { serveUrl, browserExecutable: '/opt/pw-browsers/chromium-1194/chrome-linux/chrome', chromiumOptions: { gl: 'swiftshader' }, chromeMode: 'chrome-for-testing' };
+const opts = { serveUrl, browserExecutable: '/opt/pw-browsers/chromium-1194/chrome-linux/chrome', chromiumOptions: { gl: process.env.GL || 'swiftshader' }, chromeMode: 'chrome-for-testing' };
 const composition = await selectComposition({ ...opts, id });
 if (mode === 'still') {
   for (const s of times.split(',')) {
@@ -24,7 +24,8 @@ if (mode === 'still') {
   console.log('stills done');
 } else {
   let last = -1;
-  await renderMedia({ ...opts, composition, codec: 'h264', crf: 16, scale, outputLocation: path.resolve('out', id + '.mp4'), concurrency: 4,
+  await renderMedia({ ...opts, composition, codec: 'h264', crf: 16, scale, outputLocation: path.resolve('out', (process.env.OUT || id) + '.mp4'), concurrency: Number(process.env.CONC || 1),
+    ...(process.env.RANGE ? { frameRange: process.env.RANGE.split('-').map(Number) } : {}),
     onProgress: ({ progress }) => { const p = Math.floor(progress * 5); if (p !== last) { last = p; console.log(id, p * 20 + '%'); } } });
   console.log('done', id);
 }
