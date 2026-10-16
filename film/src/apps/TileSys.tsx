@@ -5,17 +5,21 @@
    day's counts go up. One screen, one moment. */
 import React from 'react';
 import { AbsoluteFill, Img, staticFile } from 'remotion';
-import { useT, useFonts, seg, out3, out5, mix, clamp, Check, SANS, SERIF } from './common';
+import { useT, useFonts, seg, out3, out5, io3, mix, clamp, Check, SANS, SERIF } from './common';
 import { TW, TH } from './TileApps';
 
-export const SYS_S = 6.2;
+export const SYS_S = 7;
 
 // the photograph, and where the iPad's screen is in it (its four corners,
 // in the photograph's own pixels: top left, top right, bottom right, bottom left)
 export const PHOTO = { src: 'film/assets/kitchen.webp', w: 2160, h: 3857 };
 export const SCREEN: [number, number][] = [[647, 2188], [1527, 2171], [1608, 2731], [691, 2777]];
 // the camera: how close, and where the screen's middle sits in the tile
-const CAM = { k: 0.82, x: TW / 2, y: 1010 };
+const CAM = { k0: 0.66, k1: 0.86, x: TW / 2, y0: 1090, y1: 1030 };
+// the kitchen screen's own beats start when the order lands
+const LAND = 1.0;
+// the guest's phone, floating in front, and where the order lands on the iPad
+const GP = { x: 592, y: 660, w: 200 };
 
 // the kitchen screen is drawn at an iPad's size and then set into the photo
 const UW = 900, UH = 625;
@@ -55,7 +59,7 @@ const Order: React.FC<{ when: string; what: string; isNew?: boolean; glow?: numb
 
 // Spiis' kitchen screen, at an iPad's size
 const Kitchen: React.FC<{ t: number; sp: (a: number, d?: number, s?: number) => number }> = ({ t, sp }) => {
-  const bell = out3(seg(t, 1.0, 1.3)) * (1 - seg(t, 3.2, 3.6));
+  const bell = out3(seg(t, 1.45, 1.7)) * (1 - seg(t, 3.6, 4.0));
   const land = sp(1.5, 15, 140);
   const count = seg(t, 1.7, 2.3);
   const glow = 1 - seg(t, 3.2, 4.4);
@@ -98,26 +102,107 @@ const Kitchen: React.FC<{ t: number; sp: (a: number, d?: number, s?: number) => 
   );
 };
 
+// a point on a curve from a to b, bowed upward
+const arc = (a: [number, number], b: [number, number], q: number, lift: number): [number, number] =>
+  [mix(a[0], b[0], q), mix(a[1], b[1], q) - Math.sin(Math.PI * q) * lift];
+
 export const TileSys: React.FC = () => {
   useFonts();
   const { t, sp } = useT();
-  // the photograph covers the tile, lower part in view; a slow push-in
-  const k = CAM.k, mx = (SCREEN[0][0] + SCREEN[2][0]) / 2, my = (SCREEN[0][1] + SCREEN[2][1]) / 2;
-  const ox = CAM.x - mx * k, oy = CAM.y - my * k, pw = PHOTO.w * k, ph = PHOTO.h * k;
-  const push = mix(1, 1.05, out5(seg(t, 0, SYS_S)));
+  // the camera moves slowly in on the iPad all the way through
+  const cam = io3(seg(t, 0, SYS_S));
+  const k = mix(CAM.k0, CAM.k1, cam), cy = mix(CAM.y0, CAM.y1, cam);
+  const mx = (SCREEN[0][0] + SCREEN[2][0]) / 2, my = (SCREEN[0][1] + SCREEN[2][1]) / 2;
+  const ox = CAM.x - mx * k, oy = cy - my * k, pw = PHOTO.w * k, ph = PHOTO.h * k;
   const q = SCREEN.map(([x, y]) => [x * k + ox, y * k + oy] as [number, number]);
+  // where on the iPad the order lands: its list, upper right
+  const hit: [number, number] = [mix(q[0][0], q[1][0], 0.68), mix(q[0][1], q[3][1], 0.3)];
+
+  // the guest: in, order, paid, away
+  const gIn = sp(0.25, 16, 140), gOut = io3(seg(t, 2.35, 2.95));
+  const press = t > 1.15 && t < 1.3 ? 0.95 : 1, paid = out3(seg(t, 1.25, 1.5));
+  const GH = GP.w * 2336 / 1120;
+  const btn: [number, number] = [GP.x + GP.w / 2, GP.y + GH * 0.86];
+  // the order, flying from the button into the kitchen
+  const fly = io3(seg(t, 1.55, 2.45));
+  const head = arc(btn, hit, fly, 260);
+  const trail = Array.from({ length: 14 }, (_, i) => arc(btn, hit, Math.max(0, fly - i * 0.03), 260));
+  // and when it lands
+  const ring = (d: number) => seg(t, 2.45 + d, 3.4 + d);
+  const flash = Math.sin(Math.PI * clamp(seg(t, 2.45, 2.85)));
+  const say = [[0.3, 2.5, 'Gæsten bestiller på spiis.dk'], [2.55, 9, 'Køkkenet har den med det samme']] as const;
+
   return (
     <AbsoluteFill style={{ background: '#0B0908', overflow: 'hidden' }}>
-      <div style={{ position: 'absolute', inset: 0, transformOrigin: `${(q[0][0] + q[2][0]) / 2}px ${(q[0][1] + q[2][1]) / 2}px`, transform: `scale(${push})` }}>
-        <Img src={staticFile(PHOTO.src)} style={{ position: 'absolute', left: ox, top: oy, width: pw, height: ph }} />
-        <div style={{ position: 'absolute', left: 0, top: 0, width: UW, height: UH, transformOrigin: '0 0', transform: quad(UW, UH, q) }}>
-          <Kitchen t={t} sp={sp} />
-          {/* the screen's own glass: a faint sheen, and a little of the room's warmth */}
-          <i style={{ position: 'absolute', inset: 0, background: 'linear-gradient(160deg, rgba(255,255,255,.10), rgba(255,255,255,0) 40%), linear-gradient(rgba(255,170,90,.05), rgba(255,170,90,.05))' }} />
-        </div>
+      <Img src={staticFile(PHOTO.src)} style={{ position: 'absolute', left: ox, top: oy, width: pw, height: ph }} />
+      <div style={{ position: 'absolute', left: 0, top: 0, width: UW, height: UH, transformOrigin: '0 0', transform: quad(UW, UH, q) }}>
+        <Kitchen t={t - LAND} sp={(a, d, st) => sp(a + LAND, d, st)} />
+        {/* the screen's own glass, and the light of the order arriving */}
+        <i style={{ position: 'absolute', inset: 0, background: 'linear-gradient(160deg, rgba(255,255,255,.10), rgba(255,255,255,0) 40%)' }} />
+        <i style={{ position: 'absolute', inset: 0, background: 'radial-gradient(60% 70% at 68% 30%, rgba(255,190,120,.55), rgba(255,190,120,0))', opacity: flash }} />
       </div>
       {/* the top of the tile, quiet for its words */}
-      <div style={{ position: 'absolute', left: 0, right: 0, top: 0, height: 640, background: 'linear-gradient(rgba(11,9,8,.85), rgba(11,9,8,.55) 55%, rgba(11,9,8,0))' }} />
+      <div style={{ position: 'absolute', left: 0, right: 0, top: 0, height: 700, background: 'linear-gradient(rgba(11,9,8,.9), rgba(11,9,8,.6) 60%, rgba(11,9,8,0))' }} />
+
+      {/* ---------- rings from where it lands ---------- */}
+      {[0, 0.18, 0.36].map(d => {
+        const r = ring(d);
+        if (r <= 0 || r >= 1) return null;
+        const R = mix(10, 170, out3(r));
+        return <i key={d} style={{ position: 'absolute', left: hit[0] - R, top: hit[1] - R, width: R * 2, height: R * 2, borderRadius: '50%',
+          border: `3px solid rgba(255,180,110,${0.75 * (1 - r)})`, boxShadow: `0 0 24px rgba(255,160,90,${0.5 * (1 - r)})` }} />;
+      })}
+
+      {/* ---------- the guest's phone, on spiis.dk ---------- */}
+      {gOut < 1 && (
+        <div style={{ position: 'absolute', left: GP.x, top: GP.y, width: GP.w, height: GH, opacity: clamp(gIn * 1.5) * (1 - gOut),
+          transform: `translate(${60 * gOut}px, ${50 * (1 - gIn) + 40 * gOut}px) scale(${mix(0.94, 1, gIn) * mix(1, 0.9, gOut)}) rotate(${mix(4, 0, gIn)}deg)`,
+          filter: 'drop-shadow(0 30px 40px rgba(0,0,0,.55))' }}>
+          <div style={{ position: 'absolute', left: GP.w * 0.0537, top: GH * 0.024, width: GP.w * 0.8917, height: GH * 0.952, borderRadius: '13% / 6.2%', overflow: 'hidden', background: '#F4EFE8', fontFamily: SANS }}>
+            <div style={{ height: 36, display: 'flex', alignItems: 'flex-end', justifyContent: 'center', paddingBottom: 4, font: `600 10px/1 ${SANS}`, color: '#1E1915' }}>spiis.dk</div>
+            <div style={{ margin: '6px 10px 0', height: 120, borderRadius: 12, backgroundImage: `url(${staticFile('film/assets/dish.webp')})`, backgroundSize: 'cover', backgroundPosition: '62% 55%' }} />
+            <div style={{ margin: '10px 12px 0', font: `600 16px/1.15 ${SANS}`, color: '#1E1915' }}>Mørbradgryde<br /><span style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 300 }}>med ris</span></div>
+            <div style={{ margin: '8px 12px 0', font: `400 12px/1.3 ${SANS}`, color: MUTE }}>3 stk · afhentning 17.30</div>
+            <div style={{ position: 'absolute', left: 10, right: 10, bottom: 22, height: 40, borderRadius: 20, display: 'grid', placeItems: 'center', color: '#fff', font: `600 14px/1 ${SANS}`,
+              background: paid > 0 ? `rgb(${mix(200, 47, paid)},${mix(100, 158, paid)},${mix(43, 91, paid)})` : ORANGE, transform: `scale(${press})` }}>
+              <span style={{ position: 'absolute', opacity: 1 - paid }}>Bestil og betal</span>
+              <span style={{ position: 'absolute', opacity: paid, display: 'flex', alignItems: 'center', gap: 6 }}><Check p={seg(t, 1.3, 1.6)} size={7} color="#fff" width={3.4} />Betalt</span>
+            </div>
+          </div>
+          <Img src={staticFile('ny/media/dev/iphone-17-pro-2x.webp')} style={{ position: 'absolute', inset: 0, width: GP.w, height: GH }} />
+          {/* the finger */}
+          {t > 1.0 && t < 1.55 && <i style={{ position: 'absolute', left: GP.w / 2 - 20, top: GH * 0.86 - 20, width: 40, height: 40, borderRadius: '50%', background: 'rgba(255,255,255,.45)',
+            opacity: Math.sin(Math.PI * seg(t, 1.0, 1.55)), transform: `scale(${mix(0.6, 1.3, seg(t, 1.0, 1.55))})` }} />}
+        </div>
+      )}
+
+      {/* ---------- the order's flight ---------- */}
+      {fly > 0 && fly < 1 && (
+        <>
+          <svg width={TW} height={TH} style={{ position: 'absolute', inset: 0 }}>
+            <polyline points={trail.map(p => p.join(',')).join(' ')} fill="none" stroke="url(#tr)" strokeWidth="6" strokeLinecap="round" />
+            <defs><linearGradient id="tr" gradientUnits="userSpaceOnUse" x1={trail[13][0]} y1={trail[13][1]} x2={head[0]} y2={head[1]}>
+              <stop offset="0" stopColor="#FFB070" stopOpacity="0" /><stop offset="1" stopColor="#FFD7A8" stopOpacity="1" /></linearGradient></defs>
+          </svg>
+          <div style={{ position: 'absolute', left: head[0], top: head[1], transform: `translate(-50%, -50%) scale(${mix(1, 0.55, fly)})`, whiteSpace: 'nowrap',
+            display: 'flex', alignItems: 'center', gap: 10, padding: '14px 20px 14px 14px', borderRadius: 30, color: '#1E1915', font: `600 22px/1 ${SANS}`,
+            background: 'rgba(255,250,244,.95)', boxShadow: '0 0 0 2px rgba(255,180,110,.8), 0 0 40px 10px rgba(255,160,90,.55), 0 14px 30px rgba(0,0,0,.4)' }}>
+            <span style={{ width: 32, height: 32, borderRadius: 9, background: ORANGE, display: 'grid', placeItems: 'center', color: '#fff', font: `700 17px/1 ${SANS}` }}>S</span>
+            3 × Mørbradgryde · 17.30
+          </div>
+        </>
+      )}
+
+      {/* ---------- what is happening, in one line ---------- */}
+      <div style={{ position: 'absolute', left: 40, top: 650, height: 56 }}>
+        {say.map(([a, b, txt], i) => {
+          const v = out5(seg(t, a, a + 0.35)) * (1 - seg(t, b - 0.2, b));
+          return <span key={i} style={{ position: 'absolute', left: 0, top: 0, whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: 12, padding: '13px 22px 13px 13px', borderRadius: 28,
+            background: 'linear-gradient(160deg, rgba(255,255,255,.22), rgba(255,255,255,.08))', boxShadow: 'inset 0 1px 0 rgba(255,255,255,.5), inset 0 0 0 1px rgba(255,255,255,.14), 0 12px 30px rgba(0,0,0,.35)',
+            color: '#F4EFE8', font: `500 23px/1 ${SANS}`, opacity: v, transform: `translateY(${14 * (1 - v)}px)` }}>
+            <i style={{ width: 30, height: 30, borderRadius: '50%', background: i ? '#2F9E5B' : ORANGE, display: 'grid', placeItems: 'center', font: `700 15px/1 ${SANS}`, fontStyle: 'normal', color: '#fff' }}>{i + 1}</i>{txt}</span>;
+        })}
+      </div>
     </AbsoluteFill>
   );
 };

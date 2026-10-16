@@ -192,3 +192,6 @@ html.hx-paper .tb{ background:var(--smoke-dense); }
   .hs-say{ font-size:min(9.4vw, 46px); line-height:1.14; }
   .hs-say2{ font-size:min(5.2vw, 22px); }
 }
+
+/* the films are shown once a frame of them is drawn; their first picture lies under them */
+html.hs-on .hs-s video{ opacity:0; }

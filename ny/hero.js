@@ -70,7 +70,12 @@ export function startHero() {
   /* ---------- the apps' films: fetched when they are close; each starts
      from its beginning when its app opens, and plays once ---------- */
   const h264 = document.createElement('video').canPlayType('video/mp4; codecs="avc1.42E01E"') !== '';
-  function load(v) { if (v && !v.src) { v.src = v.dataset.hv + (h264 ? '.mp4' : '.webm'); v.load(); } }
+  function load(v) { if (v && !v.src) { v.src = v.dataset.hv + (h264 ? '.mp4' : '.webm'); v.preload = 'auto'; } }
+  // a phone shows black for a moment when a video goes back to its start;
+  // so each film's first picture lies under it, and the film is only shown
+  // once a frame of it has been drawn
+  vids.forEach(v => { if (v && v.poster) v.parentNode.style.background = 'url("' + v.poster + '") 50% 0 / cover no-repeat'; });
+  function show(v) { const on = () => { v.style.opacity = '1'; }; if (v.requestVideoFrameCallback) v.requestVideoFrameCallback(on); else v.addEventListener('timeupdate', on, { once: true }); }
   // the first app's film once the page has settled, so it is in before it is needed
   addEventListener('load', () => setTimeout(() => load(vids[0]), 1200), { once: true });
   let playing = -1;
@@ -79,7 +84,11 @@ export function startHero() {
     playing = i;
     vids.forEach((v, j) => {
       if (!v) return;
-      if (j === i) { load(v); try { v.currentTime = 0; } catch (e) {} const r = v.play(); if (r) r.catch(() => {}); }
+      if (j === i) {
+        load(v);
+        if (v.currentTime > 0.01) { v.style.opacity = '0'; try { v.currentTime = 0; } catch (e) {} }
+        const r = v.play(); if (r) r.then(() => show(v)).catch(() => {}); else show(v);
+      }
       else v.pause();
     });
   }
@@ -145,7 +154,7 @@ export function startHero() {
     const see = p > WRITE - 0.01 && r.bottom > 0;
     pillVids.forEach(v => {
       if (p > ZOOM[0]) load(v);
-      if (see && v.paused) { const pr = v.play(); if (pr) pr.catch(() => {}); }
+      if (see && v.paused) { const pr = v.play(); if (pr) pr.then(() => show(v)).catch(() => {}); }
       else if (!see && !v.paused) v.pause();
     });
     html.classList.toggle('hx-paper', e > 0.8);

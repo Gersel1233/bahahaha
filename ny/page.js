@@ -35,40 +35,56 @@ if (still || !('IntersectionObserver' in window)) {
   $$('[data-r]').forEach(e => ro.observe(e));
 }
 
+/* ---------- the films never flash ----------
+   A phone shows black for a moment whenever a video is fetched or sent back
+   to its start. So each film's first picture lies under it, the video is
+   only shown once a frame of it has been drawn, and its source is set once. */
+const h264ok = document.createElement('video').canPlayType('video/mp4; codecs="avc1.640028"') !== '';
+const srcOf = v => v.dataset.v + (h264ok ? '.mp4' : '.webm');
+function under(v) { if (v.poster && v.parentNode && !v.parentNode.style.backgroundImage) v.parentNode.style.backgroundImage = 'url("' + v.poster + '")'; }
+function show(v) {
+  const on = () => { v.style.opacity = '1'; };
+  if (v.requestVideoFrameCallback) v.requestVideoFrameCallback(on);
+  else v.addEventListener('timeupdate', on, { once: true });
+}
+function fromStart(v) {
+  // hidden while it goes back, over its own first picture, so nothing flashes
+  if (v.currentTime > 0.01) { v.style.opacity = '0'; try { v.currentTime = 0; } catch (e) {} }
+  const p = v.play(); if (p) p.then(() => show(v)).catch(() => {}); else show(v);
+}
+
 /* ---------- the recordings play only while they are seen ---------- */
 const vo = 'IntersectionObserver' in window && new IntersectionObserver(es => es.forEach(en => {
   const v = en.target;
   if (en.isIntersecting) {
-    if (!v._src) {
-      v._src = true;
-      const s = v.dataset.v;
-      // mp4 first, for Safari and every iPhone; a browser without H.264 takes the webm
-      v.innerHTML = '<source src="' + s + '.mp4" type="video/mp4"><source src="' + s + '.webm" type="video/webm">';
-      v.load();
-    }
-    if (!still) v.play().catch(() => {});
+    if (!v._src) { v._src = true; v.src = srcOf(v); }
+    if (!still) { const p = v.play(); if (p) p.then(() => show(v)).catch(() => {}); }
   } else if (!v.paused) v.pause();
 }), { threshold: 0.2 });
-if (vo) $$('video[data-v]:not(.tile-film)').forEach(v => vo.observe(v));
+if (vo) $$('video[data-v]:not(.tile-film)').forEach(v => { under(v); vo.observe(v); });
 
 /* ---------- the tiles' films: each plays once, from its beginning, when
    its tile is well in view, and then stays on its last picture. It plays
    again only after its tile has been out of sight altogether. ---------- */
-const src = v => { if (!v._src) { v._src = true; const s = v.dataset.v; v.innerHTML = '<source src="' + s + '.mp4" type="video/mp4"><source src="' + s + '.webm" type="video/webm">'; v.load(); } };
+const src = v => { if (!v._src) { v._src = true; v.src = srcOf(v); } };
 const to = 'IntersectionObserver' in window && new IntersectionObserver(es => es.forEach(en => {
   const v = en.target;
   if (en.intersectionRatio > 0) src(v);
   if (en.intersectionRatio >= 0.55 && !v._seen) {
     v._seen = true;
-    if (still) { v.addEventListener('loadeddata', () => { try { v.currentTime = v.duration || 99; } catch (e) {} }, { once: true }); return; }
-    try { v.currentTime = 0; } catch (e) {}
-    v.play().catch(() => {});
+    if (still) {
+      // nothing moves: the film's last picture, at once
+      const end = () => { try { v.currentTime = Math.max(0, (v.duration || 0) - 0.05); } catch (e) {} v.addEventListener('seeked', () => { v.style.opacity = '1'; }, { once: true }); };
+      if (v.readyState >= 1) end(); else v.addEventListener('loadedmetadata', end, { once: true });
+      return;
+    }
+    fromStart(v);
   } else if (en.intersectionRatio === 0 && v._seen) {
+    // out of sight: it may play again next time, from its start
     v._seen = false; v.pause();
-    try { v.currentTime = 0; } catch (e) {}
   }
 }), { threshold: [0, 0.55], rootMargin: '0px 200px 0px 200px' });
-if (to) $$('video.tile-film').forEach(v => to.observe(v));
+if (to) $$('video.tile-film').forEach(v => { under(v); to.observe(v); });
 // all four are fetched while the tiles are still a screen or so away, so a
 // swipe never waits for one
 const tileRow = document.getElementById('tiles');

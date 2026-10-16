@@ -342,3 +342,7 @@ html.pg-js [data-r].in{ opacity:1; transform:none; }
   .note{ -webkit-backdrop-filter:none; backdrop-filter:none; background:linear-gradient(160deg, rgba(255,255,255,.94), rgba(240,238,234,.9)); }
 }
 .case [data-p]{ will-change:transform, opacity; }
+
+/* the films are shown once a frame of them is drawn; their first picture lies under them */
+html.pg-js video[data-v]:not(.tile-film){ opacity:0; }
+.dev .scr{ background-position:50% 0; background-size:cover; background-repeat:no-repeat; }
