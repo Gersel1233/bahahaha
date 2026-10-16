@@ -66,10 +66,27 @@ if (vo) $$('video[data-v]:not(.tile-film)').forEach(v => { under(v); vo.observe(
 /* ---------- the tiles' films: each plays once, from its beginning, when
    its tile is well in view, and then stays on its last picture. It plays
    again only after its tile has been out of sight altogether. ---------- */
-const src = v => { if (!v._src) { v._src = true; v.src = srcOf(v); } };
+// the tiles' films are fetched whole, one after another, before they play:
+// a film that plays while it is still arriving stalls and flickers on a
+// phone's connection. Until its film is in, a tile shows its first picture.
+const queue = []; let busy = false;
+function want(v, first) {
+  if (v._want) { if (first && !v._ready) { const i = queue.indexOf(v); if (i > 0) { queue.splice(i, 1); queue.unshift(v); } } return; }
+  v._want = true; first ? queue.unshift(v) : queue.push(v); pump();
+}
+async function pump() {
+  if (busy) return;
+  const v = queue.shift(); if (!v) return;
+  busy = true;
+  try { const r = await fetch(srcOf(v)); if (!r.ok) throw 0; v.src = URL.createObjectURL(await r.blob()); }
+  catch (e) { v.src = srcOf(v); }
+  v._ready = true; busy = false;
+  if (v._pending) { v._pending = false; v.addEventListener('loadeddata', () => fromStart(v), { once: true }); if (v.readyState >= 2) fromStart(v); }
+  pump();
+}
 const to = 'IntersectionObserver' in window && new IntersectionObserver(es => es.forEach(en => {
   const v = en.target;
-  if (en.intersectionRatio > 0) src(v);
+  if (en.intersectionRatio > 0) want(v, true);
   if (en.intersectionRatio >= 0.55 && !v._seen) {
     v._seen = true;
     if (still) {
@@ -78,18 +95,17 @@ const to = 'IntersectionObserver' in window && new IntersectionObserver(es => es
       if (v.readyState >= 1) end(); else v.addEventListener('loadedmetadata', end, { once: true });
       return;
     }
-    fromStart(v);
+    if (v._ready && v.readyState >= 2) fromStart(v); else v._pending = true;
   } else if (en.intersectionRatio === 0 && v._seen) {
     // out of sight: it may play again next time, from its start
-    v._seen = false; v.pause();
+    v._seen = false; v._pending = false; v.pause();
   }
 }), { threshold: [0, 0.55], rootMargin: '0px 200px 0px 200px' });
 if (to) $$('video.tile-film').forEach(v => { under(v); to.observe(v); });
-// all four are fetched while the tiles are still a screen or so away, so a
-// swipe never waits for one
+// all four are fetched, in order, while the tiles are still a screen or so away
 const tileRow = document.getElementById('tiles');
 if (tileRow && 'IntersectionObserver' in window) {
-  const near = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) { $$('video.tile-film').forEach(v => { v.preload = 'auto'; src(v); }); near.disconnect(); } }, { rootMargin: '900px 0px' });
+  const near = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) { $$('video.tile-film').forEach(v => want(v)); near.disconnect(); } }, { rootMargin: '900px 0px' });
   near.observe(tileRow);
 }
 

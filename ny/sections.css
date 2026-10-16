@@ -15,6 +15,10 @@
 .tile-t p:last-child{ margin-top:12px; font:400 15px/1.45 var(--sans); max-width:30ch; opacity:.78; }
 .tile-v{ position:absolute; inset:0; z-index:1; background:50% 100% / cover no-repeat; }
 html.pg-js .tile-film{ opacity:0; }
+/* Safari flickers a video inside a rounded, scrolling, clipped box unless
+   the box is its own layer with its own mask */
+.tile{ -webkit-mask-image:-webkit-radial-gradient(white, black); transform:translateZ(0); }
+.tile-film{ -webkit-backface-visibility:hidden; backface-visibility:hidden; transform:translateZ(0); }
 /* each tile is a film, filling it; what matters in it sits low, under the words */
 .tile-film{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:50% 100%; }
 /* wider screens get taller tiles, so the film keeps its place under the words */
