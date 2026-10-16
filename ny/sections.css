@@ -24,7 +24,9 @@ html.pg-js .tile-film{ opacity:0; }
 /* wider screens get taller tiles, so the film keeps its place under the words */
 @media (min-width:700px){ .tile{ height:clamp(600px, 82vh, 760px); } }
 .tile-apps{ background:#05080F; color:var(--porcelain); }
-.tile-sys{ background:#141110; color:var(--porcelain); }
+.tile-sys{ background:#F6F4EF; color:var(--obsidian); }
+/* a light tile on the light page: a hairline round it, over its film */
+.tile-sys::after{ content:""; position:absolute; inset:0; z-index:3; border-radius:inherit; box-shadow:inset 0 0 0 1px rgba(14,15,16,.1); pointer-events:none; }
 .tile-int{ background:#05080F; color:var(--porcelain); }
 .tile-web{ background:#05080F; color:var(--porcelain); }
 .tiles-nav{ display:none; gap:10px; justify-content:flex-end; padding:0 var(--gut); max-width:1440px; margin:0 auto; }
