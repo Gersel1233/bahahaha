@@ -2,7 +2,7 @@
    tomorrow's five appointments, cancels each and texts each customer the
    owner's number, then answers. */
 import React from 'react';
-import { AbsoluteFill } from 'remotion';
+import { AbsoluteFill, Img, staticFile } from 'remotion';
 import { u, box, useT, useFonts, seg, out3, out5, io3, mix, clamp, StatusBar, Tap, Check, SANS, MONO, SH } from './common';
 
 export const CALLSTER_S = 7.2;
@@ -109,7 +109,7 @@ export const Callster: React.FC = () => {
           <b style={{ minWidth: u(24), height: u(22), padding: `0 ${u(7)}px`, borderRadius: u(11), background: BLUE, color: '#fff', font: `500 ${u(14)}px/${u(22)}px ${SANS}`, textAlign: 'center' }}>12</b>
         </span>
         <div style={{ ...box(0, 62, 402), display: 'flex', flexDirection: 'column', alignItems: 'center', gap: u(5) }}>
-          <span style={{ width: u(50), height: u(50), borderRadius: '50%', display: 'grid', placeItems: 'center', background: 'linear-gradient(150deg, #3d3d52, #15151f)', color: '#fff', font: `600 ${u(22)}px/1 ${SANS}` }}>C</span>
+          <Img src={staticFile('ny/media/ic/callster.png')} style={{ width: u(50), height: u(50), borderRadius: '50%' }} />
           <span style={{ font: `400 ${u(12)}px/1 ${SANS}` }}>Callster ›</span>
         </div>
         <svg style={{ ...box(354, 78) }} width={u(28)} height={u(18)} viewBox="0 0 26 16"><rect x="1" y="1" width="17" height="14" rx="3" fill="none" stroke={BLUE} strokeWidth="1.8" /><path d="m19 6 6-3v10l-6-3z" fill="none" stroke={BLUE} strokeWidth="1.8" strokeLinejoin="round" /></svg>

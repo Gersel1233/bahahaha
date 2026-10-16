@@ -2,7 +2,7 @@
    The phone steps back, and the change runs out to the screen above the
    counter and the website, where the same line appears. */
 import React from 'react';
-import { AbsoluteFill, staticFile } from 'remotion';
+import { AbsoluteFill, Img, staticFile } from 'remotion';
 import { u, box, useT, useFonts, seg, out3, out5, io3, mix, clamp, StatusBar, Tap, Check, SANS, SERIF, MONO, SH } from './common';
 
 export const MOSEDE_S = 6.6;
@@ -108,7 +108,7 @@ export const Mosede: React.FC = () => {
         {back > 0.3 && <div style={{ position: 'absolute', left: 0, right: 0, top: u(-26), textAlign: 'center' }} />}
         <div style={{ ...box(20, 72, 362), ...enter(0) }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: u(10) }}>
-            <span style={{ width: u(30), height: u(30), borderRadius: u(9), background: `linear-gradient(150deg, #E04B4B, #A72332)`, display: 'grid', placeItems: 'center', font: `700 ${u(15)}px/1 ${SANS}`, color: '#fff' }}>M</span>
+            <Img src={staticFile('ny/media/ic/mosede.png')} style={{ width: u(30), height: u(30), borderRadius: u(8) }} />
             <span style={{ font: `500 ${u(15)}px/1 ${SANS}`, color: SUB }}>Mosede Havnecafé</span>
           </div>
           <div style={{ font: `600 ${u(34)}px/1 ${SANS}`, letterSpacing: u(-1), marginTop: u(18) }}>Menukort</div>

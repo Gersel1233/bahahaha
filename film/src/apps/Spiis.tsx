@@ -50,7 +50,7 @@ export const Spiis: React.FC = () => {
       {/* ---------- the kitchen, under ---------- */}
       <AbsoluteFill style={{ opacity: kitchenIn, transform: `scale(${mix(1.06, 1, kitchenIn)})` }}>
         <div style={{ ...box(20, 74), color: LIGHT }}>
-          <div style={{ font: `400 ${u(12)}px/1 ${MONO}`, color: '#A89B8E', letterSpacing: u(0.4) }}>SPIIS · KØKKENET</div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: u(8), font: `400 ${u(12)}px/1 ${MONO}`, color: '#A89B8E', letterSpacing: u(0.4) }}><svg width={u(18)} height={u(18)} viewBox="30 36 60 58"><path d="M38 74c-11 0-15-16-4-20-1-12 13-19 22-12 6-9 22-8 26 3 12-2 18 14 8 22-2 1-4 2-6 2z" fill="none" stroke="#A89B8E" strokeWidth="5" strokeLinejoin="round" /><rect x="38" y="74" width="46" height="16" rx="3" fill="none" stroke="#A89B8E" strokeWidth="5" /><circle cx="51" cy="82" r="3" fill="#A89B8E" /><circle cx="61" cy="82" r="3" fill="#A89B8E" /><circle cx="71" cy="82" r="3" fill="#A89B8E" /></svg>SPIIS · KØKKENET</div>
           <div style={{ font: `600 ${u(32)}px/1.1 ${SANS}`, letterSpacing: u(-1), marginTop: u(8) }}>I dag</div>
         </div>
         <div style={{ ...box(20, 150, 175, 96), background: CARD, borderRadius: u(20), padding: u(16), color: LIGHT }}>
@@ -101,7 +101,7 @@ export const Spiis: React.FC = () => {
         <AbsoluteFill style={{ background: CREAM, transformOrigin: '50% 40%', borderRadius: u(mix(0, 44, away)),
           transform: `translateY(${u(-60 * away)}px) scale(${mix(1, 0.72, away)})`, opacity: 1 - seg(t, 3.15, 3.45) }}>
           <div style={{ ...box(20, 70, 362, 30), display: 'flex', justifyContent: 'space-between', alignItems: 'center', ...enter(0) }}>
-            <span style={{ font: `600 ${u(24)}px/1 ${SANS}`, color: INK, letterSpacing: u(-0.6) }}>Spiis</span>
+            <span style={{ display: 'flex', alignItems: 'center', gap: u(8), font: `600 ${u(24)}px/1 ${SANS}`, color: INK, letterSpacing: u(-0.6) }}><svg width={u(26)} height={u(26)} viewBox="30 36 60 58"><path d="M38 74c-11 0-15-16-4-20-1-12 13-19 22-12 6-9 22-8 26 3 12-2 18 14 8 22-2 1-4 2-6 2z" fill="none" stroke="#1E1915" strokeWidth="5" strokeLinejoin="round" /><rect x="38" y="74" width="46" height="16" rx="3" fill="none" stroke="#1E1915" strokeWidth="5" /><circle cx="51" cy="82" r="3" fill="#1E1915" /><circle cx="61" cy="82" r="3" fill="#1E1915" /><circle cx="71" cy="82" r="3" fill="#1E1915" /></svg>Spiis</span>
             <span style={{ font: `600 ${u(12)}px/1 ${SANS}`, color: ORANGE, background: 'rgba(217,105,46,.12)', padding: `${u(7)}px ${u(12)}px`, borderRadius: u(20) }}>Dagens ret</span>
           </div>
           <div style={{ ...box(20, 116, 362, 236), borderRadius: u(26), overflow: 'hidden', ...enter(1) }}>

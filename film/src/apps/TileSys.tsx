@@ -66,7 +66,7 @@ const Kitchen: React.FC<{ t: number; sp: (a: number, d?: number, s?: number) => 
   return (
     <div style={{ width: UW, height: UH, background: CREAM, fontFamily: SANS, overflow: 'hidden', position: 'relative' }}>
       <div style={{ height: 70, background: DARK, display: 'flex', alignItems: 'center', gap: 12, padding: '0 30px', color: '#F4EFE8' }}>
-        <svg width="30" height="30" viewBox="0 0 24 24"><path d="M7 18h10v3H7zM6 14c-2.5 0-4-2-4-4s1.7-3.7 3.8-3.6C6.4 4.4 8.4 3 10.5 3c1.5 0 2.8.6 3.6 1.6A4 4 0 0 1 22 8c0 2.6-2 4.5-4.4 4.6L17 18H7z" fill="none" stroke="#F4EFE8" strokeWidth="1.6" strokeLinejoin="round" /></svg>
+        <svg width={34} height={34} viewBox="30 36 60 58"><path d="M38 74c-11 0-15-16-4-20-1-12 13-19 22-12 6-9 22-8 26 3 12-2 18 14 8 22-2 1-4 2-6 2z" fill="none" stroke="#F4EFE8" strokeWidth="5" strokeLinejoin="round" /><rect x="38" y="74" width="46" height="16" rx="3" fill="none" stroke="#F4EFE8" strokeWidth="5" /><circle cx="51" cy="82" r="3" fill="#F4EFE8" /><circle cx="61" cy="82" r="3" fill="#F4EFE8" /><circle cx="71" cy="82" r="3" fill="#F4EFE8" /></svg>
         <b style={{ font: `700 26px/1 ${SANS}` }}>Spiis</b><span style={{ font: `600 15px/1 ${SANS}`, color: '#E0703A' }}>Admin</span>
         <span style={{ marginLeft: 'auto', font: `400 18px/1 ${SANS}`, color: '#CFC5BA' }}>Køkkenet</span>
       </div>
@@ -187,7 +187,7 @@ export const TileSys: React.FC = () => {
           <div style={{ position: 'absolute', left: head[0], top: head[1], transform: `translate(-50%, -50%) scale(${mix(1, 0.55, fly)})`, whiteSpace: 'nowrap',
             display: 'flex', alignItems: 'center', gap: 10, padding: '14px 20px 14px 14px', borderRadius: 30, color: '#1E1915', font: `600 22px/1 ${SANS}`,
             background: 'rgba(255,250,244,.95)', boxShadow: '0 0 0 2px rgba(255,180,110,.8), 0 0 40px 10px rgba(255,160,90,.55), 0 14px 30px rgba(0,0,0,.4)' }}>
-            <span style={{ width: 32, height: 32, borderRadius: 9, background: ORANGE, display: 'grid', placeItems: 'center', color: '#fff', font: `700 17px/1 ${SANS}` }}>S</span>
+            <Img src={staticFile('ny/media/ic/spiis.svg')} style={{ width: 34, height: 34, borderRadius: 9 }} />
             3 × Mørbradgryde · 17.30
           </div>
         </>

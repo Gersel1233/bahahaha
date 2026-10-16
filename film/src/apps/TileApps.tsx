@@ -23,9 +23,9 @@ const ISL = { top: 12.9, h: 37.1, w: 125.7, cx: 201.2 };
 const Fork: React.FC<{ s: number; c?: string }> = ({ s, c = '#fff' }) => (
   <svg width={s} height={s} viewBox="0 0 24 24"><path d="M7 3v7a2 2 0 0 0 2 2v9M11 3v7M7 3v4m4-4v4M17 3c-1.7 1-2.5 3-2.5 6s1 4 2.5 4v8" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
 );
+// an example, not a client: the app is yours
 const AppIcon: React.FC<{ s: number }> = ({ s }) => (
-  <span style={{ width: s, height: s, borderRadius: s * 0.24, background: `linear-gradient(150deg, ${ORANGE}, ${ORANGE2})`, display: 'grid', placeItems: 'center', flex: 'none',
-    boxShadow: 'inset 0 1px 0 rgba(255,255,255,.35)' }}><Fork s={s * 0.6} /></span>
+  <Img src={staticFile('ny/media/ic/jeres.svg')} style={{ width: s, height: s, borderRadius: s * 0.24, flex: 'none' }} />
 );
 
 // a bar that fills, with a light at its head
@@ -82,6 +82,7 @@ export const TileApps: React.FC = () => {
           <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', gap: 12 * pt, padding: `0 ${14 * pt}px`, opacity: 1 - seg(live, 0, 0.4) }}>
             <AppIcon s={38 * pt} />
             <span style={{ display: 'flex', flexDirection: 'column', gap: 3 * pt, flex: 1, minWidth: 0 }}>
+              <span style={{ font: `500 ${12 * pt}px/1 ${SANS}`, color: 'rgba(255,255,255,.6)', letterSpacing: 0.3 * pt }}>JERES APP</span>
               <b style={{ font: `600 ${15 * pt}px/1.15 ${SANS}` }}>Din bestilling er modtaget</b>
               <span style={{ font: `400 ${14 * pt}px/1.2 ${SANS}`, color: 'rgba(255,255,255,.8)' }}>3 retter · afhentning kl. 17.30</span>
             </span>
@@ -92,7 +93,7 @@ export const TileApps: React.FC = () => {
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 * pt }}>
               <AppIcon s={40 * pt} />
               <span style={{ display: 'flex', flexDirection: 'column', gap: 4 * pt, flex: 1 }}>
-                <span style={{ font: `500 ${13 * pt}px/1 ${SANS}`, color: 'rgba(255,255,255,.65)' }}>Din bestilling</span>
+                <span style={{ font: `500 ${13 * pt}px/1 ${SANS}`, color: 'rgba(255,255,255,.65)' }}>Jeres app · din bestilling</span>
                 <span style={{ position: 'relative', height: 20 * pt }}>
                   {['Modtaget', 'Tilberedes', 'Klar til afhentning'].map((s, i) => {
                     const on = s === status ? 1 : 0;
@@ -135,7 +136,7 @@ export const TileApps: React.FC = () => {
           <div style={{ display: 'flex', alignItems: 'center', gap: 14 * pt }}>
             <AppIcon s={48 * pt} />
             <span style={{ display: 'flex', flexDirection: 'column', gap: 5 * pt, flex: 1 }}>
-              <span style={{ font: `500 ${13 * pt}px/1 ${SANS}`, color: 'rgba(255,255,255,.6)' }}>Din bestilling</span>
+              <span style={{ font: `500 ${13 * pt}px/1 ${SANS}`, color: 'rgba(255,255,255,.6)' }}>Jeres app · din bestilling</span>
               <span style={{ font: `600 ${21 * pt}px/1.1 ${SANS}`, color: GREEN }}>Klar til afhentning</span>
             </span>
             <span style={{ width: 46 * pt, height: 46 * pt, borderRadius: '50%', background: GREEN, display: 'grid', placeItems: 'center', flex: 'none',
