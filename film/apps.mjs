@@ -14,7 +14,7 @@ const USED = ['fonts/chivo-400.woff2', 'fonts/chivo-500.woff2', 'fonts/chivo-600
 const pub = path.resolve('pub');
 for (const f of USED) { fs.mkdirSync(path.dirname(path.join(pub, f)), { recursive: true }); fs.copyFileSync(path.resolve('..', f), path.join(pub, f)); }
 const serveUrl = await bundle({ entryPoint: path.resolve('src/apps/index.ts'), publicDir: pub });
-const opts = { serveUrl, browserExecutable: '/opt/pw-browsers/chromium-1194/chrome-linux/chrome', chromiumOptions: { gl: process.env.GL || 'swiftshader' }, chromeMode: 'chrome-for-testing' };
+const opts = { serveUrl, browserExecutable: '/opt/pw-browsers/chromium-1194/chrome-linux/chrome', chromiumOptions: { gl: process.env.GL || 'swangle' }, chromeMode: 'chrome-for-testing' };
 const composition = await selectComposition({ ...opts, id });
 if (mode === 'still') {
   for (const s of times.split(',')) {
