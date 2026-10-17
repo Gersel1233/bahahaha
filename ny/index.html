@@ -17,7 +17,7 @@
 <link rel="stylesheet" href="ny.css?v=16" />
 <link rel="stylesheet" href="page.css?v=20" />
 <link rel="stylesheet" href="hero.css?v=25" />
-<link rel="stylesheet" href="sections.css?v=32" />
+<link rel="stylesheet" href="sections.css?v=33" />
 <script>
   /* decided before first paint: with JS the phone turns as you scroll;
      without it, the first screen simply stands there */
@@ -194,6 +194,7 @@
 <section class="alt" id="hus" data-scrub="alt" aria-label="Hvad vi laver">
   <div class="alt-pin">
     <i class="alt-glow" aria-hidden="true"></i>
+    <i class="alt-glow2" aria-hidden="true"></i>
     <div class="alt-words">
       <p class="label alt-label"><span data-da="Hvad vi laver" data-en="What we make">Hvad vi laver</span></p>
       <ol class="alt-say">
@@ -241,7 +242,7 @@
     <!-- the finale: the system crumples into a ball of paper, and the paper
          unfolds into the house's own mark: a page with its corner folded -->
     <div class="alt-fin" aria-hidden="true">
-      <canvas class="fin-paper"></canvas>
+      <canvas class="fin-paper" data-n="88" data-src="media/alt/fold/f"></canvas>
       <div class="fin-brand">
         <svg class="fin-mark" viewBox="0 0 128 128">
           <defs><clipPath id="fin-shape"><path d="M0 0H94l34 34v94H0Z"/></clipPath>
@@ -397,6 +398,6 @@
 </footer>
 
 <script type="module" src="main.js?v=23"></script>
-<script type="module" src="page.js?v=29"></script>
+<script type="module" src="page.js?v=31"></script>
 </body>
 </html>

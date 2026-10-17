@@ -130,6 +130,8 @@ html.pg-js .msg.m3 .reply{ opacity:1; transform:none; }
 .alt-glow{ position:absolute; inset:0; pointer-events:none;
   background:radial-gradient(70% 55% at 68% 56%, rgba(43,63,124,.55), rgba(16,26,51,.35) 45%, rgba(5,7,13,0) 75%),
              radial-gradient(40% 30% at 20% 20%, rgba(36,54,232,.12), rgba(36,54,232,0) 70%); }
+.alt-glow2{ position:absolute; inset:0; pointer-events:none; opacity:0;
+  background:radial-gradient(60vmax 50vmax at var(--gx, 50%) var(--gy, 50%), rgba(43,63,124,.5), rgba(16,26,51,.32) 45%, rgba(5,7,13,0) 75%); }
 .alt-words{ position:absolute; z-index:3; left:var(--gut); top:50%; width:min(36vw, 540px); transform:translateY(-50%); }
 .alt-label{ color:var(--ash); margin-bottom:22px; display:block; }
 .alt-say{ list-style:none; margin:0; padding:0; position:relative; height:clamp(220px, 34vh, 320px); }
@@ -239,7 +241,9 @@ html.pg-js .alt-obj > *{ opacity:0; }
 .alt-fin{ position:absolute; inset:0; z-index:3; pointer-events:none; }
 .alt-fin > *{ position:absolute; will-change:transform, opacity; }
 html.pg-js .alt-fin > *{ opacity:0; }
-.fin-paper{ inset:0; width:100%; height:100%; }
+.fin-paper{ left:0; top:0; width:10px; height:10px;
+  /* the film's edges melt into the page */
+  -webkit-mask-image:radial-gradient(closest-side, #000 78%, transparent 100%); mask-image:radial-gradient(closest-side, #000 78%, transparent 100%); }
 .fin-brand{ left:50%; top:var(--fy, 42%); display:flex; align-items:center; gap:clamp(14px, 2vw, 26px); transform:translate(-50%, -50%); }
 .fin-mark{ width:clamp(84px, 9vw, 132px); height:auto; flex:none; overflow:visible; filter:drop-shadow(6px 14px 26px rgba(0,0,0,.45)); }
 .fin-word{ font:500 clamp(54px, 7vw, 112px)/1 var(--sans); letter-spacing:-.05em; color:var(--porcelain); }
