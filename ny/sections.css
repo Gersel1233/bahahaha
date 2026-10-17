@@ -125,7 +125,7 @@ html.pg-js .msg.m3 .reply{ opacity:1; transform:none; }
    on the other: an icon opens into an app, a system stands behind it, the
    tools it is connected to, the code it is built of, the search that finds
    it. Glass only for what floats; ultramarine only for what is now. */
-.alt{ position:relative; height:980vh; height:980svh; background:#05070D; color:var(--porcelain); }
+.alt{ position:relative; height:1150vh; height:1150svh; background:#05070D; color:var(--porcelain); }
 .alt-pin{ position:sticky; top:0; height:100vh; height:100lvh; overflow:hidden; }
 .alt-glow{ position:absolute; inset:0; pointer-events:none;
   background:radial-gradient(70% 55% at 68% 56%, rgba(43,63,124,.55), rgba(16,26,51,.35) 45%, rgba(5,7,13,0) 75%),
@@ -234,3 +234,31 @@ html.pg-js .alt-obj > *{ opacity:0; }
 .a-src{ display:inline-flex; align-items:center; margin-top:calc(var(--u) * .24); height:calc(var(--u) * .44); padding:0 calc(var(--u) * .2); border-radius:calc(var(--u) * .22);
   background:rgba(246,244,239,.1); box-shadow:inset 0 0 0 1px rgba(246,244,239,.16); font:400 calc(var(--u) * .2)/1 var(--mono); color:var(--travertine); }
 .a-src img{ width:calc(var(--u) * .26); height:calc(var(--u) * .26); border-radius:22%; margin-right:calc(var(--u) * .1); }
+
+/* ---------- the finale ---------- */
+.alt-fin{ position:absolute; inset:0; z-index:3; pointer-events:none; }
+.alt-fin > *{ position:absolute; will-change:transform, opacity; }
+html.pg-js .alt-fin > *{ opacity:0; }
+.fin-bg{ inset:-6%; width:112%; height:112%; object-fit:cover; }
+.fin-bg + .fin-streaks{ }
+.alt-fin::after{ content:""; position:absolute; inset:0; background:radial-gradient(70% 60% at 50% 42%, rgba(5,7,13,.15), rgba(5,7,13,.8) 75%); opacity:var(--vig, 0); }
+.fin-streaks{ inset:0; width:100%; height:100%; }
+.fin-streaks line{ stroke:rgba(216,224,255,.85); stroke-width:.35; stroke-linecap:round; vector-effect:non-scaling-stroke; }
+.fin-flash{ left:50%; top:var(--fy, 42%); width:120vmax; height:120vmax; margin:-60vmax 0 0 -60vmax; border-radius:50%;
+  background:radial-gradient(closest-side, rgba(255,255,255,.95), rgba(190,200,255,.55) 18%, rgba(36,54,232,.28) 40%, rgba(36,54,232,0) 70%); }
+.fin-ring{ left:50%; top:var(--fy, 42%); width:220px; height:220px; margin:-110px 0 0 -110px; border-radius:50%; box-shadow:0 0 0 2px rgba(142,153,255,.8), 0 0 40px rgba(36,54,232,.6); }
+.fin-brand{ left:50%; top:var(--fy, 42%); display:flex; align-items:center; gap:clamp(14px, 2vw, 26px); transform:translate(-50%, -50%); }
+.fin-mark{ width:clamp(84px, 9vw, 132px); height:auto; flex:none; overflow:visible; filter:drop-shadow(0 20px 50px rgba(36,54,232,.35)); }
+.fin-word{ font:500 clamp(54px, 7vw, 112px)/1 var(--sans); letter-spacing:-.05em; color:var(--porcelain); }
+/* the sentence, under the house */
+.alt-end{ left:50% !important; right:auto !important; top:var(--ey, 64%) !important; width:min(92vw, 760px) !important; text-align:center; transform:translate(-50%, 0); }
+.alt-end .alt-p{ margin-left:auto; margin-right:auto; }
+.alt-end .alt-h{ font-size:clamp(30px, min(3.6vw, 6vh), 58px); }
+@media (max-aspect-ratio:1/1), (max-width:760px){
+  .fin-brand{ gap:12px; }
+  .fin-mark{ width:64px; }
+  .fin-word{ font-size:52px; }
+  .alt-end .alt-h{ font-size:min(8vw, 32px); }
+}
+.alt-fin::after{ z-index:1; }
+.fin-streaks, .fin-flash, .fin-ring, .fin-brand{ z-index:2; }

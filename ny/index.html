@@ -17,7 +17,7 @@
 <link rel="stylesheet" href="ny.css?v=16" />
 <link rel="stylesheet" href="page.css?v=20" />
 <link rel="stylesheet" href="hero.css?v=25" />
-<link rel="stylesheet" href="sections.css?v=30" />
+<link rel="stylesheet" href="sections.css?v=31" />
 <script>
   /* decided before first paint: with JS the phone turns as you scroll;
      without it, the first screen simply stands there */
@@ -238,6 +238,25 @@
       </div>
     </div>
 
+    <!-- the finale: all of it drawn into one point, and out of the light, the house -->
+    <div class="alt-fin" aria-hidden="true">
+      <img class="fin-bg" src="media/pg/glas-bg.webp" width="1800" height="1080" alt="" loading="lazy" decoding="async" />
+      <svg class="fin-streaks" viewBox="-100 -100 200 200" preserveAspectRatio="xMidYMid slice"></svg>
+      <i class="fin-flash"></i>
+      <i class="fin-ring"></i>
+      <div class="fin-brand">
+        <svg class="fin-mark" viewBox="0 0 128 128">
+          <defs><clipPath id="fin-shape"><path d="M0 0H94l34 34v94H0Z"/></clipPath>
+            <linearGradient id="fin-sheen" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".9"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient></defs>
+          <path d="M0 0H94l34 34v94H0Z" fill="#F6F4EF"/>
+          <rect class="fin-l1" x="44" y="28" width="18" height="80" fill="#05070D"/>
+          <rect class="fin-l2" x="44" y="90" width="56" height="18" fill="#05070D"/>
+          <g clip-path="url(#fin-shape)"><rect class="fin-sh" x="-60" y="-20" width="40" height="170" fill="url(#fin-sheen)" transform="rotate(20 64 64)"/></g>
+        </svg>
+        <span class="fin-word">Lesreg</span>
+      </div>
+    </div>
+
     <div class="alt-end">
       <h2 class="alt-h alt-h-end" data-da="Uanset hvad I skal have lavet, <em>bygger vi det.</em>" data-en="Whatever you need made, <em>we build it.</em>">Uanset hvad I skal have lavet, <em>bygger vi det.</em></h2>
       <p class="alt-p" data-da="Ordentligt, hurtigt og til en fast pris, aftalt før vi starter." data-en="Properly, quickly and at a fixed price, agreed before we start.">Ordentligt, hurtigt og til en fast pris, aftalt før vi starter.</p>
@@ -379,6 +398,6 @@
 </footer>
 
 <script type="module" src="main.js?v=23"></script>
-<script type="module" src="page.js?v=27"></script>
+<script type="module" src="page.js?v=28"></script>
 </body>
 </html>

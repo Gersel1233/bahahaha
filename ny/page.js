@@ -144,6 +144,17 @@ S.alt = el => {
   const find = el.querySelector('.a-find'), res = el.querySelector('.a-res'), typed = el.querySelector('.a-typed');
   const ask = el.querySelector('.a-ask'), typed2 = el.querySelector('.a-typed2'), answers = $$('.a-ans', el);
   const says = $$('.alt-say > li > div', el), end = el.querySelector('.alt-end'), label = el.querySelector('.alt-label');
+  const fin = el.querySelector('.alt-fin'), fbg = el.querySelector('.fin-bg'), streaks = el.querySelector('.fin-streaks'), flash = el.querySelector('.fin-flash'), ring = el.querySelector('.fin-ring');
+  const brand = el.querySelector('.fin-brand'), mark = el.querySelector('.fin-mark'), word = el.querySelector('.fin-word');
+  const l1 = el.querySelector('.fin-l1'), l2 = el.querySelector('.fin-l2'), sh = el.querySelector('.fin-sh');
+  // light drawn inward from every side, toward the point it all goes into
+  const RAYS = Array.from({ length: 34 }, (_, i) => {
+    const ln = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    streaks.appendChild(ln);
+    return { ln, a: (i / 34) * Math.PI * 2 + (i % 3) * 0.07, d: (i * 37 % 11) / 11, len: 18 + (i * 53 % 7) * 4 };
+  });
+  const outBack = t => { const c = 1.6; return 1 + (c + 1) * Math.pow(t - 1, 3) + c * Math.pow(t - 1, 2); };
+  let fy = 0, wordW = 0, objC = { x: 0, y: 0 };
   // the first five beats run on their own clock, pe; Google and the assistants after them
   const K = 0.845;
   const SAY = [[-1, 0.1 * K], [0.12 * K, 0.27 * K], [0.28 * K, 0.42 * K], [0.43 * K, 0.56 * K], [0.57 * K, 0.7 * K], [0.6, 0.7], [0.705, 0.845]];
@@ -177,12 +188,22 @@ S.alt = el => {
   return () => {
     const r = rect(el);
     // when nothing may move, it stands where it ends
-    const p = still ? 1 : clamp(-r.top / Math.max(1, r.height - H));
-    if (el._w !== W || !ow) { el._w = W; measure(); }
+    const P = still ? 1 : clamp(-r.top / Math.max(1, r.height - H));
+    // the scenes run on p; the finale takes the last part of the scroll, q
+    const p = clamp(P / 0.852), q = seg(P, 0.72, 1);
+    if (el._w !== W || !ow) {
+      el._w = W; measure();
+      const mob = W <= 760 || W / H < 1;
+      fy = H * (mob ? 0.36 : 0.4);
+      fin.style.setProperty('--fy', fy.toFixed(0) + 'px');
+      end.style.setProperty('--ey', (fy + (mob ? 64 : 104)).toFixed(0) + 'px');
+      wordW = word.offsetWidth + parseFloat(getComputedStyle(brand).gap || '0');
+      objC = { x: obj.offsetLeft + ow / 2, y: obj.offsetTop + oh / 2 };
+    }
     const pe = p / K;
 
     // the end: everything steps back, and the sentence comes
-    const E = io(seg(p, 0.85, 0.93));
+    const E = 0;
     const back = lerp(1, 0.8, E), dimEnd = lerp(1, 0.4, E);
 
     // 1. the icon, and the app it opens into
@@ -250,9 +271,53 @@ S.alt = el => {
       s.style.visibility = inn > 0 && go < 1 ? 'visible' : 'hidden';
     });
     setO(label, 1 - seg(p, 0.83, 0.86));
-    const e2 = out(seg(p, 0.87, 0.94));
+
+    // ---------- the finale ----------
+    // 1. all of it is drawn into one point, turning as it goes
+    const cv = io(seg(q, 0, 0.28));
+    setT(obj, 'translate3d(' + ((W / 2 - objC.x) * cv).toFixed(1) + 'px,' + ((fy - objC.y) * cv).toFixed(1) + 'px,0) rotate(' + (-10 * cv).toFixed(2) + 'deg) scale(' + lerp(1, 0.04, Math.pow(cv, 1.25)).toFixed(4) + ')');
+    setO(obj, 1 - seg(q, 0.22, 0.3));
+    setO(fin, q > 0 ? 1 : 0);
+    // 2. light streaks in with it
+    const st = Math.sin(Math.PI * seg(q, 0.06, 0.32));
+    setO(streaks, st);
+    if (st > 0) {
+      const sc = 100 * Math.max(W, H) / Math.min(W, H);
+      const run = io(seg(q, 0.04, 0.3));
+      const cy = (fy / H - 0.5) * 200 * (H / Math.min(W, H));
+      RAYS.forEach(R => {
+        const head = lerp(sc * (1.1 + R.d * 0.6), 0, Math.min(1, run * (1 + R.d * 0.5)));
+        const tail = head + R.len * (1 - run * 0.6);
+        const cx = Math.cos(R.a), sy = Math.sin(R.a);
+        R.ln.setAttribute('x1', (cx * head).toFixed(1)); R.ln.setAttribute('y1', (cy + sy * head).toFixed(1));
+        R.ln.setAttribute('x2', (cx * tail).toFixed(1)); R.ln.setAttribute('y2', (cy + sy * tail).toFixed(1));
+      });
+    }
+    // 3. the light it all becomes
+    const fl = seg(q, 0.24, 0.44);
+    setT(flash, 'scale(' + lerp(0.04, 1.2, out(fl)).toFixed(4) + ')'); setO(flash, Math.sin(Math.PI * fl) * 0.95);
+    // 4. out of it, the house: the mark unfolds, its L is drawn, a light passes over it
+    const m = seg(q, 0.3, 0.46);
+    setT(mark, 'scale(' + Math.max(0, outBack(m)).toFixed(4) + ') rotate(' + (-8 * (1 - out(m))).toFixed(2) + 'deg)');
+    setO(mark, seg(m, 0, 0.25));
+    l1.setAttribute('height', (80 * io(seg(q, 0.42, 0.5))).toFixed(2));
+    l2.setAttribute('width', (56 * io(seg(q, 0.49, 0.56))).toFixed(2));
+    sh.setAttribute('x', lerp(-70, 170, seg(q, 0.56, 0.7)).toFixed(1));
+    const rg = seg(q, 0.44, 0.66);
+    setT(ring, 'scale(' + lerp(0.4, 3.4, out(rg)).toFixed(4) + ')'); setO(ring, (1 - rg) * seg(rg, 0, 0.08) * 0.9);
+    // 5. its name beside it; the mark makes room
+    const w = out(seg(q, 0.52, 0.64));
+    setT(brand, 'translate(-50%,-50%) translate3d(' + (wordW / 2 * (1 - w)).toFixed(1) + 'px,0,0)');
+    setT(word, 'translate3d(' + (-20 * (1 - w)).toFixed(1) + 'px,0,0)'); setO(word, w);
+    setO(brand, q > 0.28 ? 1 : 0);
+    // 6. the glass behind it all, and a dark edge round it
+    const bg = seg(q, 0.42, 0.85);
+    setT(fbg, 'scale(' + lerp(1.18, 1, out(bg)).toFixed(4) + ')'); setO(fbg, 0.62 * out(bg));
+    fin.style.setProperty('--vig', bg.toFixed(3));
+    // 7. and the sentence under it, with the way to say what you need
+    const e2 = out(seg(q, 0.64, 0.8));
     setO(end, e2);
-    setT(end, (W > 760 && W / H >= 1 ? 'translateY(-50%) ' : '') + 'translate3d(0,' + ((1 - e2) * 24).toFixed(1) + 'px,0)');
+    setT(end, 'translate(-50%,0) translate3d(0,' + ((1 - e2) * 26).toFixed(1) + 'px,0)');
     end.classList.toggle('on', e2 > 0.5);
   };
 };
