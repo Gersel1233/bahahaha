@@ -155,7 +155,7 @@ S.alt = el => {
   const pics = []; let loading = false, shown = -1;
   function loadFrames() {
     if (loading || !FOLD.n) return; loading = true;
-    for (let i = 0; i < FOLD.n; i++) { const im = new Image(); im.decoding = 'async'; im.src = FOLD.src + String(i + 1).padStart(3, '0') + '.webp'; pics[i] = im; }
+    for (let i = 0; i < FOLD.n; i++) { const im = new Image(); im.decoding = 'async'; im.src = FOLD.src + String(i + 1).padStart(3, '0') + '.webp'; if (im.decode) im.decode().catch(() => {}); pics[i] = im; }
   }
   const endLines = $$('.alt-fin-h .ln > *', el), endWhat = el.querySelector('.alt-fin-what'), endP = el.querySelector('.alt-fin-p'), endCta = el.querySelector('.alt-fin-cta');
   const glow2 = el.querySelector('.alt-glow2'), glow = el.querySelector('.alt-glow');
@@ -164,7 +164,9 @@ S.alt = el => {
   let fy = 0, wordW = 0, objC = { x: 0, y: 0 };
   // the first five beats run on their own clock, pe; Google and the assistants after them
   const K = 0.845;
-  const SAY = [[-1, 0.1 * K], [0.12 * K, 0.27 * K], [0.28 * K, 0.42 * K], [0.43 * K, 0.56 * K], [0.57 * K, 0.7 * K], [0.6, 0.7], [0.705, 0.845]];
+  const SAY = [[-1, 0.1 * K], [0.12 * K, 0.27 * K], [0.28 * K, 0.42 * K], [0.43 * K, 0.56 * K], [0.57 * K, 0.7 * K], [0.6, 0.7], [0.705, 0.875]];
+  // where the scroll comes to rest: each beat, whole, its words up (in p), and the very end
+  const REST = [0.045, 0.195, 0.325, 0.445, 0.556, 0.668, 0.845];
   // the tools sit in an arc over the system, and the system makes room
   let u = 40, ow = 0, oh = 0, paths = [];
   const PAD = { x: 0.7, y: -0.55 }, DROP = 0.75, PAD_HALF = 3.62;
@@ -192,16 +194,65 @@ S.alt = el => {
     setT(e, 'translate3d(' + (x * u).toFixed(1) + 'px,' + (y * u).toFixed(1) + 'px,0)' + (rot ? ' rotate(' + rot.toFixed(2) + 'deg)' : '') + ' scale(' + sc.toFixed(4) + ')');
     setO(e, o);
   };
-  return () => {
+  // the scroll lands on each beat: a resting point for each, laid in the track
+  // when the scroll lets go inside the section, it glides on to the nearest
+  // beat, so it always comes to rest where there is something to read
+  let touching = false, settleT = 0, settling = false, lastP = null;
+  const settle = () => {
+    if (still || touching) return;
+    const r0 = el.getBoundingClientRect(), run = el.offsetHeight - innerHeight;
+    const P0 = -r0.top / Math.max(1, run);
+    if (P0 <= 0.002) { lastP = 0; return; }
+    if (P0 >= 0.998) { lastP = 1; return; }
+    const pts = REST.map(x => x * 0.852).concat([1]);
+    // on in the direction the scroll was going; back only for a nudge
+    const dir = lastP === null ? 1 : Math.sign(P0 - lastP);
+    const gap = 0.012;
+    let best;
+    if (lastP !== null && Math.abs(P0 - lastP) < gap) best = lastP;
+    else if (dir >= 0) best = pts.find(x => x >= P0 - 0.004) ?? 1;
+    else best = [...pts].reverse().find(x => x <= P0 + 0.004) ?? pts[0];
+    lastP = best;
+    const dy = (best - P0) * run;
+    if (Math.abs(dy) < 3) return;
+    // into the finale the glide is long, so the film plays as a film
+    glide(scrollY + dy, best === 1 && P0 < 0.85 ? 2600 : Math.min(900, Math.max(420, Math.abs(dy) / innerHeight * 520)));
+  };
+  // a glide of our own, so its length can be chosen; any touch or wheel ends it
+  let glideRaf = 0;
+  const stopGlide = () => { if (glideRaf) { cancelAnimationFrame(glideRaf); glideRaf = 0; settling = false; } };
+  function glide(to, ms) {
+    stopGlide();
+    const from = scrollY, t0 = performance.now();
+    settling = true;
+    const step = now => {
+      const k = Math.min(1, (now - t0) / ms), e = k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
+      scrollTo(0, from + (to - from) * e);
+      if (k < 1) glideRaf = requestAnimationFrame(step); else { glideRaf = 0; setTimeout(() => { settling = false; }, 60); }
+    };
+    glideRaf = requestAnimationFrame(step);
+  }
+  addEventListener('wheel', stopGlide, { passive: true });
+  addEventListener('touchstart', () => { touching = true; stopGlide(); clearTimeout(settleT); }, { passive: true });
+  addEventListener('touchend', () => { touching = false; clearTimeout(settleT); settleT = setTimeout(settle, 180); }, { passive: true });
+  addEventListener('scroll', () => { if (settling) return; clearTimeout(settleT); settleT = setTimeout(settle, 180); }, { passive: true });
+  let Ps = -1, tPrev = 0, MW = 100;
+  return now => {
     const r = rect(el);
     // when nothing may move, it stands where it ends
-    const P = still ? 1 : clamp(-r.top / Math.max(1, r.height - H));
+    const Pt = still ? 1 : clamp(-r.top / Math.max(1, r.height - H));
+    // it follows the scroll a breath behind, so a flick becomes a glide
+    const dt = Math.min(0.05, Math.max(0.001, ((now || 0) - tPrev) / 1000)); tPrev = now || 0;
+    if (Ps < 0 || still || Math.abs(Pt - Ps) > 0.25) Ps = Pt; else Ps += (Pt - Ps) * (1 - Math.exp(-dt * 14));
+    if (Math.abs(Pt - Ps) > 0.0004) kick(); else Ps = Pt;
+    const P = Ps;
     // the scenes run on p; the finale takes the last part of the scroll, q
     const p = clamp(P / 0.852), q = seg(P, 0.72, 1);
-    if (P > 0.5) loadFrames();
+    if (P > 0.35) loadFrames();
     if (el._w !== W || !ow) {
       el._w = W; measure();
       const mob = W <= 760 || W / H < 1;
+      el._mob = mob;
       fy = H * (mob ? 0.3 : 0.33);
       fin.style.setProperty('--fy', fy.toFixed(0) + 'px');
       end.style.setProperty('--ey', (fy + (mob ? 62 : 96)).toFixed(0) + 'px');
@@ -212,6 +263,7 @@ S.alt = el => {
       dpr = Math.min(2, devicePixelRatio || 1);
       Object.assign(cv.style, { left: (V.cx - V.S / 2).toFixed(1) + 'px', top: (V.cy - V.S / 2).toFixed(1) + 'px', width: V.S.toFixed(1) + 'px', height: V.S.toFixed(1) + 'px' });
       cv.width = cv.height = Math.round(V.S * dpr);
+      MW = parseFloat(getComputedStyle(mark).width) || 100;
       glow2.style.setProperty('--gx', V.cx.toFixed(0) + 'px'); glow2.style.setProperty('--gy', V.cy.toFixed(0) + 'px');
       shown = -1;
     }
@@ -223,9 +275,9 @@ S.alt = el => {
 
     // 1. the icon, and the app it opens into
     const ii = out(seg(pe, -0.02, 0.05));
-    const L = io(seg(pe, 0.1, 0.19));
+    const L = io(seg(pe, 0.1, 0.17));
     put(icon, 0, 0, lerp(0.72, 1, ii) * lerp(1, 1.6, L), 0, ii * (1 - seg(L, 0.15, 0.5)));
-    const F = io(seg(pe, 0.19, 0.27));
+    const F = io(seg(pe, 0.17, 0.232));
     // 2. the system stands up behind it, and the apps step aside
     const Y = io(seg(pe, 0.28, 0.38));
     const gx = lerp(0, -3.15, Y), gy = lerp(0, 1.55, Y), gs = lerp(1, 0.6, Y) * back;
@@ -243,23 +295,23 @@ S.alt = el => {
     put(pad, PAD.x, lerp(2.4, PAD.y, Y) + D, lerp(0.86, 1, Y) * back, 0, Y * dim);
     // 3. the tools it is connected to, each on a line from the system
     logos.forEach((lg, i) => {
-      const T = out(seg(pe, 0.43 + i * 0.016, 0.5 + i * 0.016));
+      const T = out(seg(pe, 0.42 + i * 0.01, 0.48 + i * 0.01));
       const tl = tool(i);
       put(lg, tl.x, tl.y - 1.4 * (1 - T), lerp(0.6, 1, T) * back, 0, T * dim);
-      if (paths[i]) { paths[i].style.strokeDashoffset = (1 - out(seg(pe, 0.45 + i * 0.016, 0.53 + i * 0.016))).toFixed(3); }
+      if (paths[i]) { paths[i].style.strokeDashoffset = (1 - out(seg(pe, 0.44 + i * 0.01, 0.5 + i * 0.01))).toFixed(3); }
     });
     setO(svg, seg(pe, 0.44, 0.47) * dim);
     // 4. the code it is built of
     const away = io(seg(pe, 0.7, 0.75));
     put(code, lerp(3.4, 1.1, C) + 1.6 * away, 0.95, lerp(0.94, 1, C), 0, C * (1 - away));
-    lines.forEach((l, i) => { const v = seg(pe, 0.6 + i * 0.011, 0.625 + i * 0.011); l.style.clipPath = 'inset(0 ' + ((1 - v) * 100).toFixed(1) + '% 0 0)'; });
+    lines.forEach((l, i) => { const v = seg(pe, 0.575 + i * 0.008, 0.595 + i * 0.008); l.style.clipPath = 'inset(0 ' + ((1 - v) * 100).toFixed(1) + '% 0 0)'; });
     // 5. found, by the people who search, and by the assistants they ask
     put(find, lerp(-1.2, -0.3, Fd) - 1.2 * io(seg(p, 0.7, 0.735)), lerp(0.6, 0.1, io(seg(p, 0.6, 0.65))), lerp(0.94, 1, Fd), 0, Fd);
     const lang = document.documentElement.lang === 'en' ? 'data-en' : 'data-da';
     const full = typed.getAttribute(lang) || '';
-    const n = Math.round(full.length * seg(p, 0.615, 0.655));
+    const n = Math.round(full.length * seg(p, 0.612, 0.645));
     if (typed._n !== n) { typed._n = n; typed.textContent = full.slice(0, n); }
-    const r1 = out(seg(p, 0.655, 0.675));
+    const r1 = out(seg(p, 0.643, 0.662));
     setT(res, 'translate3d(0,' + ((1 - r1) * 16).toFixed(1) + 'px,0)'); setO(res, r1);
     // 6. asked: the question to an assistant, and three answers that name it
     put(ask, lerp(1.2, 0.2, A), lerp(0.4, -0.2, A), lerp(0.94, 1, A) * lerp(1, 0.9, E), 0, A * (1 - E));
@@ -299,7 +351,10 @@ S.alt = el => {
     // and the tools come back up to full light
     if (off > 0) for (const e of logos) setO(e, lerp(+e._po || 0, 1, off));
     // the whole of it fits well inside the film's square, its middle in the middle
-    const sc = lerp(1, V.S / (12.6 * u), g);
+    // the camera is closer while there is one thing to see, the icon and the
+    // app, and steps back as the system stands up behind it
+    const zoom = lerp(el._mob ? 1.5 : 1.16, 1, io(seg(pe, 0.27, 0.37)));
+    const sc = lerp(zoom, V.S / (12.6 * u), g);
     setT(obj, 'translate3d(' + ((V.cx - objC.x - 0.45 * u * sc) * g).toFixed(1) + 'px,' + ((V.cy - objC.y + 1.55 * u * sc) * g).toFixed(1) + 'px,0) scale(' + sc.toFixed(4) + ')');
     setO(glow2, g); setO(glow, 1 - g);
     // 2. the film takes over from the very picture it starts from
@@ -323,7 +378,6 @@ S.alt = el => {
     }
     // 3. the mark, at the size and place it has at the film's end, comes
     //    to its own place, and its name beside it
-    const MW = parseFloat(getComputedStyle(mark).width) || 100;
     const hand = Q >= 0.86;
     setO(brand, hand ? 1 : 0);
     flap.style.opacity = '0';
