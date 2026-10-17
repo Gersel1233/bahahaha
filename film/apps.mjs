@@ -19,7 +19,7 @@ const composition = await selectComposition({ ...opts, id });
 if (mode === 'still') {
   for (const s of times.split(',')) {
     const frame = Math.min(composition.durationInFrames - 1, Math.round(+s * composition.fps));
-    await renderStill({ ...opts, composition, frame, output: path.resolve('out', `${id}-${s}.png`) });
+    await renderStill({ ...opts, composition, frame, scale: Number(process.env.SCALE || 1), output: path.resolve('out', `${id}-${s}.png`) });
   }
   console.log('stills done');
 } else {

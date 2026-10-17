@@ -150,7 +150,10 @@ const Tap: React.FC<{ x: number; y: number; q: number }> = ({ x, y, q }) => q <=
     transform: `scale(${mix(0.5, 1.25, out3(q))})`, opacity: q < 0.25 ? q / 0.25 : 1 - (q - 0.25) / 0.75 }} />
 );
 
-export const TileSys: React.FC = () => {
+// flat: the iPad alone, face on, on nothing — a picture for the page's
+// own sections
+export const FLAT_W = 1300, FLAT_H = 940;
+export const TileSys: React.FC<{ flat?: boolean }> = ({ flat }) => {
   useFonts();
   const { t, sp } = useT();
   // Apple's springs, from a response (s) and a damping fraction
@@ -305,19 +308,22 @@ export const TileSys: React.FC = () => {
   };
 
   return (
-    <AbsoluteFill style={{ background: '#0B0908', overflow: 'hidden' }}>
+    <AbsoluteFill style={{ background: flat ? 'transparent' : '#0B0908', overflow: 'hidden' }}>
+      {!flat && <>
       {/* the kitchen behind, out of focus */}
       <Img src={staticFile('film/assets/kitchen.webp')} style={{ position: 'absolute', left: -140, top: -60 - 30 * cam, width: 1120, height: 1120 * 3857 / 2160,
         filter: 'blur(14px) brightness(.62) saturate(1.1)', transform: `scale(${1.04 + 0.03 * cam})` }} />
       <i style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg, rgba(11,9,8,.9) 0%, rgba(11,9,8,.35) 38%, rgba(11,9,8,.15) 60%, rgba(11,9,8,.75) 100%)' }} />
       {/* the iPad's shadow on the pass */}
       <i style={{ position: 'absolute', left: 120, width: 640, top: 1170, height: 90, borderRadius: '50%', background: 'radial-gradient(closest-side, rgba(0,0,0,.75), transparent)', opacity: Math.max(back, 1 - intro) }} />
+      </>}
 
       {/* ---------- the iPad: an aluminium edge, the black glass, its camera ---------- */}
       <div style={{ position: 'absolute', left: 0, top: 0, width: DW, height: DH, borderRadius: R_SCREEN + BEZ + FRAME, transformOrigin: '0 0',
         background: 'linear-gradient(135deg, #9A9DA3, #3C3E43 22%, #2A2B2F 50%, #5B5E64 78%, #B4B7BC)',
         boxShadow: '0 50px 90px rgba(0,0,0,.6), 0 12px 24px rgba(0,0,0,.35)',
-        transform: `translate(420px, 975px) perspective(2400px) scale(${k}) rotateX(${rotX}deg) rotateY(${rotY}deg) rotateZ(${mix(0, 1.6, back)}deg) translate(${-fx}px, ${-fy}px)` }}>
+        transform: flat ? `translate(${FLAT_W / 2}px, ${FLAT_H / 2}px) translate(${-DW / 2}px, ${-DH / 2}px)` : `translate(420px, 975px) perspective(2400px) scale(${k}) rotateX(${rotX}deg) rotateY(${rotY}deg) rotateZ(${mix(0, 1.6, back)}deg) translate(${-fx}px, ${-fy}px)`,
+        ...(flat ? { boxShadow: '0 30px 60px rgba(0,0,0,.45), 0 8px 18px rgba(0,0,0,.3)' } : {}) }}>
         {/* the glass front, black to its edge */}
         <div style={{ position: 'absolute', inset: FRAME, borderRadius: R_SCREEN + BEZ, background: '#050506', boxShadow: 'inset 0 0 0 1px rgba(255,255,255,.06)' }}>
           {/* the front camera, on the long edge */}
@@ -333,6 +339,7 @@ export const TileSys: React.FC = () => {
         </div>
       </div>
 
+      {!flat && <>
       {/* ---------- the notifications: the guest's, then the orders rolling in,
           stacked as iOS stacks them, the newest on top ---------- */}
       {([[sms, 'Din bestilling er klar', '#0214 · hent den ved disken'] as [number, string, string]]
@@ -360,6 +367,7 @@ export const TileSys: React.FC = () => {
             </div>
           );
         })}
+      </>}
     </AbsoluteFill>
   );
 };

@@ -15,9 +15,9 @@
 <link rel="preload" href="../fonts/fragmentmono-400.woff2" as="font" type="font/woff2" crossorigin />
 <link rel="preload" as="image" href="media/dev/iphone-17-pro-2x.webp" fetchpriority="high" />
 <link rel="stylesheet" href="ny.css?v=16" />
-<link rel="stylesheet" href="page.css?v=19" />
+<link rel="stylesheet" href="page.css?v=20" />
 <link rel="stylesheet" href="hero.css?v=25" />
-<link rel="stylesheet" href="sections.css?v=27" />
+<link rel="stylesheet" href="sections.css?v=28" />
 <script>
   /* decided before first paint: with JS the phone turns as you scroll;
      without it, the first screen simply stands there */
@@ -191,37 +191,47 @@
 </section>
 
 <!-- three become one: the scroll pulls the three suppliers together into the house -->
-<section class="three" id="hus" data-scrub="three">
-  <div class="three-pin">
-    <div class="three-bg" aria-hidden="true"><img src="media/pg/glas-bg.webp" width="1800" height="1080" alt="" loading="lazy" decoding="async" /></div>
-    <div class="three-head">
-      <p class="label" data-r><span data-da="Ét hus" data-en="One house">Ét hus</span></p>
-      <h2 class="h2" data-r><span data-da="Normalt skal I hyre" data-en="Normally you hire">Normalt skal I hyre</span> <em class="acc" data-da="tre." data-en="three.">tre.</em></h2>
+<section class="alt" id="hus" data-scrub="alt" aria-label="Hvad vi laver">
+  <div class="alt-pin">
+    <i class="alt-glow" aria-hidden="true"></i>
+    <div class="alt-words">
+      <p class="label alt-label"><span data-da="Hvad vi laver" data-en="What we make">Hvad vi laver</span></p>
+      <ol class="alt-say">
+      <li><div><h2 class="alt-h" data-da="Det starter med <em>en idé.</em>" data-en="It starts with <em>an idea.</em>">Det starter med <em>en idé.</em></h2><p class="alt-p" data-da="Hvad end den er, kan vi bygge den." data-en="Whatever it is, we can build it.">Hvad end den er, kan vi bygge den.</p></div></li>
+      <li><div><h2 class="alt-h" data-da="Den bliver til en app, folk faktisk bruger." data-en="It becomes an app people actually use.">Den bliver til en app, folk faktisk bruger.</h2><p class="alt-p" data-da="På telefonen, hvor kunderne er. Tegnet til i dag." data-en="On the phone, where the customers are. Drawn for today.">På telefonen, hvor kunderne er. Tegnet til i dag.</p></div></li>
+      <li><div><h2 class="alt-h" data-da="Med et system bag, der driver forretningen." data-en="With a system behind it that runs the business.">Med et system bag, der driver forretningen.</h2><p class="alt-p" data-da="Bestillinger, køkken og drift, samlet ét sted." data-en="Orders, kitchen and operations, in one place.">Bestillinger, køkken og drift, samlet ét sted.</p></div></li>
+      <li><div><h2 class="alt-h" data-da="Koblet på det, I allerede bruger." data-en="Connected to what you already use.">Koblet på det, I allerede bruger.</h2><p class="alt-p" data-da="Kassen, regnskabet og betalingen taler sammen." data-en="The till, the books and the payments talk to each other.">Kassen, regnskabet og betalingen taler sammen.</p></div></li>
+      <li><div><h2 class="alt-h" data-da="Bygget fra bunden. Ingen skabeloner." data-en="Built from scratch. No templates.">Bygget fra bunden. Ingen skabeloner.</h2><p class="alt-p" data-da="Hurtigt, sikkert og jeres eget." data-en="Fast, secure and your own.">Hurtigt, sikkert og jeres eget.</p></div></li>
+      <li><div><h2 class="alt-h" data-da="Og fundet. På Google og i AI-svar." data-en="And found. On Google and in AI answers.">Og fundet. På Google og i AI-svar.</h2><p class="alt-p" data-da="Bygget til at blive fundet, af mennesker og af maskiner." data-en="Built to be found, by people and by machines.">Bygget til at blive fundet, af mennesker og af maskiner.</p></div></li>
+      </ol>
     </div>
-    <div class="three-stage">
-      <div class="t-card" data-i="0">
-        <b data-da="Designbureau" data-en="Design agency">Designbureau</b>
-        <span data-da="tegner det" data-en="draws it">tegner det</span>
-        <em class="bill mono" data-da="Regning 1" data-en="Invoice 1">Regning 1</em>
-      </div>
-      <div class="t-card" data-i="1">
-        <b data-da="Udvikler" data-en="Developer">Udvikler</b>
-        <span data-da="bygger det" data-en="builds it">bygger det</span>
-        <em class="bill mono" data-da="Regning 2" data-en="Invoice 2">Regning 2</em>
-      </div>
-      <div class="t-card" data-i="2">
-        <b data-da="Driftleverandør" data-en="Hosting supplier">Driftleverandør</b>
-        <span data-da="holder det i luften" data-en="keeps it up">holder det i luften</span>
-        <em class="bill mono" data-da="Regning 3" data-en="Invoice 3">Regning 3</em>
-      </div>
-      <div class="t-one">
-        <svg viewBox="0 0 128 128" aria-hidden="true"><path d="M0 0H94l34 34v94H0Z" fill="#F6F4EF"/><path d="M44 28h18v62h38v18H44Z" fill="#0E0F10"/></svg>
-        <b>Lesreg</b>
-        <span class="mono" data-da="ét hus · én regning · ét ansvar" data-en="one house · one invoice · one responsibility">ét hus · én regning · ét ansvar</span>
+
+    <div class="alt-obj" aria-hidden="true">
+      <div class="a-pad"><img src="media/alt/ipad.webp" width="1300" height="940" alt="" loading="lazy" decoding="async" /></div>
+      <svg class="a-lines"></svg>
+      <span class="a-logo" data-k="shopify"><img src="media/logo/shopify.svg" alt="Shopify" loading="lazy" decoding="async" /></span>
+      <span class="a-logo" data-k="economic"><img src="media/logo/economic.svg" alt="e-conomic" loading="lazy" decoding="async" /></span>
+      <span class="a-logo" data-k="dinero"><img src="media/logo/dinero.svg" alt="Dinero" loading="lazy" decoding="async" /></span>
+      <span class="a-logo" data-k="flatpay"><img src="media/logo/flatpay.png" alt="Flatpay" loading="lazy" decoding="async" /></span>
+      <span class="a-logo" data-k="planway"><img src="media/logo/planway.png" alt="Planway" loading="lazy" decoding="async" /></span>
+      <span class="a-logo" data-k="onlinepos"><img src="media/logo/onlinepos.png" alt="OnlinePOS" loading="lazy" decoding="async" /></span>
+      <div class="a-ph" data-i="1"><div class="a-scr"><img src="media/alt/app-mosede.webp" width="414" height="922" alt="" loading="lazy" decoding="async" /></div><img class="a-frame" src="media/dev/iphone-17-pro-2x.webp" width="1120" height="2336" alt="" loading="lazy" decoding="async" /></div>
+      <div class="a-ph" data-i="2"><div class="a-scr"><img src="media/alt/app-callster.webp" width="414" height="922" alt="" loading="lazy" decoding="async" /></div><img class="a-frame" src="media/dev/iphone-17-pro-2x.webp" width="1120" height="2336" alt="" loading="lazy" decoding="async" /></div>
+      <div class="a-ph" data-i="0"><div class="a-scr"><img src="media/alt/app-spiis.webp" width="414" height="922" alt="" loading="lazy" decoding="async" /></div><img class="a-frame" src="media/dev/iphone-17-pro-2x.webp" width="1120" height="2336" alt="" loading="lazy" decoding="async" /></div>
+      <img class="a-icon" src="media/ic/jeres.svg" width="120" height="120" alt="" />
+      <div class="a-code"><div class="a-code-bar"><i></i><i></i><i></i><span>bestil.ts</span></div><pre><span class="l c">// spiis · én bestilling</span><span class="l k">async function <b>bestil</b>(ordre) {</span><span class="l i">  await flatpay.betal(ordre)</span><span class="l i">  await køkken.vis(ordre)</span><span class="l i">  await economic.bogfør(ordre)</span><span class="l i">  await sms.send("Klar 17.30")</span><span class="l k">}</span><i class="caret"></i></pre></div>
+      <div class="a-find">
+        <div class="a-q"><svg viewBox="0 0 24 24"><path d="M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM21 21l-5-5"/></svg><span class="a-typed" data-da="takeaway med afhentning i nærheden" data-en="takeaway for pickup near me">takeaway med afhentning i nærheden</span></div>
+        <div class="a-res"><span class="a-n">1</span><div><p class="a-url">jeres.dk › bestil</p><p class="a-t" data-da="Jeres Restaurant · Bestil online, hent selv" data-en="Your Restaurant · Order online, pick it up">Jeres Restaurant · Bestil online, hent selv</p><p class="a-d" data-da="Dagens ret, menukort og afhentning fra 17.00." data-en="Today's dish, the menu, and pickup from 17.00.">Dagens ret, menukort og afhentning fra 17.00.</p></div></div>
+        <div class="a-ai"><span class="a-spark"><svg viewBox="0 0 24 24"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/></svg><span data-da="AI-svar" data-en="AI answer">AI-svar</span></span><p data-da="Jeres Restaurant har online bestilling med afhentning. Dagens ret kan bestilles på jeres.dk." data-en="Your Restaurant takes orders online for pickup. Today's dish can be ordered at jeres.dk.">Jeres Restaurant har online bestilling med afhentning. Dagens ret kan bestilles på jeres.dk.</p></div>
       </div>
     </div>
-    <p class="three-foot" data-da="Tre aftaler, tre regninger — og ingen der har ansvaret, når noget ikke virker. <b>Et softwarehus tegner, bygger og passer det under samme tag.</b>"
-       data-en="Three contracts, three invoices — and nobody responsible when something stops working. <b>A software house draws, builds and looks after it under one roof.</b>">Tre aftaler, tre regninger — og ingen der har ansvaret, når noget ikke virker. <b>Et softwarehus tegner, bygger og passer det under samme tag.</b></p>
+
+    <div class="alt-end">
+      <h2 class="alt-h alt-h-end" data-da="Uanset hvad I skal have lavet, <em>bygger vi det.</em>" data-en="Whatever you need made, <em>we build it.</em>">Uanset hvad I skal have lavet, <em>bygger vi det.</em></h2>
+      <p class="alt-p" data-da="Ordentligt, hurtigt og til en fast pris, aftalt før vi starter." data-en="Properly, quickly and at a fixed price, agreed before we start.">Ordentligt, hurtigt og til en fast pris, aftalt før vi starter.</p>
+      <a class="btn light" href="mailto:mgersel@lesreg.com"><span data-da="Fortæl os, hvad I skal have lavet" data-en="Tell us what you need made">Fortæl os, hvad I skal have lavet</span><span class="lens"><svg><use href="#i-arrow"/></svg></span></a>
+    </div>
   </div>
 </section>
 
@@ -358,6 +368,6 @@
 </footer>
 
 <script type="module" src="main.js?v=23"></script>
-<script type="module" src="page.js?v=24"></script>
+<script type="module" src="page.js?v=25"></script>
 </body>
 </html>

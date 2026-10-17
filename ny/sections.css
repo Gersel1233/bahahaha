@@ -37,8 +37,6 @@ html.pg-js .tile-film{ opacity:0; }
 .tn:disabled{ opacity:.35; cursor:default; }
 @media (hover:hover){ .tn:not(:disabled):hover{ transform:scale(1.06); } }
 
-/* ---------- three become one, on navy ---------- */
-.three{ background:var(--navy-950); }
 
 /* ---------- the old way and today's ---------- */
 .vs{ background:var(--porcelain); padding:clamp(90px, 14vh, 160px) 0; }
@@ -121,3 +119,92 @@ html.pg-js .msg.m3 .reply{ opacity:1; transform:none; }
 .cta-h{ font:500 clamp(54px, 9.6vw, 168px)/.92 var(--sans); letter-spacing:-.05em; }
 .cta-mail{ display:inline-block; margin-top:clamp(28px, 5vh, 48px); font:400 clamp(22px, 2.6vw, 40px)/1.2 var(--sans); letter-spacing:-.02em; border-bottom:1px solid rgba(246,244,239,.4); padding-bottom:6px; }
 .cta-row{ display:flex; align-items:center; gap:22px; flex-wrap:wrap; margin-top:34px; color:var(--travertine); }
+
+/* ---------- what we make: one idea, and all it can become ----------
+   One long scene on navy, the words on one side and the thing being made
+   on the other: an icon opens into an app, a system stands behind it, the
+   tools it is connected to, the code it is built of, the search that finds
+   it. Glass only for what floats; ultramarine only for what is now. */
+.alt{ position:relative; height:820vh; height:820svh; background:#05070D; color:var(--porcelain); }
+.alt-pin{ position:sticky; top:0; height:100vh; height:100lvh; overflow:hidden; }
+.alt-glow{ position:absolute; inset:0; pointer-events:none;
+  background:radial-gradient(70% 55% at 68% 56%, rgba(43,63,124,.55), rgba(16,26,51,.35) 45%, rgba(5,7,13,0) 75%),
+             radial-gradient(40% 30% at 20% 20%, rgba(36,54,232,.12), rgba(36,54,232,0) 70%); }
+.alt-words{ position:absolute; z-index:3; left:var(--gut); top:50%; width:min(36vw, 540px); transform:translateY(-50%); }
+.alt-label{ color:var(--ash); margin-bottom:22px; display:block; }
+.alt-say{ list-style:none; margin:0; padding:0; position:relative; height:clamp(220px, 34vh, 320px); }
+.alt-say > li{ position:absolute; left:0; right:0; top:0; }
+.alt-say > li > div{ will-change:transform, opacity; }
+html.pg-js .alt-say > li > div{ opacity:0; }
+.alt-h{ font:500 clamp(34px, min(4vw, 7vh), 68px)/1.02 var(--sans); letter-spacing:-.045em; text-wrap:balance; }
+.alt-h em{ font-family:var(--accent); font-style:italic; font-weight:300; letter-spacing:-.025em; }
+.alt-p{ margin-top:clamp(14px, 2.4vh, 22px); max-width:34ch; font:400 clamp(15px, 1.2vw, 19px)/1.5 var(--sans); color:var(--travertine); }
+.alt-end{ position:absolute; z-index:4; left:var(--gut); top:50%; width:min(40vw, 600px); transform:translateY(-50%); opacity:0; pointer-events:none; }
+.alt-end.on{ pointer-events:auto; }
+.alt-end .btn{ margin-top:clamp(22px, 3.6vh, 34px); }
+
+.alt-obj{ position:absolute; z-index:2; left:40vw; right:var(--gut); top:15%; bottom:5%; --u:40px; }
+.alt-obj > *{ position:absolute; left:50%; top:50%; will-change:transform, opacity; }
+html.pg-js .alt-obj > *{ opacity:0; }
+.a-icon{ width:calc(var(--u) * 2.2); height:calc(var(--u) * 2.2); margin:calc(var(--u) * -1.1) 0 0 calc(var(--u) * -1.1); border-radius:22.5%;
+  box-shadow:0 18px 40px rgba(0,0,0,.45), 0 0 0 1px rgba(255,255,255,.08); }
+.a-ph{ width:calc(var(--u) * 2.9); aspect-ratio:1120 / 2336; margin:calc(var(--u) * -3.024) 0 0 calc(var(--u) * -1.45); filter:drop-shadow(0 24px 40px rgba(0,0,0,.5)); }
+.a-ph .a-frame{ position:absolute; inset:0; width:100%; height:100%; }
+.a-scr{ position:absolute; left:5.37%; top:2.4%; width:89.17%; height:95.2%; border-radius:13% / 6.2%; overflow:hidden; background:#000; }
+.a-scr img{ width:100%; height:100%; object-fit:cover; }
+.a-pad{ width:calc(var(--u) * 10); margin:calc(var(--u) * -3.615) 0 0 calc(var(--u) * -5); }
+.a-pad img{ width:100%; height:auto; display:block; }
+.a-lines{ left:0; top:0; width:100%; height:100%; overflow:visible; }
+.a-lines path{ fill:none; stroke:rgba(216,209,197,.7); stroke-width:1.2; stroke-dasharray:1; vector-effect:non-scaling-stroke; }
+.a-lines circle{ fill:var(--ultra); }
+/* a tool: its mark on a solid core inside a rim of glass */
+.a-logo{ width:calc(var(--u) * 1.25); height:calc(var(--u) * 1.25); margin:calc(var(--u) * -.625) 0 0 calc(var(--u) * -.625); border-radius:50%; display:grid; place-items:center;
+  background:radial-gradient(circle at 50% 50%, #fff 0 64%, rgba(255,255,255,.16) 66%, rgba(255,255,255,.06));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.6), inset 0 0 0 1px rgba(255,255,255,.2), 0 14px 30px rgba(0,0,0,.45); }
+.a-logo img{ width:46%; height:46%; object-fit:contain; }
+/* the code: Smoke glass, a window of it */
+.a-code{ width:calc(var(--u) * 8.2); margin:calc(var(--u) * -2.5) 0 0 calc(var(--u) * -4.1); border-radius:calc(var(--u) * .5); overflow:hidden;
+  background:linear-gradient(165deg, rgba(40,42,48,.9), rgba(14,15,16,.94)); color:var(--porcelain);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.22), inset 0 0 0 1px rgba(255,255,255,.08), 9px 18px 44px rgba(0,0,0,.5); }
+.a-code-bar{ display:flex; align-items:center; gap:calc(var(--u) * .12); height:calc(var(--u) * .62); padding:0 calc(var(--u) * .3); border-bottom:1px solid rgba(255,255,255,.07);
+  font:400 calc(var(--u) * .22)/1 var(--mono); color:var(--ash); }
+.a-code-bar i{ width:calc(var(--u) * .16); height:calc(var(--u) * .16); border-radius:50%; background:rgba(255,255,255,.18); }
+.a-code-bar span{ margin-left:auto; margin-right:auto; }
+.a-code pre{ margin:0; padding:calc(var(--u) * .34) calc(var(--u) * .4) calc(var(--u) * .42); font:400 calc(var(--u) * .3)/1.7 var(--mono); white-space:pre; }
+.a-code .l{ display:block; clip-path:inset(0 100% 0 0); color:var(--porcelain); }
+.a-code .l.c, .a-code .l s{ color:var(--ash); text-decoration:none; }
+.a-code .l b{ font-weight:400; color:#fff; }
+.a-code .caret{ display:inline-block; width:calc(var(--u) * .1); height:calc(var(--u) * .3); margin-left:2px; vertical-align:-2px; background:var(--ultra); }
+/* found: a search, its first answer, and an assistant's */
+.a-find{ width:calc(var(--u) * 8.4); margin:calc(var(--u) * -2.7) 0 0 calc(var(--u) * -4.2); display:flex; flex-direction:column; gap:calc(var(--u) * .26); }
+.a-q{ height:calc(var(--u) * 1); border-radius:calc(var(--u) * .5); display:flex; align-items:center; gap:calc(var(--u) * .2); padding:0 calc(var(--u) * .34);
+  background:linear-gradient(180deg, rgba(255,255,255,.96), rgba(246,244,239,.92)); color:var(--obsidian); font:400 calc(var(--u) * .3)/1 var(--sans);
+  box-shadow:inset 0 1px 0 #fff, 6px 12px 32px rgba(0,0,0,.35); white-space:nowrap; overflow:hidden; }
+.a-q svg{ width:calc(var(--u) * .34); height:calc(var(--u) * .34); flex:none; fill:none; stroke:var(--graphite); stroke-width:2; stroke-linecap:round; }
+.a-q .a-typed::after{ content:""; display:inline-block; width:2px; height:1.05em; margin-left:2px; vertical-align:-.15em; background:var(--ultra); }
+.a-res{ display:flex; gap:calc(var(--u) * .24); padding:calc(var(--u) * .3) calc(var(--u) * .34); border-radius:calc(var(--u) * .36); background:#fff; color:var(--obsidian);
+  box-shadow:inset 0 0 0 1px var(--travertine), 6px 12px 32px rgba(0,0,0,.3); }
+.a-n{ flex:none; width:calc(var(--u) * .44); height:calc(var(--u) * .44); border-radius:50%; display:grid; place-items:center; background:var(--ultra); color:#fff; font:400 calc(var(--u) * .22)/1 var(--mono); }
+.a-url{ font:400 calc(var(--u) * .2)/1.3 var(--mono); color:var(--graphite); }
+.a-t{ margin-top:calc(var(--u) * .06); font:500 calc(var(--u) * .32)/1.2 var(--sans); letter-spacing:-.01em; }
+.a-d{ margin-top:calc(var(--u) * .06); font:400 calc(var(--u) * .24)/1.4 var(--sans); color:var(--graphite); }
+.a-ai{ padding:calc(var(--u) * .3) calc(var(--u) * .34); border-radius:calc(var(--u) * .36); color:var(--porcelain);
+  background:linear-gradient(165deg, rgba(52,54,62,.92), rgba(20,22,28,.94)); box-shadow:inset 0 1px 0 rgba(255,255,255,.22), inset 0 0 0 1px rgba(255,255,255,.08), 6px 12px 32px rgba(0,0,0,.35); }
+.a-spark{ display:flex; align-items:center; gap:calc(var(--u) * .12); font:400 calc(var(--u) * .2)/1 var(--mono); color:var(--travertine); text-transform:uppercase; letter-spacing:.06em; }
+.a-spark svg{ width:calc(var(--u) * .28); height:calc(var(--u) * .28); fill:#8E99FF; }
+.a-ai p{ margin-top:calc(var(--u) * .14); font:400 calc(var(--u) * .27)/1.45 var(--sans); }
+
+@media (max-aspect-ratio:1/1), (max-width:760px){
+  .alt-words{ left:20px; right:20px; width:auto; top:calc(86px + env(safe-area-inset-top)); transform:none; }
+  .alt-label{ margin-bottom:14px; }
+  .alt-say{ height:150px; }
+  .alt-h{ font-size:min(8.2vw, 34px); line-height:1.08; }
+  .alt-p{ margin-top:10px; font-size:15px; line-height:1.45; }
+  .alt-obj{ left:6px; right:6px; top:38%; bottom:2%; }
+  .alt-end{ left:20px; right:20px; width:auto; top:calc(86px + env(safe-area-inset-top)); transform:none; }
+  .alt-end .alt-h{ font-size:min(9vw, 38px); }
+}
+@media (prefers-reduced-motion: reduce){
+  .alt{ height:auto; }
+  .alt-pin{ position:relative; height:auto; min-height:100svh; }
+}

@@ -134,36 +134,107 @@ const S = {};
 const rects = new Map();
 const rect = el => rects.get(el) || el.getBoundingClientRect();
 
-// three suppliers pulled together into one house
-S.three = el => {
-  const cards = $$('.t-card', el), bills = cards.map(c => c.querySelector('.bill')), one = el.querySelector('.t-one');
+// one idea, and all it can become: an icon opens into an app, a system
+// stands up behind it, the tools it talks to join it, the code it is made
+// of, the search that finds it — and then the sentence it all says
+S.alt = el => {
+  const obj = el.querySelector('.alt-obj'), icon = el.querySelector('.a-icon'), pad = el.querySelector('.a-pad');
+  const phs = [0, 1, 2].map(i => el.querySelector('.a-ph[data-i="' + i + '"]')), frames = phs.map(p => p.querySelector('.a-frame'));
+  const logos = $$('.a-logo', el), svg = el.querySelector('.a-lines'), code = el.querySelector('.a-code'), lines = $$('.a-code .l', el);
+  const find = el.querySelector('.a-find'), q = el.querySelector('.a-q'), res = el.querySelector('.a-res'), ai = el.querySelector('.a-ai'), typed = el.querySelector('.a-typed');
+  const says = $$('.alt-say > li > div', el), end = el.querySelector('.alt-end'), label = el.querySelector('.alt-label');
+  const SAY = [[-1, 0.1], [0.12, 0.27], [0.28, 0.42], [0.43, 0.56], [0.57, 0.7], [0.71, 0.84]];
+  // the tools sit in an arc over the system, and the system makes room
+  let u = 40, ow = 0, oh = 0, paths = [];
+  const PAD = { x: 0.7, y: -0.55 }, DROP = 0.75, PAD_HALF = 3.62;
+  const tool = i => { const k = (i - 2.5) / 2.5; return { x: PAD.x + k * 4.2, y: PAD.y + DROP - PAD_HALF - 0.95 + 0.32 * k * k }; };
+  function measure() {
+    ow = obj.offsetWidth; oh = obj.offsetHeight;
+    u = Math.min(ow / 10.8, oh / 10.4);
+    obj.style.setProperty('--u', u.toFixed(2) + 'px');
+    // the lines from the system to each tool, drawn once for this size
+    svg.setAttribute('viewBox', '0 0 ' + ow + ' ' + oh);
+    svg.innerHTML = '';
+    paths = [0, 1, 2, 3, 4, 5].map(i => {
+      // from each tool down into the top of the system
+      const tl = tool(i);
+      const x1 = ow / 2 + tl.x * u, y1 = oh / 2 + (tl.y + 0.62) * u;
+      const x0 = ow / 2 + (PAD.x + (tl.x - PAD.x) * 0.55) * u, y0 = oh / 2 + (PAD.y + DROP - PAD_HALF + 0.55) * u;
+      const pth = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      pth.setAttribute('d', 'M' + x1.toFixed(1) + ' ' + y1.toFixed(1) + ' C' + x1.toFixed(1) + ' ' + ((y1 + y0) / 2).toFixed(1) + ' ' + x0.toFixed(1) + ' ' + ((y1 + y0) / 2).toFixed(1) + ' ' + x0.toFixed(1) + ' ' + y0.toFixed(1));
+      pth.setAttribute('pathLength', '1');
+      svg.appendChild(pth);
+      return pth;
+    });
+  }
+  const put = (e, x, y, sc, rot, o) => {
+    setT(e, 'translate3d(' + (x * u).toFixed(1) + 'px,' + (y * u).toFixed(1) + 'px,0)' + (rot ? ' rotate(' + rot.toFixed(2) + 'deg)' : '') + ' scale(' + sc.toFixed(4) + ')');
+    setO(e, o);
+  };
   return () => {
     const r = rect(el);
-    const t = clamp(-r.top / Math.max(1, r.height - H));
-    if (!el._cw || el._w !== W) { el._w = W; el._cw = cards[0].offsetWidth; el._ch = cards[0].offsetHeight; }
-    const cw = el._cw, ch = el._ch;
-    // in, one after another; the invoices go; the three close up into one
-    // stack; the house lands on top of it
-    const enter = cards.map((c, i) => out(seg(t, 0.02 + i * 0.05, 0.18 + i * 0.05)));
-    const pull = io(seg(t, 0.36, 0.6));
-    const fuse = out(seg(t, 0.6, 0.76));
-    cards.forEach((c, i) => {
-      const k = i - 1;
-      // side by side on a wide screen, one under another on a phone, with air
-      const x0 = wide ? k * (cw + 28) : 0, y0 = wide ? 0 : k * (ch + 14);
-      const x = lerp(x0, k * 12, pull), y = lerp(y0, k * 10, pull) + (1 - enter[i]) * 60;
-      const rot = wide ? lerp(0, k * 3, pull) : 0;
-      const sc = lerp(1, 0.94 - (1 - i) * 0.02, pull);
-      setT(c, 'translate3d(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px,0) rotate(' + rot.toFixed(2) + 'deg) scale(' + sc.toFixed(4) + ')');
-      setO(c, enter[i] * (1 - seg(t, 0.62, 0.7)));
-      const b = io(seg(t, 0.22 + i * 0.04, 0.34 + i * 0.04));
-      setT(bills[i], 'scale(' + lerp(1, 0.6, b).toFixed(3) + ')');
-      setO(bills[i], 1 - b);
+    // when nothing may move, it stands where it ends
+    const p = still ? 1 : clamp(-r.top / Math.max(1, r.height - H));
+    if (el._w !== W || !ow) { el._w = W; measure(); }
+
+    // the end: everything steps back, and the sentence comes
+    const E = io(seg(p, 0.85, 0.93));
+    const back = lerp(1, 0.8, E), dimEnd = lerp(1, 0.4, E);
+
+    // 1. the icon, and the app it opens into
+    const ii = out(seg(p, -0.02, 0.05));
+    const L = io(seg(p, 0.1, 0.19));
+    put(icon, 0, 0, lerp(0.72, 1, ii) * lerp(1, 1.6, L), 0, ii * (1 - seg(L, 0.15, 0.5)));
+    const F = io(seg(p, 0.19, 0.27));
+    // 2. the system stands up behind it, and the apps step aside
+    const Y = io(seg(p, 0.28, 0.38));
+    const gx = lerp(0, -3.15, Y), gy = lerp(0, 1.55, Y), gs = lerp(1, 0.6, Y) * back;
+    // 4./5. the code, then the search, come to the front, and the rest dims
+    const C = io(seg(p, 0.57, 0.64)), Fd = io(seg(p, 0.71, 0.77));
+    const dim = lerp(1, 0.38, Math.max(C, Fd)) * dimEnd;
+    phs.forEach((ph, i) => {
+      const side = i === 0 ? 0 : i === 1 ? -1 : 1;
+      const sc = i === 0 ? lerp(0.45, 1, L) : lerp(0.86, 0.92, F);
+      const x = gx + side * 1.95 * F * lerp(1, 0.95, Y), y = gy + (side ? 0.28 * F : 0);
+      put(ph, x * gs, y + io(seg(p, 0.42, 0.48)) * DROP, sc * gs, side * 9 * F, (i === 0 ? seg(L, 0, 0.25) : seg(F, 0, 0.3)) * dim);
+      setO(frames[i], i === 0 ? seg(L, 0.4, 1) : 1);
     });
-    setT(one, 'translate3d(0,' + ((1 - fuse) * 30).toFixed(1) + 'px,0) scale(' + lerp(0.82, 1, fuse).toFixed(4) + ')');
-    // the house is solid at once, and covers the stack as it lands
-    setO(one, t >= 0.6 ? 1 : 0);
-    el.classList.toggle('done', t > 0.74);
+    const D = io(seg(p, 0.42, 0.48)) * DROP; // room for the tools above
+    put(pad, PAD.x, lerp(2.4, PAD.y, Y) + D, lerp(0.86, 1, Y) * back, 0, Y * dim);
+    // 3. the tools it is connected to, each on a line from the system
+    logos.forEach((lg, i) => {
+      const T = out(seg(p, 0.43 + i * 0.016, 0.5 + i * 0.016));
+      const tl = tool(i);
+      put(lg, tl.x, tl.y - 1.4 * (1 - T), lerp(0.6, 1, T) * back, 0, T * dim);
+      if (paths[i]) { paths[i].style.strokeDashoffset = (1 - out(seg(p, 0.45 + i * 0.016, 0.53 + i * 0.016))).toFixed(3); }
+    });
+    setO(svg, seg(p, 0.44, 0.47) * dim);
+    // 4. the code it is built of
+    const away = io(seg(p, 0.7, 0.75));
+    put(code, lerp(3.4, 1.1, C) + 1.6 * away, 0.95, lerp(0.94, 1, C), 0, C * (1 - away));
+    lines.forEach((l, i) => { const v = seg(p, 0.6 + i * 0.011, 0.625 + i * 0.011); l.style.clipPath = 'inset(0 ' + ((1 - v) * 100).toFixed(1) + '% 0 0)'; });
+    // 5. found, by the people who search, and by the assistants they ask
+    put(find, lerp(-1.4, -0.4, Fd), lerp(0.6, 0.1, Fd), lerp(0.94, 1, Fd) * lerp(1, 0.9, E), 0, Fd * (1 - E));
+    const full = typed.getAttribute(document.documentElement.lang === 'en' ? 'data-en' : 'data-da') || '';
+    const n = Math.round(full.length * seg(p, 0.735, 0.785));
+    if (typed._n !== n) { typed._n = n; typed.textContent = full.slice(0, n); }
+    const r1 = out(seg(p, 0.785, 0.805)), r2 = out(seg(p, 0.805, 0.83));
+    setT(res, 'translate3d(0,' + ((1 - r1) * 16).toFixed(1) + 'px,0)'); setO(res, r1);
+    setT(ai, 'translate3d(0,' + ((1 - r2) * 16).toFixed(1) + 'px,0)'); setO(ai, r2);
+
+    // the words beside it, one sentence at a time
+    says.forEach((s, i) => {
+      const [a, b] = SAY[i];
+      const inn = a < 0 ? 1 : out(seg(p, a, a + 0.03)), go = seg(p, b - 0.025, b);
+      setO(s, inn * (1 - go));
+      setT(s, 'translate3d(0,' + ((1 - inn) * 26 - go * 26).toFixed(1) + 'px,0)');
+      s.style.visibility = inn > 0 && go < 1 ? 'visible' : 'hidden';
+    });
+    setO(label, 1 - seg(p, 0.83, 0.86));
+    const e2 = out(seg(p, 0.87, 0.94));
+    setO(end, e2);
+    setT(end, (W > 760 && W / H >= 1 ? 'translateY(-50%) ' : '') + 'translate3d(0,' + ((1 - e2) * 24).toFixed(1) + 'px,0)');
+    end.classList.toggle('on', e2 > 0.5);
   };
 };
 
@@ -257,11 +328,8 @@ if (still) {
   W = innerWidth; H = innerHeight;
   addEventListener('load', () => {
     measureRows();
-    for (const s of live) if (s.el.dataset.scrub !== 'three' && s.el.dataset.scrub !== 'steps') s.draw(performance.now());
+    for (const s of live) if (s.el.dataset.scrub !== 'steps') s.draw(performance.now());
   });
-  $$('.t-one').forEach(e => { e.style.opacity = '1'; e.style.transform = 'none'; });
-  $$('.t-card').forEach(e => { e.style.opacity = '0'; });
-  $$('.three').forEach(e => e.classList.add('done'));
   $$('.note').forEach(e => { e.style.opacity = '1'; });
   $$('.steps-line > i').forEach(e => { e.style.transform = 'none'; });
   $$('.step').forEach(e => e.classList.add('on'));
