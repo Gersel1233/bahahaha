@@ -144,16 +144,100 @@ S.alt = el => {
   const find = el.querySelector('.a-find'), res = el.querySelector('.a-res'), typed = el.querySelector('.a-typed');
   const ask = el.querySelector('.a-ask'), typed2 = el.querySelector('.a-typed2'), answers = $$('.a-ans', el);
   const says = $$('.alt-say > li > div', el), end = el.querySelector('.alt-end'), label = el.querySelector('.alt-label');
-  const fin = el.querySelector('.alt-fin'), fbg = el.querySelector('.fin-bg'), streaks = el.querySelector('.fin-streaks'), flash = el.querySelector('.fin-flash'), ring = el.querySelector('.fin-ring');
+  const fin = el.querySelector('.alt-fin'), cv = el.querySelector('.fin-paper'), ctx = cv.getContext('2d');
   const brand = el.querySelector('.fin-brand'), mark = el.querySelector('.fin-mark'), word = el.querySelector('.fin-word');
-  const l1 = el.querySelector('.fin-l1'), l2 = el.querySelector('.fin-l2'), sh = el.querySelector('.fin-sh');
-  // light drawn inward from every side, toward the point it all goes into
-  const RAYS = Array.from({ length: 34 }, (_, i) => {
-    const ln = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-    streaks.appendChild(ln);
-    return { ln, a: (i / 34) * Math.PI * 2 + (i % 3) * 0.07, d: (i * 37 % 11) / 11, len: 18 + (i * 53 % 7) * 4 };
-  });
-  const outBack = t => { const c = 1.6; return 1 + (c + 1) * Math.pow(t - 1, 3) + c * Math.pow(t - 1, 2); };
+  const l1 = el.querySelector('.fin-l1'), l2 = el.querySelector('.fin-l2'), sh = el.querySelector('.fin-sh'), flap = el.querySelector('.fin-flap');
+  const padImg = el.querySelector('.a-pad img');
+  const outBack = t => { const c = 1.4; return 1 + (c + 1) * Math.pow(t - 1, 3) + c * Math.pow(t - 1, 2); };
+
+  /* ---------- a sheet of paper, in three dimensions: a grid of points that
+     lie flat, crumple into a ball, and lie flat again; drawn face by face,
+     each lit by its slope, the far ones first ---------- */
+  const N = 11, NV = (N + 1) * (N + 1);
+  // each point's place in the ball, and how it is pushed about in the crumpling
+  let seed = 7;
+  const rnd = () => { seed = (seed * 16807) % 2147483647; return seed / 2147483647; };
+  const BALL = [], KICK = [];
+  for (let i = 0; i < NV; i++) {
+    const u = (i % (N + 1)) / N, v = Math.floor(i / (N + 1)) / N;
+    const ph = Math.PI * (0.06 + 0.88 * v), th = 2 * Math.PI * u * 0.97 + v * 0.8;
+    const r = 0.72 + 0.5 * rnd();
+    BALL.push([Math.sin(ph) * Math.cos(th) * r, Math.cos(ph) * r, Math.sin(ph) * Math.sin(th) * r]);
+    KICK.push([rnd() * 2 - 1, rnd() * 2 - 1, rnd() * 2 - 1]);
+  }
+  const TRI = [];
+  for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) {
+    const i = y * (N + 1) + x;
+    if ((x + y) % 2) { TRI.push([i, i + 1, i + N + 1], [i + 1, i + N + 2, i + N + 1]); }
+    else { TRI.push([i, i + 1, i + N + 2], [i, i + N + 2, i + N + 1]); }
+  }
+  const LIGHT = (() => { const l = [-0.42, -0.62, -1], m = Math.hypot(...l); return l.map(x => x / m); })();
+  const PORC = [246, 244, 239];
+  // the iPad picture on the sheet: the device itself, inside its transparent margin
+  const TEX = { x: 37, y: 37, w: 1226, h: 866 };
+  const P3 = new Float32Array(NV * 3), P2 = new Float32Array(NV * 2);
+  let dpr = 1, padR = null;
+  function sheet(o) {
+    // o: centre, flat size, crumple (0 flat, 1 ball), wrinkle, ball radius, turn, picture
+    const { cx, cy, w, h, k, wr, R, ry, rx, tex } = o;
+    const cY = Math.cos(ry), sY = Math.sin(ry), cX = Math.cos(rx), sX = Math.sin(rx), F = 5 * Math.max(w, h, R * 2);
+    for (let i = 0; i < NV; i++) {
+      const u = (i % (N + 1)) / N - 0.5, v = Math.floor(i / (N + 1)) / N - 0.5;
+      const B = BALL[i], K = KICK[i];
+      let x = lerp(u * w, B[0] * R, k) + K[0] * wr, y = lerp(v * h, B[1] * R, k) + K[1] * wr, z = lerp(0, B[2] * R, k) + K[2] * wr * 1.4;
+      // turned in space
+      const x1 = x * cY + z * sY, z1 = -x * sY + z * cY;
+      const y1 = y * cX - z1 * sX, z2 = y * sX + z1 * cX;
+      P3[i * 3] = x1; P3[i * 3 + 1] = y1; P3[i * 3 + 2] = z2;
+      const s = F / (F + z2);
+      P2[i * 2] = cx + x1 * s; P2[i * 2 + 1] = cy + y1 * s;
+    }
+    const order = TRI.map((t, n) => [n, P3[t[0] * 3 + 2] + P3[t[1] * 3 + 2] + P3[t[2] * 3 + 2]]).sort((a, b) => b[1] - a[1]);
+    // its shadow on the navy, soft, under it and to the right
+    const ext = Math.max(w * (1 - k) + R * 2 * k, h * (1 - k) + R * 2 * k);
+    const g = ctx.createRadialGradient(cx + ext * 0.08, cy + ext * 0.22, 0, cx + ext * 0.08, cy + ext * 0.22, ext * 0.7);
+    g.addColorStop(0, 'rgba(0,0,0,.42)'); g.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = g; ctx.fillRect(cx - ext * 1.2, cy - ext * 1.2, ext * 2.4, ext * 2.6);
+    const img = tex > 0.001 && padImg.complete && padImg.naturalWidth ? padImg : null;
+    for (const [n] of order) {
+      const [a, b2, c] = TRI[n];
+      const ax = P2[a * 2], ay = P2[a * 2 + 1], bx = P2[b2 * 2], by = P2[b2 * 2 + 1], cxp = P2[c * 2], cyp = P2[c * 2 + 1];
+      // its slope, and so its light
+      const ux = P3[b2 * 3] - P3[a * 3], uy = P3[b2 * 3 + 1] - P3[a * 3 + 1], uz = P3[b2 * 3 + 2] - P3[a * 3 + 2];
+      const vx = P3[c * 3] - P3[a * 3], vy = P3[c * 3 + 1] - P3[a * 3 + 1], vz = P3[c * 3 + 2] - P3[a * 3 + 2];
+      let nx = uy * vz - uz * vy, ny = uz * vx - ux * vz, nz = ux * vy - uy * vx;
+      const m = Math.hypot(nx, ny, nz) || 1; nx /= m; ny /= m; nz /= m;
+      const front = (bx - ax) * (cyp - ay) - (by - ay) * (cxp - ax) > 0;
+      if (nz > 0) { nx = -nx; ny = -ny; nz = -nz; }
+      const sh2 = clamp(0.3 + 0.7 * (nx * LIGHT[0] + ny * LIGHT[1] + nz * LIGHT[2]) / -LIGHT[2], 0.28, 1.1);
+      // a hair larger than itself, so no seam shows between faces
+      const mx = (ax + bx + cxp) / 3, my = (ay + by + cyp) / 3;
+      const grow = (px, py) => { const d = Math.hypot(px - mx, py - my) || 1; return [px + (px - mx) / d * 0.7, py + (py - my) / d * 0.7]; };
+      const [ax2, ay2] = grow(ax, ay), [bx2, by2] = grow(bx, by), [cx2, cy2] = grow(cxp, cyp);
+      ctx.beginPath(); ctx.moveTo(ax2, ay2); ctx.lineTo(bx2, by2); ctx.lineTo(cx2, cy2); ctx.closePath();
+      const col = 'rgb(' + PORC.map(v => Math.min(255, v * sh2) | 0).join(',') + ')';
+      ctx.fillStyle = col; ctx.fill();
+      ctx.strokeStyle = col; ctx.lineWidth = 0.8; ctx.lineJoin = 'round'; ctx.stroke();
+      if (img && front) {
+        // the picture, laid onto this face
+        const tu = i => TEX.x + ((i % (N + 1)) / N) * TEX.w, tv = i => TEX.y + (Math.floor(i / (N + 1)) / N) * TEX.h;
+        const s0 = tu(a), t0 = tv(a), s1 = tu(b2), t1 = tv(b2), s2 = tu(c), t2 = tv(c);
+        const ds1 = s1 - s0, dt1 = t1 - t0, ds2 = s2 - s0, dt2 = t2 - t0, det = ds1 * dt2 - ds2 * dt1;
+        const dx1 = bx - ax, dy1 = by - ay, dx2 = cxp - ax, dy2 = cyp - ay;
+        const A = (dx1 * dt2 - dx2 * dt1) / det, C = (dx2 * ds1 - dx1 * ds2) / det, Bm = (dy1 * dt2 - dy2 * dt1) / det, D = (dy2 * ds1 - dy1 * ds2) / det;
+        ctx.save(); ctx.clip();
+        ctx.globalAlpha = tex;
+        ctx.transform(A, Bm, C, D, ax - A * s0 - C * t0, ay - Bm * s0 - D * t0);
+        ctx.drawImage(img, 0, 0);
+        ctx.restore();
+        ctx.save(); ctx.clip();
+        ctx.globalAlpha = tex;
+        ctx.fillStyle = sh2 < 1 ? 'rgba(0,0,0,' + ((1 - sh2) * 0.85).toFixed(3) + ')' : 'rgba(255,255,255,' + ((sh2 - 1) * 1.6).toFixed(3) + ')';
+        ctx.fill();
+        ctx.restore();
+      }
+    }
+  }
   let fy = 0, wordW = 0, objC = { x: 0, y: 0 };
   // the first five beats run on their own clock, pe; Google and the assistants after them
   const K = 0.845;
@@ -199,6 +283,9 @@ S.alt = el => {
       end.style.setProperty('--ey', (fy + (mob ? 64 : 104)).toFixed(0) + 'px');
       wordW = word.offsetWidth + parseFloat(getComputedStyle(brand).gap || '0');
       objC = { x: obj.offsetLeft + ow / 2, y: obj.offsetTop + oh / 2 };
+      dpr = Math.min(2, devicePixelRatio || 1);
+      cv.width = Math.round(fin.clientWidth * dpr); cv.height = Math.round(fin.clientHeight * dpr);
+      padR = null;
     }
     const pe = p / K;
 
@@ -273,51 +360,57 @@ S.alt = el => {
     setO(label, 1 - seg(p, 0.83, 0.86));
 
     // ---------- the finale ----------
-    // 1. all of it is drawn into one point, turning as it goes
-    const cv = io(seg(q, 0, 0.28));
-    setT(obj, 'translate3d(' + ((W / 2 - objC.x) * cv).toFixed(1) + 'px,' + ((fy - objC.y) * cv).toFixed(1) + 'px,0) rotate(' + (-10 * cv).toFixed(2) + 'deg) scale(' + lerp(1, 0.04, Math.pow(cv, 1.25)).toFixed(4) + ')');
-    setO(obj, 1 - seg(q, 0.22, 0.3));
-    setO(fin, q > 0 ? 1 : 0);
-    // 2. light streaks in with it
-    const st = Math.sin(Math.PI * seg(q, 0.06, 0.32));
-    setO(streaks, st);
-    if (st > 0) {
-      const sc = 100 * Math.max(W, H) / Math.min(W, H);
-      const run = io(seg(q, 0.04, 0.3));
-      const cy = (fy / H - 0.5) * 200 * (H / Math.min(W, H));
-      RAYS.forEach(R => {
-        const head = lerp(sc * (1.1 + R.d * 0.6), 0, Math.min(1, run * (1 + R.d * 0.5)));
-        const tail = head + R.len * (1 - run * 0.6);
-        const cx = Math.cos(R.a), sy = Math.sin(R.a);
-        R.ln.setAttribute('x1', (cx * head).toFixed(1)); R.ln.setAttribute('y1', (cy + sy * head).toFixed(1));
-        R.ln.setAttribute('x2', (cx * tail).toFixed(1)); R.ln.setAttribute('y2', (cy + sy * tail).toFixed(1));
-      });
+    // 1. all of it goes but the system, which comes up to full light
+    const fo = io(seg(q, 0, 0.1));
+    if (fo > 0) {
+      for (const e of [...phs, ...logos, svg, code, find, ask]) setO(e, (+e._po || 0) * (1 - fo));
+      setO(pad, lerp(+pad._po || 0, 1, fo));
     }
-    // 3. the light it all becomes
-    const fl = seg(q, 0.24, 0.44);
-    setT(flash, 'scale(' + lerp(0.04, 1.2, out(fl)).toFixed(4) + ')'); setO(flash, Math.sin(Math.PI * fl) * 0.95);
-    // 4. out of it, the house: the mark unfolds, its L is drawn, a light passes over it
-    const m = seg(q, 0.3, 0.46);
-    setT(mark, 'scale(' + Math.max(0, outBack(m)).toFixed(4) + ') rotate(' + (-8 * (1 - out(m))).toFixed(2) + 'deg)');
-    setO(mark, seg(m, 0, 0.25));
-    l1.setAttribute('height', (80 * io(seg(q, 0.42, 0.5))).toFixed(2));
-    l2.setAttribute('width', (56 * io(seg(q, 0.49, 0.56))).toFixed(2));
-    sh.setAttribute('x', lerp(-70, 170, seg(q, 0.56, 0.7)).toFixed(1));
-    const rg = seg(q, 0.44, 0.66);
-    setT(ring, 'scale(' + lerp(0.4, 3.4, out(rg)).toFixed(4) + ')'); setO(ring, (1 - rg) * seg(rg, 0, 0.08) * 0.9);
-    // 5. its name beside it; the mark makes room
-    const w = out(seg(q, 0.52, 0.64));
-    setT(brand, 'translate(-50%,-50%) translate3d(' + (wordW / 2 * (1 - w)).toFixed(1) + 'px,0,0)');
-    setT(word, 'translate3d(' + (-20 * (1 - w)).toFixed(1) + 'px,0,0)'); setO(word, w);
-    setO(brand, q > 0.28 ? 1 : 0);
-    // 6. the glass behind it all, and a dark edge round it
-    const bg = seg(q, 0.42, 0.85);
-    setT(fbg, 'scale(' + lerp(1.18, 1, out(bg)).toFixed(4) + ')'); setO(fbg, 0.62 * out(bg));
-    fin.style.setProperty('--vig', bg.toFixed(3));
+    // where the iPad is as the paper takes over from it
+    if (q < 0.12 || !padR) {
+      const a = pad.getBoundingClientRect(), f0 = fin.getBoundingClientRect();
+      padR = { cx: a.left - f0.left + a.width / 2, cy: a.top - f0.top + a.height / 2, w: a.width * TEX.w / 1300, h: a.height * TEX.h / 940 };
+    }
+    const on = q > 0.1 && q < 0.8;
+    if (q > 0.1) setO(pad, 0);
+    setO(fin, q > 0 ? 1 : 0);
+    setO(cv, on ? 1 : 0);
+    const MW = parseFloat(getComputedStyle(mark).width) || 100;
+    if (on) {
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.clearRect(0, 0, cv.width, cv.height);
+      // 2. crumpled into a ball, on its way to the middle, turning
+      const t1 = io(seg(q, 0.1, 0.38)), idle = seg(q, 0.38, 0.48), t2 = io(seg(q, 0.48, 0.76));
+      const R = MW * 0.6;
+      const ry = 1.5 * t1 + 0.5 * idle + (2 * Math.PI - 2) * t2, rx = 0.55 * t1 * (1 - t2) + 0.15 * Math.sin(Math.PI * idle) * (1 - t2);
+      // 3. and opened out again, a clean sheet, the size of the mark
+      const k = t2 > 0 ? 1 - t2 : t1;
+      const w = t2 > 0 ? MW : padR.w, h = t2 > 0 ? MW : padR.h;
+      // creases: they come as it crumples, and ease out of it as it opens
+      const wr = (t2 > 0 ? Math.pow(1 - t2, 1.6) * 0.09 : Math.sin(Math.PI * t1) * 0.08) * Math.max(w, R * 2) + R * 0.1 * k;
+      const breathe = 1 + 0.04 * Math.sin(Math.PI * 2 * idle);
+      sheet({ cx: lerp(padR.cx, W / 2, t1), cy: lerp(padR.cy, fy, t1), w, h, k, wr, R: R * breathe, ry, rx, tex: 1 - seg(q, 0.34, 0.46) });
+    }
+    // 4. the mark takes over from the flat sheet; its corner folds over and goes
+    const mk = q >= 0.78;
+    setO(brand, mk ? 1 : 0);
+    setO(mark, 1);
+    const fl = io(seg(q, 0.79, 0.86));
+    flap.setAttribute('transform', 'translate(111 17) rotate(45) scale(1 ' + (1 - 2 * fl).toFixed(4) + ') rotate(-45) translate(-111 -17)');
+    flap.setAttribute('fill', fl > 0.5 ? '#E3DED4' : '#F6F4EF');
+    flap.style.opacity = (1 - seg(q, 0.86, 0.9)).toFixed(3);
+    // 5. its L is drawn, and a light passes over it
+    l1.setAttribute('height', (80 * io(seg(q, 0.86, 0.91))).toFixed(2));
+    l2.setAttribute('width', (56 * io(seg(q, 0.9, 0.94))).toFixed(2));
+    sh.setAttribute('x', lerp(-60, 160, seg(q, 0.93, 1)).toFixed(1));
+    // 6. its name beside it; the mark makes room; a slow push in to the end
+    const wd = out(seg(q, 0.9, 0.97));
+    setT(brand, 'translate(-50%,-50%) translate3d(' + (wordW / 2 * (1 - wd)).toFixed(1) + 'px,0,0) scale(' + lerp(1, 1.03, seg(q, 0.9, 1)).toFixed(4) + ')');
+    setT(word, 'translate3d(' + (-18 * (1 - wd)).toFixed(1) + 'px,0,0)'); setO(word, wd);
     // 7. and the sentence under it, with the way to say what you need
-    const e2 = out(seg(q, 0.64, 0.8));
+    const e2 = out(seg(q, 0.93, 1));
     setO(end, e2);
-    setT(end, 'translate(-50%,0) translate3d(0,' + ((1 - e2) * 26).toFixed(1) + 'px,0)');
+    setT(end, 'translate(-50%,0) translate3d(0,' + ((1 - e2) * 22).toFixed(1) + 'px,0)');
     end.classList.toggle('on', e2 > 0.5);
   };
 };
