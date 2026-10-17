@@ -141,9 +141,12 @@ S.alt = el => {
   const obj = el.querySelector('.alt-obj'), icon = el.querySelector('.a-icon'), pad = el.querySelector('.a-pad');
   const phs = [0, 1, 2].map(i => el.querySelector('.a-ph[data-i="' + i + '"]')), frames = phs.map(p => p.querySelector('.a-frame'));
   const logos = $$('.a-logo', el), svg = el.querySelector('.a-lines'), code = el.querySelector('.a-code'), lines = $$('.a-code .l', el);
-  const find = el.querySelector('.a-find'), q = el.querySelector('.a-q'), res = el.querySelector('.a-res'), ai = el.querySelector('.a-ai'), typed = el.querySelector('.a-typed');
+  const find = el.querySelector('.a-find'), res = el.querySelector('.a-res'), typed = el.querySelector('.a-typed');
+  const ask = el.querySelector('.a-ask'), typed2 = el.querySelector('.a-typed2'), answers = $$('.a-ans', el);
   const says = $$('.alt-say > li > div', el), end = el.querySelector('.alt-end'), label = el.querySelector('.alt-label');
-  const SAY = [[-1, 0.1], [0.12, 0.27], [0.28, 0.42], [0.43, 0.56], [0.57, 0.7], [0.71, 0.84]];
+  // the first five beats run on their own clock, pe; Google and the assistants after them
+  const K = 0.845;
+  const SAY = [[-1, 0.1 * K], [0.12 * K, 0.27 * K], [0.28 * K, 0.42 * K], [0.43 * K, 0.56 * K], [0.57 * K, 0.7 * K], [0.6, 0.7], [0.705, 0.845]];
   // the tools sit in an arc over the system, and the system makes room
   let u = 40, ow = 0, oh = 0, paths = [];
   const PAD = { x: 0.7, y: -0.55 }, DROP = 0.75, PAD_HALF = 3.62;
@@ -176,51 +179,67 @@ S.alt = el => {
     // when nothing may move, it stands where it ends
     const p = still ? 1 : clamp(-r.top / Math.max(1, r.height - H));
     if (el._w !== W || !ow) { el._w = W; measure(); }
+    const pe = p / K;
 
     // the end: everything steps back, and the sentence comes
     const E = io(seg(p, 0.85, 0.93));
     const back = lerp(1, 0.8, E), dimEnd = lerp(1, 0.4, E);
 
     // 1. the icon, and the app it opens into
-    const ii = out(seg(p, -0.02, 0.05));
-    const L = io(seg(p, 0.1, 0.19));
+    const ii = out(seg(pe, -0.02, 0.05));
+    const L = io(seg(pe, 0.1, 0.19));
     put(icon, 0, 0, lerp(0.72, 1, ii) * lerp(1, 1.6, L), 0, ii * (1 - seg(L, 0.15, 0.5)));
-    const F = io(seg(p, 0.19, 0.27));
+    const F = io(seg(pe, 0.19, 0.27));
     // 2. the system stands up behind it, and the apps step aside
-    const Y = io(seg(p, 0.28, 0.38));
+    const Y = io(seg(pe, 0.28, 0.38));
     const gx = lerp(0, -3.15, Y), gy = lerp(0, 1.55, Y), gs = lerp(1, 0.6, Y) * back;
     // 4./5. the code, then the search, come to the front, and the rest dims
-    const C = io(seg(p, 0.57, 0.64)), Fd = io(seg(p, 0.71, 0.77));
-    const dim = lerp(1, 0.38, Math.max(C, Fd)) * dimEnd;
+    const C = io(seg(pe, 0.57, 0.64)), Fd = io(seg(p, 0.6, 0.65)) * (1 - io(seg(p, 0.7, 0.735))), A = io(seg(p, 0.7, 0.745));
+    const dim = lerp(1, 0.38, Math.max(C, io(seg(p, 0.6, 0.65)))) * lerp(1, 0.55, A) * dimEnd;
     phs.forEach((ph, i) => {
       const side = i === 0 ? 0 : i === 1 ? -1 : 1;
       const sc = i === 0 ? lerp(0.45, 1, L) : lerp(0.86, 0.92, F);
       const x = gx + side * 1.95 * F * lerp(1, 0.95, Y), y = gy + (side ? 0.28 * F : 0);
-      put(ph, x * gs, y + io(seg(p, 0.42, 0.48)) * DROP, sc * gs, side * 9 * F, (i === 0 ? seg(L, 0, 0.25) : seg(F, 0, 0.3)) * dim);
+      put(ph, x * gs, y + io(seg(pe, 0.42, 0.48)) * DROP, sc * gs, side * 9 * F, (i === 0 ? seg(L, 0, 0.25) : seg(F, 0, 0.3)) * dim);
       setO(frames[i], i === 0 ? seg(L, 0.4, 1) : 1);
     });
-    const D = io(seg(p, 0.42, 0.48)) * DROP; // room for the tools above
+    const D = io(seg(pe, 0.42, 0.48)) * DROP; // room for the tools above
     put(pad, PAD.x, lerp(2.4, PAD.y, Y) + D, lerp(0.86, 1, Y) * back, 0, Y * dim);
     // 3. the tools it is connected to, each on a line from the system
     logos.forEach((lg, i) => {
-      const T = out(seg(p, 0.43 + i * 0.016, 0.5 + i * 0.016));
+      const T = out(seg(pe, 0.43 + i * 0.016, 0.5 + i * 0.016));
       const tl = tool(i);
       put(lg, tl.x, tl.y - 1.4 * (1 - T), lerp(0.6, 1, T) * back, 0, T * dim);
-      if (paths[i]) { paths[i].style.strokeDashoffset = (1 - out(seg(p, 0.45 + i * 0.016, 0.53 + i * 0.016))).toFixed(3); }
+      if (paths[i]) { paths[i].style.strokeDashoffset = (1 - out(seg(pe, 0.45 + i * 0.016, 0.53 + i * 0.016))).toFixed(3); }
     });
-    setO(svg, seg(p, 0.44, 0.47) * dim);
+    setO(svg, seg(pe, 0.44, 0.47) * dim);
     // 4. the code it is built of
-    const away = io(seg(p, 0.7, 0.75));
+    const away = io(seg(pe, 0.7, 0.75));
     put(code, lerp(3.4, 1.1, C) + 1.6 * away, 0.95, lerp(0.94, 1, C), 0, C * (1 - away));
-    lines.forEach((l, i) => { const v = seg(p, 0.6 + i * 0.011, 0.625 + i * 0.011); l.style.clipPath = 'inset(0 ' + ((1 - v) * 100).toFixed(1) + '% 0 0)'; });
+    lines.forEach((l, i) => { const v = seg(pe, 0.6 + i * 0.011, 0.625 + i * 0.011); l.style.clipPath = 'inset(0 ' + ((1 - v) * 100).toFixed(1) + '% 0 0)'; });
     // 5. found, by the people who search, and by the assistants they ask
-    put(find, lerp(-1.4, -0.4, Fd), lerp(0.6, 0.1, Fd), lerp(0.94, 1, Fd) * lerp(1, 0.9, E), 0, Fd * (1 - E));
-    const full = typed.getAttribute(document.documentElement.lang === 'en' ? 'data-en' : 'data-da') || '';
-    const n = Math.round(full.length * seg(p, 0.735, 0.785));
+    put(find, lerp(-1.2, -0.3, Fd) - 1.2 * io(seg(p, 0.7, 0.735)), lerp(0.6, 0.1, io(seg(p, 0.6, 0.65))), lerp(0.94, 1, Fd), 0, Fd);
+    const lang = document.documentElement.lang === 'en' ? 'data-en' : 'data-da';
+    const full = typed.getAttribute(lang) || '';
+    const n = Math.round(full.length * seg(p, 0.615, 0.655));
     if (typed._n !== n) { typed._n = n; typed.textContent = full.slice(0, n); }
-    const r1 = out(seg(p, 0.785, 0.805)), r2 = out(seg(p, 0.805, 0.83));
+    const r1 = out(seg(p, 0.655, 0.675));
     setT(res, 'translate3d(0,' + ((1 - r1) * 16).toFixed(1) + 'px,0)'); setO(res, r1);
-    setT(ai, 'translate3d(0,' + ((1 - r2) * 16).toFixed(1) + 'px,0)'); setO(ai, r2);
+    // 6. asked: the question to an assistant, and three answers that name it
+    put(ask, lerp(1.2, 0.2, A), lerp(0.4, -0.2, A), lerp(0.94, 1, A) * lerp(1, 0.9, E), 0, A * (1 - E));
+    const full2 = typed2.getAttribute(lang) || '';
+    const n2 = Math.round(full2.length * seg(p, 0.72, 0.765));
+    if (typed2._n !== n2) { typed2._n = n2; typed2.textContent = full2.slice(0, n2); }
+    answers.forEach((an, i) => {
+      // they come in one after another; each new one in front, the earlier ones fanned behind it
+      const a = out(seg(p, 0.77 + i * 0.022, 0.795 + i * 0.022));
+      const after = answers.reduce((s, _, k) => s + (k > i ? out(seg(p, 0.77 + k * 0.022, 0.795 + k * 0.022)) : 0), 0);
+      // the earlier ones tucked behind, only their names showing above it
+      setT(an, 'translate3d(0,' + ((1 - a) * 30 - after * 0.3 * u).toFixed(1) + 'px,0) scale(' + ((1 - 0.05 * after) * lerp(0.96, 1, a)).toFixed(4) + ')');
+      setO(an, a * (1 - 0.25 * Math.min(after, 1.5)));
+      an.style.setProperty('--c', (1 - clamp(after * 1.4)).toFixed(3));
+      an.style.zIndex = String(i + 1);
+    });
 
     // the words beside it, one sentence at a time
     says.forEach((s, i) => {
