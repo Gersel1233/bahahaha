@@ -17,7 +17,7 @@
 <link rel="stylesheet" href="ny.css?v=16" />
 <link rel="stylesheet" href="page.css?v=20" />
 <link rel="stylesheet" href="hero.css?v=25" />
-<link rel="stylesheet" href="sections.css?v=33" />
+<link rel="stylesheet" href="sections.css?v=35" />
 <script>
   /* decided before first paint: with JS the phone turns as you scroll;
      without it, the first screen simply stands there */
@@ -242,7 +242,7 @@
     <!-- the finale: the system crumples into a ball of paper, and the paper
          unfolds into the house's own mark: a page with its corner folded -->
     <div class="alt-fin" aria-hidden="true">
-      <canvas class="fin-paper" data-n="88" data-src="media/alt/fold/f"></canvas>
+      <canvas class="fin-paper" data-n="94" data-src="media/alt/fold/f"></canvas>
       <div class="fin-brand">
         <svg class="fin-mark" viewBox="0 0 128 128">
           <defs><clipPath id="fin-shape"><path d="M0 0H94l34 34v94H0Z"/></clipPath>
@@ -258,9 +258,16 @@
     </div>
 
     <div class="alt-end">
-      <h2 class="alt-h alt-h-end" data-da="Uanset hvad I skal have lavet, <em>bygger vi det.</em>" data-en="Whatever you need made, <em>we build it.</em>">Uanset hvad I skal have lavet, <em>bygger vi det.</em></h2>
-      <p class="alt-p" data-da="Ordentligt, hurtigt og til en fast pris, aftalt før vi starter." data-en="Properly, quickly and at a fixed price, agreed before we start.">Ordentligt, hurtigt og til en fast pris, aftalt før vi starter.</p>
-      <a class="btn light" href="mailto:mgersel@lesreg.com"><span data-da="Fortæl os, hvad I skal have lavet" data-en="Tell us what you need made">Fortæl os, hvad I skal have lavet</span><span class="lens"><svg><use href="#i-arrow"/></svg></span></a>
+      <h2 class="alt-fin-h">
+        <span class="ln"><span data-da="Uanset hvad I skal have lavet," data-en="Whatever you need made,">Uanset hvad I skal have lavet,</span></span>
+        <span class="ln ln-2"><em data-da="vi bygger det." data-en="we build it.">vi bygger det.</em></span>
+      </h2>
+      <p class="alt-fin-what" data-da="Apps · Systemer · Integrationer · Hjemmesider" data-en="Apps · Systems · Integrations · Websites">Apps · Systemer · Integrationer · Hjemmesider</p>
+      <p class="alt-fin-p" data-da="Til en fast pris, aftalt før vi går i gang." data-en="At a fixed price, agreed before we start.">Til en fast pris, aftalt før vi går i gang.</p>
+      <div class="alt-fin-cta">
+        <a class="btn light" href="mailto:mgersel@lesreg.com"><span data-da="Fortæl os, hvad I skal have lavet" data-en="Tell us what you need made">Fortæl os, hvad I skal have lavet</span><span class="lens"><svg><use href="#i-arrow"/></svg></span></a>
+        <a class="btn glass" href="#arbejde"><span data-da="Se vores arbejde" data-en="See our work">Se vores arbejde</span></a>
+      </div>
     </div>
   </div>
 </section>
@@ -398,6 +405,6 @@
 </footer>
 
 <script type="module" src="main.js?v=23"></script>
-<script type="module" src="page.js?v=31"></script>
+<script type="module" src="page.js?v=33"></script>
 </body>
 </html>

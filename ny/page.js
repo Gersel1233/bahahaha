@@ -157,6 +157,7 @@ S.alt = el => {
     if (loading || !FOLD.n) return; loading = true;
     for (let i = 0; i < FOLD.n; i++) { const im = new Image(); im.decoding = 'async'; im.src = FOLD.src + String(i + 1).padStart(3, '0') + '.webp'; pics[i] = im; }
   }
+  const endLines = $$('.alt-fin-h .ln > *', el), endWhat = el.querySelector('.alt-fin-what'), endP = el.querySelector('.alt-fin-p'), endCta = el.querySelector('.alt-fin-cta');
   const glow2 = el.querySelector('.alt-glow2'), glow = el.querySelector('.alt-glow');
   let V = { cx: 0, cy: 0, S: 0 }, dpr = 1;
   const cap = /[?&]cap=(start|end)/.exec(location.search);
@@ -201,9 +202,9 @@ S.alt = el => {
     if (el._w !== W || !ow) {
       el._w = W; measure();
       const mob = W <= 760 || W / H < 1;
-      fy = H * (mob ? 0.36 : 0.4);
+      fy = H * (mob ? 0.3 : 0.33);
       fin.style.setProperty('--fy', fy.toFixed(0) + 'px');
-      end.style.setProperty('--ey', (fy + (mob ? 64 : 104)).toFixed(0) + 'px');
+      end.style.setProperty('--ey', (fy + (mob ? 62 : 96)).toFixed(0) + 'px');
       wordW = word.offsetWidth + parseFloat(getComputedStyle(brand).gap || '0');
       objC = { x: obj.offsetLeft + ow / 2, y: obj.offsetTop + oh / 2 };
       // the film's square: where it plays, and how big
@@ -291,9 +292,15 @@ S.alt = el => {
     if (cap) Q = cap[1] === 'start' ? 0.13 : 0.885;
     // 1. it gathers in the middle, the light behind it with it
     const g = io(seg(Q, 0, 0.13));
+    // the system behind steps away; what is left is the tools it talks to
+    // and the answer it gets: that is what goes into the paper
+    const off = io(seg(Q, 0, 0.09));
+    if (off > 0) { for (const e of [pad, svg, ...phs]) setO(e, (+e._po || 0) * (1 - off)); }
+    // and the tools come back up to full light
+    if (off > 0) for (const e of logos) setO(e, lerp(+e._po || 0, 1, off));
     // the whole of it fits well inside the film's square, its middle in the middle
-    const sc = lerp(1, V.S / (14.2 * u), g);
-    setT(obj, 'translate3d(' + ((V.cx - objC.x - 0.68 * u * sc) * g).toFixed(1) + 'px,' + ((V.cy - objC.y + 0.3 * u * sc) * g).toFixed(1) + 'px,0) scale(' + sc.toFixed(4) + ')');
+    const sc = lerp(1, V.S / (12.6 * u), g);
+    setT(obj, 'translate3d(' + ((V.cx - objC.x - 0.45 * u * sc) * g).toFixed(1) + 'px,' + ((V.cy - objC.y + 1.55 * u * sc) * g).toFixed(1) + 'px,0) scale(' + sc.toFixed(4) + ')');
     setO(glow2, g); setO(glow, 1 - g);
     // 2. the film takes over from the very picture it starts from
     const film = Q >= 0.13 && Q < 0.9 && FOLD.n;
@@ -329,10 +336,15 @@ S.alt = el => {
     setT(word, 'translate3d(' + (-18 * (1 - wd)).toFixed(1) + 'px,0,0)'); setO(word, wd);
     sh.setAttribute('x', lerp(-60, 160, seg(Q, 0.95, 1)).toFixed(1));
     // 4. and the sentence under it, with the way to say what you need
-    const e2 = out(seg(Q, 0.95, 1));
-    setO(end, e2);
-    setT(end, 'translate(-50%,0) translate3d(0,' + ((1 - e2) * 22).toFixed(1) + 'px,0)');
-    end.classList.toggle('on', e2 > 0.5);
+    // the two lines rise out of their own edge, one after the other; then
+    // what we make, the price, and the two ways on
+    setO(end, Q > 0.9 ? 1 : 0);
+    endLines.forEach((l, i) => { const v = out(seg(Q, 0.935 + i * 0.018, 0.975 + i * 0.018)); setT(l, 'translate3d(0,' + ((1 - v) * 110).toFixed(1) + '%,0)'); });
+    const w1 = out(seg(Q, 0.965, 0.99)), w2 = out(seg(Q, 0.975, 1));
+    setO(endWhat, w1); setO(endP, w1);
+    setO(endCta, w2); setT(endCta, 'translate3d(0,' + ((1 - w2) * 16).toFixed(1) + 'px,0)');
+    end.classList.toggle('on', w2 > 0.5);
+    setT(end, 'translate(-50%,0)');
     if (cap && cap[1] === 'end') { setO(end, 0); setO(word, 0); setT(brand, 'translate(-50%,-50%) translate3d(' + (V.cx - W / 2 + wordW / 2).toFixed(1) + 'px,' + (V.cy - fy).toFixed(1) + 'px,0) scale(' + s0.toFixed(4) + ')'); setO(brand, 1); }
   };
 };
