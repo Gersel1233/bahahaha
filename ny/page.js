@@ -61,7 +61,7 @@ const vo = 'IntersectionObserver' in window && new IntersectionObserver(es => es
     if (!still) { const p = v.play(); if (p) p.then(() => show(v)).catch(() => {}); }
   } else if (!v.paused) v.pause();
 }), { threshold: 0.2 });
-if (vo) $$('video[data-v]:not(.tile-film):not(.why-film)').forEach(v => { under(v); vo.observe(v); });
+if (vo) $$('video[data-v]:not(.tile-film)').forEach(v => { under(v); vo.observe(v); });
 
 /* ---------- the tiles' films: each plays once, from its beginning, when
    its tile is well in view, and then stays on its last picture. It plays
@@ -120,69 +120,98 @@ if (tileRow && 'IntersectionObserver' in window) {
   near.observe(tileRow);
 }
 
-/* ---------- why Lesreg: three films on one stage. The one chosen plays
-   while the stage is seen; when it ends, the next one comes up. A word in
-   the list, or an arrow key, brings its film up from the start. With
-   motion turned off, each film is its last picture. ---------- */
-const fd = document.querySelector('.fd');
-if (fd) {
-  const tabs = $$('.fd-i', fd), films = $$('.why-film', fd), stage = fd.querySelector('.fd-stage'), n = films.length;
-  const bars = tabs.map(t => t.querySelector('.fd-bar i'));
-  let cur = 0, seen = false, raf = 0, next = 0;
-  if (still) films.forEach(v => { v.poster = v.poster.replace('.webp', '-end.webp'); });
-  const loop = () => {
-    raf = 0;
-    const v = films[cur];
-    if (!seen) return;
-    // a film starts once it is all in, so it never stalls halfway
-    if (v._ready && v.paused && !v.ended && !v._held) { const p = v.play(); if (p) p.catch(() => {}); }
-    if (v.duration) bars[cur].style.setProperty('--p', Math.min(1, v.currentTime / v.duration).toFixed(4));
-    raf = requestAnimationFrame(loop);
+/* ---------- why Lesreg, as a keynote shows it: one number at a time.
+   The classic software house's number counts up and is struck through;
+   Lesreg's lands under it; the phone's Live Activity says the same. A
+   chapter runs for a few seconds while it is seen, then the next comes; the
+   pills take you to one. With motion turned off, each is shown as it ends. */
+const kn = document.querySelector('.kn');
+if (kn) {
+  const L = () => (html.lang === 'en' ? 'en' : 'da');
+  const fmt = n => Math.round(n).toLocaleString(L() === 'en' ? 'en-GB' : 'da-DK');
+  const CH = [
+    { was: 1200, wasU: { da: 'kr./t<br>klassisk softwarehus', en: 'DKK/h<br>classic software house' },
+      now: 50, from: 1200, nowU: { da: 'kr./t<br>Lesreg, fast pris', en: 'DKK/h<br>Lesreg, fixed price' },
+      say: { da: 'Bureauer og freelancere tager typisk <b>600–1.200 kr. i timen</b>, og timerne løber. Vi aftaler <b>én fast pris</b>, før vi starter, regnet ud fra 50 kr. i timen.',
+        en: 'Agencies and freelancers typically charge <b>DKK 600–1,200 an hour</b>, and the hours keep running. We agree <b>one fixed price</b> before we start, worked out from DKK 50 an hour.' },
+      la: { t: { da: 'Lesreg · tilbud', en: 'Lesreg · offer' }, v: { da: '50<small>kr./t</small>', en: '50<small>DKK/h</small>' },
+        ok: { da: 'Fast pris aftalt', en: 'Fixed price agreed' }, l: { da: 'Ny hjemmeside · én pris, ingen timer, der løber', en: 'New website · one price, no hours running' } } },
+    { was: 10, wasU: { da: 'hverdage<br>klassisk softwarehus', en: 'working days<br>classic software house' },
+      nowText: { da: 'I dag', en: 'Today' }, nowU: { da: 'live<br>Lesreg, samme rettelse', en: 'live<br>Lesreg, the same change' },
+      say: { da: 'En lille rettelse hos et klassisk softwarehus går gennem autosvar, tilbud, kø, udvikling og test. Hos os skriver I, og den er <b>live samme dag</b>.',
+        en: 'A small change at a classic software house goes through an auto-reply, a quote, a queue, a build and a test. With us you write, and it is <b>live the same day</b>.' },
+      la: { t: { da: 'Lesreg · rettelse', en: 'Lesreg · change' }, v: { da: '9.52', en: '9:52' },
+        ok: { da: 'Live', en: 'Live' }, l: { da: 'Åbningstider til jul · rettet og live', en: 'Christmas opening hours · changed and live' } } },
+    { was: 500, wasU: { da: 'kr. minus kommission<br>via en platform', en: 'DKK minus commission<br>through a platform' },
+      now: 500, from: 0, nowU: { da: 'kr. til jer<br>Lesreg, 0 % kommission', en: 'DKK to you<br>Lesreg, 0 % commission' },
+      say: { da: 'Platforme tager procenter af hver bestilling. Når den kommer ind på <b>jeres egen side</b>, går <b>hele beløbet</b> til jer.',
+        en: 'Platforms take a cut of every order. When it comes in on <b>your own site</b>, <b>the whole amount</b> is yours.' },
+      la: { t: { da: 'Jeres side · ny bestilling', en: 'Your site · new order' }, v: { da: '500<small>kr.</small>', en: '500<small>DKK</small>' },
+        ok: { da: '0 % kommission', en: '0 % commission' }, l: { da: '2 × brunch · afhentning 10.30', en: '2 × brunch · pick-up 10.30' } } },
+  ];
+  const LEN = 6600;
+  const pills = $$('.kn-chap button', kn);
+  const wasN = kn.querySelector('.kn-was .kn-n b'), strike = kn.querySelector('.kn-was .kn-n s'), wasU = kn.querySelector('.kn-was .kn-u');
+  const nowN = kn.querySelector('.kn-now .kn-n'), nowU = kn.querySelector('.kn-now .kn-u span'), dot = kn.querySelector('.kn-now .kn-u i');
+  const say = kn.querySelector('.kn-say'), la = kn.querySelector('.kn-la');
+  const laT = la.querySelector('.kn-la-h b'), laV = la.querySelector('.kn-la-v'), laOk = la.querySelector('.kn-la-ok span'), laL = la.querySelector('.kn-la-l');
+  const parts = [kn.querySelector('.kn-was'), kn.querySelector('.kn-now'), say, la];
+  parts.forEach(e => e.setAttribute('data-in', ''));
+  // today's date on the lock screen
+  const day = () => { const d = kn.querySelector('.kn-d'); const s = new Date().toLocaleDateString(L() === 'en' ? 'en-GB' : 'da-DK', { weekday: 'long', day: 'numeric', month: 'long' }); d.textContent = s.charAt(0).toUpperCase() + s.slice(1); };
+  let cur = 0, el = still ? LEN : 0, last = 0, seen = false, raf = 0;
+  const words = () => {
+    const c = CH[cur], l = L();
+    wasU.innerHTML = c.wasU[l]; nowU.innerHTML = c.nowU[l]; say.innerHTML = c.say[l];
+    laT.textContent = c.la.t[l]; laV.innerHTML = c.la.v[l]; laOk.textContent = c.la.ok[l]; laL.textContent = c.la.l[l];
+    if (c.nowText) nowN.textContent = c.nowText[l];
+    day();
+  };
+  // a chapter's picture at a moment of it
+  const draw = () => {
+    const c = CH[cur], t = el;
+    wasN.textContent = fmt(c.was * out(seg(t, 0, 700)));
+    strike.style.setProperty('--s', out(seg(t, 750, 1100)).toFixed(3));
+    if (!c.nowText) nowN.textContent = fmt(c.from + (c.now - c.from) * io(seg(t, 1100, 2100)));
+    dot.style.setProperty('--d', (seg(t, 2050, 2250) < 1 ? Math.sin(Math.PI * seg(t, 2050, 2250)) * 0.6 + seg(t, 2050, 2250) : 1).toFixed(3));
+    const show = [0, 1100, 1300, 300];
+    parts.forEach((e, i) => e.classList.toggle('out', t < show[i]));
+    pills[cur].style.setProperty('--p', Math.min(1, t / LEN).toFixed(4));
   };
   const choose = (i, focus) => {
-    clearTimeout(next);
-    const old = films[cur];
-    if (old !== films[i]) { old.pause(); old._held = false; }
-    cur = i;
-    tabs.forEach((t, j) => { const on = j === i; t.classList.toggle('on', on); t.setAttribute('aria-selected', on); t.tabIndex = on ? 0 : -1; bars[j].style.setProperty('--p', 0); });
-    films.forEach((v, j) => v.classList.toggle('on', j === i));
-    stage.setAttribute('aria-labelledby', tabs[i].id);
-    if (focus) tabs[i].focus();
-    const v = films[i];
-    if (still) return;
-    v._held = false;
-    try { if (v.currentTime > 0) v.currentTime = 0; } catch (e) {}
-    want(v, true);
-    if (seen && !raf) raf = requestAnimationFrame(loop);
+    cur = i; el = still ? LEN : 0; last = performance.now();
+    kn.dataset.ch = i;
+    pills.forEach((b, j) => { const on = j === i; b.classList.toggle('on', on); b.setAttribute('aria-selected', on); b.tabIndex = on ? 0 : -1; b.style.setProperty('--p', 0); });
+    if (focus) pills[i].focus();
+    parts.forEach(e => e.classList.add('out'));
+    words(); draw();
+    if (!still && seen && !raf) raf = requestAnimationFrame(loop);
   };
-  films.forEach((v, i) => v.addEventListener('ended', () => {
-    if (i !== cur) return;
-    v._held = true;
-    bars[i].style.setProperty('--p', 1);
-    next = setTimeout(() => { if (i === cur && seen) choose((i + 1) % n); }, 1100);
-  }));
-  tabs.forEach((t, i) => {
-    t.addEventListener('click', () => {
-      choose(i);
-      // on a phone the stage is above the list: it is brought into view to be seen
-      const r = stage.getBoundingClientRect();
-      if (r.top < 0 || r.bottom > innerHeight) stage.scrollIntoView({ block: 'nearest', behavior: still ? 'auto' : 'smooth' });
-    });
-    t.addEventListener('keydown', e => {
+  const loop = now => {
+    raf = 0;
+    if (!seen) return;
+    el += Math.min(100, now - last); last = now;
+    if (el >= LEN) { choose((cur + 1) % CH.length); return; }
+    draw();
+    raf = requestAnimationFrame(loop);
+  };
+  pills.forEach((b, i) => {
+    b.addEventListener('click', () => choose(i));
+    b.addEventListener('keydown', e => {
       const d = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[e.key];
       if (!d) return;
-      e.preventDefault(); choose((i + d + n) % n, true);
+      e.preventDefault(); choose((i + d + CH.length) % CH.length, true);
     });
   });
+  choose(0);
+  if (still) parts.forEach(e => e.classList.remove('out'));
+  new MutationObserver(() => { words(); draw(); }).observe(html, { attributes: true, attributeFilter: ['lang'] });
   if ('IntersectionObserver' in window && !still) {
-    // fetched a screen or so before it is reached, the chosen one first
-    const near = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) { films.forEach((v, j) => want(v, j === cur)); near.disconnect(); } }, { rootMargin: '900px 0px' });
-    near.observe(stage);
     new IntersectionObserver(es => es.forEach(en => {
-      seen = en.intersectionRatio >= 0.3;
-      if (seen) { if (!raf) raf = requestAnimationFrame(loop); }
-      else { films[cur].pause(); clearTimeout(next); if (films[cur]._held) choose((cur + 1) % n); }
-    }), { threshold: [0, 0.3] }).observe(stage);
+      const was = seen;
+      seen = en.intersectionRatio >= 0.35;
+      if (seen && !was) { last = performance.now(); if (!raf) raf = requestAnimationFrame(loop); }
+    }), { threshold: [0, 0.35] }).observe(kn.querySelector('.kn-nums'));
   }
 }
 

@@ -22,9 +22,9 @@
 <link rel="preload" href="../fonts/fragmentmono-400.woff2" as="font" type="font/woff2" crossorigin />
 <link rel="preload" as="image" href="media/dev/iphone-17-pro-2x.webp" fetchpriority="high" />
 <link rel="stylesheet" href="ny.css?v=16" />
-<link rel="stylesheet" href="page.css?v=21" />
+<link rel="stylesheet" href="page.css?v=22" />
 <link rel="stylesheet" href="hero.css?v=28" />
-<link rel="stylesheet" href="sections.css?v=54" />
+<link rel="stylesheet" href="sections.css?v=58" />
 <script>
   /* decided before first paint: with JS the phone turns as you scroll;
      without it, the first screen simply stands there */
@@ -360,40 +360,39 @@
   </div>
 </section>
 
-<!-- why Lesreg: three short films on one stage, the price, the speed and
-     the money; each plays on its own and hands on to the next, and a word
-     in the list beside it brings its film up -->
-<section class="fordi" id="fordi" data-paper aria-labelledby="fordi-h">
-  <div class="fd">
-    <div class="fd-col">
-    <header class="fd-head">
-      <p class="label" data-r><span data-da="Hvorfor Lesreg" data-en="Why Lesreg">Hvorfor Lesreg</span></p>
-      <h2 class="h2" id="fordi-h" data-r><span data-da="Hurtigere. Billigere." data-en="Faster. Cheaper.">Hurtigere. Billigere.</span> <em class="acc" data-da="Bygget til i dag." data-en="Built for today.">Bygget til i dag.</em></h2>
-      <p class="fd-lead" data-r data-da="Et klassisk softwarehus og Lesreg, side om side, på de tre ting, der koster jer mest: prisen, tiden og kommissionen." data-en="A classic software house and Lesreg, side by side, on the three things that cost you most: the price, the time and the commission.">Et klassisk softwarehus og Lesreg, side om side, på de tre ting, der koster jer mest: prisen, tiden og kommissionen.</p>
-    </header>
-    <div class="fd-list" role="tablist" aria-label="Hvorfor Lesreg" data-aria-da="Hvorfor Lesreg" data-aria-en="Why Lesreg" data-r>
-      <button type="button" class="fd-i on" role="tab" id="fd-t0" aria-selected="true" aria-controls="fd-stage" data-i="0">
-        <span class="fd-hd"><span class="fd-k" data-da="pris" data-en="price">pris</span><span class="fd-h" data-da="Fra 50 kr. i timen." data-en="From DKK 50 an hour.">Fra 50 kr. i timen.</span></span>
-        <span class="fd-p" data-da="Bureauer og freelancere i Danmark tager typisk 600–1.200 kr. i timen, og timerne løber. Hos os bliver timeprisen til én fast pris, aftalt før vi starter." data-en="Agencies and freelancers in Denmark typically charge DKK 600–1,200 an hour, and the hours keep running. With us the rate becomes one fixed price, agreed before we start.">Bureauer og freelancere i Danmark tager typisk 600–1.200 kr. i timen, og timerne løber. Hos os bliver timeprisen til én fast pris, aftalt før vi starter.</span>
-        <span class="fd-bar" aria-hidden="true"><i></i></span>
-      </button>
-      <button type="button" class="fd-i" role="tab" id="fd-t1" aria-selected="false" aria-controls="fd-stage" data-i="1" tabindex="-1">
-        <span class="fd-hd"><span class="fd-k" data-da="tempo" data-en="speed">tempo</span><span class="fd-h" data-da="En rettelse tager timer, ikke uger." data-en="A change takes hours, not weeks.">En rettelse tager timer, ikke uger.</span></span>
-        <span class="fd-p" data-da="I skriver, og de samme hænder, der byggede det, retter det. Ingen tilbud, ingen kø, intet autosvar." data-en="You write, and the hands that built it make the change. No quote, no queue, no auto-reply.">I skriver, og de samme hænder, der byggede det, retter det. Ingen tilbud, ingen kø, intet autosvar.</span>
-        <span class="fd-bar" aria-hidden="true"><i></i></span>
-      </button>
-      <button type="button" class="fd-i" role="tab" id="fd-t2" aria-selected="false" aria-controls="fd-stage" data-i="2" tabindex="-1">
-        <span class="fd-hd"><span class="fd-k" data-da="omsætning" data-en="revenue">omsætning</span><span class="fd-h" data-da="Pengene bliver hos jer." data-en="The money stays with you.">Pengene bliver hos jer.</span></span>
-        <span class="fd-p" data-da="Bestillinger på jeres egen side, uden en platform imellem. Ingen kommission af det, I sælger." data-en="Orders on your own site, with no platform in between. No commission on what you sell.">Bestillinger på jeres egen side, uden en platform imellem. Ingen kommission af det, I sælger.</span>
-        <span class="fd-bar" aria-hidden="true"><i></i></span>
-      </button>
+<!-- why Lesreg: one number at a time, on the dark, the way a keynote shows
+     it. The classic software house's number comes up and is struck through;
+     Lesreg's lands under it, large; beside it a phone shows the same as a
+     Live Activity. Three chapters, price, speed and money, each playing on
+     its own while it is seen; the chapter pills take you to one. -->
+<section class="kn" id="fordi" aria-labelledby="kn-h" data-ch="0">
+  <h2 class="sr" id="kn-h" data-da="Hvorfor Lesreg: pris, tempo og omsætning" data-en="Why Lesreg: price, speed and revenue">Hvorfor Lesreg: pris, tempo og omsætning</h2>
+  <div class="kn-in">
+    <div class="kn-top">
+      <p class="label" aria-hidden="true"><span data-da="Hvorfor Lesreg" data-en="Why Lesreg">Hvorfor Lesreg</span></p>
+      <div class="kn-chap" role="tablist" aria-label="Hvorfor Lesreg" data-aria-da="Hvorfor Lesreg" data-aria-en="Why Lesreg">
+        <button type="button" role="tab" class="on" aria-selected="true" data-i="0"><span data-da="Pris" data-en="Price">Pris</span><i></i></button>
+        <button type="button" role="tab" aria-selected="false" tabindex="-1" data-i="1"><span data-da="Tempo" data-en="Speed">Tempo</span><i></i></button>
+        <button type="button" role="tab" aria-selected="false" tabindex="-1" data-i="2"><span data-da="Omsætning" data-en="Revenue">Omsætning</span><i></i></button>
+      </div>
     </div>
+    <div class="kn-nums" role="tabpanel" aria-live="polite">
+      <div class="kn-was"><span class="kn-n"><b></b><s></s></span><span class="kn-u"></span></div>
+      <div class="kn-now"><span class="kn-n"></span><span class="kn-u"><i></i><span></span></span></div>
     </div>
-    <div class="fd-stage" id="fd-stage" role="tabpanel" aria-labelledby="fd-t0" data-r>
-      <video class="why-film on" muted playsinline preload="none" poster="media/why3-pris.webp" data-v="media/why3-pris" aria-hidden="true"></video>
-      <video class="why-film" muted playsinline preload="none" poster="media/why3-tempo.webp" data-v="media/why3-tempo" aria-hidden="true"></video>
-      <video class="why-film" muted playsinline preload="none" poster="media/why3-penge.webp" data-v="media/why3-penge" aria-hidden="true"></video>
-      <p class="fd-cap" data-da="Eksempler" data-en="Examples">Eksempler</p>
+    <p class="kn-say"></p>
+    <div class="kn-ph" aria-hidden="true">
+      <div class="kn-scr">
+        <div class="kn-sb"><span>9:41</span><svg viewBox="0 0 76 14"><g fill="#fff"><rect x="0" y="9" width="3.2" height="4.4" rx=".9"/><rect x="5" y="6.6" width="3.2" height="6.8" rx=".9"/><rect x="10" y="4.2" width="3.2" height="9.2" rx=".9"/><rect x="15" y="1.8" width="3.2" height="11.6" rx=".9"/></g><path d="M31 4.2a9.6 9.6 0 0 1 13 0M33.4 7a6.2 6.2 0 0 1 8.2 0M35.8 9.8a2.8 2.8 0 0 1 3.4 0" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round"/><rect x="50" y="1.5" width="22" height="11" rx="3.4" fill="none" stroke="rgba(255,255,255,.45)" stroke-width="1.1"/><rect x="52" y="3.5" width="18" height="7" rx="1.8" fill="#fff"/></svg></div>
+        <p class="kn-d"></p>
+        <p class="kn-c">9:41</p>
+        <div class="kn-la">
+          <div class="kn-la-h"><span class="kn-la-i"><svg viewBox="0 0 128 128"><path d="M0 0H94l34 34v94H0Z" fill="#0E0F10"/><path d="M44 28h18v62h38v18H44Z" fill="#F6F4EF"/></svg></span><b></b><span data-da="nu" data-en="now">nu</span></div>
+          <div class="kn-la-m"><span class="kn-la-v"></span><span class="kn-la-ok"><i></i><span></span></span></div>
+          <p class="kn-la-l"></p>
+        </div>
+      </div>
+      <img src="media/dev/iphone-17-pro-2x.webp" width="1120" height="2336" alt="" loading="lazy" decoding="async" draggable="false" />
     </div>
   </div>
 </section>
@@ -568,7 +567,7 @@
 </footer>
 
 <script type="module" src="main.js?v=24"></script>
-<script type="module" src="page.js?v=51"></script>
+<script type="module" src="page.js?v=52"></script>
 <script type="module" src="sheets.js?v=1"></script>
 </body>
 </html>

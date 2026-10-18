@@ -38,43 +38,103 @@ html.pg-js .tile-film{ opacity:0; }
 @media (hover:hover){ .tn:not(:disabled):hover{ transform:scale(1.06); } }
 
 
-/* ---------- why Lesreg: three films on one stage ----------
-   Left: the heading, then the three as LA31 Annotation / Legend item (Light):
-   a 1 px travertine top rule, the word in mono, the title in Chivo Medium 14,
-   the line in Small; the one playing has the 2 px ultramarine top rule, here
-   filling as its film runs. Right: LA32 Media / Container, continuous r 28,
-   carrying the films. Nothing here is driven by the scroll. */
-.fordi{ background:var(--porcelain); padding:clamp(90px, 14vh, 160px) 0; color:var(--obsidian); }
-.fd{ max-width:1440px; margin:0 auto; padding:0 var(--gut); display:grid; grid-template-columns:minmax(0, 5fr) minmax(0, 6fr); column-gap:clamp(32px, 5vw, 96px); align-items:center; }
-.fd-head .h2{ margin-top:16px; font-size:clamp(40px, 4.4vw, 64px); line-height:1; }
-.fd-lead{ max-width:30em; margin-top:clamp(16px, 2.4vh, 24px); font:400 clamp(17px, 1.4vw, 20px)/1.5 var(--sans); color:var(--graphite); }
-.fd-list{ display:grid; gap:24px; margin-top:clamp(36px, 6vh, 56px); max-width:520px; }
-.fd-i{ position:relative; display:flex; flex-direction:column; gap:6px; width:100%; margin:0; padding:14px 0 0; border:0; border-top:1px solid var(--travertine); background:none;
-  text-align:left; cursor:pointer; color:inherit; font:inherit; -webkit-tap-highlight-color:transparent; min-height:44px; }
-.fd-hd{ display:flex; gap:10px; align-items:baseline; }
-.fd-k{ font:400 11.5px/16px var(--mono); color:var(--ultra); }
-.fd-h{ font:500 14px/16px var(--sans); color:var(--obsidian); }
-.fd-p{ font:400 12.5px/18px var(--sans); letter-spacing:.005em; color:var(--graphite); }
-.fd-bar{ position:absolute; left:0; right:0; top:-1px; height:2px; overflow:hidden; }
-.fd-bar i{ position:absolute; inset:0; background:var(--ultra); transform-origin:0 50%; transform:scaleX(var(--p, 0)); opacity:0; }
-.fd-i.on .fd-bar i{ opacity:1; }
-@media (hover:hover){ .fd-i:not(.on):hover{ border-top-color:var(--ash); } }
-.fd-i:focus-visible{ outline:none; box-shadow:0 0 0 2px var(--porcelain), 0 0 0 4px var(--ultra); border-radius:4px; }
+/* ---------- why Lesreg, as a keynote shows it ----------
+   On the dark: the classic software house's number, struck through, and
+   Lesreg's under it, large, in Chivo Light; the chapters as Liquid Glass
+   pills (Smoke, with the chosen one solid and its time running along it as
+   a 2 px ultramarine line); beside it a phone whose lock screen carries a
+   Live Activity in glass. The phone's screen is laid out in iOS points:
+   1 pt = 100/402 of its width. Nothing here is driven by the scroll. */
+.sr{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
+.kn{ position:relative; overflow:hidden; color:var(--porcelain); background:radial-gradient(80% 90% at 70% 110%, #2B3F7C, #101A33 50%, #05080F); }
+.kn::before{ content:""; position:absolute; right:-6%; bottom:-24%; width:min(900px, 90vw); aspect-ratio:1; border-radius:50%; background:radial-gradient(closest-side, rgba(70,100,200,.35), transparent); pointer-events:none; }
+.kn-in{ position:relative; max-width:1440px; min-height:min(900px, 100svh); margin:0 auto; padding:clamp(100px, 13vh, 132px) 72px 64px; display:grid;
+  grid-template-columns:minmax(0, 1fr) auto; grid-template-rows:auto 1fr auto; grid-template-areas:"top top" "nums ph" "say ph"; column-gap:48px; }
+.kn-top{ grid-area:top; display:flex; justify-content:space-between; align-items:center; gap:16px; }
+.kn-top .label{ color:rgba(246,244,239,.6); }
 
-.fd-stage{ position:relative; justify-self:end; width:min(100%, calc(min(84vh, 800px) * .8)); aspect-ratio:4 / 5; border-radius:28px; background:#05080F 50% 0 / cover no-repeat;
-  box-shadow:var(--contact-m); }
-.why-film{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; border-radius:28px; opacity:0; transition:opacity 320ms var(--ease); }
-.why-film.on{ opacity:1; }
-.fd-cap{ position:absolute; left:0; top:100%; margin-top:16px; font:400 11.5px/16px var(--mono); color:var(--ash); }
+/* the chapters: Smoke glass, the chosen pill solid porcelain */
+.kn-chap{ position:relative; isolation:isolate; display:flex; gap:4px; padding:4px; border-radius:26px; box-shadow:6px 12px 32px rgba(13,13,15,.2); }
+.kn-chap::before{ content:""; position:absolute; inset:0; z-index:-1; border-radius:inherit; background:rgba(14,15,16,.5); -webkit-backdrop-filter:blur(14px) saturate(1.2); backdrop-filter:blur(14px) saturate(1.2); }
+.kn-chap::after{ content:""; position:absolute; inset:0; border-radius:inherit; padding:1px; pointer-events:none;
+  background:linear-gradient(135deg, rgba(255,255,255,.85), rgba(255,255,255,.12) 45%, rgba(255,255,255,.4));
+  -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite:xor; mask-composite:exclude; }
+.kn-chap button{ position:relative; height:44px; padding:0 20px; border:0; border-radius:22px; background:none; cursor:pointer; overflow:hidden;
+  font:400 14px/16px var(--sans); color:rgba(246,244,239,.75); transition:background 180ms var(--ease), color 180ms var(--ease); -webkit-tap-highlight-color:transparent; }
+.kn-chap button.on{ background:var(--porcelain); color:var(--obsidian); font-weight:500; }
+.kn-chap button i{ position:absolute; left:16px; right:16px; bottom:6px; height:2px; border-radius:1px; background:rgba(36,54,232,.18); opacity:0; }
+.kn-chap button.on i{ opacity:1; }
+.kn-chap button i::after{ content:""; position:absolute; inset:0; border-radius:inherit; background:var(--ultra); transform-origin:0 50%; transform:scaleX(var(--p, 0)); }
+@media (hover:hover){ .kn-chap button:not(.on):hover{ color:var(--porcelain); } }
+.kn-chap button:focus-visible{ outline:none; box-shadow:0 0 0 2px #05080F, 0 0 0 4px var(--ultra); }
 
-@media (max-width:767px){
-  .fd{ grid-template-columns:1fr; padding:0 20px; }
-  .fd-col{ display:contents; }
-  .fd-head{ order:0; }
-  .fd-stage{ order:1; justify-self:stretch; width:100%; margin-top:32px; }
-  .fd-list{ order:2; margin-top:56px; max-width:none; }
+/* the numbers */
+.kn-nums{ grid-area:nums; align-self:center; padding:clamp(16px, 4vh, 48px) 0 24px; min-width:0; }
+.kn-was, .kn-now{ display:flex; align-items:flex-start; gap:18px; }
+.kn-n{ position:relative; display:block; white-space:nowrap; font-weight:300; font-variant-numeric:tabular-nums; }
+.kn-was .kn-n{ font-size:clamp(80px, min(9.6vw, 15vh), 140px); line-height:.9; letter-spacing:-.05em; color:rgba(246,244,239,.32); }
+.kn-was .kn-n s{ position:absolute; left:-6px; right:-6px; top:52%; height:3px; background:rgba(246,244,239,.6); transform:rotate(-5deg) scaleX(var(--s, 1)); transform-origin:0 50%; text-decoration:none; }
+.kn-was .kn-u{ margin-top:clamp(10px, 1.6vw, 22px); font:400 clamp(12px, 1.1vw, 16px)/1.35 var(--mono); color:rgba(246,244,239,.45); }
+.kn-now{ margin-top:4px; }
+.kn-now .kn-n{ font-size:var(--big, clamp(160px, min(22vw, 36vh), 330px)); line-height:.85; letter-spacing:-.06em; color:var(--porcelain); }
+.kn[data-ch="1"] .kn-now .kn-n{ --big:clamp(110px, min(14vw, 24vh), 220px); }
+.kn-now .kn-u{ margin-top:clamp(20px, 3.6vw, 52px); font:400 clamp(14px, 1.5vw, 22px)/1.35 var(--mono); color:rgba(246,244,239,.82); }
+.kn-now .kn-u i{ display:inline-block; width:.64em; height:.64em; margin-right:.45em; border-radius:50%; background:var(--ultra); box-shadow:0 0 0 .28em rgba(36,54,232,.28); vertical-align:-.04em; transform:scale(var(--d, 1)); }
+.kn-say{ grid-area:say; max-width:34em; font:400 20px/30px var(--sans); color:rgba(246,244,239,.82); }
+.kn-say b{ font-weight:500; color:var(--porcelain); }
+
+/* the phone, a little turned, and its lock screen */
+.kn-ph{ grid-area:ph; position:relative; align-self:start; width:clamp(300px, 26vw, 380px); margin:clamp(16px, 4vh, 48px) 24px -100vh 0; transform:rotate(-4deg); filter:drop-shadow(18px 30px 50px rgba(0,0,0,.5)); }
+.kn-ph > img{ position:relative; z-index:2; display:block; width:100%; height:auto; pointer-events:none; }
+.kn-scr{ position:absolute; z-index:1; left:5.37%; top:2.4%; width:89.17%; height:95.2%; border-radius:13% / 6.2%; overflow:hidden; container-type:inline-size; --p:calc(100cqw / 402);
+  background:radial-gradient(130% 70% at 50% 0%, #3A55A8 0%, #2B3F7C 18%, #101A33 52%, #05080F 100%); color:#fff; font-family:-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter', system-ui, sans-serif; }
+.kn-sb{ position:absolute; left:0; right:0; top:0; height:calc(var(--p) * 54); display:flex; justify-content:space-between; align-items:center; padding:calc(var(--p) * 4) calc(var(--p) * 26) 0 calc(var(--p) * 44);
+  font:600 calc(var(--p) * 17)/1 inherit; }
+.kn-sb svg{ width:calc(var(--p) * 76); height:calc(var(--p) * 14); }
+.kn-d{ position:absolute; top:calc(var(--p) * 80); left:0; right:0; text-align:center; font-size:calc(var(--p) * 18.5); font-weight:600; color:rgba(255,255,255,.88); }
+.kn-c{ position:absolute; top:calc(var(--p) * 100); left:0; right:0; text-align:center; font-size:calc(var(--p) * 96); font-weight:700; line-height:1; letter-spacing:calc(var(--p) * -3.5); }
+/* the Live Activity: glass on the wallpaper, lit from -45 deg */
+.kn-la{ position:absolute; left:calc(var(--p) * 14); right:calc(var(--p) * 14); top:calc(var(--p) * 250); isolation:isolate; display:flex; flex-direction:column; gap:calc(var(--p) * 10);
+  padding:calc(var(--p) * 16); border-radius:calc(var(--p) * 26); box-shadow:0 calc(var(--p) * 10) calc(var(--p) * 30) rgba(0,0,0,.25); }
+.kn-la::before{ content:""; position:absolute; inset:0; z-index:-1; border-radius:inherit; background:rgba(255,255,255,.16); -webkit-backdrop-filter:blur(24px) saturate(1.4); backdrop-filter:blur(24px) saturate(1.4); }
+.kn-la::after{ content:""; position:absolute; inset:0; border-radius:inherit; padding:1px; pointer-events:none;
+  background:linear-gradient(135deg, rgba(255,255,255,.7), rgba(255,255,255,.1) 45%, rgba(255,255,255,.35));
+  -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite:xor; mask-composite:exclude; }
+.kn-la-h{ display:flex; align-items:center; gap:calc(var(--p) * 10); font-size:calc(var(--p) * 12); color:rgba(255,255,255,.6); }
+.kn-la-h b{ font-size:calc(var(--p) * 15); font-weight:600; color:#fff; }
+.kn-la-h > span:last-child{ margin-left:auto; }
+.kn-la-i{ width:calc(var(--p) * 30); height:calc(var(--p) * 30); border-radius:calc(var(--p) * 8); background:var(--porcelain); display:grid; place-items:center; flex:none; }
+.kn-la-i svg{ width:calc(var(--p) * 18); height:calc(var(--p) * 18); }
+.kn-la-m{ display:flex; align-items:center; justify-content:space-between; gap:calc(var(--p) * 8); }
+.kn-la-v{ font:300 calc(var(--p) * 44)/1 var(--sans); letter-spacing:calc(var(--p) * -1.8); white-space:nowrap; }
+.kn-la-v small{ margin-left:calc(var(--p) * 6); font:400 calc(var(--p) * 13)/1 var(--mono); letter-spacing:0; opacity:.8; }
+.kn-la-ok{ display:inline-flex; align-items:center; gap:calc(var(--p) * 6); height:calc(var(--p) * 30); padding:0 calc(var(--p) * 12); border-radius:calc(var(--p) * 15); background:#fff; color:var(--obsidian);
+  font-size:calc(var(--p) * 13); font-weight:600; white-space:nowrap; }
+.kn-la-ok i{ width:calc(var(--p) * 8); height:calc(var(--p) * 8); border-radius:50%; background:var(--ultra); }
+.kn-la-l{ font-size:calc(var(--p) * 13); line-height:1.3; color:rgba(255,255,255,.75); }
+/* what changes with a chapter comes in out of a blur, the way iOS changes it */
+.kn [data-in]{ transition:opacity 420ms var(--ease), transform 420ms var(--ease), filter 420ms var(--ease); }
+.kn [data-in].out{ opacity:0; transform:translateY(10px); filter:blur(6px); transition-duration:180ms; }
+
+@media (max-width:1023px){
+  .kn-in{ padding:clamp(96px, 12vh, 120px) 40px 56px; column-gap:24px; }
+  .kn-ph{ width:clamp(240px, 30vw, 300px); }
 }
-@media (prefers-reduced-motion: reduce){ .why-film{ transition:none; } .fd-bar{ display:none; } }
+@media (max-width:767px){
+  .kn-in{ min-height:0; padding:92px 20px 0; grid-template-columns:1fr; grid-template-rows:auto; grid-template-areas:"top" "nums" "say" "ph"; }
+  .kn-top{ flex-direction:column; align-items:flex-start; gap:14px; }
+  .kn-chap button{ padding:0 14px; }
+  .kn-nums{ padding:40px 0 20px; }
+  .kn-was, .kn-now{ flex-direction:column; gap:8px; }
+  .kn-was .kn-u, .kn-now .kn-u{ margin-top:0; }
+  .kn-was .kn-n{ font-size:min(22vw, 96px); }
+  .kn-now .kn-n{ --big:min(52vw, 210px); }
+  .kn[data-ch="1"] .kn-now .kn-n{ --big:min(34vw, 140px); }
+  .kn-say{ font-size:16px; line-height:26px; }
+  .kn-ph{ justify-self:end; width:min(64vw, 260px); margin:28px -24px -120px 0; }
+  .kn-in{ padding-bottom:0; }
+}
+@media (prefers-reduced-motion: reduce){ .kn [data-in]{ transition:none; } .kn-chap button i{ display:none; } }
 
 /* ---------- Callster: the owner texts, it handles it ---------- */
 .case-cs .cs-vis{ display:grid; place-items:center; padding:0; }
