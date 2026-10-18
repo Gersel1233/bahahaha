@@ -264,6 +264,13 @@ if (kt) {
   } else { me.textContent = text(); stage('kt-m1', 'kt-m3'); }
 }
 
+/* ---------- the light that drifts behind the price and the contact runs
+   only while it can be seen ---------- */
+if ('IntersectionObserver' in window) {
+  const vis = new IntersectionObserver(es => es.forEach(en => en.target.classList.toggle('vis', en.isIntersecting)));
+  $$('.rc, .kt-stage').forEach(e => vis.observe(e));
+}
+
 /* ---------- the band: two rows that the scroll pushes, opposite ways ---------- */
 const rows = $$('[data-mq]');
 // each row holds its words twice, so it can run forever without a seam
@@ -348,9 +355,11 @@ S.alt = el => {
   // beat, so it always comes to rest where there is something to read
   // only on the way down: going back up, the page stays exactly where the
   // hand leaves it, and the scenes simply run backwards under it
-  let touching = false, settleT = 0, settling = false, lastY = scrollY, dir = 1;
+  // and only after a finger: with a mouse wheel or a trackpad the page goes
+  // exactly where the hand puts it
+  let touching = false, settleT = 0, settling = false, lastY = scrollY, dir = 1, byTouch = false;
   const settle = () => {
-    if (still || touching || dir < 0) return;
+    if (still || touching || dir < 0 || !byTouch) return;
     const r0 = el.getBoundingClientRect(), run = el.offsetHeight - innerHeight;
     const P0 = -r0.top / Math.max(1, run);
     if (P0 <= 0.002 || P0 >= 0.998) return;
@@ -374,13 +383,14 @@ S.alt = el => {
     };
     glideRaf = requestAnimationFrame(step);
   }
-  addEventListener('wheel', stopGlide, { passive: true });
-  addEventListener('touchstart', () => { touching = true; stopGlide(); clearTimeout(settleT); }, { passive: true });
+  addEventListener('wheel', () => { byTouch = false; stopGlide(); clearTimeout(settleT); }, { passive: true });
+  addEventListener('keydown', () => { byTouch = false; }, { passive: true });
+  addEventListener('touchstart', () => { byTouch = true; touching = true; stopGlide(); clearTimeout(settleT); }, { passive: true });
   addEventListener('touchend', () => { touching = false; clearTimeout(settleT); settleT = setTimeout(settle, 180); }, { passive: true });
   addEventListener('scroll', () => {
     // the way the hand is going, from the scroll itself
     const y = scrollY; if (y !== lastY) { if (!settling) dir = Math.sign(y - lastY); lastY = y; }
-    if (settling) return; clearTimeout(settleT); settleT = setTimeout(settle, 180);
+    if (settling || !byTouch) return; clearTimeout(settleT); settleT = setTimeout(settle, 180);
   }, { passive: true });
   let Ps = -1, tPrev = 0, MW = 100, finT = 0, finGoal = 0, gone = 0;
   return now => {
@@ -389,7 +399,8 @@ S.alt = el => {
     const Pt = still ? 1 : clamp(-r.top / Math.max(1, r.height - H));
     // it follows the scroll a breath behind, so a flick becomes a glide
     const dt = Math.min(0.05, Math.max(0.001, ((now || 0) - tPrev) / 1000)); tPrev = now || 0;
-    if (Ps < 0 || still || Math.abs(Pt - Ps) > 0.25) Ps = Pt; else Ps += (Pt - Ps) * (1 - Math.exp(-dt * 14));
+    // (a wheel or a trackpad is smooth already: there it only just trails)
+    if (Ps < 0 || still || Math.abs(Pt - Ps) > 0.25) Ps = Pt; else Ps += (Pt - Ps) * (1 - Math.exp(-dt * (byTouch ? 14 : 30)));
     if (Math.abs(Pt - Ps) > 0.0004) kick(); else Ps = Pt;
     const P = Ps;
     // the scenes run on p. The finale is a film: once the scroll goes on
