@@ -24,7 +24,7 @@
 <link rel="stylesheet" href="ny.css?v=16" />
 <link rel="stylesheet" href="page.css?v=20" />
 <link rel="stylesheet" href="hero.css?v=28" />
-<link rel="stylesheet" href="sections.css?v=47" />
+<link rel="stylesheet" href="sections.css?v=51" />
 <script>
   /* decided before first paint: with JS the phone turns as you scroll;
      without it, the first screen simply stands there */
@@ -360,19 +360,76 @@
   </div>
 </section>
 
-<!-- the old way and today's -->
-<section class="vs" id="fordi" data-paper>
-  <header class="sec-head">
-    <p class="label" data-r><span data-da="Nutidens softwarehus" data-en="Today's software house">Nutidens softwarehus</span></p>
-    <h2 class="h2" data-r><span data-da="Hurtigere. Billigere." data-en="Faster. Cheaper.">Hurtigere. Billigere.</span> <em class="acc" data-da="Bygget til i dag." data-en="Built for today.">Bygget til i dag.</em></h2>
-  </header>
-  <div class="vs-t" role="table">
-    <div class="vs-h" role="row"><span role="columnheader"></span><span role="columnheader" data-da="Det klassiske softwarehus" data-en="The classic software house">Det klassiske softwarehus</span><span role="columnheader" class="us">Lesreg</span></div>
-    <div class="vs-r" role="row" data-r><b role="rowheader" data-da="Pris" data-en="Price">Pris</b><span role="cell" data-da="Timer, der løber" data-en="Hours that keep running">Timer, der løber</span><span role="cell" class="us" data-da="Fast pris, aftalt før vi starter" data-en="A fixed price, agreed before we start">Fast pris, aftalt før vi starter</span></div>
-    <div class="vs-r" role="row" data-r><b role="rowheader" data-da="Tempo" data-en="Speed">Tempo</b><span role="cell" data-da="Uger mellem hver rettelse" data-en="Weeks between changes">Uger mellem hver rettelse</span><span role="cell" class="us" data-da="Rettelser på timer, ikke uger" data-en="Changes in hours, not weeks">Rettelser på timer, ikke uger</span></div>
-    <div class="vs-r" role="row" data-r><b role="rowheader" data-da="Ansvar" data-en="Responsibility">Ansvar</b><span role="cell" data-da="Bureau, udvikler og drift hver for sig" data-en="Agency, developer and hosting, each on their own">Bureau, udvikler og drift hver for sig</span><span role="cell" class="us" data-da="Ét hus tegner, bygger og driver det" data-en="One house designs, builds and runs it">Ét hus tegner, bygger og driver det</span></div>
-    <div class="vs-r" role="row" data-r><b role="rowheader" data-da="Omsætning" data-en="Revenue">Omsætning</b><span role="cell" data-da="Platforme, der tager procenter" data-en="Platforms that take a cut">Platforme, der tager procenter</span><span role="cell" class="us" data-da="Ingen kommission af jeres omsætning" data-en="No commission on your revenue">Ingen kommission af jeres omsætning</span></div>
-    <div class="vs-r" role="row" data-r><b role="rowheader" data-da="Teknik" data-en="Technology">Teknik</b><span role="cell" data-da="Skabeloner fra i går" data-en="Templates from yesterday">Skabeloner fra i går</span><span role="cell" class="us" data-da="Mobil først, hurtigt og levende" data-en="Mobile first, fast and alive">Mobil først, hurtigt og levende</span></div>
+<!-- why Lesreg: the scroll holds the screen and plays three beats in one
+     place, the price, the speed and the money, in the library's own parts:
+     LA31 Data / Figure, LA31 Data / Ledger row and LA31 Control / Segmented.
+     Without motion they stand one under the other, drawn where they end. -->
+<section class="fordi" id="fordi" data-paper data-scrub="fordi" aria-labelledby="fordi-h">
+  <div class="fd-pin">
+    <header class="fd-head">
+      <h2 class="label" id="fordi-h"><span data-da="Hvorfor Lesreg" data-en="Why Lesreg">Hvorfor Lesreg</span></h2>
+      <div class="sgm fd-seg" role="radiogroup" aria-label="Hvorfor Lesreg" data-aria-da="Hvorfor Lesreg" data-aria-en="Why Lesreg">
+        <i class="sgm-lens" aria-hidden="true"></i>
+        <button type="button" role="radio" aria-checked="true" class="on" data-go="0"><span data-da="Pris" data-en="Price">Pris</span></button>
+        <button type="button" role="radio" aria-checked="false" tabindex="-1" data-go="1"><span data-da="Tempo" data-en="Speed">Tempo</span></button>
+        <button type="button" role="radio" aria-checked="false" tabindex="-1" data-go="2"><span data-da="Omsætning" data-en="Revenue">Omsætning</span></button>
+      </div>
+    </header>
+    <div class="fd-beats">
+
+      <article class="fd-b" data-b="0">
+        <div class="fd-t">
+          <h3 class="fd-h"><span data-da="Fra 50 kr. i timen." data-en="From DKK 50 an hour.">Fra 50 kr. i timen.</span> <em class="acc" data-da="Ikke 600–1.200." data-en="Not 600–1,200.">Ikke 600–1.200.</em></h3>
+          <p class="fd-p" data-da="Det er, hvad bureauer og freelancere i Danmark typisk tager. Hos os bliver timeprisen til én fast pris, før vi starter." data-en="That is what agencies and freelancers in Denmark typically charge. With us the rate becomes one fixed price before we start.">Det er, hvad bureauer og freelancere i Danmark typisk tager. Hos os bliver timeprisen til én fast pris, før vi starter.</p>
+        </div>
+        <figure class="fig" aria-label="Fra 50 kr. i timen" data-aria-da="Fra 50 kr. i timen" data-aria-en="From DKK 50 an hour">
+          <p class="fig-l label" data-da="Timepris · ekskl. moms" data-en="Hourly rate · excl. VAT">Timepris · ekskl. moms</p>
+          <p class="fig-v" aria-hidden="true"><span class="fig-n" data-to="50">50</span><span class="fig-u" data-da="kr./t" data-en="DKK/h">kr./t</span></p>
+          <p class="fig-d" data-da="Bureauer og freelancere: typisk 600–1.200 kr./t" data-en="Agencies and freelancers: typically DKK 600–1,200/h">Bureauer og freelancere: typisk 600–1.200 kr./t</p>
+          <div class="fig-f sc" aria-hidden="true">
+            <i class="sc-band"></i><span class="sc-bl" data-da="600–1.200" data-en="600–1,200">600–1.200</span>
+            <i class="sc-us"></i><i class="fig-now sc-now"></i>
+          </div>
+          <i class="fig-base" aria-hidden="true"></i>
+          <span class="fig-a fig-a0" aria-hidden="true">0</span><span class="fig-a fig-a1" aria-hidden="true" data-da="1.200 kr./t" data-en="DKK 1,200/h">1.200 kr./t</span>
+        </figure>
+      </article>
+
+      <article class="fd-b" data-b="1">
+        <div class="fd-t">
+          <h3 class="fd-h"><span data-da="En rettelse tager timer." data-en="A change takes hours.">En rettelse tager timer.</span> <em class="acc" data-da="Ikke uger." data-en="Not weeks.">Ikke uger.</em></h3>
+          <p class="fd-p" data-da="Hos et klassisk softwarehus går en ændring gennem tilbud, kø og flere hænder. Hos os skriver I, og de samme hænder, der byggede det, retter det." data-en="At a classic software house a change goes through a quote, a queue and several hands. With us you write, and the hands that built it make the change.">Hos et klassisk softwarehus går en ændring gennem tilbud, kø og flere hænder. Hos os skriver I, og de samme hænder, der byggede det, retter det.</p>
+        </div>
+        <div class="ldg">
+          <p class="label ldg-l" data-da="Samme rettelse · eksempel" data-en="The same change · example">Samme rettelse · eksempel</p>
+          <ul class="ldg-rows">
+          <li class="lr sel done"><i class="lr-lens"></i><span class="lr-ref">LESREG</span><span class="lr-name" data-da="Rettet og live" data-en="Changed and live">Rettet og live</span><span class="lr-st"><i class="lr-sh"></i><span class="lr-w lr-done" data-da="Live" data-en="Live">Live</span></span><span class="lr-note" data-da="dem, der byggede det" data-en="the ones who built it">dem, der byggede det</span><span class="lr-amt" data-da="samme dag" data-en="same day">samme dag</span></li>
+          <li class="lr"><i class="lr-lens"></i><span class="lr-ref" data-da="BUREAU" data-en="AGENCY">BUREAU</span><span class="lr-name" data-da="Tilbud på rettelsen" data-en="A quote for the change">Tilbud på rettelsen</span><span class="lr-st"><i class="lr-sh"></i><span class="lr-w lr-wait" data-da="Venter" data-en="Waiting">Venter</span><span class="lr-w lr-done" data-da="Klar" data-en="Done">Klar</span></span><span class="lr-note" data-da="venter på svar" data-en="waiting for a reply">venter på svar</span><span class="lr-amt" data-da="+2 dage" data-en="+2 days">+2 dage</span></li>
+          <li class="lr"><i class="lr-lens"></i><span class="lr-ref" data-da="UDVIKLER" data-en="DEVELOPER">UDVIKLER</span><span class="lr-name" data-da="Udvikling og test" data-en="Build and test">Udvikling og test</span><span class="lr-st"><i class="lr-sh"></i><span class="lr-w lr-wait" data-da="Venter" data-en="Waiting">Venter</span><span class="lr-w lr-done" data-da="Klar" data-en="Done">Klar</span></span><span class="lr-note" data-da="en anden udvikler" data-en="another developer">en anden udvikler</span><span class="lr-amt" data-da="+2 uger" data-en="+2 weeks">+2 uger</span></li>
+          <li class="lr"><i class="lr-lens"></i><span class="lr-ref" data-da="DRIFT" data-en="HOSTING">DRIFT</span><span class="lr-name" data-da="Live" data-en="Live">Live</span><span class="lr-st"><i class="lr-sh"></i><span class="lr-w lr-wait" data-da="Venter" data-en="Waiting">Venter</span><span class="lr-w lr-done" data-da="Klar" data-en="Done">Klar</span></span><span class="lr-note" data-da="når driften har tid" data-en="when hosting has time">når driften har tid</span><span class="lr-amt" data-da="+3 uger" data-en="+3 weeks">+3 uger</span></li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="fd-b" data-b="2">
+        <div class="fd-t">
+          <h3 class="fd-h"><span data-da="Pengene bliver hos jer." data-en="The money stays with you.">Pengene bliver hos jer.</span> <em class="acc" data-da="Ingen kommission." data-en="No commission.">Ingen kommission.</em></h3>
+          <p class="fd-p" data-da="Platforme tager procenter af hver bestilling. Når bestillingen kommer ind på jeres egen side, er der ingen platform imellem." data-en="Platforms take a cut of every order. When orders come in on your own site, there is no platform in between.">Platforme tager procenter af hver bestilling. Når bestillingen kommer ind på jeres egen side, er der ingen platform imellem.</p>
+        </div>
+        <figure class="fig" aria-label="0 % kommission på jeres egen side" data-aria-da="0 % kommission på jeres egen side" data-aria-en="0 % commission on your own site">
+          <p class="fig-l label" data-da="Kommission · jeres egen side" data-en="Commission · your own site">Kommission · jeres egen side</p>
+          <p class="fig-v" aria-hidden="true"><span class="fig-n">0</span><span class="fig-u">%</span></p>
+          <p class="fig-d" data-da="Hver bestilling går helt til jer" data-en="Every order goes to you in full">Hver bestilling går helt til jer</p>
+          <div class="fig-f" aria-hidden="true">
+            <svg class="fig-line" viewBox="0 0 270 87" preserveAspectRatio="none"><polyline pathLength="1" points="0.0,78.0 9.3,74.2 18.6,70.3 27.9,73.0 37.2,65.0 46.6,67.3 55.9,63.3 65.2,57.8 74.5,60.0 83.8,52.9 93.1,54.4 102.4,48.4 111.7,46.2 121.0,47.1 130.3,48.7 139.7,39.2 149.0,37.7 158.3,39.3 167.6,40.1 176.9,33.9 186.2,29.6 195.5,32.9 204.8,21.1 214.1,26.7 223.4,18.5 232.8,14.5 242.1,11.8 251.4,11.1 260.7,13.7 270.0,4.0"/></svg>
+            <i class="fig-now"></i>
+          </div>
+          <i class="fig-base" aria-hidden="true"></i>
+          <span class="fig-a fig-a0" aria-hidden="true" data-da="Bestillinger" data-en="Orders">Bestillinger</span><span class="fig-a fig-a1" aria-hidden="true" data-da="nu" data-en="now">nu</span>
+        </figure>
+      </article>
+
+    </div>
   </div>
 </section>
 
@@ -546,7 +603,7 @@
 </footer>
 
 <script type="module" src="main.js?v=24"></script>
-<script type="module" src="page.js?v=47"></script>
+<script type="module" src="page.js?v=50"></script>
 <script type="module" src="sheets.js?v=1"></script>
 </body>
 </html>

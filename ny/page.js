@@ -488,6 +488,97 @@ S.talk = el => {
   };
 };
 
+// why Lesreg: the screen holds while the scroll plays three beats in one
+// place: the price, the speed, the money. Without motion each is drawn where
+// it ends, one under the other.
+S.fordi = el => {
+  const beats = $$('.fd-b', el), n = beats.length, pin = !still;
+  if (pin) el.classList.add('pin');
+  const tog = (e, c, on) => { if (e && e['_' + c] !== on) { e['_' + c] = on; e.classList.toggle(c, on); } };
+  const [A, B, C] = beats;
+
+  // the segmented control: its lens goes to the beat on screen; a word, or an
+  // arrow key, takes you to where that beat stands still
+  const sg = el.querySelector('.sgm'), opts = $$('button', sg), lens = sg.querySelector('.sgm-lens');
+  let cur = -1;
+  const choose = i => {
+    if (i === cur) return;
+    cur = i;
+    sg.style.setProperty('--i', i);
+    if (!still) { lens.classList.remove('go'); void lens.offsetWidth; lens.classList.add('go'); }
+    opts.forEach((o, j) => { o.classList.toggle('on', j === i); o.setAttribute('aria-checked', j === i); o.tabIndex = j === i ? 0 : -1; });
+  };
+  const goTo = i => {
+    const top = el.getBoundingClientRect().top + scrollY, range = el.offsetHeight - innerHeight;
+    scrollTo({ top: top + range * (i + 0.62) / n, behavior: still ? 'auto' : 'smooth' });
+  };
+  opts.forEach((o, i) => {
+    o.addEventListener('click', () => goTo(i));
+    o.addEventListener('keydown', e => {
+      const d = e.key === 'ArrowRight' || e.key === 'ArrowDown' ? 1 : e.key === 'ArrowLeft' || e.key === 'ArrowUp' ? -1 : 0;
+      if (!d) return;
+      e.preventDefault();
+      const j = (i + d + n) % n;
+      opts[j].focus(); goTo(j);
+    });
+  });
+  choose(0);
+
+  // the price: the going rate is drawn across its stretch of the scale, then
+  // Lesreg's hairline to 50 and "now"; the figure counts up to it
+  const band = A.querySelector('.sc-band'), bandL = A.querySelector('.sc-bl'), usL = A.querySelector('.sc-us'), usNow = A.querySelector('.sc-now'), pN = A.querySelector('.fig-n');
+  function price(t) {
+    setT(band, 'scaleX(' + Math.max(0.0001, out(seg(t, 0.05, 0.45))).toFixed(4) + ')');
+    setO(bandL, seg(t, 0.3, 0.45));
+    const u = out(seg(t, 0.45, 0.8));
+    setT(usL, 'scaleX(' + Math.max(0.0001, u).toFixed(4) + ')');
+    setO(usNow, seg(t, 0.75, 0.85));
+    const v = String(Math.round(50 * u));
+    if (pN.textContent !== v) pN.textContent = v;
+  }
+
+  // the speed: Lesreg's row is live at once; the classic one's rows come one
+  // after another and are done weeks later
+  const rows = $$('.lr:not(.sel)', B), lrSel = B.querySelector('.lr.sel');
+  function speed(t) {
+    setO(lrSel, seg(t, 0, 0.12));
+    rows.forEach((r, i) => {
+      const a = 0.12 + i * 0.26;
+      setO(r, seg(t, a, a + 0.08));
+      tog(r, 'done', t >= a + 0.2);
+    });
+  }
+
+  // the money: the orders add up along the field to "now"; the figure stays at 0
+  const line = C.querySelector('.fig-line polyline'), mNow = C.querySelector('.fig-now');
+  function money(t) {
+    const d = (1 - out(seg(t, 0.05, 0.75))).toFixed(4);
+    if (line._d !== d) { line._d = d; line.style.strokeDashoffset = d; }
+    setO(mNow, seg(t, 0.7, 0.8));
+  }
+
+  return () => {
+    if (!pin) { price(1); speed(1); money(1); return; }
+    const r = rect(el), f = (-r.top / Math.max(1, r.height - H)) * n;
+    let near = 0, best = 9;
+    beats.forEach((b, j) => {
+      const d = f - (j + 0.5);
+      // the one going is gone before the next one comes
+      const go = j === n - 1 ? 0 : seg(d, 0.3, 0.46), come = j === 0 ? 0 : seg(-d, 0.38, 0.52);
+      const o = (1 - go) * (1 - come);
+      setO(b, o);
+      const vis = o > 0.001;
+      if (b._v !== vis) { b._v = vis; b.style.visibility = vis ? 'visible' : 'hidden'; }
+      setT(b, 'translate3d(0,' + ((come - go) * 24).toFixed(1) + 'px,0)');
+      if (Math.abs(d) < best) { best = Math.abs(d); near = j; }
+    });
+    choose(near);
+    price(seg(f, -0.45, 0.4));
+    speed(seg(f, 0.95, 1.75));
+    money(seg(f, 1.95, 2.6));
+  };
+};
+
 const live = [];
 for (const el of $$('[data-scrub]')) live.push({ el, draw: S[el.dataset.scrub](el), on: false });
 const talk = document.querySelector('.talk');

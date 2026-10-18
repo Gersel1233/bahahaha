@@ -38,22 +38,138 @@ html.pg-js .tile-film{ opacity:0; }
 @media (hover:hover){ .tn:not(:disabled):hover{ transform:scale(1.06); } }
 
 
-/* ---------- the old way and today's ---------- */
-.vs{ background:var(--porcelain); padding:clamp(90px, 14vh, 160px) 0; }
-.vs .sec-head{ margin-bottom:clamp(30px, 6vh, 60px); }
-.vs-t{ max-width:1240px; margin:0 auto; padding:0 var(--gut); display:grid; gap:10px; }
-.vs-h, .vs-r{ display:grid; grid-template-columns:minmax(90px, .55fr) 1fr 1fr; gap:10px; align-items:stretch; }
-.vs-h span{ font:600 11px/14px var(--sans); letter-spacing:.06em; text-transform:uppercase; color:var(--ash); padding:0 22px 6px; }
-.vs-h .us{ color:var(--deep); }
-.vs-r b{ display:flex; align-items:center; font:500 15px/1.2 var(--sans); color:var(--graphite); }
-.vs-r span{ padding:20px 22px; border-radius:20px; font:400 clamp(15px, 1.2vw, 18px)/1.35 var(--sans); }
-.vs-r span:not(.us){ color:var(--ash); background:rgba(14,15,16,.035); text-decoration:line-through; text-decoration-color:rgba(14,15,16,.25); text-decoration-thickness:1px; }
-.vs-r .us{ color:var(--porcelain); font-weight:500; background:linear-gradient(160deg, var(--navy-700), var(--navy-900));
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.25), 0 14px 30px -18px rgba(10,16,32,.7); }
-@media (max-width:700px){
-  .vs-h{ display:none; }
-  .vs-r{ grid-template-columns:1fr; gap:6px; padding-bottom:12px; }
-  .vs-r b{ font-size:12px; letter-spacing:.06em; text-transform:uppercase; color:var(--ash); padding:4px 4px 0; }
+/* ---------- why Lesreg: the price, the speed, the money ----------
+   Built from the library (Liquid Atelier 3.2, Figma mHsQole7sVJnwARmizRQaK):
+   LA31 Data / Figure 100:274, LA31 Data / Ledger row 100:383 and
+   LA31 Control / Segmented 100:253, at their own sizes; never scaled to fit.
+   Without motion the beats stand one under the other, drawn where they end;
+   with it (.pin) the screen stays put and the scroll plays them in one place. */
+.fordi{ background:var(--porcelain); padding:clamp(90px, 14vh, 160px) 0; color:var(--obsidian); }
+.fd-pin{ max-width:1440px; margin:0 auto; padding:0 72px; }
+.fd-head{ display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:48px; }
+.fd-head .label{ color:var(--ash); }
+.fd-b{ display:grid; grid-template-columns:minmax(0, 1fr) 632px; column-gap:24px; align-items:center; padding:48px 0; }
+.fd-t{ max-width:520px; }
+/* h1 64 / 64 and lead 20 / 30; the accent is the one phrase in Newsreader */
+.fd-h{ font:500 64px/64px var(--sans); letter-spacing:-.035em; text-wrap:balance; }
+.fd-h .acc{ display:block; font-weight:300; letter-spacing:-.01em; color:var(--graphite); }
+.fd-p{ margin-top:24px; font:400 20px/30px var(--sans); letter-spacing:-.005em; color:var(--graphite); }
+
+/* LA31 Control / Segmented: a travertine track and a glass lens over the
+   chosen word. Regular is 48 high, Compact 44; each option keeps its width. */
+.sgm{ --o:112px; --h:48px; position:relative; display:none; flex:none; height:var(--h); padding:0 4px; border-radius:calc(var(--h) / 2); background:var(--travertine); }
+.sgm button{ position:relative; z-index:1; width:var(--o); height:calc(var(--h) - 8px); margin-top:4px; border:0; padding:0; background:none; cursor:pointer;
+  font:400 14px/16px var(--sans); color:var(--graphite); -webkit-tap-highlight-color:transparent; border-radius:calc(var(--h) / 2 - 4px); }
+.sgm button.on{ font-weight:500; color:var(--obsidian); }
+.sgm button:focus-visible{ outline:none; box-shadow:0 0 0 2px var(--travertine), 0 0 0 4px var(--ultra); }
+.sgm-lens{ position:absolute; z-index:1; left:6px; top:4px; width:calc(var(--o) - 4px); height:calc(var(--h) - 8px); border-radius:calc(var(--h) / 2 - 4px); pointer-events:none;
+  background:rgba(255,255,255,.35); border:1px solid #fff; box-shadow:3px 6px 16px rgba(13,13,15,.18);
+  transform:translateX(calc(var(--i, 0) * var(--o))); transition:transform 220ms var(--ease); }
+.sgm-lens.go{ animation:sgm-mag 220ms var(--ease); }
+@keyframes sgm-mag{ 50%{ scale:1.09; } }
+
+/* LA31 Data / Figure: label, the value in Chivo Light with its unit, a line
+   under it, and a hairline field over a travertine rule ending in "now" */
+.fig{ position:relative; flex:none; width:632px; height:330px; margin:0; border-radius:24px; background:var(--porcelain); }
+.fig > *{ position:absolute; margin:0; }
+.fig-l{ left:32px; top:28px; color:var(--ash); white-space:nowrap; }
+.fig-v{ left:26px; top:150px; display:flex; align-items:flex-start; }
+.fig-n{ font:300 120px/112px var(--sans); letter-spacing:-.05em; color:var(--obsidian); font-variant-numeric:tabular-nums; }
+.fig-u{ margin:26px 0 0 22px; font:400 11.5px/16px var(--mono); color:var(--graphite); }
+.fig-d{ left:32px; top:290px; font:400 12.5px/18px var(--sans); letter-spacing:.005em; white-space:nowrap; }
+.fig-f{ left:330px; top:66px; width:270px; height:87px; }
+.fig-base{ left:330px; top:170px; width:270px; height:1px; background:var(--travertine); }
+.fig-a{ top:178px; font:400 11.5px/16px var(--mono); color:var(--ash); white-space:nowrap; }
+.fig-a0{ left:330px; }
+.fig-a1{ left:600px; transform:translateX(-100%); }
+.fig-now{ position:absolute; width:8px; height:8px; border-radius:50%; background:var(--ultra); }
+.fig-line{ position:absolute; inset:0; width:100%; height:100%; overflow:visible; }
+.fig-line polyline{ fill:none; stroke:var(--obsidian); stroke-width:1; vector-effect:non-scaling-stroke; stroke-linejoin:round; stroke-dasharray:1; stroke-dashoffset:0; }
+.fig-f > .fig-now{ right:-4px; top:0; }
+/* the price's field is a scale of kroner an hour, 0 to 1,200: the going
+   rate a hairline across its stretch, Lesreg a hairline to 50 and "now" */
+.sc-band, .sc-us{ position:absolute; height:1px; background:var(--obsidian); transform-origin:0 50%; }
+.sc-band{ left:50%; width:50%; top:30px; }
+.sc-band::before, .sc-band::after{ content:""; position:absolute; top:-4px; width:1px; height:9px; background:var(--obsidian); }
+.sc-band::before{ left:0; } .sc-band::after{ right:0; }
+.sc-bl{ position:absolute; left:50%; top:8px; font:400 11.5px/16px var(--mono); color:var(--ash); }
+.sc-us{ left:0; width:4.1667%; top:70px; }
+.sc .sc-now{ left:calc(4.1667% - 4px); top:66px; }
+
+/* LA31 Data / Ledger row: Desktop 48 high, one line; the chosen row sits on
+   limestone with an ultramarine lens. Status is told by shape */
+.ldg{ flex:none; width:632px; }
+.ldg-l{ margin-bottom:12px; color:var(--ash); }
+.ldg-rows{ list-style:none; margin:0; padding:0; }
+.lr{ position:relative; display:flex; align-items:center; gap:12px; height:48px; padding:0 16px; border-bottom:1px solid var(--travertine); }
+.lr.sel{ border-bottom:0; border-radius:12px; background:var(--limestone); }
+.lr-lens{ flex:none; width:6px; height:6px; border-radius:50%; }
+.lr.sel .lr-lens{ background:var(--ultra); }
+.lr-ref{ flex:none; width:76px; font:400 11.5px/16px var(--mono); color:var(--graphite); }
+.lr-name{ flex:none; width:150px; font:400 14px/22px var(--sans); }
+.lr.sel .lr-name{ font-weight:500; line-height:16px; }
+.lr-st{ flex:none; display:flex; align-items:center; gap:8px; width:96px; height:20px; overflow:hidden; font:400 12.5px/18px var(--sans); letter-spacing:.005em; }
+.lr-sh{ flex:none; width:8px; height:8px; border-radius:50%; box-shadow:inset 0 0 0 1.25px var(--obsidian); transition:background var(--t-base, 180ms) var(--ease); }
+.lr.done .lr-sh{ background:var(--obsidian); }
+.lr-w{ display:none; }
+.lr:not(.done) .lr-wait, .lr.done .lr-done{ display:inline; }
+.lr-note{ flex:1 1 0; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font:400 12.5px/18px var(--sans); letter-spacing:.005em; color:var(--graphite); }
+.lr-amt{ flex:none; width:88px; text-align:right; font:400 11.5px/16px var(--mono); }
+
+/* 768 to 1199: two columns, the Mobile figure and the Compact rows */
+@media (max-width:1199px){
+  .fd-pin{ padding:0 48px; }
+  .fd-b{ grid-template-columns:minmax(0, 1fr) 338px; column-gap:48px; }
+  .fd-h{ font-size:40px; line-height:44px; letter-spacing:-.025em; }
+  .fd-p{ margin-top:16px; font-size:16px; line-height:26px; letter-spacing:0; }
+  .fig{ width:338px; height:300px; }
+  .fig-l{ left:20px; top:20px; }
+  .fig-v{ left:16px; top:44px; }
+  .fig-n{ font-size:88px; line-height:88px; }
+  .fig-d{ left:20px; top:144px; }
+  .fig-f{ left:20px; top:188px; width:298px; height:63px; }
+  .fig-base{ left:20px; top:266px; width:298px; }
+  .fig-a{ top:274px; }
+  .fig-a0{ left:20px; }
+  .fig-a1{ left:318px; }
+  .sc-band{ top:22px; }
+  .sc-bl{ top:2px; }
+  .sc-us{ top:52px; }
+  .sc .sc-now{ top:48px; }
+  .ldg{ width:338px; }
+  /* Compact: 68 high, two lines; the note is left out */
+  .lr{ display:block; height:68px; padding:0; }
+  .lr-lens{ position:absolute; left:12px; top:31px; }
+  .lr-ref{ position:absolute; left:28px; top:12px; width:auto; }
+  .lr-st{ position:absolute; left:112px; top:12px; width:auto; gap:6px; color:var(--graphite); }
+  .lr-name{ position:absolute; left:28px; top:36px; width:auto; font-weight:500; line-height:16px; white-space:nowrap; }
+  .lr-note{ display:none; }
+  .lr-amt{ position:absolute; right:16px; top:38px; width:auto; }
+}
+@media (max-width:767px){
+  .fordi{ padding:96px 0; }
+  .fd-pin{ padding:0 20px; }
+  .fd-head{ margin-bottom:24px; }
+  .fd-b{ grid-template-columns:1fr; row-gap:24px; padding:32px 0; justify-items:center; }
+  .fd-t{ justify-self:stretch; }
+  /* Compact segmented: 44 high */
+  .sgm{ --o:85.5px; --h:44px; }
+}
+
+@media (prefers-reduced-motion: no-preference){
+  .fordi.pin{ height:360vh; height:360svh; padding:0; }
+  .fordi.pin .fd-pin{ position:sticky; top:0; display:flex; flex-direction:column; height:100vh; height:100svh; padding-top:128px; padding-bottom:40px; }
+  .fordi.pin .sgm{ display:flex; }
+  .fordi.pin .fd-beats{ position:relative; flex:1; }
+  .fordi.pin .fd-b{ position:absolute; inset:0; padding:0; align-content:center; opacity:0; visibility:hidden; }
+  .fordi.pin .fd-b[data-b="0"]{ opacity:1; visibility:visible; }
+  @media (max-width:767px){
+    .fordi.pin .fd-pin{ padding-top:88px; padding-bottom:16px; }
+    .fordi.pin .fd-head{ flex-direction:column; align-items:flex-start; gap:12px; margin-bottom:12px; }
+    .fordi.pin .fd-b{ align-content:start; padding-top:8px; }
+  }
+  /* a short phone keeps the headline and the part, and lets the paragraph go */
+  @media (max-width:767px) and (max-height:760px){ .fordi.pin .fd-p{ display:none; } }
 }
 
 /* ---------- Callster: the owner texts, it handles it ---------- */
