@@ -121,7 +121,7 @@ if (tileRow && 'IntersectionObserver' in window) {
 }
 
 /* ---------- why Lesreg: what a job costs. A kind of job is chosen in the
-   chips or the rows of typical hours; what you keep and the two sums roll to
+   chips; what you keep and the two sums roll to
    it, reckoned at the middle of its typical hours, against the market's
    middle rate of 900 an hour and Lesreg's 50. While it is seen, and until it
    is touched, it moves on to the next kind of job by itself. ---------- */
@@ -129,7 +129,7 @@ const rc = document.querySelector('.rc');
 if (rc) {
   const JOBS = [[20, 30], [10, 30], [60, 120], [80, 150], [150, 300]];
   const MID = 900, US = 50, NEXT = 3800;
-  const chips = $$('.rc-chip', rc), rows = $$('.rc-row', rc), bars = $$('.rc-row-bar i', rc);
+  const chips = $$('.rc-chip', rc);
   const slot = k => rc.querySelector(`[data-o="${k}"]`);
   const sSave = slot('save'), sDelta = slot('delta'), sThem = slot('them'), sUs = slot('us');
   const L = () => (html.lang === 'en' ? 'en' : 'da');
@@ -156,7 +156,6 @@ if (rc) {
   const choose = (i, focus) => {
     cur = i;
     chips.forEach((c, j) => { const on = j === i; c.classList.toggle('on', on); c.setAttribute('aria-checked', on); c.tabIndex = on ? 0 : -1; });
-    rows.forEach((r, j) => r.classList.toggle('on', j === i));
     if (focus) chips[i].focus();
     const [lo, hi] = JOBS[i];
     goal = (lo + hi) / 2;
@@ -173,20 +172,11 @@ if (rc) {
       e.preventDefault(); hold(); choose((i + d + JOBS.length) % JOBS.length, true);
     });
   });
-  rows.forEach((r, i) => r.querySelector('button').addEventListener('click', () => { hold(); choose(i); }));
   paint(); words();
-  if (!still) bars.forEach(b => b.style.setProperty('--g', 0));
   new MutationObserver(() => { paint(); words(); }).observe(html, { attributes: true, attributeFilter: ['lang'] });
   if ('IntersectionObserver' in window && !still) {
-    let grown = false;
     new IntersectionObserver(es => es.forEach(en => {
       seen = en.intersectionRatio >= 0.4;
-      if (seen && !grown) {
-        grown = true;
-        const t0 = performance.now();
-        const grow = now => { const q = Math.min(1, (now - t0) / 1400); bars.forEach((b, i) => b.style.setProperty('--g', out(seg(q, i * 0.1, 0.5 + i * 0.1)).toFixed(4))); if (q < 1) requestAnimationFrame(grow); };
-        requestAnimationFrame(grow);
-      }
       if (seen) tick(); else clearTimeout(timer);
     }), { threshold: [0, 0.4] }).observe(rc.querySelector('.rc-panel'));
   }

@@ -48,7 +48,7 @@ html.pg-js .tile-film{ opacity:0; }
 .sr{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
 .rc{ position:relative; overflow:hidden; color:var(--porcelain); background:radial-gradient(80% 70% at 70% 100%, #2B3F7C, #101A33 50%, #05080F); }
 .rc-in{ position:relative; max-width:1440px; margin:0 auto; padding:clamp(96px, 12vh, 128px) 72px clamp(56px, 8vh, 88px);
-  display:grid; grid-template-columns:minmax(0, 5fr) minmax(0, 7fr); grid-template-areas:"l glass" "hours hours"; column-gap:clamp(32px, 5vw, 96px); align-items:center; }
+  display:grid; grid-template-columns:minmax(0, 5fr) minmax(0, 7fr); grid-template-areas:"l glass" "more more" "src src"; column-gap:clamp(32px, 5vw, 96px); align-items:center; }
 .rc-l{ grid-area:l; }
 .rc-l .label{ color:rgba(246,244,239,.6); }
 .rc-h{ margin-top:16px; font:500 64px/64px var(--sans); letter-spacing:-.035em; }
@@ -104,37 +104,17 @@ html.pg-js .tile-film{ opacity:0; }
 .lr.sel .lr-name{ font-weight:500; line-height:16px; }
 .lr-amt{ flex:none; text-align:right; font:400 11.5px/16px var(--mono); }
 
-/* Lesreg's typical hours: one scale for every kind of job */
-.rc-hours{ grid-area:hours; margin-top:clamp(56px, 9vh, 96px); }
-.rc-hours-h{ display:flex; justify-content:space-between; align-items:baseline; gap:24px; flex-wrap:wrap; }
-.rc-hours-h h3{ font:500 24px/30px var(--sans); letter-spacing:-.015em; }
-.rc-hours-h p{ font:400 14px/22px var(--sans); color:rgba(246,244,239,.65); }
-.rc-cols, .rc-row-b{ display:grid; grid-template-columns:minmax(120px, 1.3fr) 90px minmax(0, 3fr) 150px 170px; column-gap:24px; align-items:center; }
-.rc-cols{ margin-top:24px; padding:0 16px 10px; font:600 11px/14px var(--sans); letter-spacing:.06em; text-transform:uppercase; color:rgba(246,244,239,.5); }
-.rc-cols > span:nth-child(n+4){ text-align:right; }
-.rc-ax{ display:flex; justify-content:space-between; font:400 11.5px/16px var(--mono); letter-spacing:0; text-transform:none; }
-.rc-rows{ list-style:none; margin:0; padding:0; }
-.rc-row{ border-top:1px solid rgba(246,244,239,.14); }
-.rc-row-b{ width:100%; min-height:56px; padding:0 16px; border:0; border-radius:12px; background:none; color:inherit; text-align:left; cursor:pointer; font:inherit;
-  transition:background 180ms var(--ease); -webkit-tap-highlight-color:transparent; }
-@media (hover:hover){ .rc-row:not(.on) .rc-row-b:hover{ background:rgba(246,244,239,.05); } }
-.rc-row.on .rc-row-b{ background:rgba(246,244,239,.1); }
-.rc-row-b:focus-visible{ outline:none; box-shadow:0 0 0 2px #101A33, 0 0 0 4px var(--ultra); }
-.rc-row-n{ font:400 16px/22px var(--sans); }
-.rc-row.on .rc-row-n{ font-weight:500; }
-.rc-row-h{ font:400 11.5px/16px var(--mono); color:rgba(246,244,239,.7); }
-.rc-row-bar{ position:relative; height:24px; }
-.rc-row-bar::before{ content:""; position:absolute; left:0; right:0; top:50%; height:1px; background:rgba(246,244,239,.18); }
-.rc-row-bar i{ position:absolute; left:var(--lo); width:calc(var(--hi) - var(--lo)); top:calc(50% - 4px); height:8px; border-radius:4px; background:rgba(246,244,239,.42);
-  transform-origin:0 50%; transform:scaleX(var(--g, 1)); transition:background 180ms var(--ease); }
-.rc-row.on .rc-row-bar i{ background:var(--porcelain); }
-.rc-row-p{ text-align:right; font:400 11.5px/16px var(--mono); color:rgba(246,244,239,.55); white-space:nowrap; }
-.rc-row-p.us{ color:var(--porcelain); }
-.rc-src{ margin-top:20px; font:400 12.5px/18px var(--sans); letter-spacing:.005em; color:rgba(246,244,239,.5); }
+/* for a job not among them: a tailored estimate, and the way to ask */
+.rc-more{ grid-area:more; display:flex; align-items:center; justify-content:space-between; gap:32px; margin-top:clamp(48px, 8vh, 80px); padding-top:32px; border-top:1px solid rgba(246,244,239,.14); }
+.rc-more h3{ font:500 24px/30px var(--sans); letter-spacing:-.015em; }
+.rc-more p{ margin-top:8px; max-width:40em; font:400 16px/26px var(--sans); color:rgba(246,244,239,.75); }
+.rc-more .btn{ flex:none; }
+.rc-src{ grid-area:src; margin-top:24px; font:400 12.5px/18px var(--sans); letter-spacing:.005em; color:rgba(246,244,239,.5); }
 
 @media (max-width:1199px){
-  .rc-in{ grid-template-columns:minmax(0, 1fr); grid-template-areas:"l" "glass" "hours"; row-gap:44px; padding:clamp(96px, 12vh, 120px) 40px 64px; }
-  .rc-hours{ margin-top:12px; }
+  .rc-in{ grid-template-columns:minmax(0, 1fr); grid-template-areas:"l" "glass" "more" "src"; row-gap:44px; padding:clamp(96px, 12vh, 120px) 40px 64px; }
+  .rc-more{ margin-top:0; }
+  .rc-src{ margin-top:-24px; }
 }
 @media (max-width:767px){
   .rc-in{ padding:80px 20px 48px; row-gap:32px; }
@@ -144,20 +124,21 @@ html.pg-js .tile-film{ opacity:0; }
   .rc-ben li{ font-size:15px; line-height:24px; }
   .rc-panel{ padding:20px; border-radius:26px; }
   /* chips scroll sideways on a phone, as the library says */
-  .rc-chips{ flex-wrap:nowrap; overflow-x:auto; margin:0 -20px; padding:2px 20px 6px; scrollbar-width:none; }
+  /* they stay inside the glass, and fade out at its edge where more follow */
+  .rc-chips{ flex-wrap:nowrap; overflow-x:auto; margin:0 -20px; padding:2px 20px 6px; scrollbar-width:none; border-radius:0;
+    -webkit-mask:linear-gradient(90deg, transparent, #000 20px, #000 calc(100% - 28px), transparent); mask:linear-gradient(90deg, transparent, #000 20px, #000 calc(100% - 28px), transparent); }
+  .rc-panel{ overflow:hidden; }
   .rc-chips::-webkit-scrollbar{ display:none; }
   .rc-fig{ margin-top:18px; }
   .rc-v > span{ font-size:min(19vw, 88px); line-height:min(19vw, 88px); }
   .rc-v small{ margin:18px 0 0 10px; }
   .rc-ldg .lr{ padding:0 12px; }
   .lr-ref{ width:auto; white-space:nowrap; }
-  .rc-hours-h{ flex-direction:column; gap:6px; }
-  .rc-cols{ display:none; }
-  .rc-row-b{ grid-template-columns:1fr auto; grid-template-areas:"n h" "bar bar" "us them"; row-gap:6px; padding:12px; }
-  .rc-row-n{ grid-area:n; } .rc-row-h{ grid-area:h; } .rc-row-bar{ grid-area:bar; height:14px; }
-  .rc-row-p.us{ grid-area:us; text-align:left; } .rc-row-p:not(.us){ grid-area:them; }
+  .rc-more{ flex-direction:column; align-items:flex-start; gap:20px; padding-top:28px; }
+  .rc-more h3{ font-size:20px; line-height:26px; }
+  .rc-more p{ font-size:15px; line-height:24px; }
 }
-@media (prefers-reduced-motion: reduce){ .rc-bloom{ animation:none; } .rc-chip::before, .rc-row-b, .rc-row-bar i{ transition:none; } }
+@media (prefers-reduced-motion: reduce){ .rc-bloom{ animation:none; } .rc-chip::before{ transition:none; } }
 
 /* ---------- Callster: the owner texts, it handles it ---------- */
 .case-cs .cs-vis{ display:grid; place-items:center; padding:0; }
