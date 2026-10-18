@@ -120,79 +120,75 @@ if (tileRow && 'IntersectionObserver' in window) {
   near.observe(tileRow);
 }
 
-/* ---------- why Lesreg: work it out. The hours on LA31 Meniscus slider;
-   what is saved in LA31 Figure, at the market's middle rate of 900 an hour
-   against Lesreg's 50; the two sums in Ledger rows. The first time it is
-   seen the slider moves up on its own; after that it is the reader's, by
-   finger, mouse or arrow keys. ---------- */
+/* ---------- why Lesreg: what a job costs. A kind of job is chosen in the
+   chips or the rows of typical hours; what you keep and the two sums roll to
+   it, reckoned at the middle of its typical hours, against the market's
+   middle rate of 900 an hour and Lesreg's 50. While it is seen, and until it
+   is touched, it moves on to the next kind of job by itself. ---------- */
 const rc = document.querySelector('.rc');
 if (rc) {
-  const MIN = 10, MAX = 400, STEP = 10, MID = 900, US = 50, START = 120;
-  const tr = rc.querySelector('.rc-ms-tr'), th = tr.querySelector('.rc-th'), thv = th.querySelector('b');
+  const JOBS = [[20, 30], [10, 30], [60, 120], [80, 150], [150, 300]];
+  const MID = 900, US = 50, NEXT = 3800;
+  const chips = $$('.rc-chip', rc), rows = $$('.rc-row', rc), bars = $$('.rc-row-bar i', rc);
   const slot = k => rc.querySelector(`[data-o="${k}"]`);
-  const sHrs = slot('hrs'), sSave = slot('save'), sDelta = slot('delta'), sThem = slot('them'), sUs = slot('us');
-  const field = $$('.rc-f-mk, .rc-f-us', rc), now = rc.querySelector('.rc-now');
+  const sSave = slot('save'), sDelta = slot('delta'), sThem = slot('them'), sUs = slot('us');
   const L = () => (html.lang === 'en' ? 'en' : 'da');
   const fmt = n => Math.round(n).toLocaleString(L() === 'en' ? 'en-GB' : 'da-DK');
-  let shown = still ? START : MIN, goal = shown, tw = 0, demo = 0, touched = false;
-  const paint = h => {
-    const r = Math.round(h);
-    rc.style.setProperty('--x', ((h - MIN) / (MAX - MIN) * 100).toFixed(3) + '%');
-    thv.textContent = r; sHrs.textContent = r;
-    sSave.textContent = fmt(r * (MID - US));
-    sThem.textContent = fmt(r * MID); sUs.textContent = fmt(r * US);
-    sDelta.textContent = L() === 'en' ? `At ${r} hours, compared with an agency at DKK 900 an hour` : `Ved ${r} timer, sammenlignet med et bureau til 900 kr. i timen`;
-    th.setAttribute('aria-valuenow', r);
-    th.setAttribute('aria-valuetext', r + (L() === 'en' ? ' hours' : ' timer'));
+  const kr = n => (L() === 'en' ? 'DKK ' + fmt(n) : fmt(n) + ' kr.');
+  let cur = 0, h = 25, goal = 25, tw = 0, seen = false, touched = still, timer = 0;
+  const paint = () => {
+    sSave.textContent = fmt(h * (MID - US));
+    sThem.textContent = kr(h * MID); sUs.textContent = kr(h * US);
+  };
+  const words = () => {
+    const [lo, hi] = JOBS[cur], m = (lo + hi) / 2;
+    sDelta.textContent = L() === 'en' ? `Typically ${lo}–${hi} hours. Reckoned at ${m} hours against an agency at DKK 900 an hour.`
+      : `Typisk ${lo}–${hi} timer. Regnet med ${m} timer mod et bureau til 900 kr. i timen.`;
   };
   // the figures roll to a new value rather than jump to it
   const roll = () => {
     tw = 0;
-    const d = goal - shown;
-    if (Math.abs(d) < 0.5) { shown = goal; paint(shown); return; }
-    shown += d * 0.22; paint(shown);
+    const d = goal - h;
+    if (Math.abs(d) < 0.05) { h = goal; paint(); return; }
+    h += d * 0.16; paint();
     tw = requestAnimationFrame(roll);
   };
-  const set = (h, jump) => {
-    goal = Math.min(MAX, Math.max(MIN, Math.round(h / STEP) * STEP));
-    if (jump || still) { cancelAnimationFrame(tw); tw = 0; shown = goal; paint(shown); }
-    else if (!tw) tw = requestAnimationFrame(roll);
+  const choose = (i, focus) => {
+    cur = i;
+    chips.forEach((c, j) => { const on = j === i; c.classList.toggle('on', on); c.setAttribute('aria-checked', on); c.tabIndex = on ? 0 : -1; });
+    rows.forEach((r, j) => r.classList.toggle('on', j === i));
+    if (focus) chips[i].focus();
+    const [lo, hi] = JOBS[i];
+    goal = (lo + hi) / 2;
+    words();
+    if (still) { h = goal; paint(); } else if (!tw) tw = requestAnimationFrame(roll);
   };
-  const stopDemo = () => { touched = true; cancelAnimationFrame(demo); demo = 0; field.forEach(f => f.style.setProperty('--g', 1)); now.style.setProperty('--n', 1); };
-  const at = e => { const r = tr.getBoundingClientRect(); return MIN + (MAX - MIN) * Math.min(1, Math.max(0, (e.clientX - r.left) / r.width)); };
-  tr.addEventListener('pointerdown', e => {
-    stopDemo(); tr.setPointerCapture(e.pointerId); tr.classList.add('drag'); set(at(e), true); th.focus({ preventScroll: true });
-    const move = ev => set(at(ev), true);
-    const up = () => { tr.classList.remove('drag'); tr.removeEventListener('pointermove', move); tr.removeEventListener('pointerup', up); tr.removeEventListener('pointercancel', up); };
-    tr.addEventListener('pointermove', move); tr.addEventListener('pointerup', up); tr.addEventListener('pointercancel', up);
+  const hold = () => { touched = true; clearTimeout(timer); };
+  const tick = () => { clearTimeout(timer); if (!touched && seen) timer = setTimeout(() => { choose((cur + 1) % JOBS.length); tick(); }, NEXT); };
+  chips.forEach((c, i) => {
+    c.addEventListener('click', () => { hold(); choose(i); });
+    c.addEventListener('keydown', e => {
+      const d = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[e.key];
+      if (!d) return;
+      e.preventDefault(); hold(); choose((i + d + JOBS.length) % JOBS.length, true);
+    });
   });
-  th.addEventListener('keydown', e => {
-    const d = { ArrowRight: STEP, ArrowUp: STEP, ArrowLeft: -STEP, ArrowDown: -STEP, PageUp: 50, PageDown: -50 }[e.key];
-    if (e.key === 'Home' || e.key === 'End') { e.preventDefault(); stopDemo(); set(e.key === 'Home' ? MIN : MAX); return; }
-    if (!d) return;
-    e.preventDefault(); stopDemo(); set(goal + d);
-  });
-  paint(shown);
-  if (!still) { field.forEach(f => f.style.setProperty('--g', 0)); now.style.setProperty('--n', 0); }
-  new MutationObserver(() => paint(shown)).observe(html, { attributes: true, attributeFilter: ['lang'] });
-  // the first time it is seen: the hours go up, and the field is drawn
-  if (!still && 'IntersectionObserver' in window) {
-    const first = new IntersectionObserver(es => {
-      if (!es.some(en => en.intersectionRatio >= 0.4)) return;
-      first.disconnect();
-      const t0 = performance.now();
-      const run = t => {
-        demo = 0;
-        if (touched) return;
-        const q = Math.min(1, (t - t0) / 1800);
-        shown = goal = MIN + (START - MIN) * io(q); paint(shown);
-        field.forEach((f, i) => f.style.setProperty('--g', out(seg(q, 0.1 + i * 0.25, 0.6 + i * 0.25)).toFixed(4)));
-        now.style.setProperty('--n', seg(q, 0.85, 1).toFixed(3));
-        if (q < 1) demo = requestAnimationFrame(run); else goal = START;
-      };
-      demo = requestAnimationFrame(run);
-    }, { threshold: [0, 0.4] });
-    first.observe(rc.querySelector('.rc-calc'));
+  rows.forEach((r, i) => r.querySelector('button').addEventListener('click', () => { hold(); choose(i); }));
+  paint(); words();
+  if (!still) bars.forEach(b => b.style.setProperty('--g', 0));
+  new MutationObserver(() => { paint(); words(); }).observe(html, { attributes: true, attributeFilter: ['lang'] });
+  if ('IntersectionObserver' in window && !still) {
+    let grown = false;
+    new IntersectionObserver(es => es.forEach(en => {
+      seen = en.intersectionRatio >= 0.4;
+      if (seen && !grown) {
+        grown = true;
+        const t0 = performance.now();
+        const grow = now => { const q = Math.min(1, (now - t0) / 1400); bars.forEach((b, i) => b.style.setProperty('--g', out(seg(q, i * 0.1, 0.5 + i * 0.1)).toFixed(4))); if (q < 1) requestAnimationFrame(grow); };
+        requestAnimationFrame(grow);
+      }
+      if (seen) tick(); else clearTimeout(timer);
+    }), { threshold: [0, 0.4] }).observe(rc.querySelector('.rc-panel'));
   }
 }
 

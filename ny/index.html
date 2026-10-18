@@ -24,7 +24,7 @@
 <link rel="stylesheet" href="ny.css?v=16" />
 <link rel="stylesheet" href="page.css?v=22" />
 <link rel="stylesheet" href="hero.css?v=28" />
-<link rel="stylesheet" href="sections.css?v=68" />
+<link rel="stylesheet" href="sections.css?v=70" />
 <script>
   /* decided before first paint: with JS the phone turns as you scroll;
      without it, the first screen simply stands there */
@@ -360,12 +360,12 @@
   </div>
 </section>
 
-<!-- why Lesreg: work it out. Built from the library and nothing else:
-     LA31 Control / Meniscus slider for the hours, LA31 Data / Figure for
-     what is saved, LA31 Data / Ledger rows for the two sums, on a porcelain
-     core inside a Rim, as LA31 Product window carries software. Two prices
-     go in: the market's typical rate (600 to 1,200 an hour, reckoned at its
-     middle, 900) and Lesreg's 50. -->
+<!-- why Lesreg: what a job costs. The kinds of job as LA31 Chips in glass;
+     choosing one gives what you keep (LA31 Figure) and the two sums (LA31
+     Ledger rows) on a Smoke glass panel over the coloured light behind it.
+     Under it, Lesreg's typical hours for each kind of job on one scale, with
+     Lesreg's price and a typical agency's beside them. The market's rate is
+     reckoned at the middle of its typical 600 to 1,200 an hour, 900. -->
 <section class="rc" id="fordi" aria-labelledby="rc-h">
   <div class="rc-in">
     <div class="rc-l">
@@ -379,33 +379,62 @@
       </ul>
     </div>
 
-    <div class="rc-calc">
-      <div class="rc-ms">
-        <p class="label rc-ms-l"><span data-da="Projektets omfang" data-en="Scope of the project">Projektets omfang</span></p>
-        <p class="rc-ms-v"><span data-o="hrs">120</span> <span data-da="timer" data-en="hours">timer</span></p>
-        <div class="rc-ms-tr" data-min="10" data-max="400" data-step="10">
-          <i class="rc-tr"></i><i class="rc-fill"></i>
-          <span class="rc-ticks" aria-hidden="true"><span style="--t:0.000%">10</span><span style="--t:23.077%">100</span><span style="--t:48.718%">200</span><span style="--t:74.359%">300</span><span style="--t:100.000%">400</span></span>
-          <button type="button" class="rc-th" role="slider" aria-valuemin="10" aria-valuemax="400" aria-valuenow="120" aria-label="Antal timer" data-aria-da="Antal timer" data-aria-en="Number of hours"><b>120</b></button>
+    <div class="rc-glass">
+      <i class="rc-bloom" aria-hidden="true"></i>
+      <div class="rc-panel">
+        <div class="rc-chips" role="radiogroup" aria-label="Opgave" data-aria-da="Opgave" data-aria-en="Job"><button type="button" role="radio" class="rc-chip on" aria-checked="true" data-i="0"><span data-da="Hjemmeside" data-en="Website">Hjemmeside</span></button><button type="button" role="radio" class="rc-chip" aria-checked="false" tabindex="-1" data-i="1"><span data-da="Integration" data-en="Integration">Integration</span></button><button type="button" role="radio" class="rc-chip" aria-checked="false" tabindex="-1" data-i="2"><span data-da="App" data-en="App">App</span></button><button type="button" role="radio" class="rc-chip" aria-checked="false" tabindex="-1" data-i="3"><span data-da="Admin-app" data-en="Admin app">Admin-app</span></button><button type="button" role="radio" class="rc-chip" aria-checked="false" tabindex="-1" data-i="4"><span data-da="Helt system" data-en="Full system">Helt system</span></button></div>
+        <div class="rc-fig" aria-live="polite">
+          <p class="label"><span data-da="Det, I beholder" data-en="What you keep">Det, I beholder</span></p>
+          <p class="rc-v"><span data-o="save">21.250</span><small><span data-da="kr." data-en="DKK">kr.</span></small></p>
+          <p class="rc-d" data-o="delta">Typisk 20–30 timer. Regnet med 25 timer mod et bureau til 900 kr. i timen.</p>
         </div>
+        <ul class="rc-ldg">
+          <li class="lr"><i class="lr-lens"></i><span class="lr-ref"><span data-da="900 kr./t" data-en="DKK 900/h">900 kr./t</span></span><span class="lr-name"><span data-da="Typisk bureau" data-en="Typical agency">Typisk bureau</span></span><span class="lr-amt" data-o="them">22.500 kr.</span></li>
+          <li class="lr sel"><i class="lr-lens"></i><span class="lr-ref"><span data-da="50 kr./t" data-en="DKK 50/h">50 kr./t</span></span><span class="lr-name">Lesreg</span><span class="lr-amt" data-o="us">1.250 kr.</span></li>
+        </ul>
       </div>
-
-      <div class="rc-fig" aria-live="polite">
-        <p class="label"><span data-da="Det, I beholder" data-en="What you keep">Det, I beholder</span></p>
-        <p class="rc-v"><span data-o="save">102.000</span><small><span data-da="kr." data-en="DKK">kr.</span></small></p>
-        <p class="rc-d"><span data-o="delta">Ved 120 timer, sammenlignet med et bureau til 900 kr. i timen</span></p>
-        <div class="rc-f" aria-hidden="true">
-          <i class="rc-f-mk"></i><i class="rc-f-us"></i><i class="rc-now"></i>
-          <span class="rc-f-a">0</span><span class="rc-f-m">600–1.200</span><span class="rc-f-b"><span data-da="1.200 kr./t" data-en="DKK 1,200/h">1.200 kr./t</span></span>
-        </div>
-      </div>
-
-      <ul class="rc-ldg">
-        <li class="lr"><i class="lr-lens"></i><span class="lr-ref"><span data-da="900 kr./t" data-en="DKK 900/h">900 kr./t</span></span><span class="lr-name"><span data-da="Typisk bureau" data-en="Typical agency">Typisk bureau</span></span><span class="lr-amt"><span data-o="them">108.000</span> <span data-da="kr." data-en="DKK">kr.</span></span></li>
-        <li class="lr sel"><i class="lr-lens"></i><span class="lr-ref"><span data-da="50 kr./t" data-en="DKK 50/h">50 kr./t</span></span><span class="lr-name">Lesreg</span><span class="lr-amt"><span data-o="us">6.000</span> <span data-da="kr." data-en="DKK">kr.</span></span></li>
-      </ul>
     </div>
-    <p class="rc-src" data-da="Typisk timepris i Danmark i 2026 er 600 til 1.200 kr. Vi regner med midten, 900 kr. Alle priser er uden moms." data-en="The typical hourly rate in Denmark in 2026 is DKK 600 to 1,200. We reckon with the middle, DKK 900. All prices exclude VAT.">Typisk timepris i Danmark i 2026 er 600 til 1.200 kr. Vi regner med midten, 900 kr. Alle priser er uden moms.</p>
+
+    <div class="rc-hours">
+      <div class="rc-hours-h">
+        <h3><span data-da="Lesregs typiske arbejdstimer" data-en="Lesreg's typical working hours">Lesregs typiske arbejdstimer</span></h3>
+        <p data-da="Det endelige tal får I som én fast pris, før vi går i gang." data-en="You get the final figure as one fixed price before we start.">Det endelige tal får I som én fast pris, før vi går i gang.</p>
+      </div>
+      <div class="rc-cols" aria-hidden="true"><span></span><span><span data-da="Timer" data-en="Hours">Timer</span></span><span class="rc-ax"><span>0</span><span>300 <span data-da="t" data-en="h">t</span></span></span><span>Lesreg</span><span><span data-da="Typisk bureau" data-en="Typical agency">Typisk bureau</span></span></div>
+      <ul class="rc-rows">
+        <li class="rc-row on" data-i="0" style="--lo:6.667%;--hi:10.000%">
+          <button type="button" class="rc-row-b"><span class="rc-row-n" data-da="Hjemmeside" data-en="Website">Hjemmeside</span><span class="rc-row-h">20–30 <span data-da="t" data-en="h">t</span></span>
+            <span class="rc-row-bar" aria-hidden="true"><i></i></span>
+            <span class="rc-row-p us"><span data-da="1.000–1.500 kr." data-en="DKK 1,000–1,500">1.000–1.500 kr.</span></span>
+            <span class="rc-row-p"><span data-da="18.000–27.000 kr." data-en="DKK 18,000–27,000">18.000–27.000 kr.</span></span></button>
+        </li>
+        <li class="rc-row" data-i="1" style="--lo:3.333%;--hi:10.000%">
+          <button type="button" class="rc-row-b"><span class="rc-row-n" data-da="Integration" data-en="Integration">Integration</span><span class="rc-row-h">10–30 <span data-da="t" data-en="h">t</span></span>
+            <span class="rc-row-bar" aria-hidden="true"><i></i></span>
+            <span class="rc-row-p us"><span data-da="500–1.500 kr." data-en="DKK 500–1,500">500–1.500 kr.</span></span>
+            <span class="rc-row-p"><span data-da="9.000–27.000 kr." data-en="DKK 9,000–27,000">9.000–27.000 kr.</span></span></button>
+        </li>
+        <li class="rc-row" data-i="2" style="--lo:20.000%;--hi:40.000%">
+          <button type="button" class="rc-row-b"><span class="rc-row-n" data-da="App" data-en="App">App</span><span class="rc-row-h">60–120 <span data-da="t" data-en="h">t</span></span>
+            <span class="rc-row-bar" aria-hidden="true"><i></i></span>
+            <span class="rc-row-p us"><span data-da="3.000–6.000 kr." data-en="DKK 3,000–6,000">3.000–6.000 kr.</span></span>
+            <span class="rc-row-p"><span data-da="54.000–108.000 kr." data-en="DKK 54,000–108,000">54.000–108.000 kr.</span></span></button>
+        </li>
+        <li class="rc-row" data-i="3" style="--lo:26.667%;--hi:50.000%">
+          <button type="button" class="rc-row-b"><span class="rc-row-n" data-da="Admin-app" data-en="Admin app">Admin-app</span><span class="rc-row-h">80–150 <span data-da="t" data-en="h">t</span></span>
+            <span class="rc-row-bar" aria-hidden="true"><i></i></span>
+            <span class="rc-row-p us"><span data-da="4.000–7.500 kr." data-en="DKK 4,000–7,500">4.000–7.500 kr.</span></span>
+            <span class="rc-row-p"><span data-da="72.000–135.000 kr." data-en="DKK 72,000–135,000">72.000–135.000 kr.</span></span></button>
+        </li>
+        <li class="rc-row" data-i="4" style="--lo:50.000%;--hi:100.000%">
+          <button type="button" class="rc-row-b"><span class="rc-row-n" data-da="Helt system" data-en="Full system">Helt system</span><span class="rc-row-h">150–300 <span data-da="t" data-en="h">t</span></span>
+            <span class="rc-row-bar" aria-hidden="true"><i></i></span>
+            <span class="rc-row-p us"><span data-da="7.500–15.000 kr." data-en="DKK 7,500–15,000">7.500–15.000 kr.</span></span>
+            <span class="rc-row-p"><span data-da="135.000–270.000 kr." data-en="DKK 135,000–270,000">135.000–270.000 kr.</span></span></button>
+        </li>
+      </ul>
+      <p class="rc-src" data-da="Typisk timepris i Danmark i 2026 er 600 til 1.200 kr. Vi regner med midten, 900 kr. Alle priser er uden moms." data-en="The typical hourly rate in Denmark in 2026 is DKK 600 to 1,200. We reckon with the middle, DKK 900. All prices exclude VAT.">Typisk timepris i Danmark i 2026 er 600 til 1.200 kr. Vi regner med midten, 900 kr. Alle priser er uden moms.</p>
+    </div>
   </div>
 </section>
 
@@ -579,7 +608,7 @@
 </footer>
 
 <script type="module" src="main.js?v=24"></script>
-<script type="module" src="page.js?v=56"></script>
+<script type="module" src="page.js?v=57"></script>
 <script type="module" src="sheets.js?v=1"></script>
 </body>
 </html>

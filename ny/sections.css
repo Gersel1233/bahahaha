@@ -38,22 +38,19 @@ html.pg-js .tile-film{ opacity:0; }
 @media (hover:hover){ .tn:not(:disabled):hover{ transform:scale(1.06); } }
 
 
-/* ---------- why Lesreg: work it out ----------
-   Built from the library (Liquid Atelier 3.2) at its own measures:
-   LA31 Control / Meniscus slider (label, value in H2 Medium 40, 1 px track,
-   2 px ultramarine fill, ticks in Annotation, a 48 px Rim thumb with a
-   porcelain core showing the value); LA31 Data / Figure (Label, the value in
-   Chivo Light 120/112, its unit in mono, a line in Small, a hairline field
-   over a travertine rule, an ultramarine "now"); LA31 Data / Ledger rows.
-   All on a porcelain core inside a Rim, over the dark. */
+/* ---------- why Lesreg: what a job costs ----------
+   Left: the heading and three benefits. Right: a Smoke glass panel (tint
+   .5, frost, the 1 px specular edge lit from -45 deg) floating over coloured
+   light it blurs; in it the kinds of job as LA31 Control / Chip (44 px
+   capsules; the chosen one solid porcelain, the rest glass), LA31 Data /
+   Figure for what you keep and two LA31 Data / Ledger rows. Under it all,
+   Lesreg's typical hours per kind of job on one scale of 0-300 hours. */
 .sr{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
-.rc{ position:relative; overflow:hidden; color:var(--porcelain); background:radial-gradient(80% 90% at 70% 110%, #2B3F7C, #101A33 50%, #05080F); }
-.rc::before{ content:""; position:absolute; right:-8%; top:10%; width:min(900px, 90vw); aspect-ratio:1; border-radius:50%; background:radial-gradient(closest-side, rgba(70,100,200,.3), transparent); pointer-events:none; }
-.rc-in{ position:relative; max-width:1440px; margin:0 auto; padding:clamp(96px, 12vh, 128px) 72px clamp(48px, 7vh, 72px);
-  display:grid; grid-template-columns:minmax(0, 5fr) 712px; grid-template-areas:"l calc" ". src"; column-gap:clamp(32px, 4vw, 72px); align-items:center; }
+.rc{ position:relative; overflow:hidden; color:var(--porcelain); background:radial-gradient(80% 70% at 70% 100%, #2B3F7C, #101A33 50%, #05080F); }
+.rc-in{ position:relative; max-width:1440px; margin:0 auto; padding:clamp(96px, 12vh, 128px) 72px clamp(56px, 8vh, 88px);
+  display:grid; grid-template-columns:minmax(0, 5fr) minmax(0, 7fr); grid-template-areas:"l glass" "hours hours"; column-gap:clamp(32px, 5vw, 96px); align-items:center; }
 .rc-l{ grid-area:l; }
 .rc-l .label{ color:rgba(246,244,239,.6); }
-/* H1 64/64 and Lead 20/30; the accent is the view's one phrase */
 .rc-h{ margin-top:16px; font:500 64px/64px var(--sans); letter-spacing:-.035em; }
 .rc-h .acc{ display:block; color:rgba(246,244,239,.72); }
 .rc-lead{ margin-top:24px; max-width:30em; font:400 20px/30px var(--sans); letter-spacing:-.005em; color:rgba(246,244,239,.78); }
@@ -61,90 +58,106 @@ html.pg-js .tile-film{ opacity:0; }
 .rc-ben li{ display:flex; align-items:center; gap:12px; font:400 16px/26px var(--sans); color:var(--porcelain); }
 .rc-ck{ flex:none; width:16px; height:16px; fill:none; stroke:var(--porcelain); stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; }
 
-.rc-calc{ grid-area:calc; position:relative; min-width:0; padding:32px 40px 36px; border-radius:30px; background:var(--porcelain); color:var(--obsidian);
-  box-shadow:0 0 0 5px rgba(255,255,255,.06), 0 0 0 6px rgba(255,255,255,.85), 9px 18px 44px rgba(13,13,15,.24); }
-.rc-src{ grid-area:src; margin-top:20px; font:400 12.5px/18px var(--sans); letter-spacing:.005em; color:rgba(246,244,239,.5); }
+/* the glass, and the light it is held over */
+.rc-glass{ grid-area:glass; position:relative; }
+.rc-bloom{ position:absolute; inset:-12% -10%; z-index:0; pointer-events:none; filter:blur(10px);
+  background:radial-gradient(34% 40% at 22% 30%, rgba(36,54,232,.85), transparent 70%), radial-gradient(30% 36% at 82% 72%, rgba(242,138,62,.55), transparent 70%),
+    radial-gradient(28% 32% at 70% 18%, rgba(110,170,255,.5), transparent 70%); animation:rc-drift 14s var(--ease) infinite alternate; }
+@keyframes rc-drift{ to{ transform:translate3d(3%, -2%, 0) rotate(4deg); } }
+.rc-panel{ position:relative; z-index:1; isolation:isolate; padding:32px; border-radius:32px; box-shadow:12px 24px 56px rgba(13,13,15,.35); }
+.rc-panel::before{ content:""; position:absolute; inset:0; z-index:-1; border-radius:inherit; background:rgba(14,15,16,.5);
+  -webkit-backdrop-filter:blur(28px) saturate(1.5); backdrop-filter:blur(28px) saturate(1.5); }
+.rc-panel::after{ content:""; position:absolute; inset:0; border-radius:inherit; padding:1px; pointer-events:none;
+  background:linear-gradient(135deg, rgba(255,255,255,.85), rgba(255,255,255,.12) 45%, rgba(255,255,255,.4));
+  -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite:xor; mask-composite:exclude; }
 
-/* LA31 Control / Meniscus slider, 150 high */
-.rc-ms{ position:relative; height:150px; }
-.rc-ms-l{ position:absolute; left:0; top:12px; color:var(--ash); }
-.rc-ms-v{ position:absolute; right:0; top:0; font:500 40px/44px var(--sans); letter-spacing:-.025em; white-space:nowrap; }
-.rc-ms-tr{ position:absolute; left:0; right:0; top:64px; height:72px; touch-action:none; cursor:pointer; }
-.rc-tr{ position:absolute; left:0; right:0; top:24px; height:1px; background:var(--obsidian); }
-.rc-fill{ position:absolute; left:0; top:23.5px; height:2px; width:var(--x, 0%); background:var(--ultra); }
-.rc-ticks span{ position:absolute; left:var(--t); top:30px; transform:translateX(-50%); padding-top:12px; font:400 11.5px/16px var(--mono); color:var(--ash); }
-.rc-ticks span::before{ content:""; position:absolute; left:50%; top:0; width:1px; height:6px; background:var(--ash); }
-.rc-ticks span:first-child{ transform:none; } .rc-ticks span:first-child::before{ left:0; }
-.rc-ticks span:last-child{ transform:translateX(-100%); } .rc-ticks span:last-child::before{ left:auto; right:0; }
-.rc-th{ position:absolute; left:var(--x, 0%); top:0; width:48px; height:48px; margin-left:-24px; padding:0; border:1px solid #fff; border-radius:24px; cursor:grab; touch-action:none;
-  background:rgba(255,255,255,.06); box-shadow:9px 18px 44px rgba(13,13,15,.24); transition:transform 180ms var(--ease); }
-.rc-th b{ position:absolute; left:5px; top:5px; width:36px; height:36px; display:grid; place-items:center; border-radius:18px; background:var(--porcelain); font:400 11.5px/16px var(--mono); color:var(--obsidian); }
-.rc-ms-tr.drag .rc-th{ cursor:grabbing; transform:scale(1.06); }
-.rc-th:focus-visible{ outline:none; box-shadow:0 0 0 2px var(--porcelain), 0 0 0 4px var(--ultra), 9px 18px 44px rgba(13,13,15,.24); }
+/* LA31 Control / Chip: 44 px capsules; chosen = solid porcelain */
+.rc-chips{ display:flex; flex-wrap:wrap; gap:8px; }
+.rc-chip{ position:relative; isolation:isolate; height:44px; padding:0 18px; border:0; border-radius:22px; background:none; cursor:pointer; white-space:nowrap;
+  font:400 14px/16px var(--sans); color:rgba(246,244,239,.85); transition:color 180ms var(--ease); -webkit-tap-highlight-color:transparent; }
+.rc-chip::before{ content:""; position:absolute; inset:0; z-index:-1; border-radius:inherit; background:rgba(255,255,255,.08); transition:background 180ms var(--ease), transform 180ms var(--ease); }
+.rc-chip::after{ content:""; position:absolute; inset:0; border-radius:inherit; padding:1px; pointer-events:none;
+  background:linear-gradient(135deg, rgba(255,255,255,.6), rgba(255,255,255,.08) 45%, rgba(255,255,255,.28));
+  -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite:xor; mask-composite:exclude; }
+@media (hover:hover){ .rc-chip:not(.on):hover::before{ background:rgba(255,255,255,.14); } }
+.rc-chip.on{ color:var(--obsidian); font-weight:500; }
+.rc-chip.on::before{ background:var(--porcelain); box-shadow:3px 6px 16px rgba(13,13,15,.25); }
+.rc-chip:active::before{ transform:scale(.96); }
+.rc-chip:focus-visible{ outline:none; box-shadow:0 0 0 2px #101A33, 0 0 0 4px var(--ultra); }
 
-/* LA31 Data / Figure: what is saved */
-.rc-fig{ margin-top:8px; padding-top:28px; border-top:1px solid var(--travertine); }
-.rc-fig .label{ color:var(--ash); }
-.rc-v{ display:flex; align-items:flex-start; margin-top:16px; white-space:nowrap; }
+/* LA31 Data / Figure on the glass */
+.rc-fig{ margin-top:28px; }
+.rc-fig .label{ color:rgba(246,244,239,.6); }
+.rc-v{ display:flex; align-items:flex-start; margin-top:14px; white-space:nowrap; }
 .rc-v > span{ font:300 120px/112px var(--sans); letter-spacing:-.05em; font-variant-numeric:tabular-nums; }
-.rc-v small{ margin:26px 0 0 14px; font:400 11.5px/16px var(--mono); color:var(--graphite); }
-.rc-d{ margin-top:14px; font:400 12.5px/18px var(--sans); letter-spacing:.005em; }
-/* its field: kroner an hour, 0 to 1,200; the market's stretch, Lesreg's 50 */
-.rc-f{ position:relative; height:84px; margin-top:16px; border-bottom:1px solid var(--travertine); }
-.rc-f-mk, .rc-f-us{ position:absolute; height:1px; background:var(--obsidian); transform-origin:0 50%; transform:scaleX(var(--g, 1)); }
-.rc-f-mk{ left:50%; width:50%; top:26px; }
-.rc-f-mk::before, .rc-f-mk::after{ content:""; position:absolute; top:-4px; width:1px; height:9px; background:var(--obsidian); }
-.rc-f-mk::before{ left:0; } .rc-f-mk::after{ right:0; }
-.rc-f-us{ left:0; width:4.1667%; top:58px; }
-.rc-now{ position:absolute; left:calc(4.1667% - 4px); top:54px; width:8px; height:8px; border-radius:50%; background:var(--ultra); opacity:var(--n, 1); }
-.rc-f-m{ position:absolute; left:50%; top:2px; font:400 11.5px/16px var(--mono); color:var(--ash); }
-.rc-f-a, .rc-f-b{ position:absolute; top:calc(100% + 8px); font:400 11.5px/16px var(--mono); color:var(--ash); }
-.rc-f-a{ left:0; } .rc-f-b{ right:0; }
+.rc-v small{ margin:26px 0 0 14px; font:400 11.5px/16px var(--mono); color:rgba(246,244,239,.7); }
+.rc-d{ margin-top:14px; font:400 12.5px/18px var(--sans); letter-spacing:.005em; color:rgba(246,244,239,.75); }
 
-/* LA31 Data / Ledger rows, 48 high; the chosen one on limestone */
-.rc-ldg{ list-style:none; margin:44px 0 0; padding:0; }
-.rc-ldg .lr{ display:flex; align-items:center; gap:12px; height:48px; padding:0 16px; border-bottom:1px solid var(--travertine); }
-.rc-ldg .lr.sel{ border-bottom:0; border-radius:12px; background:var(--limestone); }
+/* LA31 Data / Ledger rows, on the dark */
+.rc-ldg{ list-style:none; margin:24px 0 0; padding:0; }
+.rc-ldg .lr{ display:flex; align-items:center; gap:12px; height:48px; padding:0 16px; border-bottom:1px solid rgba(246,244,239,.14); }
+.rc-ldg .lr.sel{ border-bottom:0; border-radius:12px; background:rgba(246,244,239,.1); }
 .lr-lens{ flex:none; width:6px; height:6px; border-radius:50%; }
-.lr.sel .lr-lens{ background:var(--ultra); }
-.lr-ref{ flex:none; width:76px; font:400 11.5px/16px var(--mono); color:var(--graphite); }
+.lr.sel .lr-lens{ background:var(--ultra); box-shadow:0 0 0 3px rgba(36,54,232,.35); }
+.lr-ref{ flex:none; width:76px; font:400 11.5px/16px var(--mono); color:rgba(246,244,239,.6); white-space:nowrap; }
 .lr-name{ flex:1; min-width:0; font:400 14px/22px var(--sans); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .lr.sel .lr-name{ font-weight:500; line-height:16px; }
 .lr-amt{ flex:none; text-align:right; font:400 11.5px/16px var(--mono); }
 
+/* Lesreg's typical hours: one scale for every kind of job */
+.rc-hours{ grid-area:hours; margin-top:clamp(56px, 9vh, 96px); }
+.rc-hours-h{ display:flex; justify-content:space-between; align-items:baseline; gap:24px; flex-wrap:wrap; }
+.rc-hours-h h3{ font:500 24px/30px var(--sans); letter-spacing:-.015em; }
+.rc-hours-h p{ font:400 14px/22px var(--sans); color:rgba(246,244,239,.65); }
+.rc-cols, .rc-row-b{ display:grid; grid-template-columns:minmax(120px, 1.3fr) 90px minmax(0, 3fr) 150px 170px; column-gap:24px; align-items:center; }
+.rc-cols{ margin-top:24px; padding:0 16px 10px; font:600 11px/14px var(--sans); letter-spacing:.06em; text-transform:uppercase; color:rgba(246,244,239,.5); }
+.rc-cols > span:nth-child(n+4){ text-align:right; }
+.rc-ax{ display:flex; justify-content:space-between; font:400 11.5px/16px var(--mono); letter-spacing:0; text-transform:none; }
+.rc-rows{ list-style:none; margin:0; padding:0; }
+.rc-row{ border-top:1px solid rgba(246,244,239,.14); }
+.rc-row-b{ width:100%; min-height:56px; padding:0 16px; border:0; border-radius:12px; background:none; color:inherit; text-align:left; cursor:pointer; font:inherit;
+  transition:background 180ms var(--ease); -webkit-tap-highlight-color:transparent; }
+@media (hover:hover){ .rc-row:not(.on) .rc-row-b:hover{ background:rgba(246,244,239,.05); } }
+.rc-row.on .rc-row-b{ background:rgba(246,244,239,.1); }
+.rc-row-b:focus-visible{ outline:none; box-shadow:0 0 0 2px #101A33, 0 0 0 4px var(--ultra); }
+.rc-row-n{ font:400 16px/22px var(--sans); }
+.rc-row.on .rc-row-n{ font-weight:500; }
+.rc-row-h{ font:400 11.5px/16px var(--mono); color:rgba(246,244,239,.7); }
+.rc-row-bar{ position:relative; height:24px; }
+.rc-row-bar::before{ content:""; position:absolute; left:0; right:0; top:50%; height:1px; background:rgba(246,244,239,.18); }
+.rc-row-bar i{ position:absolute; left:var(--lo); width:calc(var(--hi) - var(--lo)); top:calc(50% - 4px); height:8px; border-radius:4px; background:rgba(246,244,239,.42);
+  transform-origin:0 50%; transform:scaleX(var(--g, 1)); transition:background 180ms var(--ease); }
+.rc-row.on .rc-row-bar i{ background:var(--porcelain); }
+.rc-row-p{ text-align:right; font:400 11.5px/16px var(--mono); color:rgba(246,244,239,.55); white-space:nowrap; }
+.rc-row-p.us{ color:var(--porcelain); }
+.rc-src{ margin-top:20px; font:400 12.5px/18px var(--sans); letter-spacing:.005em; color:rgba(246,244,239,.5); }
+
 @media (max-width:1199px){
-  .rc-in{ grid-template-columns:minmax(0, 1fr); grid-template-areas:"l" "calc" "src"; row-gap:40px; padding:clamp(96px, 12vh, 120px) 40px 56px; }
-  .rc-calc{ justify-self:start; width:min(712px, 100%); }
-  .rc-src{ margin-top:-20px; }
+  .rc-in{ grid-template-columns:minmax(0, 1fr); grid-template-areas:"l" "glass" "hours"; row-gap:44px; padding:clamp(96px, 12vh, 120px) 40px 64px; }
+  .rc-hours{ margin-top:12px; }
 }
 @media (max-width:767px){
-  .rc-in{ padding:80px 20px 40px; row-gap:28px; }
+  .rc-in{ padding:80px 20px 48px; row-gap:32px; }
   .rc-h{ font-size:40px; line-height:44px; letter-spacing:-.025em; }
   .rc-lead{ margin-top:16px; font-size:16px; line-height:26px; }
   .rc-ben{ margin-top:20px; gap:8px; }
   .rc-ben li{ font-size:15px; line-height:24px; }
-  .rc-calc{ padding:20px; border-radius:26px; }
-  .rc-ms{ height:132px; }
-  .rc-ms-v{ font-size:32px; line-height:36px; }
-  .rc-ms-l{ top:10px; }
-  .rc-ms-tr{ top:54px; }
-  /* Figure, Mobile: the value at 88, or as large as the phone allows */
-  .rc-fig{ padding-top:20px; }
-  .rc-v{ margin-top:12px; }
+  .rc-panel{ padding:20px; border-radius:26px; }
+  /* chips scroll sideways on a phone, as the library says */
+  .rc-chips{ flex-wrap:nowrap; overflow-x:auto; margin:0 -20px; padding:2px 20px 6px; scrollbar-width:none; }
+  .rc-chips::-webkit-scrollbar{ display:none; }
+  .rc-fig{ margin-top:18px; }
   .rc-v > span{ font-size:min(19vw, 88px); line-height:min(19vw, 88px); }
   .rc-v small{ margin:18px 0 0 10px; }
-  /* on a phone the two rows say it; the field is left out */
-  .rc-f{ display:none; }
-  .rc-ldg{ margin-top:16px; }
-  /* Ledger row, Compact: 68 high, two lines, the rate above, name and sum below */
-  .rc-ldg .lr{ position:relative; display:block; height:68px; padding:0; }
-  .rc-ldg .lr-lens{ position:absolute; left:12px; top:31px; }
-  .rc-ldg .lr-ref{ position:absolute; left:28px; top:12px; width:auto; }
-  .rc-ldg .lr-name{ position:absolute; left:28px; right:110px; top:36px; font-weight:500; line-height:16px; }
-  .rc-ldg .lr-amt{ position:absolute; right:16px; top:38px; }
-  .rc-src{ margin-top:0; }
+  .rc-ldg .lr{ padding:0 12px; }
+  .lr-ref{ width:auto; white-space:nowrap; }
+  .rc-hours-h{ flex-direction:column; gap:6px; }
+  .rc-cols{ display:none; }
+  .rc-row-b{ grid-template-columns:1fr auto; grid-template-areas:"n h" "bar bar" "us them"; row-gap:6px; padding:12px; }
+  .rc-row-n{ grid-area:n; } .rc-row-h{ grid-area:h; } .rc-row-bar{ grid-area:bar; height:14px; }
+  .rc-row-p.us{ grid-area:us; text-align:left; } .rc-row-p:not(.us){ grid-area:them; }
 }
-@media (prefers-reduced-motion: reduce){ .rc-th{ transition:none; } }
+@media (prefers-reduced-motion: reduce){ .rc-bloom{ animation:none; } .rc-chip::before, .rc-row-b, .rc-row-bar i{ transition:none; } }
 
 /* ---------- Callster: the owner texts, it handles it ---------- */
 .case-cs .cs-vis{ display:grid; place-items:center; padding:0; }
