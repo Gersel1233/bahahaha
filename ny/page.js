@@ -152,9 +152,9 @@ S.alt = el => {
      in which all of it crumples into a ball of paper that opens into the
      mark; drawn frame by frame onto a canvas, as the scroll moves ---------- */
   // keys: [finale progress, frame] - the crumple, the ball resting while it
-  // moves to the middle, the tear, the open sheet, the fold to the mark
+  // moves to the middle, the opening out, the open sheet, the fold
   const FOLD = { n: +(cv.dataset.n || 0), src: cv.dataset.src || '', end: 0.24,
-    keys: [[0.075, 0], [0.29, 36], [0.42, 70], [0.48, 88], [0.58, 99], [0.74, 119]] };
+    keys: [[0.075, 0], [0.09, 8], [0.27, 32], [0.3, 36], [0.38, 70], [0.53, 88], [0.6, 99], [0.74, 119]] };
   const pics = []; let loading = false, shown = -1;
   function loadFrames() {
     if (loading || !FOLD.n) return; loading = true;
@@ -219,7 +219,7 @@ S.alt = el => {
     const dy = (best - P0) * run;
     if (Math.abs(dy) < 3) return;
     // into the finale the glide is long, so the film plays as a film
-    glide(scrollY + dy, best === 1 && P0 < 0.85 ? 5200 : Math.min(900, Math.max(420, Math.abs(dy) / innerHeight * 520)));
+    glide(scrollY + dy, best === 1 && P0 < 0.85 ? 6200 : Math.min(900, Math.max(420, Math.abs(dy) / innerHeight * 520)));
   };
   // a glide of our own, so its length can be chosen; any touch or wheel ends it
   let glideRaf = 0;
@@ -369,11 +369,14 @@ S.alt = el => {
     if (cap && cap[1] === 'end') setO(obj, 0);
     setO(fin, Q > 0 || cap ? 1 : 0);
     setO(cv, film ? xf : 0);
-    const cm = io(seg(Q, 0.29, 0.42));
+    const cm = io(seg(Q, 0.3, 0.38));
+    // the crumple is the film as it is, edges melted into the page; from
+    // the ball on the paper is cut free of its ground, so it can move
+    cv.classList.toggle('free', Q >= 0.3);
     if (!cap) setT(cv, 'translate3d(' + (cm * (W / 2 - V.cx)).toFixed(1) + 'px,' + (cm * (V.my - V.cy)).toFixed(1) + 'px,0) scale(' + lerp(1, V.S2 / V.S, cm).toFixed(4) + ')');
     if (film) {
-      // the frames are not spent evenly: the crumple, a rest while the ball
-      // moves, the tearing open quickly, the sheet and its folding slowly
+      // the frames are not spent evenly: the crumple and the opening out
+      // are given time, the rest while the ball moves is short
       let kf = 0;
       for (let j = 1; j < FOLD.keys.length; j++) {
         const [q0, f0] = FOLD.keys[j - 1], [q1, f1] = FOLD.keys[j];
