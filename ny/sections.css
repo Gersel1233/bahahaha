@@ -141,31 +141,113 @@ html.pg-js .tile-film{ opacity:0; }
 @media (prefers-reduced-motion: reduce){ .rc-bloom{ animation:none; } .rc-chip::before{ transition:none; } }
 
 /* ---------- talk to us ----------
-   On paper after the navy of the price. The heading at H1 64/64 with the
-   accent line, Lead 20/30; on the right a limestone card (r 28) of Ledger
-   rows and the obsidian LA32 button the width of the card. */
-.kt{ background:var(--porcelain); color:var(--obsidian); }
-.kt-in{ max-width:1440px; margin:0 auto; padding:clamp(96px, 14vh, 160px) var(--gut) clamp(96px, 14vh, 160px);
-  display:grid; grid-template-columns:minmax(0, 6fr) minmax(0, 5fr); column-gap:clamp(32px, 6vw, 112px); align-items:center; }
-.kt .label{ color:var(--ash); }
+   A stage the navy of the tiles, r 32, on the paper. The words left: H1
+   64/64 with the accent, Lead 20/30, the kinds of job as LA31 Chips on the
+   glass and the LA32 button. Right, the iPhone of the opening rising from
+   the stage's lower edge, on it Messages: the message to Lesreg types itself
+   into the field, goes, and is answered. */
+.kt{ background:var(--porcelain); padding:clamp(72px, 12vh, 140px) 0; }
+.kt-stage{ position:relative; max-width:1296px; margin:0 auto; border-radius:32px; overflow:hidden; isolation:isolate;
+  display:grid; grid-template-columns:minmax(0, 1fr) minmax(0, 500px); column-gap:48px; color:var(--porcelain);
+  background:radial-gradient(70% 90% at 75% 115%, #2B3F7C, #101A33 55%, #05080F);
+  box-shadow:0 1px 0 rgba(255,255,255,.6) inset, 0 30px 60px -36px rgba(14,15,16,.4); }
+@media (max-width:1440px){ .kt-stage{ margin:0 var(--gut); } }
+/* the light behind the phone, drifting slowly */
+.kt-stage::before{ content:""; position:absolute; inset:-10%; z-index:-1; pointer-events:none; filter:blur(12px);
+  background:radial-gradient(28% 36% at 74% 40%, rgba(36,54,232,.55), transparent 70%), radial-gradient(24% 30% at 90% 78%, rgba(242,138,62,.3), transparent 70%), radial-gradient(30% 40% at 12% 100%, rgba(80,140,220,.22), transparent 70%);
+  animation:kt-drift 14s ease-in-out infinite alternate; }
+@keyframes kt-drift{ to{ transform:translate3d(-3%, 2%, 0) scale(1.05); } }
+.kt-l{ padding:72px 0 72px 72px; align-self:center; }
+.kt .label{ color:rgba(246,244,239,.6); }
 .kt-h{ margin-top:16px; font:500 64px/64px var(--sans); letter-spacing:-.035em; }
-.kt-h .acc{ color:var(--graphite); }
-.kt-lead{ margin-top:24px; max-width:28em; font:400 20px/30px var(--sans); letter-spacing:-.005em; color:var(--graphite); }
-.kt-card{ padding:12px 28px 28px; border-radius:28px; background:var(--limestone); }
-.kt-rows{ list-style:none; margin:0 0 24px; padding:0; }
-.kt-rows li{ display:flex; align-items:center; justify-content:space-between; gap:16px; height:56px; border-bottom:1px solid var(--travertine); font:400 14px/22px var(--sans); }
-.kt-rows span{ color:var(--graphite); }
-.kt-rows a, .kt-rows b{ color:var(--obsidian); font-weight:500; text-align:right; }
-.kt-rows a{ text-decoration:none; }
-@media (hover:hover){ .kt-rows a:hover{ text-decoration:underline; text-underline-offset:3px; } }
-.kt-card .btn{ width:100%; justify-content:space-between; }
-@media (max-width:1023px){ .kt-in{ grid-template-columns:minmax(0, 1fr); row-gap:40px; } }
+.kt-h .acc{ display:block; color:rgba(246,244,239,.72); }
+.kt-lead{ margin-top:24px; max-width:27em; font:400 20px/30px var(--sans); letter-spacing:-.005em; color:rgba(246,244,239,.78); }
+.kt-chips{ margin-top:32px; }
+.kt-go{ display:flex; align-items:center; flex-wrap:wrap; gap:16px 24px; margin-top:32px; }
+.kt-mail{ font:400 16px/26px var(--sans); color:rgba(246,244,239,.7); text-decoration:underline; text-decoration-color:rgba(246,244,239,.3); text-underline-offset:4px; }
+@media (hover:hover){ .kt-mail:hover{ color:var(--porcelain); } }
+
+/* the whole phone, so the field it is typed into can be seen */
+.kt-ph{ position:relative; align-self:center; display:grid; place-items:center; padding:56px 0; }
+.kt-ph .dev-iph{ width:330px; filter:drop-shadow(0 30px 60px rgba(0,0,0,.45)); }
+
+/* Messages, in points of a 402-pt screen as cqw */
+.ktm{ position:absolute; inset:0; display:grid; grid-template-rows:auto 1fr auto auto; grid-template-columns:minmax(0, 1fr); background:#fff; color:#000;
+  font-family:-apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif; letter-spacing:-.1cqw; }
+.ktm-nav{ height:37cqw; padding:14.4cqw 3cqw 2.4cqw; display:grid; grid-template-columns:20cqw 1fr 20cqw; align-items:end;
+  background:rgba(249,249,249,.94); box-shadow:0 .12cqw 0 rgba(0,0,0,.18); }
+.ktm-back{ align-self:start; margin-top:3cqw; color:#007aff; }
+.ktm-back svg{ width:3cqw; height:5cqw; }
+.ktm-who{ display:flex; flex-direction:column; align-items:center; gap:1.2cqw; font-size:3.2cqw; }
+.ktm-av{ width:13cqw; height:13cqw; border-radius:50%; background:#0E0F10; display:grid; place-items:center; }
+.ktm-av svg{ width:6.4cqw; height:6.4cqw; }
+.ktm-body{ display:flex; flex-direction:column; gap:1.4cqw; padding:4cqw 3.5cqw; overflow:hidden; }
+.ktm-time{ text-align:center; font-size:2.8cqw; line-height:1.35; color:#8e8e93; margin-bottom:2cqw; }
+.ktm-time b{ font-weight:600; }
+.ktm-b{ max-width:76%; padding:2.2cqw 3.4cqw; border-radius:4.6cqw; font-size:4.1cqw; line-height:1.28; }
+.ktm-b.me{ align-self:flex-end; background:#0A84FF; color:#fff; border-bottom-right-radius:1.4cqw; }
+.ktm-b.them{ align-self:flex-start; background:#e9e9eb; color:#000; border-bottom-left-radius:1.4cqw; }
+.ktm-del{ align-self:flex-end; font-size:2.8cqw; color:#8e8e93; margin:-.6cqw .6cqw 1cqw; }
+.ktm-dots{ display:flex; gap:1.1cqw; padding:3cqw 3.6cqw; }
+.ktm-dots i{ width:2cqw; height:2cqw; border-radius:50%; background:#8e8e93; animation:dot 1.2s infinite ease-in-out; }
+.ktm-dots i:nth-child(2){ animation-delay:.15s; } .ktm-dots i:nth-child(3){ animation-delay:.3s; }
+@keyframes dot{ 0%, 60%, 100%{ opacity:.35; transform:none; } 30%{ opacity:1; transform:translateY(-.6cqw); } }
+.ktm-bar{ display:flex; align-items:center; gap:2.4cqw; padding:2.4cqw 3.5cqw; }
+/* the iOS keyboard, in points of the 402-pt screen; the key being typed lights */
+.ktm-kb{ overflow:hidden; padding:2cqw .8cqw 13cqw; background:#D1D3D9; display:flex; flex-direction:column; gap:2.9cqw; font-family:inherit; }
+.ktm-row{ display:flex; justify-content:center; gap:1.2cqw; }
+.ktm-k{ flex:1 1 0; min-width:0; max-width:8.6cqw; height:10.6cqw; border-radius:1.4cqw; background:#fff; box-shadow:0 .25cqw 0 rgba(0,0,0,.3); display:grid; place-items:center; font-size:5.6cqw; line-height:1; color:#000; transition:background .12s; }
+.ktm-k.fn{ flex:0 0 11.5cqw; max-width:none; background:#ABB0BA; font-size:3.8cqw; }
+.ktm-k.sp{ flex:1 1 auto; max-width:none; font-size:3.8cqw; }
+.ktm-k.ret{ flex:0 0 22cqw; max-width:none; background:#ABB0BA; font-size:3.8cqw; }
+.ktm-k.hit{ background:#ABB0BA; transition:none; }
+.ktm-plus{ flex:none; width:8cqw; height:8cqw; border-radius:50%; background:#e9e9eb; display:grid; place-items:center; color:#3c3c43; font-size:5cqw; line-height:1; }
+.ktm-field{ position:relative; flex:1; min-height:8.4cqw; border-radius:4.2cqw; border:.25cqw solid #c7c7cc; display:flex; align-items:center; padding:1.2cqw 9cqw 1.2cqw 3.2cqw; font-size:3.8cqw; line-height:1.3; color:#000; }
+.ktm-ph{ color:#b5b5ba; }
+.ktm-typed:not(:empty) ~ .ktm-ph{ display:none; }
+.ktm-caret{ display:none; width:.35cqw; height:4.4cqw; margin-left:.2cqw; background:#007aff; animation:caret 1s steps(1) infinite; }
+.kt-typing .ktm-caret{ display:inline-block; }
+@keyframes caret{ 50%{ opacity:0; } }
+.ktm-up{ position:absolute; right:1cqw; bottom:1cqw; width:6.4cqw; height:6.4cqw; border-radius:50%; background:#007aff; display:grid; place-items:center; transform:scale(0); transition:transform .25s cubic-bezier(.2,1.4,.3,1); }
+.ktm-up svg{ width:3.6cqw; height:3.6cqw; }
+.kt-ready .ktm-up{ transform:none; }
+
+/* the conversation, step by step (set by page.js) */
+.ktm-b.me, .ktm-del, .ktm-dots, .ktm-re{ display:none; }
+.kt-m1 .ktm-b.me, .kt-m1 .ktm-del{ display:block; animation:kt-pop .5s cubic-bezier(.2,1.3,.3,1) both; }
+.kt-m1 .ktm-b.me{ transform-origin:100% 100%; }
+.kt-m1 .ktm-del{ animation-delay:.25s; }
+.kt-m2 .ktm-dots{ display:flex; animation:kt-pop .4s cubic-bezier(.2,1.3,.3,1) both; transform-origin:0 100%; }
+.kt-m3 .ktm-dots{ display:none; }
+.kt-m3 .ktm-re{ display:block; animation:kt-pop .5s cubic-bezier(.2,1.3,.3,1) both; transform-origin:0 100%; }
+@keyframes kt-pop{ from{ opacity:0; transform:translate3d(0, 3cqw, 0) scale(.9); } }
+
+@media (max-width:1199px){
+  .kt-stage{ grid-template-columns:minmax(0, 1fr) minmax(0, 400px); column-gap:24px; }
+  .kt-l{ padding:56px 0 56px 48px; }
+  .kt-ph .dev-iph{ width:300px; }
+}
+@media (max-width:899px){
+  .kt-stage{ grid-template-columns:minmax(0, 1fr); min-height:0; }
+  .kt-l{ padding:48px 40px 8px; }
+  .kt-ph{ padding:40px 0 48px; }
+}
 @media (max-width:767px){
+  .kt{ padding:56px 0; }
+  .kt-stage{ border-radius:28px; }
+  .kt-l{ padding:40px 20px 0; }
   .kt-h{ font-size:40px; line-height:44px; letter-spacing:-.025em; }
   .kt-lead{ margin-top:16px; font-size:16px; line-height:26px; }
-  .kt-card{ padding:4px 20px 20px; border-radius:24px; }
-  .kt-rows li{ font-size:12.5px; }
+  .kt-chips{ margin:24px -20px 0; flex-wrap:nowrap; overflow-x:auto; padding:2px 20px 6px; scrollbar-width:none;
+    -webkit-mask:linear-gradient(90deg, transparent, #000 20px, #000 calc(100% - 28px), transparent); mask:linear-gradient(90deg, transparent, #000 20px, #000 calc(100% - 28px), transparent); }
+  .kt-chips::-webkit-scrollbar{ display:none; }
+  .kt-go{ margin-top:24px; }
+  .kt-send{ width:100%; justify-content:space-between; }
+  .kt-mail{ font-size:15px; }
+  .kt-ph{ padding:36px 0 32px; }
+  .kt-ph .dev-iph{ width:250px; }
 }
+@media (prefers-reduced-motion: reduce){ .kt-stage::before{ animation:none; } }
 
 /* ---------- Callster: the owner texts, it handles it ---------- */
 .case-cs .cs-vis{ display:grid; place-items:center; padding:0; }

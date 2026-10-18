@@ -184,6 +184,83 @@ if (rc) {
   }
 }
 
+/* ---------- talk to us: what you choose is the message. On the phone it
+   types itself into the field, goes, and Lesreg answers; the button opens
+   the mail with the same message in it. While it is seen, and until it is
+   touched, it moves on to the next kind of job by itself. ---------- */
+const kt = document.querySelector('.kt-stage');
+if (kt) {
+  const chips = $$('.rc-chip', kt), me = kt.querySelector('.ktm-b.me'), typed = kt.querySelector('.ktm-typed'), send = kt.querySelector('.kt-send');
+  const L = () => (html.lang === 'en' ? 'en' : 'da');
+  let cur = Math.max(0, chips.findIndex(c => c.classList.contains('on'))), timers = [], seen = false, touched = still, played = false;
+  // the keyboard, drawn here: Danish letters, the key typed lights for a moment
+  const kb = kt.querySelector('.ktm-kb'), keys = {};
+  [['qwertyuiopå'], ['asdfghjklæø'], ['⇧', 'zxcvbnm', '⌫'], ['123', ' ', 'retur']].forEach(row => {
+    const r = document.createElement('div'); r.className = 'ktm-row';
+    row.forEach(part => {
+      const one = (t, cls) => { const k = document.createElement('span'); k.className = 'ktm-k' + (cls ? ' ' + cls : ''); k.textContent = t; r.appendChild(k); return k; };
+      if (part === ' ') keys[' '] = one('mellemrum', 'sp');
+      else if (part === 'retur') one('retur', 'ret');
+      else if (part.length > 1 && part !== 'zxcvbnm' && !/^[a-zæøå]+$/.test(part)) one(part, 'fn');
+      else if (part.length === 1 && !/[a-zæøå]/.test(part)) one(part, 'fn');
+      else [...part].forEach(ch => { keys[ch] = one(ch); });
+    });
+    kb.appendChild(r);
+  });
+  const hit = ch => { const k = keys[ch.toLowerCase()]; if (!k) return; k.classList.add('hit'); setTimeout(() => k.classList.remove('hit'), 110); };
+  const text = () => {
+    const c = chips[cur], w = L() === 'en' ? c.dataset.enWhat : c.dataset.daWhat;
+    return L() === 'en' ? `Hi Lesreg! We need ${w} made. Can you help?` : `Hej Lesreg! Vi skal have lavet ${w}. Kan I hjælpe?`;
+  };
+  const mail = () => {
+    const subject = L() === 'en' ? 'New job for Lesreg' : 'Ny opgave til Lesreg';
+    send.href = 'mailto:mgersel@lesreg.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(text() + '\n\n');
+  };
+  const stage = (...on) => { kt.classList.remove('kt-typing', 'kt-ready', 'kt-m1', 'kt-m2', 'kt-m3'); on.forEach(c => kt.classList.add(c)); };
+  const at = (ms, f) => timers.push(setTimeout(f, ms));
+  // the whole exchange; when it is done, the next kind of job, unless touched
+  const play = () => {
+    timers.forEach(clearTimeout); timers = [];
+    const t = text(); me.textContent = t; mail();
+    if (still) { typed.textContent = ''; stage('kt-m1', 'kt-m3'); return; }
+    typed.textContent = ''; stage('kt-typing');
+    const step = 38; let i = 0;
+    at(300, function tick() { typed.textContent = t.slice(0, ++i); hit(t[i - 1]); if (i < t.length) at(step, tick); else { kt.classList.add('kt-ready'); at(420, sent); } });
+    function sent() {
+      typed.textContent = ''; stage('kt-m1');
+      at(900, () => stage('kt-m1', 'kt-m2'));
+      at(2500, () => stage('kt-m1', 'kt-m3'));
+      at(7500, () => { if (!touched && seen) { choose((cur + 1) % chips.length); } });
+    }
+  };
+  const choose = (i, focus) => {
+    cur = i;
+    chips.forEach((c, j) => { const on = j === i; c.classList.toggle('on', on); c.setAttribute('aria-checked', on); c.tabIndex = on ? 0 : -1; });
+    if (focus) chips[i].focus();
+    const row = chips[i].parentNode, c = chips[i];
+    if (row.scrollWidth > row.clientWidth) row.scrollTo({ left: c.offsetLeft - (row.clientWidth - c.offsetWidth) / 2, behavior: still ? 'auto' : 'smooth' });
+    play();
+  };
+  chips.forEach((c, i) => {
+    c.addEventListener('click', () => { touched = true; choose(i); });
+    c.addEventListener('keydown', e => {
+      const d = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[e.key];
+      if (!d) return;
+      e.preventDefault(); touched = true; choose((i + d + chips.length) % chips.length, true);
+    });
+  });
+  // in the other language, the same message
+  new MutationObserver(() => { me.textContent = text(); mail(); if (typed.textContent) typed.textContent = ''; }).observe(html, { attributes: true, attributeFilter: ['lang'] });
+  mail();
+  if ('IntersectionObserver' in window && !still) {
+    new IntersectionObserver(es => es.forEach(en => {
+      const was = seen; seen = en.intersectionRatio >= 0.35;
+      // it begins when first seen; seen again, it goes on with the next one
+      if (seen && !was && (!played || !touched)) { played = true; play(); }
+    }), { threshold: [0, 0.35] }).observe(kt);
+  } else { me.textContent = text(); stage('kt-m1', 'kt-m3'); }
+}
+
 /* ---------- the band: two rows that the scroll pushes, opposite ways ---------- */
 const rows = $$('[data-mq]');
 // each row holds its words twice, so it can run forever without a seam

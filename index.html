@@ -23,7 +23,7 @@
 <link rel="stylesheet" href="ny/ny.css?v=17" />
 <link rel="stylesheet" href="ny/page.css?v=22" />
 <link rel="stylesheet" href="ny/hero.css?v=29" />
-<link rel="stylesheet" href="ny/sections.css?v=74" />
+<link rel="stylesheet" href="ny/sections.css?v=78" />
 <script>
   /* decided before first paint: with JS the phone turns as you scroll;
      without it, the first screen simply stands there */
@@ -406,22 +406,37 @@
   </div>
 </section>
 
-<!-- talk to us: on paper after the navy of the price, the words on the left
-     and on the right a card with the address and the button -->
+<!-- talk to us: a stage the navy of the tiles. Choose what you need made,
+     and on the phone the message to Lesreg writes itself and is answered;
+     the button opens the mail with that message already in it. -->
 <section class="kt" id="kontakt" data-paper aria-labelledby="kt-h">
-  <div class="kt-in">
+  <div class="kt-stage" data-r>
     <div class="kt-l">
-      <p class="label" data-r><span data-da="Kontakt" data-en="Contact">Kontakt</span></p>
-      <h2 class="kt-h" id="kt-h" data-r><span data-da="Tag kontakt" data-en="Get in touch">Tag kontakt</span><br><em class="acc" data-da="til os." data-en="with us.">til os.</em></h2>
-      <p class="kt-lead" data-r data-da="Fortæl kort, hvad I skal have lavet. Så vender vi tilbage med et estimat og én fast pris, før noget går i gang." data-en="Tell us briefly what you need made. We come back with an estimate and one fixed price before anything starts.">Fortæl kort, hvad I skal have lavet. Så vender vi tilbage med et estimat og én fast pris, før noget går i gang.</p>
+      <p class="label"><span data-da="Kontakt" data-en="Contact">Kontakt</span></p>
+      <h2 class="kt-h" id="kt-h"><span data-da="Hvad skal I" data-en="What do you">Hvad skal I</span> <em class="acc" data-da="have lavet?" data-en="need made?">have lavet?</em></h2>
+      <p class="kt-lead" data-da="Vælg, og send beskeden. Svaret kommer fra Mikkel, der koder det, med et estimat og én fast pris." data-en="Choose, and send the message. The answer comes from Mikkel, who writes the code, with an estimate and one fixed price.">Vælg, og send beskeden. Svaret kommer fra Mikkel, der koder det, med et estimat og én fast pris.</p>
+      <div class="kt-chips rc-chips" role="radiogroup" aria-label="Opgave"><button type="button" class="rc-chip" role="radio" aria-checked="false" tabindex="-1" data-da-what="en ny hjemmeside" data-en-what="a new website"><span data-da="Hjemmeside" data-en="Website">Hjemmeside</span></button><button type="button" class="rc-chip" role="radio" aria-checked="false" tabindex="-1" data-da-what="en integration" data-en-what="an integration"><span data-da="Integration" data-en="Integration">Integration</span></button><button type="button" class="rc-chip on" role="radio" aria-checked="true" tabindex="0" data-da-what="en app" data-en-what="an app"><span data-da="App" data-en="App">App</span></button><button type="button" class="rc-chip" role="radio" aria-checked="false" tabindex="-1" data-da-what="en admin-app" data-en-what="an admin app"><span data-da="Admin-app" data-en="Admin app">Admin-app</span></button><button type="button" class="rc-chip" role="radio" aria-checked="false" tabindex="-1" data-da-what="et helt system" data-en-what="a whole system"><span data-da="Helt system" data-en="Whole system">Helt system</span></button></div>
+      <div class="kt-go">
+        <a class="btn light kt-send" href="mailto:mgersel@lesreg.com"><span data-da="Send beskeden" data-en="Send the message">Send beskeden</span><span class="lens"><svg><use href="#i-arrow"/></svg></span></a>
+        <a class="kt-mail" href="mailto:mgersel@lesreg.com">mgersel@lesreg.com</a>
+      </div>
     </div>
-    <div class="kt-card" data-r>
-      <ul class="kt-rows">
-        <li><span data-da="Mail" data-en="Email">Mail</span><a href="mailto:mgersel@lesreg.com">mgersel@lesreg.com</a></li>
-        <li><span data-da="Pris" data-en="Price">Pris</span><b data-da="Fra 50 kr. i timen, fast pris" data-en="From DKK 50 an hour, fixed price">Fra 50 kr. i timen, fast pris</b></li>
-        <li><span data-da="Svar" data-en="Reply">Svar</span><b data-da="Alt bliver besvaret" data-en="Everything gets an answer">Alt bliver besvaret</b></li>
-      </ul>
-      <a class="btn" href="mailto:mgersel@lesreg.com"><span data-da="Skriv til os" data-en="Talk to us">Skriv til os</span><span class="lens"><svg><use href="#i-arrow"/></svg></span></a>
+    <div class="kt-ph" aria-hidden="true">
+      <div class="dev dev-iph" style="--sb:#F9F9F9;--sbc:#000">
+        <div class="scr"><div class="ktm">
+          <div class="ktm-nav"><span class="ktm-back"><svg viewBox="0 0 12 20"><path d="M10 2 2 10l8 8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="ktm-who"><i class="ktm-av"><svg viewBox="0 0 128 128" aria-hidden="true"><path d="M0 0H94l34 34v94H0Z" fill="#F6F4EF"/><path d="M44 28h18v62h38v18H44Z" fill="#0E0F10"/></svg></i><span>Lesreg ›</span></span><span></span></div>
+          <div class="ktm-body">
+            <p class="ktm-time">iMessage<br><b data-da="I dag" data-en="Today">I dag</b> 9.41</p>
+            <p class="ktm-b me"></p>
+            <p class="ktm-del" data-da="Leveret" data-en="Delivered">Leveret</p>
+            <p class="ktm-b them ktm-dots"><i></i><i></i><i></i></p>
+            <p class="ktm-b them ktm-re" data-da="Ja, det kan vi! Fortæl lidt mere om, hvad det skal kunne, så får I et estimat og én fast pris, før vi går i gang." data-en="Yes, we can! Tell us a little more about what it should do, and you get an estimate and one fixed price before we start.">Ja, det kan vi! Fortæl lidt mere om, hvad det skal kunne, så får I et estimat og én fast pris, før vi går i gang.</p>
+          </div>
+          <div class="ktm-bar"><span class="ktm-plus">+</span><span class="ktm-field"><span class="ktm-typed"></span><i class="ktm-caret"></i><span class="ktm-ph">iMessage</span><b class="ktm-up"><svg viewBox="0 0 16 16"><path d="M8 13V3.5M3.8 7.6 8 3.4l4.2 4.2" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></b></span></div>
+          <div class="ktm-kb"></div>
+        </div><div class="sb"><span class="t">9:41</span><span class="ic"><svg class="sig"><use href="#sb-sig"/></svg><svg class="wifi"><use href="#sb-wifi"/></svg><svg class="bat"><use href="#sb-bat"/></svg></span></div></div>
+        <img class="frame" src="ny/media/dev/iphone-17-pro-2x.webp" width="1120" height="2336" alt="" draggable="false" loading="lazy" decoding="async" />
+      </div>
     </div>
   </div>
 </section>
@@ -436,7 +451,7 @@
 </footer>
 
 <script type="module" src="ny/main.js?v=26"></script>
-<script type="module" src="ny/page.js?v=60"></script>
+<script type="module" src="ny/page.js?v=62"></script>
 <script type="module" src="ny/sheets.js?v=1"></script>
 </body>
 </html>
