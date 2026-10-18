@@ -148,13 +148,17 @@ S.alt = el => {
   const brand = el.querySelector('.fin-brand'), mark = el.querySelector('.fin-mark'), word = el.querySelector('.fin-word');
   const l1 = el.querySelector('.fin-l1'), l2 = el.querySelector('.fin-l2'), sh = el.querySelector('.fin-sh'), flap = el.querySelector('.fin-flap');
 
-  /* ---------- the fold: a film (made from this very picture, by Higgsfield)
-     in which all of it crumples into a ball of paper that opens into the
-     mark; drawn frame by frame onto a canvas, as the scroll moves ---------- */
-  // keys: [finale progress, frame] - the crumple, the ball resting while it
-  // moves to the middle, the opening out, the open sheet, the fold
-  const FOLD = { n: +(cv.dataset.n || 0), src: cv.dataset.src || '', end: 0.24,
-    keys: [[0.075, 0], [0.09, 8], [0.27, 32], [0.3, 36], [0.38, 70], [0.53, 88], [0.6, 99], [0.74, 119]] };
+  /* ---------- the crumple: a film (made from this very picture, by
+     Higgsfield) in which all of it crumples into a ball of paper; drawn
+     frame by frame onto a canvas, as the scroll moves ---------- */
+  // keys: [finale progress, frame] - the crumple, then the ball at rest
+  // while it moves to the middle
+  const FOLD = { n: +(cv.dataset.n || 0), src: cv.dataset.src || '', end: 0.24, big: 0.5 / 0.24,
+    keys: [[0.075, 0], [0.09, 8], [0.27, 32], [0.3, 36], [0.38, 44]] };
+  // the packet the ball is pressed into, and its folds
+  const fold = el.querySelector('.fin-fold'), ffSheet = el.querySelector('.ff-sheet'), ffShade = el.querySelector('.ff-shade');
+  const ffRh = el.querySelector('.ff-rh'), ffBl = el.querySelector('.ff-bl'), ffBr = el.querySelector('.ff-br');
+  const ffQ = { tl: el.querySelector('.ff-tl'), tr: el.querySelector('.ff-tr'), bl: el.querySelector('.ff-bl > .ff-q'), br: el.querySelector('.ff-br > .ff-q') };
   const pics = []; let loading = false, shown = -1;
   function loadFrames() {
     if (loading || !FOLD.n) return; loading = true;
@@ -274,6 +278,8 @@ S.alt = el => {
       if (cap) { const sx = Math.min(0, W - 4 - (V.cx + V.S / 2)); V.cx += sx; el._capShift = sx; }
       dpr = Math.min(2, devicePixelRatio || 1);
       Object.assign(cv.style, { left: (V.cx - V.S / 2).toFixed(1) + 'px', top: (V.cy - V.S / 2).toFixed(1) + 'px', width: V.S.toFixed(1) + 'px', height: V.S.toFixed(1) + 'px' });
+      const D = (FOLD.end * V.S2).toFixed(1) + 'px';
+      Object.assign(fold.style, { width: D, height: D });
       cv.width = cv.height = Math.round(V.S * dpr);
       MW = parseFloat(getComputedStyle(mark).width) || 100;
       glow2.style.setProperty('--gx', V.cx.toFixed(0) + 'px'); glow2.style.setProperty('--gy', V.cy.toFixed(0) + 'px');
@@ -363,20 +369,21 @@ S.alt = el => {
     //    of it crumples where it stands into a ball of paper; the ball then
     //    floats to the middle of the screen, where it opens out into a sheet and folds
     //    down into the blank mark
-    const film = Q >= 0.04 && Q < 0.78 && FOLD.n && !cap;
+    const film = Q >= 0.04 && Q < 0.46 && FOLD.n && !cap;
     const xf = seg(Q, 0.04, 0.075);
     setO(obj, Q >= 0.075 && !(cap && cap[1] === 'start') ? 0 : 1);
     if (cap && cap[1] === 'end') setO(obj, 0);
     setO(fin, Q > 0 || cap ? 1 : 0);
-    setO(cv, film ? xf : 0);
+    setO(cv, film ? xf * (1 - seg(Q, 0.447, 0.456)) : 0);
     const cm = io(seg(Q, 0.3, 0.38));
     // the crumple is the film as it is, edges melted into the page; from
     // the ball on the paper is cut free of its ground, so it can move
     cv.classList.toggle('free', Q >= 0.3);
-    if (!cap) setT(cv, 'translate3d(' + (cm * (W / 2 - V.cx)).toFixed(1) + 'px,' + (cm * (V.my - V.cy)).toFixed(1) + 'px,0) scale(' + lerp(1, V.S2 / V.S, cm).toFixed(4) + ')');
+    // then, in the middle, it is pressed down and turned into a packet
+    const sq = io(seg(Q, 0.38, 0.46));
+    if (!cap) setT(cv, 'translate3d(' + (cm * (W / 2 - V.cx)).toFixed(1) + 'px,' + (cm * (V.my - V.cy)).toFixed(1) + 'px,0) rotate(' + (-50 * sq).toFixed(2) + 'deg) scale(' + (lerp(1, V.S2 / V.S, cm) * lerp(1, 0.55, sq)).toFixed(4) + ')');
     if (film) {
-      // the frames are not spent evenly: the crumple and the opening out
-      // are given time, the rest while the ball moves is short
+      // the frames are not spent evenly: the crumple is given the time
       let kf = 0;
       for (let j = 1; j < FOLD.keys.length; j++) {
         const [q0, f0] = FOLD.keys[j - 1], [q1, f1] = FOLD.keys[j];
@@ -399,9 +406,50 @@ S.alt = el => {
         if (mix > 0) { c2.globalAlpha = mix; c2.drawImage(pics[nx], 0, 0, cv.width, cv.height); c2.globalAlpha = 1; }
       }
     }
+    // 2. the packet: the ball turns into it as it is pressed, then it opens,
+    //    right half first and then the bottom, each fold catching the light
+    //    as it turns, and the sheet keeps itself in the middle as it grows
+    const pk = out(seg(Q, 0.444, 0.47)), u1 = io(seg(Q, 0.48, 0.6)), u2 = io(seg(Q, 0.6, 0.69));
+    const showFold = Q >= 0.444 && Q < 0.695 && !cap;
+    setO(fold, showFold ? seg(Q, 0.444, 0.452) : 0);
+    if (showFold) {
+      const D = FOLD.end * V.S2, a2 = -176 * (1 - u1), a1 = 176 * (1 - u2);
+      const tilt = 1 - io(seg(Q, 0.45, 0.69));
+      // big while it opens, so the packet is the ball pressed together; the
+      // mark takes it over flat, and comes down to its own size
+      const F = FOLD.big;
+      const off = 'translate3d(' + (D / 4 * (1 - u1)).toFixed(1) + 'px,' + (D / 4 * (1 - u2)).toFixed(1) + 'px,0) ';
+      setT(fold, 'translate3d(' + (W / 2 - D / 2).toFixed(1) + 'px,' + (V.my - D / 2).toFixed(1) + 'px,0) scale(' + F.toFixed(4) + ')');
+      ffSheet.style.transformOrigin = (25 + 25 * u1).toFixed(2) + '% ' + (25 + 25 * u2).toFixed(2) + '%';
+      setT(ffSheet, off + 'rotate(' + lerp(40, 0, pk).toFixed(2) + 'deg) scale(' + lerp(0.7, 1, pk).toFixed(4) + ') rotateX(' + (22 * tilt).toFixed(2) + 'deg) rotateY(' + (-14 * tilt).toFixed(2) + 'deg)');
+      setT(ffShade, off);
+      setT(ffRh, 'rotateY(' + a2.toFixed(2) + 'deg)');
+      setT(ffBl, 'translateZ(0.4px) rotateX(' + a1.toFixed(2) + 'deg)');
+      setT(ffBr, 'translateZ(0.4px) rotateX(' + a1.toFixed(2) + 'deg)');
+      // light: a face turned from the viewer is its back, a little greyer;
+      // a face at an angle darkens with it
+      // a soft fall of light over it while it moves, gone as it lies flat;
+      // each face bleeds a hair over its edges, so no seam shows
+      const gl = (1 - u2) * (1 - u2);
+      const paint = (q, c, back) => {
+        const k = (back ? 0.95 : 1) * (0.8 + 0.2 * Math.abs(c));
+        const col = 'rgb(' + Math.round(246 * k) + ',' + Math.round(244 * k) + ',' + Math.round(239 * k) + ')';
+        q.style.background = 'linear-gradient(135deg, rgba(255,255,255,' + (0.14 * gl).toFixed(3) + '), rgba(0,0,0,' + (0.07 * gl).toFixed(3) + ')), ' + col;
+        q.style.boxShadow = '0 0 0 0.8px ' + col;
+      };
+      const c1 = Math.cos(a1 * Math.PI / 180), c2 = Math.cos(a2 * Math.PI / 180);
+      paint(ffQ.tl, 1, false);
+      paint(ffQ.tr, c2, c2 < 0);
+      paint(ffQ.bl, c1, c1 < 0);
+      paint(ffQ.br, c1 * c2, c1 * c2 < 0);
+      // its shadow, as wide and as tall as the paper lies open
+      const ow = D / 2 * (1 + Math.max(0, c2)), oh = D / 2 * (1 + Math.max(0, c1)), sc = D / MW;
+      Object.assign(ffShade.style, { width: ow.toFixed(1) + 'px', height: oh.toFixed(1) + 'px',
+        boxShadow: (6 * sc).toFixed(1) + 'px ' + (14 * sc).toFixed(1) + 'px ' + (26 * sc).toFixed(1) + 'px rgba(0,0,0,.45)' });
+    }
     // 2. the blank mark takes over where the film leaves it, in the middle;
     //    the L is drawn into it, down and then across, and a light runs over
-    const hand = Q >= 0.75 || (cap && cap[1] === 'end');
+    const hand = Q >= 0.695 || (cap && cap[1] === 'end');
     setO(brand, hand ? 1 : 0);
     flap.style.opacity = '0';
     const d1 = io(seg(Q, 0.76, 0.79)), d2 = io(seg(Q, 0.785, 0.81));
@@ -416,7 +464,7 @@ S.alt = el => {
     //    as its name comes in beside it
     const mv = io(seg(Q, 0.85, 0.92));
     const wd = io(seg(Q, 0.87, 0.94));
-    const bs = lerp(s0, 1, mv);
+    const bs = lerp(s0 * lerp(FOLD.big, 1, io(seg(Q, 0.695, 0.745))), 1, mv);
     setT(brand, 'translate(-50%,-50%) translate3d(' + (wordW / 2 * bs * (1 - wd)).toFixed(1) + 'px,' + ((V.my - fy) * (1 - mv)).toFixed(1) + 'px,0) scale(' + bs.toFixed(4) + ')');
     setT(word, 'translate3d(' + (-14 * (1 - wd)).toFixed(1) + 'px,0,0)'); setO(word, out(seg(Q, 0.905, 0.95)));
     // 4. and the sentence under it: two lines rising out of their own edge,

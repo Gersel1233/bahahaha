@@ -248,6 +248,17 @@ html.pg-js .alt-fin > *{ opacity:0; }
   mask-composite:intersect; }
 /* cut free of its ground, the paper needs hardly any melting */
 .fin-paper.free{ --fe:2%; }
+.fin-fold{ left:0; top:0; width:10px; height:10px; perspective:1400px; }
+.ff-sheet, .ff-rh, .ff-bl, .ff-br{ position:absolute; transform-style:preserve-3d; }
+.ff-sheet{ inset:0; }
+.ff-q{ position:absolute; display:block; background:#F6F4EF; backface-visibility:visible; }
+.ff-tl{ left:0; top:0; width:50%; height:50%; }
+.ff-bl{ left:0; top:50%; width:50%; height:50%; transform-origin:50% 0; }
+.ff-rh{ left:50%; top:0; width:50%; height:100%; transform-origin:0 50%; }
+.ff-tr{ left:0; top:0; width:100%; height:50%; clip-path:polygon(0 0, 46.875% 0, 100% 53.125%, 100% 100%, 0 100%); }
+.ff-br{ left:0; top:50%; width:100%; height:50%; transform-origin:50% 0; }
+.ff-bl > .ff-q, .ff-br > .ff-q{ inset:0; }
+.ff-shade{ position:absolute; left:0; top:0; display:block; border-radius:2px; }
 .fin-brand{ left:50%; top:var(--fy, 42%); display:flex; align-items:center; gap:clamp(14px, 2vw, 26px); transform:translate(-50%, -50%); }
 .fin-mark{ width:clamp(84px, 9vw, 132px); height:auto; flex:none; overflow:visible; filter:drop-shadow(6px 14px 26px rgba(0,0,0,.45)); }
 .fin-word{ font:500 clamp(54px, 7vw, 112px)/1 var(--sans); letter-spacing:-.05em; color:var(--porcelain); }
