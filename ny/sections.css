@@ -121,18 +121,24 @@ html.pg-js .tile-film{ opacity:0; }
   .kn-ph{ width:clamp(240px, 30vw, 300px); }
 }
 @media (max-width:767px){
-  .kn-in{ min-height:0; padding:92px 20px 0; grid-template-columns:1fr; grid-template-rows:auto; grid-template-areas:"top" "nums" "say" "ph"; }
-  .kn-top{ flex-direction:column; align-items:flex-start; gap:14px; }
+  /* on a phone the whole of it is about one screen: the struck number on one
+     line with its words, Lesreg's under it, and the phone only down to its
+     Live Activity, running off the bottom edge */
+  .kn-in{ min-height:0; padding:78px 20px 0; grid-template-columns:1fr; grid-template-rows:auto; grid-template-areas:"top" "nums" "say" "ph"; }
+  .kn-top{ flex-direction:column; align-items:flex-start; gap:10px; }
+  .kn-top .label{ display:none; }
   .kn-chap button{ padding:0 14px; }
-  .kn-nums{ padding:40px 0 20px; }
-  .kn-was, .kn-now{ flex-direction:column; gap:8px; }
-  .kn-was .kn-u, .kn-now .kn-u{ margin-top:0; }
-  .kn-was .kn-n{ font-size:min(22vw, 96px); }
-  .kn-now .kn-n{ --big:min(52vw, 210px); }
-  .kn[data-ch="1"] .kn-now .kn-n{ --big:min(34vw, 140px); }
-  .kn-say{ font-size:16px; line-height:26px; }
-  .kn-ph{ justify-self:end; width:min(64vw, 260px); margin:28px -24px -120px 0; }
-  .kn-in{ padding-bottom:0; }
+  .kn-nums{ padding:16px 0 10px; }
+  .kn-was{ align-items:center; gap:12px; }
+  .kn-was .kn-n{ font-size:min(16vw, 64px); }
+  .kn-was .kn-u{ margin:0; font-size:11.5px; }
+  .kn-now{ flex-direction:column; gap:6px; margin-top:2px; }
+  /* the same height in every chapter, so nothing below it moves */
+  .kn-now .kn-n{ --big:min(33vw, 128px); height:calc(min(33vw, 128px) * .85); display:flex; align-items:flex-end; }
+  .kn[data-ch="1"] .kn-now .kn-n{ --big:min(26vw, 104px); }
+  .kn-now .kn-u{ margin:0; font-size:12.5px; }
+  .kn-say{ font-size:15px; line-height:23px; min-height:92px; }
+  .kn-ph{ justify-self:center; width:min(78vw, 300px); margin:8px 0 calc(min(78vw, 300px) * -1.07) 0; }
 }
 @media (prefers-reduced-motion: reduce){ .kn [data-in]{ transition:none; } .kn-chap button i{ display:none; } }
 
