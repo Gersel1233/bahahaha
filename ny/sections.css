@@ -45,6 +45,7 @@ html.pg-js .tile-film{ opacity:0; }
    nothing here is driven by the scroll. */
 .fordi{ background:var(--porcelain); padding:clamp(90px, 14vh, 160px) 0; color:var(--obsidian); }
 .fordi .sec-head{ margin-bottom:clamp(36px, 6vh, 64px); }
+.fd-lead{ max-width:34em; margin-top:clamp(16px, 2.4vh, 24px); font:400 clamp(17px, 1.4vw, 20px)/1.5 var(--sans); color:var(--graphite); }
 .fd{ max-width:1440px; margin:0 auto; padding:0 var(--gut); display:grid; grid-template-columns:minmax(0, 5fr) minmax(0, 6fr); column-gap:clamp(32px, 5vw, 96px); align-items:center; }
 .fd-list{ display:flex; flex-direction:column; border-top:1px solid var(--travertine); }
 .fd-i{ position:relative; display:grid; width:100%; margin:0; padding:24px 0 26px; border:0; border-bottom:1px solid var(--travertine); background:none; text-align:left; cursor:pointer;
