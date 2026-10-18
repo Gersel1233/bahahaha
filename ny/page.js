@@ -133,19 +133,19 @@ if (rc) {
   const MID = 900, US = 50, NEXT = 3800;
   const chips = $$('.rc-chip', rc);
   const slot = k => rc.querySelector(`[data-o="${k}"]`);
-  const sSave = slot('save'), sDelta = slot('delta'), sThem = slot('them'), sUs = slot('us');
+  const sSave = slot('save'), sPrice = slot('price'), sDelta = slot('delta'), sThem = slot('them'), sUs = slot('us');
   const L = () => (html.lang === 'en' ? 'en' : 'da');
   const fmt = n => Math.round(n).toLocaleString(L() === 'en' ? 'en-GB' : 'da-DK');
   const kr = n => (L() === 'en' ? 'DKK ' + fmt(n) : fmt(n) + ' kr.');
   let cur = 0, h = 25, goal = 25, tw = 0, seen = false, touched = still, timer = 0;
   const paint = () => {
-    sSave.textContent = fmt(h * (MID - US));
+    sPrice.textContent = fmt(h * US); sSave.textContent = kr(h * (MID - US));
     sThem.textContent = kr(h * MID); sUs.textContent = kr(h * US);
   };
   const words = () => {
     const [lo, hi] = JOBS[cur], m = (lo + hi) / 2;
-    sDelta.textContent = L() === 'en' ? `Typically ${lo}–${hi} hours. Reckoned at ${m} hours against an agency at DKK 900 an hour.`
-      : `Typisk ${lo}–${hi} timer. Regnet med ${m} timer mod et bureau til 900 kr. i timen.`;
+    sDelta.textContent = L() === 'en' ? `Typically ${lo}–${hi} hours. Reckoned at ${m} hours at DKK 50 an hour.`
+      : `Typisk ${lo}–${hi} timer. Regnet med ${m} timer til 50 kr. i timen.`;
   };
   // the figures roll to a new value rather than jump to it
   const roll = () => {
@@ -179,6 +179,7 @@ if (rc) {
   if ('IntersectionObserver' in window && !still) {
     new IntersectionObserver(es => es.forEach(en => {
       seen = en.intersectionRatio >= 0.4;
+      if (seen) rc.classList.add('rc-seen');
       if (seen) tick(); else clearTimeout(timer);
     }), { threshold: [0, 0.4] }).observe(rc.querySelector('.rc-panel'));
   }
@@ -210,6 +211,8 @@ if (kt) {
   const hit = ch => { const k = keys[ch.toLowerCase()]; if (!k) return; k.classList.add('hit'); setTimeout(() => k.classList.remove('hit'), 110); };
   const text = () => {
     const c = chips[cur], w = L() === 'en' ? c.dataset.enWhat : c.dataset.daWhat;
+    // "something else": the job is theirs to describe
+    if (!w) return L() === 'en' ? 'Hi Lesreg! We have something quite different we would like made. Can you help?' : 'Hej Lesreg! Vi har noget helt andet, vi gerne vil have lavet. Kan I hjælpe?';
     return L() === 'en' ? `Hi Lesreg! We need ${w} made. Can you help?` : `Hej Lesreg! Vi skal have lavet ${w}. Kan I hjælpe?`;
   };
   const mail = () => {

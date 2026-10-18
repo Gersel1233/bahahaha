@@ -85,24 +85,37 @@ html.pg-js .tile-film{ opacity:0; }
 .rc-chip:active::before{ transform:scale(.96); }
 .rc-chip:focus-visible{ outline:none; box-shadow:0 0 0 2px #101A33, 0 0 0 4px var(--ultra); }
 
-/* LA31 Data / Figure on the glass */
+/* LA31 Data / Figure on the glass: Lesreg's own price, the hero */
 .rc-fig{ margin-top:28px; }
 .rc-fig .label{ color:rgba(246,244,239,.6); }
 .rc-v{ display:flex; align-items:flex-start; margin-top:14px; white-space:nowrap; }
 .rc-v > span{ font:300 120px/112px var(--sans); letter-spacing:-.05em; font-variant-numeric:tabular-nums; }
-.rc-v small{ margin:26px 0 0 14px; font:400 11.5px/16px var(--mono); color:rgba(246,244,239,.7); }
+.rc-v small{ margin:22px 0 0 14px; font:500 20px/24px var(--sans); color:rgba(246,244,239,.8); }
 .rc-d{ margin-top:14px; font:400 12.5px/18px var(--sans); letter-spacing:.005em; color:rgba(246,244,239,.75); }
 
-/* LA31 Data / Ledger rows, on the dark */
-.rc-ldg{ list-style:none; margin:24px 0 0; padding:0; }
-.rc-ldg .lr{ display:flex; align-items:center; gap:12px; height:48px; padding:0 16px; border-bottom:1px solid rgba(246,244,239,.14); }
-.rc-ldg .lr.sel{ border-bottom:0; border-radius:12px; background:rgba(246,244,239,.1); }
-.lr-lens{ flex:none; width:6px; height:6px; border-radius:50%; }
-.lr.sel .lr-lens{ background:var(--ultra); box-shadow:0 0 0 3px rgba(36,54,232,.35); }
-.lr-ref{ flex:none; width:76px; font:400 11.5px/16px var(--mono); color:rgba(246,244,239,.6); white-space:nowrap; }
-.lr-name{ flex:1; min-width:0; font:400 14px/22px var(--sans); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.lr.sel .lr-name{ font-weight:500; line-height:16px; }
-.lr-amt{ flex:none; text-align:right; font:400 11.5px/16px var(--mono); }
+/* the two prices as bars on one scale: the agency's runs the whole way,
+   Lesreg's barely starts */
+.rc-bars{ list-style:none; margin:28px 0 0; padding:0; display:grid; gap:18px; }
+.rc-bar{ display:grid; grid-template-columns:minmax(0, 1fr) auto; row-gap:8px; align-items:baseline; }
+.rc-bn{ display:flex; align-items:baseline; gap:10px; font:400 14px/22px var(--sans); white-space:nowrap; }
+.rc-bn small{ font:400 12.5px/18px var(--sans); color:rgba(246,244,239,.55); }
+.rc-ba{ font:400 14px/22px var(--sans); font-variant-numeric:tabular-nums; text-align:right; }
+.rc-bt{ grid-column:1 / -1; position:relative; height:10px; border-radius:5px; background:rgba(255,255,255,.07); overflow:hidden; }
+.rc-bt > i{ position:absolute; left:0; top:0; bottom:0; border-radius:inherit; transform-origin:0 50%; transition:transform 1.4s cubic-bezier(.2,.8,.2,1); }
+.rc-bar.them .rc-bn, .rc-bar.them .rc-ba{ color:rgba(246,244,239,.7); }
+.rc-bar.them .rc-bt > i{ width:100%; background:linear-gradient(90deg, rgba(246,244,239,.22), rgba(246,244,239,.42)); }
+.rc-bar.us .rc-bn > span{ font-weight:500; }
+.rc-bar.us .rc-ba{ font-weight:500; }
+.rc-bar.us .rc-bt > i{ width:calc(100% * 50 / 900); min-width:10px; background:var(--porcelain); box-shadow:0 0 12px rgba(246,244,239,.5); }
+html.pg-js .rc:not(.rc-seen) .rc-bt > i{ transform:scaleX(0); }
+.rc-bar.us .rc-bt > i{ transition-duration:.5s; transition-delay:.9s; }
+
+/* what it comes to for them: what they save, said in so many words */
+.rc-save{ display:flex; align-items:center; gap:10px; margin-top:28px; padding:16px 20px; border-radius:20px; background:var(--porcelain); color:var(--obsidian);
+  font:500 16px/22px var(--sans); box-shadow:6px 12px 32px rgba(13,13,15,.3); }
+.rc-save svg{ flex:none; width:20px; height:20px; padding:3px; border-radius:50%; background:var(--ultra); fill:none; stroke:#fff; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+.rc-save b{ margin-left:auto; font:500 24px/30px var(--sans); letter-spacing:-.015em; font-variant-numeric:tabular-nums; white-space:nowrap; }
+@media (prefers-reduced-motion: reduce){ .rc-bt > i{ transition:none; } }
 
 /* for a job not among them: a tailored estimate, and the way to ask */
 .rc-more{ grid-area:more; display:flex; align-items:center; justify-content:space-between; gap:32px; margin-top:clamp(48px, 8vh, 80px); padding-top:32px; border-top:1px solid rgba(246,244,239,.14); }
@@ -132,8 +145,8 @@ html.pg-js .tile-film{ opacity:0; }
   .rc-fig{ margin-top:18px; }
   .rc-v > span{ font-size:min(19vw, 88px); line-height:min(19vw, 88px); }
   .rc-v small{ margin:18px 0 0 10px; }
-  .rc-ldg .lr{ padding:0 12px; }
-  .lr-ref{ width:auto; white-space:nowrap; }
+  .rc-save{ padding:14px 16px; }
+  .rc-save b{ font-size:20px; line-height:26px; }
   .rc-more{ flex-direction:column; align-items:flex-start; gap:20px; padding-top:28px; }
   .rc-more h3{ font-size:20px; line-height:26px; }
   .rc-more p{ font-size:15px; line-height:24px; }

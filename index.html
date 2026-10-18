@@ -23,7 +23,7 @@
 <link rel="stylesheet" href="ny/ny.css?v=17" />
 <link rel="stylesheet" href="ny/page.css?v=22" />
 <link rel="stylesheet" href="ny/hero.css?v=30" />
-<link rel="stylesheet" href="ny/sections.css?v=78" />
+<link rel="stylesheet" href="ny/sections.css?v=79" />
 <link rel="stylesheet" href="ny/fod.css?v=1" />
 <script>
   /* decided before first paint: with JS the phone turns as you scroll;
@@ -385,14 +385,16 @@
       <div class="rc-panel">
         <div class="rc-chips" role="radiogroup" aria-label="Opgave" data-aria-da="Opgave" data-aria-en="Job"><button type="button" role="radio" class="rc-chip on" aria-checked="true" data-i="0"><span data-da="Hjemmeside" data-en="Website">Hjemmeside</span></button><button type="button" role="radio" class="rc-chip" aria-checked="false" tabindex="-1" data-i="1"><span data-da="Integration" data-en="Integration">Integration</span></button><button type="button" role="radio" class="rc-chip" aria-checked="false" tabindex="-1" data-i="2"><span data-da="App" data-en="App">App</span></button><button type="button" role="radio" class="rc-chip" aria-checked="false" tabindex="-1" data-i="3"><span data-da="Admin-app" data-en="Admin app">Admin-app</span></button><button type="button" role="radio" class="rc-chip" aria-checked="false" tabindex="-1" data-i="4"><span data-da="Helt system" data-en="Full system">Helt system</span></button></div>
         <div class="rc-fig" aria-live="polite">
-          <p class="label"><span data-da="Det, I beholder" data-en="What you keep">Det, I beholder</span></p>
-          <p class="rc-v"><span data-o="save">21.250</span><small><span data-da="kr." data-en="DKK">kr.</span></small></p>
-          <p class="rc-d" data-o="delta">Typisk 20–30 timer. Regnet med 25 timer mod et bureau til 900 kr. i timen.</p>
+          <p class="label"><span data-da="Prisen hos Lesreg" data-en="The price at Lesreg">Prisen hos Lesreg</span></p>
+          <p class="rc-v"><span data-o="price">1.250</span><small><span data-da="kr." data-en="DKK">kr.</span></small></p>
+          <p class="rc-d" data-o="delta">Typisk 20–30 timer. Regnet med 25 timer til 50 kr. i timen.</p>
         </div>
-        <ul class="rc-ldg">
-          <li class="lr"><i class="lr-lens"></i><span class="lr-ref"><span data-da="900 kr./t" data-en="DKK 900/h">900 kr./t</span></span><span class="lr-name"><span data-da="Typisk bureau" data-en="Typical agency">Typisk bureau</span></span><span class="lr-amt" data-o="them">22.500 kr.</span></li>
-          <li class="lr sel"><i class="lr-lens"></i><span class="lr-ref"><span data-da="50 kr./t" data-en="DKK 50/h">50 kr./t</span></span><span class="lr-name">Lesreg</span><span class="lr-amt" data-o="us">1.250 kr.</span></li>
+        <!-- the two prices side by side, as bars: no reading needed to see which is cheaper -->
+        <ul class="rc-bars">
+          <li class="rc-bar them"><span class="rc-bn"><span data-da="Typisk bureau" data-en="Typical agency">Typisk bureau</span><small data-da="900 kr./t" data-en="DKK 900/h">900 kr./t</small></span><span class="rc-ba" data-o="them">22.500 kr.</span><i class="rc-bt"><i></i></i></li>
+          <li class="rc-bar us"><span class="rc-bn"><span>Lesreg</span><small data-da="50 kr./t" data-en="DKK 50/h">50 kr./t</small></span><span class="rc-ba" data-o="us">1.250 kr.</span><i class="rc-bt"><i></i></i></li>
         </ul>
+        <p class="rc-save"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5 6.5 12 13 4.5"/></svg><span data-da="I sparer" data-en="You save">I sparer</span><b data-o="save">21.250 kr.</b></p>
       </div>
     </div>
 
@@ -416,7 +418,7 @@
       <p class="label"><span data-da="Kontakt" data-en="Contact">Kontakt</span></p>
       <h2 class="kt-h" id="kt-h"><span data-da="Hvad skal I" data-en="What do you">Hvad skal I</span> <em class="acc" data-da="have lavet?" data-en="need made?">have lavet?</em></h2>
       <p class="kt-lead" data-da="Vælg, og send beskeden. Svaret kommer fra Mikkel, der koder det, med et estimat og én fast pris." data-en="Choose, and send the message. The answer comes from Mikkel, who writes the code, with an estimate and one fixed price.">Vælg, og send beskeden. Svaret kommer fra Mikkel, der koder det, med et estimat og én fast pris.</p>
-      <div class="kt-chips rc-chips" role="radiogroup" aria-label="Opgave"><button type="button" class="rc-chip" role="radio" aria-checked="false" tabindex="-1" data-da-what="en ny hjemmeside" data-en-what="a new website"><span data-da="Hjemmeside" data-en="Website">Hjemmeside</span></button><button type="button" class="rc-chip" role="radio" aria-checked="false" tabindex="-1" data-da-what="en integration" data-en-what="an integration"><span data-da="Integration" data-en="Integration">Integration</span></button><button type="button" class="rc-chip on" role="radio" aria-checked="true" tabindex="0" data-da-what="en app" data-en-what="an app"><span data-da="App" data-en="App">App</span></button><button type="button" class="rc-chip" role="radio" aria-checked="false" tabindex="-1" data-da-what="en admin-app" data-en-what="an admin app"><span data-da="Admin-app" data-en="Admin app">Admin-app</span></button><button type="button" class="rc-chip" role="radio" aria-checked="false" tabindex="-1" data-da-what="et helt system" data-en-what="a whole system"><span data-da="Helt system" data-en="Whole system">Helt system</span></button></div>
+      <div class="kt-chips rc-chips" role="radiogroup" aria-label="Opgave"><button type="button" class="rc-chip" role="radio" aria-checked="false" tabindex="-1" data-da-what="en ny hjemmeside" data-en-what="a new website"><span data-da="Hjemmeside" data-en="Website">Hjemmeside</span></button><button type="button" class="rc-chip" role="radio" aria-checked="false" tabindex="-1" data-da-what="en integration" data-en-what="an integration"><span data-da="Integration" data-en="Integration">Integration</span></button><button type="button" class="rc-chip on" role="radio" aria-checked="true" tabindex="0" data-da-what="en app" data-en-what="an app"><span data-da="App" data-en="App">App</span></button><button type="button" class="rc-chip" role="radio" aria-checked="false" tabindex="-1" data-da-what="en admin-app" data-en-what="an admin app"><span data-da="Admin-app" data-en="Admin app">Admin-app</span></button><button type="button" class="rc-chip" role="radio" aria-checked="false" tabindex="-1" data-da-what="et helt system" data-en-what="a whole system"><span data-da="Helt system" data-en="Whole system">Helt system</span></button><button type="button" class="rc-chip" role="radio" aria-checked="false" tabindex="-1" data-da-what="" data-en-what=""><span data-da="Noget andet" data-en="Something else">Noget andet</span></button></div>
       <div class="kt-go">
         <a class="btn light kt-send" href="mailto:mgersel@lesreg.com"><span data-da="Send beskeden" data-en="Send the message">Send beskeden</span><span class="lens"><svg><use href="#i-arrow"/></svg></span></a>
         <a class="kt-mail" href="mailto:mgersel@lesreg.com">mgersel@lesreg.com</a>
@@ -490,7 +492,7 @@
 </footer>
 
 <script type="module" src="ny/main.js?v=29"></script>
-<script type="module" src="ny/page.js?v=62"></script>
+<script type="module" src="ny/page.js?v=63"></script>
 <script type="module" src="ny/sheets.js?v=2"></script>
 </body>
 </html>
