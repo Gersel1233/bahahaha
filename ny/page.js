@@ -149,14 +149,16 @@ S.alt = el => {
   const l1 = el.querySelector('.fin-l1'), l2 = el.querySelector('.fin-l2'), sh = el.querySelector('.fin-sh'), flap = el.querySelector('.fin-flap');
 
   /* ---------- the paper: one sheet, printed with the picture as it stands
-     at the last beat (media/alt/sheet.webp, taken from this very page), drawn
-     live with WebGL - see paper.js. It is made only as the finale nears.
+     at the last beat (media/alt/sheet.webp, taken from this very page), that
+     crumples as a simulated sheet of paper does (media/alt/crumple.bin),
+     drawn live with WebGL - see paper.js. It is made only as the finale
+     nears.
      ---------- */
   const FOLD = { end: 0.24 };
   let paper = null, paperTried = false, paperKey = '';
   function makePaper() {
     if (paperTried) return; paperTried = true;
-    import('./paper.js?v=1').then(m => { try { paper = m.createPaper(cv, cv.dataset.src); } catch (e) { paper = null; } }).catch(() => {});
+    import('./paper.js?v=2').then(m => { try { paper = m.createPaper(cv, cv.dataset.src, cv.dataset.sim); } catch (e) { paper = null; } }).catch(() => {});
   }
   const endLines = $$('.alt-fin-h .ln > *', el), endWhat = el.querySelector('.alt-fin-what'), endP = el.querySelector('.alt-fin-p'), endCta = el.querySelector('.alt-fin-cta');
   const glow2 = el.querySelector('.alt-glow2'), glow = el.querySelector('.alt-glow');
@@ -261,18 +263,20 @@ S.alt = el => {
       end.style.setProperty('--ey', (fy + (mob ? 62 : 96)).toFixed(0) + 'px');
       wordW = word.offsetWidth + parseFloat(getComputedStyle(brand).gap || '0');
       objC = { x: obj.offsetLeft + ow / 2, y: obj.offsetTop + oh / 2 };
-      // the film's square: where it plays, and how big
-      // the film's square lies exactly over the picture as it stands at the
+      // the sheet's square lies exactly over the picture as it stands at the
       // last beat: its middle on the middle of all of it, with room round it
+      // (media/alt/sheet.webp is this square, taken with ?cap=start)
       V = { cx: objC.x + 0.69 * u, cy: objC.y - 0.31 * u, S: 13.6 * u };
-      // in the middle it plays a little smaller, so the open sheet keeps
-      // inside the screen and the ball clear of the bar
+      // in the middle it is a little smaller, so the open sheet keeps inside
+      // the screen
       V.S2 = Math.min(V.S, W * (mob ? 1 : 1.12));
       if (cap) { const sx = Math.min(0, W - 4 - (V.cx + V.S / 2)); V.cx += sx; el._capShift = sx; }
       dpr = Math.min(2, devicePixelRatio || 1);
       // the open sheet: larger than the ball, not larger than half the screen
       V.B = Math.min(0.56 * V.S2, 0.46 * H);
+      MW = parseFloat(getComputedStyle(mark).width) || 100;
       V.big = V.B / (FOLD.end * V.S2);
+      glow2.style.setProperty('--gx', V.cx.toFixed(0) + 'px'); glow2.style.setProperty('--gy', V.cy.toFixed(0) + 'px');
       paperKey = '';
     }
     const pe = p / K;
@@ -371,9 +375,9 @@ S.alt = el => {
       //    it comes flat, the tilt settling out
       const k1 = seg(Q, 0.075, 0.3), cm = io(seg(Q, 0.3, 0.44)), k2 = seg(Q, 0.44, 0.63);
       const o2 = io(k2);
-      // (the ball only shows itself opening between about .55 and .2, so
-      // that is the span the opening is given)
-      const k = Q < 0.4 ? Math.sin(k1 * Math.PI / 2) : Q < 0.44 ? 1 - 0.42 * io(seg(Q, 0.4, 0.44)) : 0.58 * (1 - o2);
+      // (the kept frames are spaced by how far the paper moves, so this
+      // plays at an even pace)
+      const k = Q < 0.44 ? io(k1) : 1 - o2;
       const size = Q < 0.44 ? lerp(V.S, V.S2 * 0.9, cm) : lerp(V.S2 * 0.9, V.B, o2);
       const st = {
         W, H, dpr, x: lerp(V.cx, W / 2, cm), y: V.cy, z: 0, size, k,
