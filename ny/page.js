@@ -220,8 +220,7 @@ S.alt = el => {
     lastP = best;
     const dy = (best - P0) * run;
     if (Math.abs(dy) < 3) return;
-    // into the finale the glide is long, so the film plays as a film
-    glide(scrollY + dy, best === 1 && P0 < 0.85 ? 6200 : Math.min(900, Math.max(420, Math.abs(dy) / innerHeight * 520)));
+    glide(scrollY + dy, Math.min(900, Math.max(420, Math.abs(dy) / innerHeight * 520)));
   };
   // a glide of our own, so its length can be chosen; any touch or wheel ends it
   let glideRaf = 0;
@@ -231,9 +230,7 @@ S.alt = el => {
     const from = scrollY, t0 = performance.now();
     settling = true;
     const step = now => {
-      const k = Math.min(1, (now - t0) / ms);
-      // a long glide is the film playing, so it keeps an even pace
-      const e = ms > 2000 ? (1 - Math.cos(Math.PI * k)) / 2 : k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
+      const k = Math.min(1, (now - t0) / ms), e = k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
       scrollTo(0, from + (to - from) * e);
       if (k < 1) glideRaf = requestAnimationFrame(step); else { glideRaf = 0; setTimeout(() => { settling = false; }, 60); }
     };
@@ -243,7 +240,7 @@ S.alt = el => {
   addEventListener('touchstart', () => { touching = true; stopGlide(); clearTimeout(settleT); }, { passive: true });
   addEventListener('touchend', () => { touching = false; clearTimeout(settleT); settleT = setTimeout(settle, 180); }, { passive: true });
   addEventListener('scroll', () => { if (settling) return; clearTimeout(settleT); settleT = setTimeout(settle, 180); }, { passive: true });
-  let Ps = -1, tPrev = 0, MW = 100;
+  let Ps = -1, tPrev = 0, MW = 100, finT = 0, finGoal = 0;
   return now => {
     const r = rect(el);
     // when nothing may move, it stands where it ends
@@ -253,8 +250,15 @@ S.alt = el => {
     if (Ps < 0 || still || Math.abs(Pt - Ps) > 0.25) Ps = Pt; else Ps += (Pt - Ps) * (1 - Math.exp(-dt * 14));
     if (Math.abs(Pt - Ps) > 0.0004) kick(); else Ps = Pt;
     const P = Ps;
-    // the scenes run on p; the finale takes the last part of the scroll, q
-    const p = clamp(P / 0.852), q = seg(P, 0.72, 1);
+    // the scenes run on p. The finale is a film: once the scroll goes on
+    // past the last beat it plays through at its own pace (about four
+    // seconds), whatever the hand does, and runs back quickly if the
+    // scroll goes back above it
+    const p = clamp(P / 0.852);
+    if (P >= 0.735) finGoal = 1; else if (P <= 0.722) finGoal = 0;
+    if (still) finT = finGoal;
+    else if (finT !== finGoal) { finT = clamp(finT + (finGoal ? dt / 3.9 : -dt / 1.3)); kick(); }
+    const q = finT;
     if (P > 0.35) makePaper();
     if (el._w !== W || !ow) {
       el._w = W; measure();
@@ -377,18 +381,19 @@ S.alt = el => {
       //    print fades off it: white crumpled paper
       // c. it opens - fast, then softly - into the mark, the corner cut as
       //    it comes flat, the tilt settling out
-      const k1 = seg(Q, 0.075, 0.3), cm = io(seg(Q, 0.3, 0.44)), k2 = seg(Q, 0.44, 0.63);
-      const o2 = io(k2);
+      const k1 = seg(Q, 0.075, 0.3), cm = io(seg(Q, 0.3, 0.4)), k2 = seg(Q, 0.4, 0.62);
+      // it opens with a push and comes down softly
+      const o2 = 1 - Math.pow(1 - k2, 2.6);
       // (the kept frames are spaced by how far the paper moves, so this
       // plays at an even pace)
-      const k = Q < 0.44 ? io(k1) : 1 - o2;
-      const size = Q < 0.44 ? lerp(V.S, V.S2 * 0.9, cm) : lerp(V.S2 * 0.9, V.B, o2);
+      const k = Q < 0.4 ? io(k1) : 1 - o2;
+      const size = Q < 0.4 ? lerp(V.S, V.S2 * 0.9, cm) : lerp(V.S2 * 0.9, V.B, o2);
       const st = {
         W, H, dpr, x: lerp(V.cx, W / 2, cm), y: V.cy, z: 0, size, k,
-        rx: Q < 0.44 ? 0.28 * cm : 0.28 * (1 - o2),
-        ry: Q < 0.44 ? Math.PI * 2 * cm : 0,
-        rz: (Q < 0.3 ? -0.12 * Math.sin(k1 * Math.PI / 2) : Q < 0.44 ? -0.12 : -0.12 * (1 - o2)) + 0.035 * Math.sin(Math.PI * seg(k2, 0.55, 1)),
-        blank: io(seg(Q, 0.33, 0.46)), cut: 0.2656 * io(seg(Q, 0.52, 0.63)), fade: seg(Q, 0.04, 0.075),
+        rx: Q < 0.4 ? 0.28 * cm : 0.28 * (1 - o2),
+        ry: Q < 0.4 ? Math.PI * 2 * cm : 0,
+        rz: (Q < 0.3 ? -0.12 * Math.sin(k1 * Math.PI / 2) : Q < 0.4 ? -0.12 : -0.12 * (1 - o2)) + 0.035 * Math.sin(Math.PI * seg(k2, 0.55, 1)),
+        blank: io(seg(Q, 0.3, 0.42)), cut: 0.2656 * io(seg(Q, 0.5, 0.62)), fade: seg(Q, 0.04, 0.075),
       };
       const key = [W, H, st.x, st.size, st.k, st.rx, st.ry, st.rz, st.blank, st.cut, st.fade].map(v => v.toFixed(3)).join();
       if (key !== paperKey) { paperKey = key; paper.draw(st); }
