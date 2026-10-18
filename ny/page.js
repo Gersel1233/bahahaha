@@ -151,7 +151,10 @@ S.alt = el => {
   /* ---------- the fold: a film (made from this very picture, by Higgsfield)
      in which all of it crumples into a ball of paper that opens into the
      mark; drawn frame by frame onto a canvas, as the scroll moves ---------- */
-  const FOLD = { n: +(cv.dataset.n || 0), src: cv.dataset.src || '', end: 0.24 };
+  // keys: [finale progress, frame] - the crumple, the ball resting while it
+  // moves to the middle, the tear, the open sheet, the fold to the mark
+  const FOLD = { n: +(cv.dataset.n || 0), src: cv.dataset.src || '', end: 0.24,
+    keys: [[0.075, 0], [0.29, 36], [0.42, 70], [0.48, 88], [0.58, 99], [0.74, 119]] };
   const pics = []; let loading = false, shown = -1;
   function loadFrames() {
     if (loading || !FOLD.n) return; loading = true;
@@ -264,6 +267,10 @@ S.alt = el => {
       // the film's square lies exactly over the picture as it stands at the
       // last beat: its middle on the middle of all of it, with room round it
       V = { cx: objC.x + 0.69 * u, cy: objC.y - 0.31 * u, S: 13.6 * u };
+      // in the middle it plays a little smaller, so the open sheet keeps
+      // inside the screen and the ball clear of the bar
+      V.my = H * (mob ? 0.46 : 0.5);
+      V.S2 = Math.min(V.S, W * (mob ? 1 : 1.12), (V.my - (mob ? 80 : 96)) / 0.235);
       if (cap) { const sx = Math.min(0, W - 4 - (V.cx + V.S / 2)); V.cx += sx; el._capShift = sx; }
       dpr = Math.min(2, devicePixelRatio || 1);
       Object.assign(cv.style, { left: (V.cx - V.S / 2).toFixed(1) + 'px', top: (V.cy - V.S / 2).toFixed(1) + 'px', width: V.S.toFixed(1) + 'px', height: V.S.toFixed(1) + 'px' });
@@ -353,15 +360,26 @@ S.alt = el => {
     setT(obj, (cap ? 'translate3d(' + (el._capShift || 0).toFixed(1) + 'px,0,0) ' : '') + 'scale(' + zoom.toFixed(4) + ')');
     setO(glow2, 0);
     // 1. the film takes over from the very picture it starts from, and all
-    //    of it crumples into a ball of paper, which opens into the mark
-    const film = Q >= 0.04 && Q < 0.84 && FOLD.n && !cap;
+    //    of it crumples where it stands into a ball of paper; the ball then
+    //    floats to the middle of the screen, where it opens out into a sheet and folds
+    //    down into the blank mark
+    const film = Q >= 0.04 && Q < 0.78 && FOLD.n && !cap;
     const xf = seg(Q, 0.04, 0.075);
     setO(obj, Q >= 0.075 && !(cap && cap[1] === 'start') ? 0 : 1);
     if (cap && cap[1] === 'end') setO(obj, 0);
     setO(fin, Q > 0 || cap ? 1 : 0);
     setO(cv, film ? xf : 0);
+    const cm = io(seg(Q, 0.29, 0.42));
+    if (!cap) setT(cv, 'translate3d(' + (cm * (W / 2 - V.cx)).toFixed(1) + 'px,' + (cm * (V.my - V.cy)).toFixed(1) + 'px,0) scale(' + lerp(1, V.S2 / V.S, cm).toFixed(4) + ')');
     if (film) {
-      const kf = seg(Q, 0.075, 0.8) * (FOLD.n - 1);
+      // the frames are not spent evenly: the crumple, a rest while the ball
+      // moves, the tearing open quickly, the sheet and its folding slowly
+      let kf = 0;
+      for (let j = 1; j < FOLD.keys.length; j++) {
+        const [q0, f0] = FOLD.keys[j - 1], [q1, f1] = FOLD.keys[j];
+        if (Q <= q1 || j === FOLD.keys.length - 1) { kf = lerp(f0, f1, seg(Q, q0, q1)); break; }
+      }
+      kf = Math.min(FOLD.n - 1, kf);
       const ok = j => pics[j] && pics[j].complete && pics[j].naturalWidth;
       // the nearest frame that has arrived, and the next one laid over it
       // by how far between them the scroll is, so a slow hand never sees
@@ -373,29 +391,31 @@ S.alt = el => {
         shown = key;
         const c2 = cv.getContext('2d');
         c2.globalAlpha = 1;
+        c2.clearRect(0, 0, cv.width, cv.height);
         c2.drawImage(pics[i], 0, 0, cv.width, cv.height);
         if (mix > 0) { c2.globalAlpha = mix; c2.drawImage(pics[nx], 0, 0, cv.width, cv.height); c2.globalAlpha = 1; }
       }
     }
-    // 2. the mark takes over where the film leaves it, and a light runs
-    //    over it, catching its edge as it goes
-    const hand = Q >= 0.8 || (cap && cap[1] === 'end');
+    // 2. the blank mark takes over where the film leaves it, in the middle;
+    //    the L is drawn into it, down and then across, and a light runs over
+    const hand = Q >= 0.75 || (cap && cap[1] === 'end');
     setO(brand, hand ? 1 : 0);
     flap.style.opacity = '0';
-    l1.setAttribute('height', '80'); l2.setAttribute('width', '56');
-    const s0 = FOLD.end * V.S / MW;
-    const shn = seg(Q, 0.81, 0.875);
+    const d1 = io(seg(Q, 0.76, 0.79)), d2 = io(seg(Q, 0.785, 0.81));
+    l1.setAttribute('height', (80 * d1).toFixed(2)); l2.setAttribute('width', (56 * d2).toFixed(2));
+    const s0 = FOLD.end * V.S2 / MW;
+    const shn = seg(Q, 0.81, 0.87);
     sh.setAttribute('x', lerp(-70, 175, io(shn)).toFixed(1));
     sh.style.opacity = (Math.sin(Math.PI * shn) * 1).toFixed(3);
     const bloom = Math.sin(Math.PI * shn);
     mark.style.filter = 'drop-shadow(6px 14px 26px rgba(0,0,0,.45)) drop-shadow(0 0 ' + (24 * bloom).toFixed(1) + 'px rgba(220,226,255,' + (0.55 * bloom).toFixed(3) + '))';
-    // 3. then it goes to its own place, its name beside it
-    const mv = io(seg(Q, 0.86, 0.93));
-    const bx = lerp(V.cx - W / 2, 0, mv), by = lerp(V.cy - fy, 0, mv);
-    const wd = out(seg(Q, 0.905, 0.96));
+    // 3. then it rises to its own place and size, and moves aside evenly
+    //    as its name comes in beside it
+    const mv = io(seg(Q, 0.85, 0.92));
+    const wd = io(seg(Q, 0.87, 0.94));
     const bs = lerp(s0, 1, mv);
-    setT(brand, 'translate(-50%,-50%) translate3d(' + (bx + wordW / 2 * bs * (1 - wd)).toFixed(1) + 'px,' + by.toFixed(1) + 'px,0) scale(' + bs.toFixed(4) + ')');
-    setT(word, 'translate3d(' + (-18 * (1 - wd)).toFixed(1) + 'px,0,0)'); setO(word, wd);
+    setT(brand, 'translate(-50%,-50%) translate3d(' + (wordW / 2 * bs * (1 - wd)).toFixed(1) + 'px,' + ((V.my - fy) * (1 - mv)).toFixed(1) + 'px,0) scale(' + bs.toFixed(4) + ')');
+    setT(word, 'translate3d(' + (-14 * (1 - wd)).toFixed(1) + 'px,0,0)'); setO(word, out(seg(Q, 0.905, 0.95)));
     // 4. and the sentence under it: two lines rising out of their own edge,
     //    then what we make, the price, and the two ways on
     setO(end, Q > 0.88 ? 1 : 0);
