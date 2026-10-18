@@ -39,90 +39,110 @@ html.pg-js .tile-film{ opacity:0; }
 
 
 /* ---------- why Lesreg: work it out ----------
-   On the dark: the heading, then the calculator as a Rim (6 px glass) round
-   a solid porcelain core, as LA31 Product window carries software. In it,
-   LA31 Meniscus slider for the hours (1 px track, 2 px ultramarine fill, a
-   48 px thumb whose core shows the value), three figures in Chivo Light, and
-   two bars at their true proportion. Under it, three facts as dark ledger
-   rows. Only two prices go in: the market's typical rate and Lesreg's. */
+   Built from the library (Liquid Atelier 3.2) at its own measures:
+   LA31 Control / Meniscus slider (label, value in H2 Medium 40, 1 px track,
+   2 px ultramarine fill, ticks in Annotation, a 48 px Rim thumb with a
+   porcelain core showing the value); LA31 Data / Figure (Label, the value in
+   Chivo Light 120/112, its unit in mono, a line in Small, a hairline field
+   over a travertine rule, an ultramarine "now"); LA31 Data / Ledger rows.
+   All on a porcelain core inside a Rim, over the dark. */
 .sr{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
 .rc{ position:relative; overflow:hidden; color:var(--porcelain); background:radial-gradient(80% 90% at 70% 110%, #2B3F7C, #101A33 50%, #05080F); }
-.rc::before{ content:""; position:absolute; right:-8%; top:20%; width:min(900px, 90vw); aspect-ratio:1; border-radius:50%; background:radial-gradient(closest-side, rgba(70,100,200,.3), transparent); pointer-events:none; }
-.rc-in{ position:relative; max-width:1440px; margin:0 auto; padding:clamp(96px, 12vh, 120px) 72px clamp(40px, 6vh, 64px); }
-.rc-head{ display:grid; grid-template-columns:minmax(0, 7fr) minmax(0, 5fr); column-gap:48px; align-items:end; }
-.rc-head .label{ grid-column:1 / -1; color:rgba(246,244,239,.6); }
-.rc-h{ margin-top:16px; font:500 clamp(40px, 4.4vw, 64px)/1 var(--sans); letter-spacing:-.035em; }
-.rc-h .acc{ display:block; margin-top:.06em; color:rgba(246,244,239,.72); }
-.rc-lead{ font:400 clamp(16px, 1.3vw, 18px)/1.55 var(--sans); color:rgba(246,244,239,.75); }
+.rc::before{ content:""; position:absolute; right:-8%; top:10%; width:min(900px, 90vw); aspect-ratio:1; border-radius:50%; background:radial-gradient(closest-side, rgba(70,100,200,.3), transparent); pointer-events:none; }
+.rc-in{ position:relative; max-width:1440px; margin:0 auto; padding:clamp(96px, 12vh, 128px) 72px clamp(48px, 7vh, 72px);
+  display:grid; grid-template-columns:minmax(0, 5fr) 712px; grid-template-areas:"l calc" ". src"; column-gap:clamp(32px, 4vw, 72px); align-items:center; }
+.rc-l{ grid-area:l; }
+.rc-l .label{ color:rgba(246,244,239,.6); }
+/* H1 64/64 and Lead 20/30; the accent is the view's one phrase */
+.rc-h{ margin-top:16px; font:500 64px/64px var(--sans); letter-spacing:-.035em; }
+.rc-h .acc{ display:block; color:rgba(246,244,239,.72); }
+.rc-lead{ margin-top:24px; max-width:30em; font:400 20px/30px var(--sans); letter-spacing:-.005em; color:rgba(246,244,239,.78); }
+.rc-ben{ list-style:none; margin:32px 0 0; padding:0; display:grid; gap:12px; }
+.rc-ben li{ display:flex; align-items:center; gap:12px; font:400 16px/26px var(--sans); color:var(--porcelain); }
+.rc-ck{ flex:none; width:16px; height:16px; fill:none; stroke:var(--porcelain); stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; }
 
-/* the calculator: a Rim round a porcelain core */
-.rc-calc{ position:relative; margin-top:clamp(28px, 4.4vh, 48px); padding:clamp(24px, 3vw, 40px); border-radius:30px; background:var(--porcelain); color:var(--obsidian);
-  box-shadow:0 0 0 6px rgba(255,255,255,.06), 0 0 0 7px rgba(255,255,255,.5), 9px 18px 44px rgba(13,13,15,.24); }
-.rc-hrs{ display:flex; align-items:center; gap:20px; }
-.rc-k{ flex:none; font:400 12.5px/18px var(--sans); color:var(--graphite); }
-/* LA31 Meniscus slider */
-.rc-ms{ position:relative; flex:1; height:48px; touch-action:none; cursor:pointer; }
-.rc-tr{ position:absolute; left:0; right:0; top:50%; height:1px; background:var(--travertine); }
-.rc-fill{ position:absolute; left:0; top:calc(50% - 1px); height:2px; width:var(--x, 0%); background:var(--ultra); }
-.rc-th{ position:absolute; left:var(--x, 0%); top:0; width:48px; height:48px; margin-left:-24px; padding:0; border:0; border-radius:50%; cursor:grab; touch-action:none;
-  background:rgba(255,255,255,.35); box-shadow:inset 0 0 0 1px #fff, 3px 6px 16px rgba(13,13,15,.18); transition:transform 180ms var(--ease); }
-.rc-th b{ position:absolute; inset:6px; display:grid; place-items:center; border-radius:50%; background:var(--obsidian); color:var(--porcelain); font:400 13px/1 var(--mono); }
-.rc-ms.drag .rc-th{ cursor:grabbing; transform:scale(1.06); }
-.rc-th:focus-visible{ outline:none; box-shadow:0 0 0 2px var(--porcelain), 0 0 0 4px var(--ultra), 3px 6px 16px rgba(13,13,15,.18); }
+.rc-calc{ grid-area:calc; position:relative; min-width:0; padding:32px 40px 36px; border-radius:30px; background:var(--porcelain); color:var(--obsidian);
+  box-shadow:0 0 0 5px rgba(255,255,255,.06), 0 0 0 6px rgba(255,255,255,.85), 9px 18px 44px rgba(13,13,15,.24); }
+.rc-src{ grid-area:src; margin-top:20px; font:400 12.5px/18px var(--sans); letter-spacing:.005em; color:rgba(246,244,239,.5); }
 
-.rc-figs{ display:grid; grid-template-columns:1.3fr .9fr 1.3fr; gap:24px; margin-top:clamp(20px, 3.4vh, 36px); }
+/* LA31 Control / Meniscus slider, 150 high */
+.rc-ms{ position:relative; height:150px; }
+.rc-ms-l{ position:absolute; left:0; top:12px; color:var(--ash); }
+.rc-ms-v{ position:absolute; right:0; top:0; font:500 40px/44px var(--sans); letter-spacing:-.025em; white-space:nowrap; }
+.rc-ms-tr{ position:absolute; left:0; right:0; top:64px; height:72px; touch-action:none; cursor:pointer; }
+.rc-tr{ position:absolute; left:0; right:0; top:24px; height:1px; background:var(--obsidian); }
+.rc-fill{ position:absolute; left:0; top:23.5px; height:2px; width:var(--x, 0%); background:var(--ultra); }
+.rc-ticks span{ position:absolute; left:var(--t); top:30px; transform:translateX(-50%); padding-top:12px; font:400 11.5px/16px var(--mono); color:var(--ash); }
+.rc-ticks span::before{ content:""; position:absolute; left:50%; top:0; width:1px; height:6px; background:var(--ash); }
+.rc-ticks span:first-child{ transform:none; } .rc-ticks span:first-child::before{ left:0; }
+.rc-ticks span:last-child{ transform:translateX(-100%); } .rc-ticks span:last-child::before{ left:auto; right:0; }
+.rc-th{ position:absolute; left:var(--x, 0%); top:0; width:48px; height:48px; margin-left:-24px; padding:0; border:1px solid #fff; border-radius:24px; cursor:grab; touch-action:none;
+  background:rgba(255,255,255,.06); box-shadow:9px 18px 44px rgba(13,13,15,.24); transition:transform 180ms var(--ease); }
+.rc-th b{ position:absolute; left:5px; top:5px; width:36px; height:36px; display:grid; place-items:center; border-radius:18px; background:var(--porcelain); font:400 11.5px/16px var(--mono); color:var(--obsidian); }
+.rc-ms-tr.drag .rc-th{ cursor:grabbing; transform:scale(1.06); }
+.rc-th:focus-visible{ outline:none; box-shadow:0 0 0 2px var(--porcelain), 0 0 0 4px var(--ultra), 9px 18px 44px rgba(13,13,15,.24); }
+
+/* LA31 Data / Figure: what is saved */
+.rc-fig{ margin-top:8px; padding-top:28px; border-top:1px solid var(--travertine); }
 .rc-fig .label{ color:var(--ash); }
-.rc-v{ display:flex; align-items:flex-start; margin-top:8px; white-space:nowrap; }
-.rc-v > span{ font:300 clamp(34px, 3.5vw, 52px)/1 var(--sans); letter-spacing:-.04em; font-variant-numeric:tabular-nums; }
-.rc-v small{ margin:6px 0 0 8px; font:400 11.5px/16px var(--mono); color:var(--graphite); }
-.rc-fig.them .rc-v > span{ color:var(--graphite); }
-.rc-fig.us .rc-v i{ width:8px; height:8px; margin:8px 0 0 8px; border-radius:50%; background:var(--ultra); box-shadow:0 0 0 4px var(--ultra-tint); }
-.rc-fig.save{ padding-left:24px; border-left:1px solid var(--travertine); }
-.rc-s{ margin-top:8px; font:400 12.5px/18px var(--sans); color:var(--graphite); }
+.rc-v{ display:flex; align-items:flex-start; margin-top:16px; white-space:nowrap; }
+.rc-v > span{ font:300 120px/112px var(--sans); letter-spacing:-.05em; font-variant-numeric:tabular-nums; }
+.rc-v small{ margin:26px 0 0 14px; font:400 11.5px/16px var(--mono); color:var(--graphite); }
+.rc-d{ margin-top:14px; font:400 12.5px/18px var(--sans); letter-spacing:.005em; }
+/* its field: kroner an hour, 0 to 1,200; the market's stretch, Lesreg's 50 */
+.rc-f{ position:relative; height:84px; margin-top:16px; border-bottom:1px solid var(--travertine); }
+.rc-f-mk, .rc-f-us{ position:absolute; height:1px; background:var(--obsidian); transform-origin:0 50%; transform:scaleX(var(--g, 1)); }
+.rc-f-mk{ left:50%; width:50%; top:26px; }
+.rc-f-mk::before, .rc-f-mk::after{ content:""; position:absolute; top:-4px; width:1px; height:9px; background:var(--obsidian); }
+.rc-f-mk::before{ left:0; } .rc-f-mk::after{ right:0; }
+.rc-f-us{ left:0; width:4.1667%; top:58px; }
+.rc-now{ position:absolute; left:calc(4.1667% - 4px); top:54px; width:8px; height:8px; border-radius:50%; background:var(--ultra); opacity:var(--n, 1); }
+.rc-f-m{ position:absolute; left:50%; top:2px; font:400 11.5px/16px var(--mono); color:var(--ash); }
+.rc-f-a, .rc-f-b{ position:absolute; top:calc(100% + 8px); font:400 11.5px/16px var(--mono); color:var(--ash); }
+.rc-f-a{ left:0; } .rc-f-b{ right:0; }
 
-/* the bars, at their true proportion: the market's stretch from 600 to
-   1,200 an hour, and Lesreg's 50 */
-.rc-bars{ display:grid; gap:10px; margin-top:clamp(18px, 3vh, 28px); }
-.rc-bar{ position:relative; height:14px; border-radius:7px; background:var(--limestone); overflow:hidden; }
-.rc-bar i{ position:absolute; top:0; bottom:0; left:0; transform-origin:0 50%; transform:scaleX(var(--g, 1)); }
-.rc-bar.them .lo{ width:50%; background:var(--ash); border-radius:7px 0 0 7px; }
-.rc-bar.them .hi{ left:50%; width:50%; background:repeating-linear-gradient(135deg, var(--ash) 0 4px, transparent 4px 8px); }
-.rc-bar.us i{ width:4.1667%; min-width:10px; background:var(--obsidian); border-radius:7px; }
+/* LA31 Data / Ledger rows, 48 high; the chosen one on limestone */
+.rc-ldg{ list-style:none; margin:44px 0 0; padding:0; }
+.rc-ldg .lr{ display:flex; align-items:center; gap:12px; height:48px; padding:0 16px; border-bottom:1px solid var(--travertine); }
+.rc-ldg .lr.sel{ border-bottom:0; border-radius:12px; background:var(--limestone); }
+.lr-lens{ flex:none; width:6px; height:6px; border-radius:50%; }
+.lr.sel .lr-lens{ background:var(--ultra); }
+.lr-ref{ flex:none; width:76px; font:400 11.5px/16px var(--mono); color:var(--graphite); }
+.lr-name{ flex:1; min-width:0; font:400 14px/22px var(--sans); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.lr.sel .lr-name{ font-weight:500; line-height:16px; }
+.lr-amt{ flex:none; text-align:right; font:400 11.5px/16px var(--mono); }
 
-/* three facts as dark ledger rows */
-.rc-facts{ list-style:none; margin:clamp(24px, 4vh, 40px) 0 0; padding:0; }
-.rc-facts li{ display:grid; grid-template-columns:minmax(120px, 2fr) 5fr 5fr; gap:16px; align-items:center; min-height:48px; padding:12px 0; border-top:1px solid rgba(246,244,239,.14); }
-.rc-facts b{ font:600 11px/14px var(--sans); letter-spacing:.06em; text-transform:uppercase; color:rgba(246,244,239,.55); }
-.rc-facts span{ font:400 14px/22px var(--sans); color:rgba(246,244,239,.5); }
-.rc-facts span.us{ color:var(--porcelain); font-weight:500; }
-.rc-src{ margin-top:16px; font:400 11.5px/16px var(--mono); color:rgba(246,244,239,.45); }
-
-@media (max-width:1023px){
-  .rc-in{ padding:clamp(96px, 12vh, 120px) 40px 56px; }
-  .rc-head{ grid-template-columns:1fr; row-gap:16px; }
+@media (max-width:1199px){
+  .rc-in{ grid-template-columns:minmax(0, 1fr); grid-template-areas:"l" "calc" "src"; row-gap:40px; padding:clamp(96px, 12vh, 120px) 40px 56px; }
+  .rc-calc{ justify-self:start; width:min(712px, 100%); }
+  .rc-src{ margin-top:-20px; }
 }
 @media (max-width:767px){
-  .rc-in{ padding:80px 20px 36px; }
+  .rc-in{ padding:80px 20px 40px; row-gap:28px; }
   .rc-h{ font-size:40px; line-height:44px; letter-spacing:-.025em; }
-  .rc-lead{ font-size:15px; line-height:23px; }
-  .rc-calc{ margin-top:24px; padding:20px; border-radius:26px; }
-  .rc-hrs{ gap:12px; }
-  .rc-k:not(.rc-unit){ display:none; }
-  .rc-figs{ grid-template-columns:1fr 1fr; gap:16px 12px; margin-top:16px; }
-  .rc-fig.save{ grid-column:1 / -1; padding:14px 0 0; border-left:0; border-top:1px solid var(--travertine); }
-  .rc-v > span{ font-size:26px; }
-  .rc-fig.them .rc-v > span{ font-size:19px; line-height:26px; }
-  .rc-fig.save .rc-v > span{ font-size:min(8.6vw, 34px); }
-  .rc-s{ font-size:12.5px; line-height:17px; }
-  .rc-fig.us .rc-s{ max-width:12em; }
-  .rc-h{ margin-top:12px; }
-  .rc-head{ row-gap:12px; }
-  .rc-bars{ margin-top:16px; gap:8px; }
-  .rc-bar{ height:12px; }
-  .rc-facts{ margin-top:20px; }
-  .rc-src{ margin-top:12px; }
-  .rc-facts li{ grid-template-columns:96px 1fr; gap:12px; padding:10px 0; min-height:44px; }
-  .rc-facts li > span:not(.us){ display:none; }
+  .rc-lead{ margin-top:16px; font-size:16px; line-height:26px; }
+  .rc-ben{ margin-top:20px; gap:8px; }
+  .rc-ben li{ font-size:15px; line-height:24px; }
+  .rc-calc{ padding:20px; border-radius:26px; }
+  .rc-ms{ height:132px; }
+  .rc-ms-v{ font-size:32px; line-height:36px; }
+  .rc-ms-l{ top:10px; }
+  .rc-ms-tr{ top:54px; }
+  /* Figure, Mobile: the value at 88, or as large as the phone allows */
+  .rc-fig{ padding-top:20px; }
+  .rc-v{ margin-top:12px; }
+  .rc-v > span{ font-size:min(19vw, 88px); line-height:min(19vw, 88px); }
+  .rc-v small{ margin:18px 0 0 10px; }
+  /* on a phone the two rows say it; the field is left out */
+  .rc-f{ display:none; }
+  .rc-ldg{ margin-top:16px; }
+  /* Ledger row, Compact: 68 high, two lines, the rate above, name and sum below */
+  .rc-ldg .lr{ position:relative; display:block; height:68px; padding:0; }
+  .rc-ldg .lr-lens{ position:absolute; left:12px; top:31px; }
+  .rc-ldg .lr-ref{ position:absolute; left:28px; top:12px; width:auto; }
+  .rc-ldg .lr-name{ position:absolute; left:28px; right:110px; top:36px; font-weight:500; line-height:16px; }
+  .rc-ldg .lr-amt{ position:absolute; right:16px; top:38px; }
+  .rc-src{ margin-top:0; }
 }
 @media (prefers-reduced-motion: reduce){ .rc-th{ transition:none; } }
 

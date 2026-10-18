@@ -24,7 +24,7 @@
 <link rel="stylesheet" href="ny.css?v=16" />
 <link rel="stylesheet" href="page.css?v=22" />
 <link rel="stylesheet" href="hero.css?v=28" />
-<link rel="stylesheet" href="sections.css?v=65" />
+<link rel="stylesheet" href="sections.css?v=68" />
 <script>
   /* decided before first paint: with JS the phone turns as you scroll;
      without it, the first screen simply stands there */
@@ -360,59 +360,52 @@
   </div>
 </section>
 
-<!-- why Lesreg: work it out. Only two prices go in: what agencies and
-     freelancers in Denmark typically charge an hour, and Lesreg's. The hours
-     are drawn on LA31 Meniscus slider; the sums follow, and the bars stand
-     at their true proportion. When it is first seen the slider moves on its
-     own; after that it is the reader's. -->
+<!-- why Lesreg: work it out. Built from the library and nothing else:
+     LA31 Control / Meniscus slider for the hours, LA31 Data / Figure for
+     what is saved, LA31 Data / Ledger rows for the two sums, on a porcelain
+     core inside a Rim, as LA31 Product window carries software. Two prices
+     go in: the market's typical rate (600 to 1,200 an hour, reckoned at its
+     middle, 900) and Lesreg's 50. -->
 <section class="rc" id="fordi" aria-labelledby="rc-h">
   <div class="rc-in">
-    <header class="rc-head">
+    <div class="rc-l">
       <p class="label"><span data-da="Hvorfor Lesreg" data-en="Why Lesreg">Hvorfor Lesreg</span></p>
       <h2 class="rc-h" id="rc-h"><span data-da="Samme timer." data-en="The same hours.">Samme timer.</span> <em class="acc" data-da="En brøkdel af prisen." data-en="A fraction of the price.">En brøkdel af prisen.</em></h2>
-      <p class="rc-lead" data-da="Bureauer og freelancere i Danmark tager typisk 600–1.200 kr. i timen. Vi tager 50 kr. i timen og aftaler én fast pris, før vi starter. Træk i timerne, og se forskellen." data-en="Agencies and freelancers in Denmark typically charge DKK 600–1,200 an hour. We charge DKK 50 an hour and agree one fixed price before we start. Drag the hours and see the difference.">Bureauer og freelancere i Danmark tager typisk 600–1.200 kr. i timen. Vi tager 50 kr. i timen og aftaler én fast pris, før vi starter. Træk i timerne, og se forskellen.</p>
-    </header>
-
-    <div class="rc-calc">
-      <div class="rc-hrs">
-        <span class="rc-k"><span data-da="Et projekt på" data-en="A project of">Et projekt på</span></span>
-        <div class="rc-ms" data-min="10" data-max="400" data-step="10">
-          <i class="rc-tr"></i><i class="rc-fill"></i>
-          <button type="button" class="rc-th" role="slider" aria-valuemin="10" aria-valuemax="400" aria-valuenow="120" aria-label="Antal timer" data-aria-da="Antal timer" data-aria-en="Number of hours"><b>120</b></button>
-        </div>
-        <span class="rc-k rc-unit"><span data-da="timer" data-en="hours">timer</span></span>
-      </div>
-
-      <div class="rc-figs" aria-live="polite">
-        <div class="rc-fig them">
-          <p class="label"><span data-da="Klassisk softwarehus" data-en="Classic software house">Klassisk softwarehus</span></p>
-          <p class="rc-v"><span data-o="them">72.000–144.000</span><small><span data-da="kr." data-en="DKK">kr.</span></small></p>
-          <p class="rc-s"><span data-da="600–1.200 kr./t · timerne løber" data-en="DKK 600–1,200/h · the hours keep running">600–1.200 kr./t · timerne løber</span></p>
-        </div>
-        <div class="rc-fig us">
-          <p class="label">Lesreg</p>
-          <p class="rc-v"><span data-o="us">6.000</span><small><span data-da="kr." data-en="DKK">kr.</span></small><i></i></p>
-          <p class="rc-s"><span data-da="50 kr./t · én fast pris før start" data-en="DKK 50/h · one fixed price before the start">50 kr./t · én fast pris før start</span></p>
-        </div>
-        <div class="rc-fig save">
-          <p class="label"><span data-da="I sparer" data-en="You save">I sparer</span></p>
-          <p class="rc-v"><span data-o="save">66.000–138.000</span><small><span data-da="kr." data-en="DKK">kr.</span></small></p>
-          <p class="rc-s"><span data-da="12–24 gange billigere pr. time" data-en="12–24 times cheaper an hour">12–24 gange billigere pr. time</span></p>
-        </div>
-      </div>
-
-      <div class="rc-bars" aria-hidden="true">
-        <div class="rc-bar them"><i class="lo"></i><i class="hi"></i></div>
-        <div class="rc-bar us"><i></i></div>
-      </div>
+      <p class="rc-lead" data-da="Bureauer og freelancere i Danmark tager typisk 600 til 1.200 kr. i timen. Vi tager 50 kr. og aftaler prisen, før vi går i gang." data-en="Agencies and freelancers in Denmark typically charge DKK 600 to 1,200 an hour. We charge DKK 50 and agree the price before we start.">Bureauer og freelancere i Danmark tager typisk 600 til 1.200 kr. i timen. Vi tager 50 kr. og aftaler prisen, før vi går i gang.</p>
+      <ul class="rc-ben">
+        <li><svg class="rc-ck" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.2 8.6 6.4 11.6 12.8 4.6"/></svg><span data-da="Én fast pris, aftalt før start" data-en="One fixed price, agreed before the start">Én fast pris, aftalt før start</span></li>
+        <li><svg class="rc-ck" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.2 8.6 6.4 11.6 12.8 4.6"/></svg><span data-da="Rettelser hos dem, der byggede det" data-en="Changes by the people who built it">Rettelser hos dem, der byggede det</span></li>
+        <li><svg class="rc-ck" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.2 8.6 6.4 11.6 12.8 4.6"/></svg><span data-da="Ingen kommission af jeres salg" data-en="No commission on your sales">Ingen kommission af jeres salg</span></li>
+      </ul>
     </div>
 
-    <ul class="rc-facts">
-      <li><b><span data-da="Pris" data-en="Price">Pris</span></b><span><span data-da="Timer, der løber" data-en="Hours that keep running">Timer, der løber</span></span><span class="us"><span data-da="Én fast pris, aftalt før start" data-en="One fixed price, agreed before the start">Én fast pris, aftalt før start</span></span></li>
-      <li><b><span data-da="Rettelser" data-en="Changes">Rettelser</span></b><span><span data-da="Tilbud, kø og nye hænder" data-en="A quote, a queue and new hands">Tilbud, kø og nye hænder</span></span><span class="us"><span data-da="De samme hænder, der byggede det" data-en="The hands that built it">De samme hænder, der byggede det</span></span></li>
-      <li><b><span data-da="Bestillinger" data-en="Orders">Bestillinger</span></b><span><span data-da="Platforme tager procenter" data-en="Platforms take a cut">Platforme tager procenter</span></span><span class="us"><span data-da="0 % kommission på jeres egen side" data-en="0 % commission on your own site">0 % kommission på jeres egen side</span></span></li>
-    </ul>
-    <p class="rc-src" data-da="Markedspris: typisk timepris for bureauer og freelancere i Danmark, 2026. Alle priser ekskl. moms." data-en="Market price: the typical hourly rate of agencies and freelancers in Denmark, 2026. All prices excluding VAT.">Markedspris: typisk timepris for bureauer og freelancere i Danmark, 2026. Alle priser ekskl. moms.</p>
+    <div class="rc-calc">
+      <div class="rc-ms">
+        <p class="label rc-ms-l"><span data-da="Projektets størrelse" data-en="Size of the project">Projektets størrelse</span></p>
+        <p class="rc-ms-v"><span data-o="hrs">120</span> <span data-da="timer" data-en="hours">timer</span></p>
+        <div class="rc-ms-tr" data-min="10" data-max="400" data-step="10">
+          <i class="rc-tr"></i><i class="rc-fill"></i>
+          <span class="rc-ticks" aria-hidden="true"><span style="--t:0.000%">10</span><span style="--t:23.077%">100</span><span style="--t:48.718%">200</span><span style="--t:74.359%">300</span><span style="--t:100.000%">400</span></span>
+          <button type="button" class="rc-th" role="slider" aria-valuemin="10" aria-valuemax="400" aria-valuenow="120" aria-label="Antal timer" data-aria-da="Antal timer" data-aria-en="Number of hours"><b>120</b></button>
+        </div>
+      </div>
+
+      <div class="rc-fig" aria-live="polite">
+        <p class="label"><span data-da="I sparer" data-en="You save">I sparer</span></p>
+        <p class="rc-v"><span data-o="save">102.000</span><small><span data-da="kr." data-en="DKK">kr.</span></small></p>
+        <p class="rc-d"><span data-o="delta">Ved 120 timer, mod et bureau til 900 kr. i timen</span></p>
+        <div class="rc-f" aria-hidden="true">
+          <i class="rc-f-mk"></i><i class="rc-f-us"></i><i class="rc-now"></i>
+          <span class="rc-f-a">0</span><span class="rc-f-m">600–1.200</span><span class="rc-f-b"><span data-da="1.200 kr./t" data-en="DKK 1,200/h">1.200 kr./t</span></span>
+        </div>
+      </div>
+
+      <ul class="rc-ldg">
+        <li class="lr"><i class="lr-lens"></i><span class="lr-ref"><span data-da="900 kr./t" data-en="DKK 900/h">900 kr./t</span></span><span class="lr-name"><span data-da="Bureau eller freelancer" data-en="Agency or freelancer">Bureau eller freelancer</span></span><span class="lr-amt"><span data-o="them">108.000</span> <span data-da="kr." data-en="DKK">kr.</span></span></li>
+        <li class="lr sel"><i class="lr-lens"></i><span class="lr-ref"><span data-da="50 kr./t" data-en="DKK 50/h">50 kr./t</span></span><span class="lr-name">Lesreg</span><span class="lr-amt"><span data-o="us">6.000</span> <span data-da="kr." data-en="DKK">kr.</span></span></li>
+      </ul>
+    </div>
+    <p class="rc-src" data-da="Typisk timepris i Danmark i 2026 er 600 til 1.200 kr. Vi regner med midten, 900 kr. Alle priser er uden moms." data-en="The typical hourly rate in Denmark in 2026 is DKK 600 to 1,200. We reckon with the middle, DKK 900. All prices exclude VAT.">Typisk timepris i Danmark i 2026 er 600 til 1.200 kr. Vi regner med midten, 900 kr. Alle priser er uden moms.</p>
   </div>
 </section>
 
@@ -586,7 +579,7 @@
 </footer>
 
 <script type="module" src="main.js?v=24"></script>
-<script type="module" src="page.js?v=54"></script>
+<script type="module" src="page.js?v=55"></script>
 <script type="module" src="sheets.js?v=1"></script>
 </body>
 </html>

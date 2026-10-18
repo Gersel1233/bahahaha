@@ -121,26 +121,27 @@ if (tileRow && 'IntersectionObserver' in window) {
 }
 
 /* ---------- why Lesreg: work it out. The hours on LA31 Meniscus slider;
-   the market's typical 600-1,200 an hour and Lesreg's 50 make the sums. The
-   first time it is seen the slider moves up on its own and the bars grow;
-   after that it is the reader's, by finger, mouse or arrow keys. ---------- */
+   what is saved in LA31 Figure, at the market's middle rate of 900 an hour
+   against Lesreg's 50; the two sums in Ledger rows. The first time it is
+   seen the slider moves up on its own; after that it is the reader's, by
+   finger, mouse or arrow keys. ---------- */
 const rc = document.querySelector('.rc');
 if (rc) {
-  const MIN = 10, MAX = 400, STEP = 10, LO = 600, HI = 1200, US = 50;
-  const ms = rc.querySelector('.rc-ms'), th = ms.querySelector('.rc-th'), thv = th.querySelector('b');
+  const MIN = 10, MAX = 400, STEP = 10, MID = 900, US = 50, START = 120;
+  const tr = rc.querySelector('.rc-ms-tr'), th = tr.querySelector('.rc-th'), thv = th.querySelector('b');
   const slot = k => rc.querySelector(`[data-o="${k}"]`);
-  const sThem = slot('them'), sUs = slot('us'), sSave = slot('save');
-  const bars = $$('.rc-bar i', rc);
+  const sHrs = slot('hrs'), sSave = slot('save'), sDelta = slot('delta'), sThem = slot('them'), sUs = slot('us');
+  const field = $$('.rc-f-mk, .rc-f-us', rc), now = rc.querySelector('.rc-now');
   const L = () => (html.lang === 'en' ? 'en' : 'da');
   const fmt = n => Math.round(n).toLocaleString(L() === 'en' ? 'en-GB' : 'da-DK');
-  let shown = still ? 120 : MIN, goal = shown, tw = 0, demo = 0, touched = false;
+  let shown = still ? START : MIN, goal = shown, tw = 0, demo = 0, touched = false;
   const paint = h => {
-    ms.style.setProperty('--x', ((h - MIN) / (MAX - MIN) * 100).toFixed(3) + '%');
     const r = Math.round(h);
-    thv.textContent = r;
-    sThem.textContent = fmt(r * LO) + '–' + fmt(r * HI);
-    sUs.textContent = fmt(r * US);
-    sSave.textContent = fmt(r * (LO - US)) + '–' + fmt(r * (HI - US));
+    rc.style.setProperty('--x', ((h - MIN) / (MAX - MIN) * 100).toFixed(3) + '%');
+    thv.textContent = r; sHrs.textContent = r;
+    sSave.textContent = fmt(r * (MID - US));
+    sThem.textContent = fmt(r * MID); sUs.textContent = fmt(r * US);
+    sDelta.textContent = L() === 'en' ? `At ${r} hours, against an agency at DKK 900 an hour` : `Ved ${r} timer, mod et bureau til 900 kr. i timen`;
     th.setAttribute('aria-valuenow', r);
     th.setAttribute('aria-valuetext', r + (L() === 'en' ? ' hours' : ' timer'));
   };
@@ -152,18 +153,18 @@ if (rc) {
     shown += d * 0.22; paint(shown);
     tw = requestAnimationFrame(roll);
   };
-  const set = (h, now) => {
+  const set = (h, jump) => {
     goal = Math.min(MAX, Math.max(MIN, Math.round(h / STEP) * STEP));
-    if (now || still) { cancelAnimationFrame(tw); tw = 0; shown = goal; paint(shown); }
+    if (jump || still) { cancelAnimationFrame(tw); tw = 0; shown = goal; paint(shown); }
     else if (!tw) tw = requestAnimationFrame(roll);
   };
-  const stopDemo = () => { touched = true; cancelAnimationFrame(demo); demo = 0; };
-  const at = e => { const r = ms.getBoundingClientRect(); return MIN + (MAX - MIN) * Math.min(1, Math.max(0, (e.clientX - r.left) / r.width)); };
-  ms.addEventListener('pointerdown', e => {
-    stopDemo(); ms.setPointerCapture(e.pointerId); ms.classList.add('drag'); set(at(e), true); th.focus({ preventScroll: true });
+  const stopDemo = () => { touched = true; cancelAnimationFrame(demo); demo = 0; field.forEach(f => f.style.setProperty('--g', 1)); now.style.setProperty('--n', 1); };
+  const at = e => { const r = tr.getBoundingClientRect(); return MIN + (MAX - MIN) * Math.min(1, Math.max(0, (e.clientX - r.left) / r.width)); };
+  tr.addEventListener('pointerdown', e => {
+    stopDemo(); tr.setPointerCapture(e.pointerId); tr.classList.add('drag'); set(at(e), true); th.focus({ preventScroll: true });
     const move = ev => set(at(ev), true);
-    const up = () => { ms.classList.remove('drag'); ms.removeEventListener('pointermove', move); ms.removeEventListener('pointerup', up); ms.removeEventListener('pointercancel', up); };
-    ms.addEventListener('pointermove', move); ms.addEventListener('pointerup', up); ms.addEventListener('pointercancel', up);
+    const up = () => { tr.classList.remove('drag'); tr.removeEventListener('pointermove', move); tr.removeEventListener('pointerup', up); tr.removeEventListener('pointercancel', up); };
+    tr.addEventListener('pointermove', move); tr.addEventListener('pointerup', up); tr.addEventListener('pointercancel', up);
   });
   th.addEventListener('keydown', e => {
     const d = { ArrowRight: STEP, ArrowUp: STEP, ArrowLeft: -STEP, ArrowDown: -STEP, PageUp: 50, PageDown: -50 }[e.key];
@@ -172,21 +173,22 @@ if (rc) {
     e.preventDefault(); stopDemo(); set(goal + d);
   });
   paint(shown);
-  bars.forEach(b => b.style.setProperty('--g', still ? 1 : 0));
+  if (!still) { field.forEach(f => f.style.setProperty('--g', 0)); now.style.setProperty('--n', 0); }
   new MutationObserver(() => paint(shown)).observe(html, { attributes: true, attributeFilter: ['lang'] });
-  // the first time it is seen: the hours go up to 120, the bars grow
+  // the first time it is seen: the hours go up, and the field is drawn
   if (!still && 'IntersectionObserver' in window) {
     const first = new IntersectionObserver(es => {
       if (!es.some(en => en.intersectionRatio >= 0.4)) return;
       first.disconnect();
       const t0 = performance.now();
-      const run = now => {
+      const run = t => {
         demo = 0;
         if (touched) return;
-        const q = Math.min(1, (now - t0) / 1800);
-        shown = goal = MIN + (120 - MIN) * io(q); paint(shown);
-        bars.forEach((b, i) => b.style.setProperty('--g', out(seg(q, 0.15 + i * 0.12, 0.75 + i * 0.12)).toFixed(4)));
-        if (q < 1) demo = requestAnimationFrame(run); else goal = 120;
+        const q = Math.min(1, (t - t0) / 1800);
+        shown = goal = MIN + (START - MIN) * io(q); paint(shown);
+        field.forEach((f, i) => f.style.setProperty('--g', out(seg(q, 0.1 + i * 0.25, 0.6 + i * 0.25)).toFixed(4)));
+        now.style.setProperty('--n', seg(q, 0.85, 1).toFixed(3));
+        if (q < 1) demo = requestAnimationFrame(run); else goal = START;
       };
       demo = requestAnimationFrame(run);
     }, { threshold: [0, 0.4] });
