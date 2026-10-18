@@ -23,6 +23,8 @@ function open(d, from) {
   d.classList.remove('going');
   d.showModal();
   d.scrollTop = 0;
+  // the sheet itself takes the focus, so no ring sits on its close until the keyboard asks for one
+  const inner = d.querySelector('.sh-in[tabindex]'); if (inner) inner.focus({ preventScroll: true });
 }
 
 function close(d) {
