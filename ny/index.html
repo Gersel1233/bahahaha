@@ -17,7 +17,7 @@
 <link rel="stylesheet" href="ny.css?v=16" />
 <link rel="stylesheet" href="page.css?v=20" />
 <link rel="stylesheet" href="hero.css?v=25" />
-<link rel="stylesheet" href="sections.css?v=45" />
+<link rel="stylesheet" href="sections.css?v=46" />
 <script>
   /* decided before first paint: with JS the phone turns as you scroll;
      without it, the first screen simply stands there */
@@ -175,22 +175,100 @@
     <article class="tile tile-apps">
       <div class="tile-t"><p class="mono" data-da="Apps" data-en="Apps">Apps</p><h3 data-da="Apps, folk faktisk har på telefonen." data-en="Apps people actually keep on their phone.">Apps, folk faktisk har på telefonen.</h3><p data-da="Notifikationer, Dynamic Island og live-status — sådan som folk forventer det i dag." data-en="Notifications, the Dynamic Island and live status — the way people expect it today.">Notifikationer, Dynamic Island og live-status — sådan som folk forventer det i dag.</p></div>
       <div class="tile-v"><video class="tile-film" muted playsinline preload="none" poster="media/tile-apps.webp" data-v="media/tile-apps"></video></div>
+    
+      <button type="button" class="tile-more" data-sheet="sheet-apps" aria-haspopup="dialog" aria-label="Læs mere om apps" data-aria-da="Læs mere om apps" data-aria-en="Read more about apps"><i></i></button>
     </article>
     <article class="tile tile-sys">
       <div class="tile-t"><p class="mono" data-da="Systemer" data-en="Systems">Systemer</p><h3 data-da="Systemer, der driver forretningen." data-en="Systems that run the business.">Systemer, der driver forretningen.</h3><p data-da="Bestillingen går fra spiis.dk direkte ind i køkkenet, og gæsten får besked. Uden kommission." data-en="The order goes from spiis.dk straight into the kitchen, and the guest is told. No commission.">Bestillingen går fra spiis.dk direkte ind i køkkenet, og gæsten får besked. Uden kommission.</p></div>
       <div class="tile-v"><video class="tile-film" muted playsinline preload="none" poster="media/tile-sys.webp" data-v="media/tile-sys"></video></div>
+    
+      <button type="button" class="tile-more" data-sheet="sheet-sys" aria-haspopup="dialog" aria-label="Læs mere om systemer" data-aria-da="Læs mere om systemer" data-aria-en="Read more about systems"><i></i></button>
     </article>
     <article class="tile tile-int">
       <div class="tile-t"><p class="mono" data-da="Integrationer" data-en="Integrations">Integrationer</p><h3 data-da="Koblet på det, I allerede bruger." data-en="Connected to what you already use.">Koblet på det, I allerede bruger.</h3><p data-da="Shopify, Flatpay, e-conomic, Dinero, Planway og OnlinePOS — så data kun skal tastes én gang." data-en="Shopify, Flatpay, e-conomic, Dinero, Planway and OnlinePOS — so data only has to be typed in once.">Shopify, Flatpay, e-conomic, Dinero, Planway og OnlinePOS — så data kun skal tastes én gang.</p></div>
       <div class="tile-v"><video class="tile-film" muted playsinline preload="none" poster="media/tile-int.webp" data-v="media/tile-int"></video></div>
+    
+      <button type="button" class="tile-more" data-sheet="sheet-int" aria-haspopup="dialog" aria-label="Læs mere om integrationer" data-aria-da="Læs mere om integrationer" data-aria-en="Read more about integrations"><i></i></button>
     </article>
     <article class="tile tile-web">
       <div class="tile-t"><p class="mono" data-da="Hjemmesider &amp; motion" data-en="Websites &amp; motion">Hjemmesider &amp; motion</p><h3 data-da="Hjemmesider, man husker." data-en="Websites people remember.">Hjemmesider, man husker.</h3><p data-da="Filmiske sider og motion design — som den, du er på nu." data-en="Cinematic sites and motion design — like the one you are on.">Filmiske sider og motion design — som den, du er på nu.</p></div>
       <div class="tile-v"><video class="tile-film" muted playsinline preload="none" poster="media/tile-web.webp" data-v="media/tile-web"></video></div>
+    
+      <button type="button" class="tile-more" data-sheet="sheet-web" aria-haspopup="dialog" aria-label="Læs mere om hjemmesider &amp; motion" data-aria-da="Læs mere om hjemmesider &amp; motion" data-aria-en="Read more about websites &amp; motion"><i></i></button>
     </article>
   </div>
   <div class="tiles-nav"><button type="button" class="tn tn-prev" aria-label="Forrige"><svg><use href="#i-arrow"/></svg></button><button type="button" class="tn tn-next" aria-label="Næste"><svg><use href="#i-arrow"/></svg></button></div>
 </section>
+
+<!-- what each tile opens: the long version, in a sheet -->
+<dialog class="sheet" id="sheet-apps" aria-labelledby="sheet-apps-h">
+  <div class="sh-in">
+    <button type="button" class="sh-x" data-close aria-label="Luk"><i></i></button>
+    <p class="mono"><span data-da="Apps" data-en="Apps">Apps</span></p>
+    <h3 id="sheet-apps-h"><span data-da="Apps, folk faktisk har på telefonen." data-en="Apps people actually keep on their phone.">Apps, folk faktisk har på telefonen.</span></h3>
+    <p class="sh-lead"><span data-da="En app, der føles som resten af telefonen: notifikationer, Dynamic Island og live-status, så kunden kan se, hvor bestillingen er, uden at åbne noget." data-en="An app that feels like the rest of the phone: notifications, the Dynamic Island and live status, so customers see where their order is without opening anything.">En app, der føles som resten af telefonen: notifikationer, Dynamic Island og live-status, så kunden kan se, hvor bestillingen er, uden at åbne noget.</span></p>
+    <p class="sh-lab"><span data-da="Det får I" data-en="What you get">Det får I</span></p>
+    <ul class="sh-get"><li><span data-da="Tegnet til jeres kunder og jeres mærke" data-en="Designed for your customers and your brand">Tegnet til jeres kunder og jeres mærke</span></li><li><span data-da="Besked, når noget sker: modtaget, i gang, klar" data-en="A message when something happens: received, in progress, ready">Besked, når noget sker: modtaget, i gang, klar</span></li><li><span data-da="Bygget af samme hus som systemet bag, så det hænger sammen" data-en="Built by the same house as the system behind it, so it all fits">Bygget af samme hus som systemet bag, så det hænger sammen</span></li></ul>
+    <p class="sh-lab"><span data-da="Sådan gør vi" data-en="How we do it">Sådan gør vi</span></p>
+    <ol class="sh-steps"><li><b data-da="Vi snakker" data-en="We talk">Vi snakker</b><span data-da="I fortæller, hvad der driller." data-en="You tell us what is in the way.">I fortæller, hvad der driller.</span></li><li><b data-da="Fast pris" data-en="Fixed price">Fast pris</b><span data-da="En plan og én pris, før vi starter." data-en="A plan and one price before we start.">En plan og én pris, før vi starter.</span></li><li><b data-da="Vi bygger" data-en="We build">Vi bygger</b><span data-da="I taler med dem, der laver det." data-en="You talk to the people making it.">I taler med dem, der laver det.</span></li><li><b data-da="Vi passer det" data-en="We look after it">Vi passer det</b><span data-da="En rettelse tager timer, ikke uger." data-en="A change takes hours, not weeks.">En rettelse tager timer, ikke uger.</span></li></ol>
+    <p class="sh-lab"><span data-da="Eksempel" data-en="Example">Eksempel</span></p>
+    <p class="sh-ex"><span data-da="Spiis: gæsterne bestiller og betaler på restaurantens egen side, og bestillingen går direkte ind i køkkenet." data-en="Spiis: guests order and pay on the restaurant’s own site, and the order goes straight into the kitchen.">Spiis: gæsterne bestiller og betaler på restaurantens egen side, og bestillingen går direkte ind i køkkenet.</span></p>
+    <div class="sh-cta">
+      <a class="btn" href="mailto:mgersel@lesreg.com"><span data-da="Fortæl os, hvad I skal have lavet" data-en="Tell us what you need made">Fortæl os, hvad I skal have lavet</span><span class="lens"><svg><use href="#i-arrow"/></svg></span></a>
+    </div>
+  </div>
+</dialog>
+<dialog class="sheet" id="sheet-sys" aria-labelledby="sheet-sys-h">
+  <div class="sh-in">
+    <button type="button" class="sh-x" data-close aria-label="Luk"><i></i></button>
+    <p class="mono"><span data-da="Systemer" data-en="Systems">Systemer</span></p>
+    <h3 id="sheet-sys-h"><span data-da="Systemer, der driver forretningen." data-en="Systems that run the business.">Systemer, der driver forretningen.</span></h3>
+    <p class="sh-lead"><span data-da="Systemet bag det, kunderne ser: bestillinger, køkken og drift samlet ét sted. Bestillingen går fra spiis.dk direkte ind i køkkenet, og gæsten får besked. Uden kommission." data-en="The system behind what customers see: orders, kitchen and operations in one place. The order goes from spiis.dk straight into the kitchen, and the guest is told. No commission.">Systemet bag det, kunderne ser: bestillinger, køkken og drift samlet ét sted. Bestillingen går fra spiis.dk direkte ind i køkkenet, og gæsten får besked. Uden kommission.</span></p>
+    <p class="sh-lab"><span data-da="Det får I" data-en="What you get">Det får I</span></p>
+    <ul class="sh-get"><li><span data-da="Ét overblik i stedet for opkald midt i madlavningen" data-en="One overview instead of phone calls in the middle of cooking">Ét overblik i stedet for opkald midt i madlavningen</span></li><li><span data-da="Bestilling og booking på jeres egen side, uden kommission til en platform" data-en="Ordering and booking on your own site, with no commission to a platform">Bestilling og booking på jeres egen side, uden kommission til en platform</span></li><li><span data-da="Rettelser på timer, ikke uger" data-en="Changes in hours, not weeks">Rettelser på timer, ikke uger</span></li></ul>
+    <p class="sh-lab"><span data-da="Sådan gør vi" data-en="How we do it">Sådan gør vi</span></p>
+    <ol class="sh-steps"><li><b data-da="Vi snakker" data-en="We talk">Vi snakker</b><span data-da="I fortæller, hvad der driller." data-en="You tell us what is in the way.">I fortæller, hvad der driller.</span></li><li><b data-da="Fast pris" data-en="Fixed price">Fast pris</b><span data-da="En plan og én pris, før vi starter." data-en="A plan and one price before we start.">En plan og én pris, før vi starter.</span></li><li><b data-da="Vi bygger" data-en="We build">Vi bygger</b><span data-da="I taler med dem, der laver det." data-en="You talk to the people making it.">I taler med dem, der laver det.</span></li><li><b data-da="Vi passer det" data-en="We look after it">Vi passer det</b><span data-da="En rettelse tager timer, ikke uger." data-en="A change takes hours, not weeks.">En rettelse tager timer, ikke uger.</span></li></ol>
+    <p class="sh-lab"><span data-da="Eksempel" data-en="Example">Eksempel</span></p>
+    <p class="sh-ex"><span data-da="Mosede Havnecafé: menukort, hjemmeside og skærmene i caféen kører på samme system. Én ændring, og det hele følger med." data-en="Mosede Havnecafé: menu, website and the screens in the café run on one system. One change, and all of it follows.">Mosede Havnecafé: menukort, hjemmeside og skærmene i caféen kører på samme system. Én ændring, og det hele følger med.</span></p>
+    <div class="sh-cta">
+      <a class="btn" href="mailto:mgersel@lesreg.com"><span data-da="Fortæl os, hvad I skal have lavet" data-en="Tell us what you need made">Fortæl os, hvad I skal have lavet</span><span class="lens"><svg><use href="#i-arrow"/></svg></span></a>
+    </div>
+  </div>
+</dialog>
+<dialog class="sheet" id="sheet-int" aria-labelledby="sheet-int-h">
+  <div class="sh-in">
+    <button type="button" class="sh-x" data-close aria-label="Luk"><i></i></button>
+    <p class="mono"><span data-da="Integrationer" data-en="Integrations">Integrationer</span></p>
+    <h3 id="sheet-int-h"><span data-da="Koblet på det, I allerede bruger." data-en="Connected to what you already use.">Koblet på det, I allerede bruger.</span></h3>
+    <p class="sh-lead"><span data-da="Vi kobler det nye på det, I allerede bruger, så data kun skal tastes én gang: Shopify, Flatpay, e-conomic, Dinero, Planway og OnlinePOS." data-en="We connect the new to what you already use, so data only has to be typed in once: Shopify, Flatpay, e-conomic, Dinero, Planway and OnlinePOS.">Vi kobler det nye på det, I allerede bruger, så data kun skal tastes én gang: Shopify, Flatpay, e-conomic, Dinero, Planway og OnlinePOS.</span></p>
+    <p class="sh-lab"><span data-da="Det får I" data-en="What you get">Det får I</span></p>
+    <ul class="sh-get"><li><span data-da="Kassen, regnskabet og betalingen taler sammen" data-en="The till, the accounts and the payments talk to each other">Kassen, regnskabet og betalingen taler sammen</span></li><li><span data-da="Data tastes én gang, ikke tre" data-en="Data is typed in once, not three times">Data tastes én gang, ikke tre</span></li><li><span data-da="Bygget og passet af samme hus" data-en="Built and looked after by the same house">Bygget og passet af samme hus</span></li></ul>
+    <p class="sh-lab"><span data-da="Sådan gør vi" data-en="How we do it">Sådan gør vi</span></p>
+    <ol class="sh-steps"><li><b data-da="Vi snakker" data-en="We talk">Vi snakker</b><span data-da="I fortæller, hvad der driller." data-en="You tell us what is in the way.">I fortæller, hvad der driller.</span></li><li><b data-da="Fast pris" data-en="Fixed price">Fast pris</b><span data-da="En plan og én pris, før vi starter." data-en="A plan and one price before we start.">En plan og én pris, før vi starter.</span></li><li><b data-da="Vi bygger" data-en="We build">Vi bygger</b><span data-da="I taler med dem, der laver det." data-en="You talk to the people making it.">I taler med dem, der laver det.</span></li><li><b data-da="Vi passer det" data-en="We look after it">Vi passer det</b><span data-da="En rettelse tager timer, ikke uger." data-en="A change takes hours, not weeks.">En rettelse tager timer, ikke uger.</span></li></ol>
+    <p class="sh-lab"><span data-da="Og resten" data-en="And the rest">Og resten</span></p>
+    <p class="sh-ex"><span data-da="Bruger I noget, der ikke står her? Skriv til os, så ser vi på det." data-en="Using something that isn’t listed? Write to us and we will take a look.">Bruger I noget, der ikke står her? Skriv til os, så ser vi på det.</span></p>
+    <div class="sh-cta">
+      <a class="btn" href="mailto:mgersel@lesreg.com"><span data-da="Fortæl os, hvad I skal have lavet" data-en="Tell us what you need made">Fortæl os, hvad I skal have lavet</span><span class="lens"><svg><use href="#i-arrow"/></svg></span></a>
+    </div>
+  </div>
+</dialog>
+<dialog class="sheet" id="sheet-web" aria-labelledby="sheet-web-h">
+  <div class="sh-in">
+    <button type="button" class="sh-x" data-close aria-label="Luk"><i></i></button>
+    <p class="mono"><span data-da="Hjemmesider &amp; motion" data-en="Websites &amp; motion">Hjemmesider &amp; motion</span></p>
+    <h3 id="sheet-web-h"><span data-da="Hjemmesider, man husker." data-en="Websites people remember.">Hjemmesider, man husker.</span></h3>
+    <p class="sh-lead"><span data-da="Filmiske sider og motion design — som den, du er på nu. Hurtige sider, bygget til at ligge højt, når kunderne søger, og så ChatGPT, Gemini og Grok kan læse dem og nævne jer." data-en="Cinematic sites and motion design — like the one you are on. Fast sites, built to rank when customers search, and so ChatGPT, Gemini and Grok can read them and name you.">Filmiske sider og motion design — som den, du er på nu. Hurtige sider, bygget til at ligge højt, når kunderne søger, og så ChatGPT, Gemini og Grok kan læse dem og nævne jer.</span></p>
+    <p class="sh-lab"><span data-da="Det får I" data-en="What you get">Det får I</span></p>
+    <ul class="sh-get"><li><span data-da="Bygget fra bunden, ingen skabeloner" data-en="Built from the ground up, no templates">Bygget fra bunden, ingen skabeloner</span></li><li><span data-da="Hurtig på telefonen, hvor de fleste kommer fra" data-en="Fast on the phone, where most visitors come from">Hurtig på telefonen, hvor de fleste kommer fra</span></li><li><span data-da="Fundet på Google og i AI-svar" data-en="Found on Google and in AI answers">Fundet på Google og i AI-svar</span></li></ul>
+    <p class="sh-lab"><span data-da="Sådan gør vi" data-en="How we do it">Sådan gør vi</span></p>
+    <ol class="sh-steps"><li><b data-da="Vi snakker" data-en="We talk">Vi snakker</b><span data-da="I fortæller, hvad der driller." data-en="You tell us what is in the way.">I fortæller, hvad der driller.</span></li><li><b data-da="Fast pris" data-en="Fixed price">Fast pris</b><span data-da="En plan og én pris, før vi starter." data-en="A plan and one price before we start.">En plan og én pris, før vi starter.</span></li><li><b data-da="Vi bygger" data-en="We build">Vi bygger</b><span data-da="I taler med dem, der laver det." data-en="You talk to the people making it.">I taler med dem, der laver det.</span></li><li><b data-da="Vi passer det" data-en="We look after it">Vi passer det</b><span data-da="En rettelse tager timer, ikke uger." data-en="A change takes hours, not weeks.">En rettelse tager timer, ikke uger.</span></li></ol>
+    <p class="sh-lab"><span data-da="Eksempel" data-en="Example">Eksempel</span></p>
+    <p class="sh-ex"><span data-da="spiis.dk og mosedehavnecafe.dk er bygget af os." data-en="spiis.dk and mosedehavnecafe.dk were built by us.">spiis.dk og mosedehavnecafe.dk er bygget af os.</span></p>
+    <div class="sh-cta">
+      <a class="btn" href="mailto:mgersel@lesreg.com"><span data-da="Fortæl os, hvad I skal have lavet" data-en="Tell us what you need made">Fortæl os, hvad I skal have lavet</span><span class="lens"><svg><use href="#i-arrow"/></svg></span></a>
+    </div>
+  </div>
+</dialog>
 
 <!-- three become one: the scroll pulls the three suppliers together into the house -->
 <section class="alt" id="hus" data-scrub="alt" aria-label="Hvad vi laver">
@@ -458,5 +536,6 @@
 
 <script type="module" src="main.js?v=23"></script>
 <script type="module" src="page.js?v=47"></script>
+<script type="module" src="sheets.js?v=1"></script>
 </body>
 </html>
