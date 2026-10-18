@@ -236,7 +236,12 @@ html.hs-on .hs-s video{ opacity:0; }
 .hs-lock .lkb.l{ left:11cqw; }
 .hs-lock .lkb.r{ right:11cqw; }
 .hs-lock .lkb svg{ width:5.6cqw; height:5.6cqw; }
-.hs-lock .hb{ position:absolute; left:50%; bottom:2.2cqw; width:34cqw; height:1.3cqw; margin-left:-17cqw; border-radius:1cqw; background:#fff; }
+/* iOS's home indicator, to Apple's measure on a 402 pt screen: 134 x 5 pt,
+   a capsule, 8 pt above the bottom edge. It belongs to the phone, not to the
+   app: it stays put at the bottom of the glass while the screens move, goes
+   while the app switcher is up, and is light on dark and dark on light */
+.hs-hb{ position:absolute; z-index:2; left:50%; bottom:1.99cqw; width:33.33cqw; height:1.244cqw; margin-left:-16.67cqw; border-radius:100px;
+  background:#fff; mix-blend-mode:difference; pointer-events:none; }
 .hs-lock .note.n1{ top:58%; }
 .hs-lock .note.n2{ top:70%; }
 

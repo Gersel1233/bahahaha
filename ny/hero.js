@@ -32,7 +32,7 @@ export function startHero() {
   const copy = $('.hs-copy-in'), says = $$('.hs-ch > li > div'), apps = $$('.hs-s[data-s]');
   const white = $('.hs-white'), paper = $('.hs-paper');
   const vids = apps.map(a => $('video', a));
-  const lock = $('.hs-lock'), screens = [lock, ...apps], sw = $('.hs-sw'), labs = [null, ...$$('.hs-lab')];
+  const lock = $('.hs-lock'), screens = [lock, ...apps], sw = $('.hs-sw'), hb = $('.hs-hb'), labs = [null, ...$$('.hs-lab')];
   const end = $('.hs-end'), words = $$('.hs-end .g'), pillVids = $$('.hs-end video');
   const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -152,6 +152,7 @@ export function startHero() {
       if (tout) back = Math.max(back, tout.s * (1 - tout.g));
     });
     sw.style.opacity = back.toFixed(3);
+    if (hb) hb.style.opacity = (1 - seg(back, 0, 0.3)).toFixed(3);
     const open = cur - 1;
     // the next one's film comes in while the one before is showing
     apps.forEach((a, i) => { if (p > OPEN[i] - 0.12) load(vids[i]); });
