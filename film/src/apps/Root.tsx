@@ -8,6 +8,9 @@ import { TileApps, APPS_S, TW, TH } from './TileApps';
 import { TileSys, SYS_S, FLAT_W, FLAT_H } from './TileSys';
 import { TileInt, INT_S } from './TileInt';
 import { TileWeb, WEB_S } from './TileWeb';
+import { WhyPris, PRIS_S, WHY_W, WHY_H } from './WhyPris';
+import { WhyTempo, TEMPO_S } from './WhyTempo';
+import { WhyPenge, PENGE_S } from './WhyPenge';
 
 const FPS = 60;
 export const AppsRoot: React.FC = () => (
@@ -20,5 +23,8 @@ export const AppsRoot: React.FC = () => (
     <Composition id="IpadFlat" component={TileSys} defaultProps={{ flat: true }} durationInFrames={Math.round(SYS_S * FPS)} fps={FPS} width={FLAT_W} height={FLAT_H} />
     <Composition id="TileInt" component={TileInt} durationInFrames={Math.round(INT_S * FPS)} fps={FPS} width={TW} height={TH} />
     <Composition id="TileWeb" component={TileWeb} durationInFrames={Math.round(WEB_S * FPS)} fps={FPS} width={TW} height={TH} />
+    <Composition id="WhyPris" component={WhyPris} durationInFrames={Math.round(PRIS_S * FPS)} fps={FPS} width={WHY_W} height={WHY_H} />
+    <Composition id="WhyTempo" component={WhyTempo} durationInFrames={Math.round(TEMPO_S * FPS)} fps={FPS} width={WHY_W} height={WHY_H} />
+    <Composition id="WhyPenge" component={WhyPenge} durationInFrames={Math.round(PENGE_S * FPS)} fps={FPS} width={WHY_W} height={WHY_H} />
   </>
 );

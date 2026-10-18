@@ -61,7 +61,7 @@ const vo = 'IntersectionObserver' in window && new IntersectionObserver(es => es
     if (!still) { const p = v.play(); if (p) p.then(() => show(v)).catch(() => {}); }
   } else if (!v.paused) v.pause();
 }), { threshold: 0.2 });
-if (vo) $$('video[data-v]:not(.tile-film)').forEach(v => { under(v); vo.observe(v); });
+if (vo) $$('video[data-v]:not(.tile-film):not(.why-film)').forEach(v => { under(v); vo.observe(v); });
 
 /* ---------- the tiles' films: each plays once, from its beginning, when
    its tile is well in view, and then stays on its last picture. It plays
@@ -118,6 +118,67 @@ const tileRow = document.getElementById('tiles');
 if (tileRow && 'IntersectionObserver' in window) {
   const near = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) { $$('video.tile-film').forEach(v => want(v)); near.disconnect(); } }, { rootMargin: '900px 0px' });
   near.observe(tileRow);
+}
+
+/* ---------- why Lesreg: three films on one stage. The one chosen plays
+   while the stage is seen; when it ends, the next one comes up. A word in
+   the list, or an arrow key, brings its film up from the start. With
+   motion turned off, each film is its last picture. ---------- */
+const fd = document.querySelector('.fd');
+if (fd) {
+  const tabs = $$('.fd-i', fd), films = $$('.why-film', fd), stage = fd.querySelector('.fd-stage'), n = films.length;
+  const bars = tabs.map(t => t.querySelector('.fd-bar i'));
+  let cur = 0, seen = false, raf = 0, next = 0;
+  if (still) films.forEach(v => { v.poster = v.poster.replace('.webp', '-end.webp'); });
+  const loop = () => {
+    raf = 0;
+    const v = films[cur];
+    if (!seen) return;
+    // a film starts once it is all in, so it never stalls halfway
+    if (v._ready && v.paused && !v.ended && !v._held) { const p = v.play(); if (p) p.catch(() => {}); }
+    if (v.duration) bars[cur].style.setProperty('--p', Math.min(1, v.currentTime / v.duration).toFixed(4));
+    raf = requestAnimationFrame(loop);
+  };
+  const choose = (i, focus) => {
+    clearTimeout(next);
+    const old = films[cur];
+    if (old !== films[i]) { old.pause(); old._held = false; }
+    cur = i;
+    tabs.forEach((t, j) => { const on = j === i; t.classList.toggle('on', on); t.setAttribute('aria-selected', on); t.tabIndex = on ? 0 : -1; bars[j].style.setProperty('--p', 0); });
+    films.forEach((v, j) => v.classList.toggle('on', j === i));
+    stage.setAttribute('aria-labelledby', tabs[i].id);
+    if (focus) tabs[i].focus();
+    const v = films[i];
+    if (still) return;
+    v._held = false;
+    try { if (v.currentTime > 0) v.currentTime = 0; } catch (e) {}
+    want(v, true);
+    if (seen && !raf) raf = requestAnimationFrame(loop);
+  };
+  films.forEach((v, i) => v.addEventListener('ended', () => {
+    if (i !== cur) return;
+    v._held = true;
+    bars[i].style.setProperty('--p', 1);
+    next = setTimeout(() => { if (i === cur && seen) choose((i + 1) % n); }, 1100);
+  }));
+  tabs.forEach((t, i) => {
+    t.addEventListener('click', () => choose(i));
+    t.addEventListener('keydown', e => {
+      const d = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[e.key];
+      if (!d) return;
+      e.preventDefault(); choose((i + d + n) % n, true);
+    });
+  });
+  if ('IntersectionObserver' in window && !still) {
+    // fetched a screen or so before it is reached, the chosen one first
+    const near = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) { films.forEach((v, j) => want(v, j === cur)); near.disconnect(); } }, { rootMargin: '900px 0px' });
+    near.observe(stage);
+    new IntersectionObserver(es => es.forEach(en => {
+      seen = en.intersectionRatio >= 0.4;
+      if (seen) { if (!raf) raf = requestAnimationFrame(loop); }
+      else { films[cur].pause(); clearTimeout(next); if (films[cur]._held) choose((cur + 1) % n); }
+    }), { threshold: [0, 0.4] }).observe(stage);
+  }
 }
 
 /* ---------- the band: two rows that the scroll pushes, opposite ways ---------- */
@@ -485,97 +546,6 @@ S.talk = el => {
     const r = rect(el);
     const q = clamp((H - r.top) / (H + r.height));
     setT(img, 'translate3d(0,' + ((q - 0.5) * -90).toFixed(1) + 'px,0) scale(1.06)');
-  };
-};
-
-// why Lesreg: the screen holds while the scroll plays three beats in one
-// place: the price, the speed, the money. Without motion each is drawn where
-// it ends, one under the other.
-S.fordi = el => {
-  const beats = $$('.fd-b', el), n = beats.length, pin = !still;
-  if (pin) el.classList.add('pin');
-  const tog = (e, c, on) => { if (e && e['_' + c] !== on) { e['_' + c] = on; e.classList.toggle(c, on); } };
-  const [A, B, C] = beats;
-
-  // the segmented control: its lens goes to the beat on screen; a word, or an
-  // arrow key, takes you to where that beat stands still
-  const sg = el.querySelector('.sgm'), opts = $$('button', sg), lens = sg.querySelector('.sgm-lens');
-  let cur = -1;
-  const choose = i => {
-    if (i === cur) return;
-    cur = i;
-    sg.style.setProperty('--i', i);
-    if (!still) { lens.classList.remove('go'); void lens.offsetWidth; lens.classList.add('go'); }
-    opts.forEach((o, j) => { o.classList.toggle('on', j === i); o.setAttribute('aria-checked', j === i); o.tabIndex = j === i ? 0 : -1; });
-  };
-  const goTo = i => {
-    const top = el.getBoundingClientRect().top + scrollY, range = el.offsetHeight - innerHeight;
-    scrollTo({ top: top + range * (i + 0.62) / n, behavior: still ? 'auto' : 'smooth' });
-  };
-  opts.forEach((o, i) => {
-    o.addEventListener('click', () => goTo(i));
-    o.addEventListener('keydown', e => {
-      const d = e.key === 'ArrowRight' || e.key === 'ArrowDown' ? 1 : e.key === 'ArrowLeft' || e.key === 'ArrowUp' ? -1 : 0;
-      if (!d) return;
-      e.preventDefault();
-      const j = (i + d + n) % n;
-      opts[j].focus(); goTo(j);
-    });
-  });
-  choose(0);
-
-  // the price: the going rate is drawn across its stretch of the scale, then
-  // Lesreg's hairline to 50 and "now"; the figure counts up to it
-  const band = A.querySelector('.sc-band'), bandL = A.querySelector('.sc-bl'), usL = A.querySelector('.sc-us'), usNow = A.querySelector('.sc-now'), pN = A.querySelector('.fig-n');
-  function price(t) {
-    setT(band, 'scaleX(' + Math.max(0.0001, out(seg(t, 0.05, 0.45))).toFixed(4) + ')');
-    setO(bandL, seg(t, 0.3, 0.45));
-    const u = out(seg(t, 0.45, 0.8));
-    setT(usL, 'scaleX(' + Math.max(0.0001, u).toFixed(4) + ')');
-    setO(usNow, seg(t, 0.75, 0.85));
-    const v = String(Math.round(50 * u));
-    if (pN.textContent !== v) pN.textContent = v;
-  }
-
-  // the speed: Lesreg's row is live at once; the classic one's rows come one
-  // after another and are done weeks later
-  const rows = $$('.lr:not(.sel)', B), lrSel = B.querySelector('.lr.sel');
-  function speed(t) {
-    setO(lrSel, seg(t, 0, 0.12));
-    rows.forEach((r, i) => {
-      const a = 0.12 + i * 0.26;
-      setO(r, seg(t, a, a + 0.08));
-      tog(r, 'done', t >= a + 0.2);
-    });
-  }
-
-  // the money: the orders add up along the field to "now"; the figure stays at 0
-  const line = C.querySelector('.fig-line polyline'), mNow = C.querySelector('.fig-now');
-  function money(t) {
-    const d = (1 - out(seg(t, 0.05, 0.75))).toFixed(4);
-    if (line._d !== d) { line._d = d; line.style.strokeDashoffset = d; }
-    setO(mNow, seg(t, 0.7, 0.8));
-  }
-
-  return () => {
-    if (!pin) { price(1); speed(1); money(1); return; }
-    const r = rect(el), f = (-r.top / Math.max(1, r.height - H)) * n;
-    let near = 0, best = 9;
-    beats.forEach((b, j) => {
-      const d = f - (j + 0.5);
-      // the one going is gone before the next one comes
-      const go = j === n - 1 ? 0 : seg(d, 0.3, 0.46), come = j === 0 ? 0 : seg(-d, 0.38, 0.52);
-      const o = (1 - go) * (1 - come);
-      setO(b, o);
-      const vis = o > 0.001;
-      if (b._v !== vis) { b._v = vis; b.style.visibility = vis ? 'visible' : 'hidden'; }
-      setT(b, 'translate3d(0,' + ((come - go) * 24).toFixed(1) + 'px,0)');
-      if (Math.abs(d) < best) { best = Math.abs(d); near = j; }
-    });
-    choose(near);
-    price(seg(f, -0.45, 0.4));
-    speed(seg(f, 0.95, 1.75));
-    money(seg(f, 1.95, 2.6));
   };
 };
 

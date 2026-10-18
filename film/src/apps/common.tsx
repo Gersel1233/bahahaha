@@ -35,7 +35,7 @@ export function useFonts() {
   const [h] = useState(() => delayRender('fonts'));
   useLayoutEffect(() => {
     const faces: [string, string, string, string?][] = [
-      ['Chivo', 'fonts/chivo-400.woff2', '400'], ['Chivo', 'fonts/chivo-500.woff2', '500'], ['Chivo', 'fonts/chivo-600.woff2', '600'],
+      ['Chivo', 'fonts/chivo-300.woff2', '300'], ['Chivo', 'fonts/chivo-400.woff2', '400'], ['Chivo', 'fonts/chivo-500.woff2', '500'], ['Chivo', 'fonts/chivo-600.woff2', '600'],
       ['Newsreader', 'fonts/newsreader-300-italic.woff2', '300', 'italic'], ['Fragment Mono', 'fonts/fragmentmono-400.woff2', '400'],
       // the nearest open face to Apple's own, for what is drawn as iOS
       ['Inter', 'film/assets/fonts/inter-var.woff2', '100 900'],
