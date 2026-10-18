@@ -162,7 +162,12 @@ if (fd) {
     next = setTimeout(() => { if (i === cur && seen) choose((i + 1) % n); }, 1100);
   }));
   tabs.forEach((t, i) => {
-    t.addEventListener('click', () => choose(i));
+    t.addEventListener('click', () => {
+      choose(i);
+      // on a phone the stage is above the list: it is brought into view to be seen
+      const r = stage.getBoundingClientRect();
+      if (r.top < 0 || r.bottom > innerHeight) stage.scrollIntoView({ block: 'nearest', behavior: still ? 'auto' : 'smooth' });
+    });
     t.addEventListener('keydown', e => {
       const d = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[e.key];
       if (!d) return;
@@ -174,10 +179,10 @@ if (fd) {
     const near = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) { films.forEach((v, j) => want(v, j === cur)); near.disconnect(); } }, { rootMargin: '900px 0px' });
     near.observe(stage);
     new IntersectionObserver(es => es.forEach(en => {
-      seen = en.intersectionRatio >= 0.4;
+      seen = en.intersectionRatio >= 0.3;
       if (seen) { if (!raf) raf = requestAnimationFrame(loop); }
       else { films[cur].pause(); clearTimeout(next); if (films[cur]._held) choose((cur + 1) % n); }
-    }), { threshold: [0, 0.4] }).observe(stage);
+    }), { threshold: [0, 0.3] }).observe(stage);
   }
 }
 
