@@ -64,8 +64,9 @@ const vo = 'IntersectionObserver' in window && new IntersectionObserver(es => es
 if (vo) $$('video[data-v]:not(.tile-film)').forEach(v => { under(v); vo.observe(v); });
 
 /* ---------- the tiles' films: each plays once, from its beginning, when
-   its tile is well in view, and then stays on its last picture. It plays
-   again only after its tile has been out of sight altogether. ---------- */
+   its tile is well in view, and then stays on its last picture. Seen again
+   it is not sent back to its start: one that had finished stays finished,
+   one that was left halfway goes on from there. ---------- */
 // the tiles' films are fetched whole, one after another, before they play:
 // a film that plays while it is still arriving stalls and flickers on a
 // phone's connection. Until its film is in, a tile shows its first picture.
@@ -85,7 +86,7 @@ async function pump() {
   v.preload = 'auto'; v.load();
   v._ready = true; busy = false;
   // a phone draws nothing of a film before it is told to play, so it is told
-  if (v._pending) { v._pending = false; go(v); }
+  if (v._pending) { v._pending = false; if (v._seen) { v._began = true; go(v); } }
   pump();
 }
 // a tile's film is told to play; if no picture of it is drawn within a few
@@ -106,10 +107,11 @@ const to = 'IntersectionObserver' in window && new IntersectionObserver(es => es
       if (v.readyState >= 1) end(); else v.addEventListener('loadedmetadata', end, { once: true });
       return;
     }
-    if (v._ready) go(v); else v._pending = true;
+    if (v._began) { if (!v.ended) { const p = v.play(); if (p) p.catch(() => {}); } }
+    else if (v._ready) { v._began = true; go(v); } else v._pending = true;
   } else if (en.intersectionRatio === 0 && v._seen) {
-    // out of sight: it may play again next time, from its start
-    v._seen = false; v._pending = false; v.pause();
+    // out of sight: it waits where it is
+    v._seen = false; v.pause();
   }
 }), { threshold: [0, 0.55], rootMargin: '0px 200px 0px 200px' });
 if (to) $$('video.tile-film').forEach(v => { under(v); to.observe(v); });
@@ -264,22 +266,16 @@ S.alt = el => {
   // the scroll lands on each beat: a resting point for each, laid in the track
   // when the scroll lets go inside the section, it glides on to the nearest
   // beat, so it always comes to rest where there is something to read
-  let touching = false, settleT = 0, settling = false, lastP = null;
+  // only on the way down: going back up, the page stays exactly where the
+  // hand leaves it, and the scenes simply run backwards under it
+  let touching = false, settleT = 0, settling = false, lastY = scrollY, dir = 1;
   const settle = () => {
-    if (still || touching) return;
+    if (still || touching || dir < 0) return;
     const r0 = el.getBoundingClientRect(), run = el.offsetHeight - innerHeight;
     const P0 = -r0.top / Math.max(1, run);
-    if (P0 <= 0.002) { lastP = 0; return; }
-    if (P0 >= 0.998) { lastP = 1; return; }
+    if (P0 <= 0.002 || P0 >= 0.998) return;
     const pts = REST.map(x => x * 0.852).concat([1]);
-    // on in the direction the scroll was going; back only for a nudge
-    const dir = lastP === null ? 1 : Math.sign(P0 - lastP);
-    const gap = 0.012;
-    let best;
-    if (lastP !== null && Math.abs(P0 - lastP) < gap) best = lastP;
-    else if (dir >= 0) best = pts.find(x => x >= P0 - 0.004) ?? 1;
-    else best = [...pts].reverse().find(x => x <= P0 + 0.004) ?? pts[0];
-    lastP = best;
+    const best = pts.find(x => x >= P0 - 0.004) ?? 1;
     const dy = (best - P0) * run;
     if (Math.abs(dy) < 3) return;
     glide(scrollY + dy, Math.min(900, Math.max(420, Math.abs(dy) / innerHeight * 520)));
@@ -301,8 +297,12 @@ S.alt = el => {
   addEventListener('wheel', stopGlide, { passive: true });
   addEventListener('touchstart', () => { touching = true; stopGlide(); clearTimeout(settleT); }, { passive: true });
   addEventListener('touchend', () => { touching = false; clearTimeout(settleT); settleT = setTimeout(settle, 180); }, { passive: true });
-  addEventListener('scroll', () => { if (settling) return; clearTimeout(settleT); settleT = setTimeout(settle, 180); }, { passive: true });
-  let Ps = -1, tPrev = 0, MW = 100, finT = 0, finGoal = 0;
+  addEventListener('scroll', () => {
+    // the way the hand is going, from the scroll itself
+    const y = scrollY; if (y !== lastY) { if (!settling) dir = Math.sign(y - lastY); lastY = y; }
+    if (settling) return; clearTimeout(settleT); settleT = setTimeout(settle, 180);
+  }, { passive: true });
+  let Ps = -1, tPrev = 0, MW = 100, finT = 0, finGoal = 0, gone = 0;
   return now => {
     const r = rect(el);
     // when nothing may move, it stands where it ends
@@ -318,9 +318,15 @@ S.alt = el => {
     // scroll goes back above it
     const p = clamp(P / 0.852);
     if (P >= 0.735) finGoal = 1; else if (P <= 0.722) finGoal = 0;
+    // back above it, the film is not run backwards: it fades, in about a
+    // third of a second, to the picture it began from, and starts over from
+    // the beginning the next time
     if (still) finT = finGoal;
-    else if (finT !== finGoal) { finT = clamp(finT + (finGoal ? dt / 3.9 : -dt / 1.3)); kick(); }
-    const q = finT;
+    // coming back into it from below, the film is already over: the
+    // sentence stands there, as it was left
+    else if (finGoal) { if (dir < 0) finT = 1; if (gone) { gone = clamp(gone - dt / 0.2); kick(); } if (finT < 1) { finT = clamp(finT + dt / 3.9); kick(); } }
+    else if (finT > 0) { gone = clamp(gone + dt / 0.35); if (gone >= 1) { finT = 0; gone = 0; } kick(); }
+    const q = finT, keep = 1 - gone;
     if (P > 0.35) makePaper();
     if (el._w !== W || !ow) {
       el._w = W; measure();
@@ -431,10 +437,10 @@ S.alt = el => {
     // 1. the paper takes over from the very picture printed on it
     if (paper && printLang !== (document.documentElement.lang === 'en' ? 'en' : 'da')) { paper.print(printOf()); paperKey = ''; }
     const gl = !!(paper && paper.ready) && !cap;
-    setO(fin, Q > 0 || cap ? 1 : 0);
+    setO(fin, Q > 0 || cap ? keep : 0);
     // the picture gives way to the sheet it is printed on; without WebGL it
     // simply fades, and the mark comes as it would
-    setO(obj, cap ? (cap[1] === 'end' ? 0 : 1) : gl ? (Q >= 0.075 ? 0 : 1) : 1 - seg(Q, 0.2, 0.5));
+    setO(obj, cap ? (cap[1] === 'end' ? 0 : 1) : Math.max(gone, gl ? (Q >= 0.075 ? 0 : 1) : 1 - seg(Q, 0.2, 0.5)));
     const showPaper = gl && Q >= 0.04 && Q < 0.655;
     setO(cv, showPaper ? 1 : 0);
     if (showPaper) {
@@ -484,7 +490,7 @@ S.alt = el => {
     setT(word, 'translate3d(' + (-14 * (1 - wd)).toFixed(1) + 'px,0,0)'); setO(word, out(seg(Q, 0.87, 0.93)));
     // 4. and the sentence under it: two lines rising out of their own edge,
     //    then what we make, the price, and the two ways on
-    setO(end, Q > 0.88 ? 1 : 0);
+    setO(end, Q > 0.88 ? keep : 0);
     endLines.forEach((l, i) => { const v = out(seg(Q, 0.92 + i * 0.02, 0.965 + i * 0.02)); setT(l, 'translate3d(0,' + ((1 - v) * 110).toFixed(1) + '%,0)'); });
     const w1 = out(seg(Q, 0.955, 0.985)), w2 = out(seg(Q, 0.97, 1));
     setO(endWhat, w1); setO(endP, w1);

@@ -69,7 +69,9 @@ export function startHero() {
   measure();
 
   /* ---------- the apps' films: fetched when they are close; each starts
-     from its beginning when its app opens, and plays once ---------- */
+     from its beginning when its app opens on the way down, and plays once.
+     On the way back up an app opens where its film was left: one that had
+     finished shows its last picture, one left halfway goes on ---------- */
   const h264 = document.createElement('video').canPlayType('video/mp4; codecs="avc1.42E01E"') !== '';
   function load(v) { if (v && !v.src) { v.src = v.dataset.hv + (h264 ? '.mp4' : '.webm'); v.preload = 'auto'; } }
   // a phone shows black for a moment when a video goes back to its start;
@@ -80,13 +82,14 @@ export function startHero() {
   // the first app's film once the page has settled, so it is in before it is needed
   addEventListener('load', () => setTimeout(() => load(vids[0]), 1200), { once: true });
   let playing = -1;
-  function play(i) {
+  function play(i, down) {
     if (i === playing) return;
     playing = i;
     vids.forEach((v, j) => {
       if (!v) return;
       if (j === i) {
         load(v);
+        if (!down && v.currentTime > 0.01) { if (!v.ended) { const r = v.play(); if (r) r.catch(() => {}); } return; }
         if (v.currentTime > 0.01) { v.style.opacity = '0'; try { v.currentTime = 0; } catch (e) {} }
         const r = v.play(); if (r) r.then(() => show(v)).catch(() => {}); else show(v);
       }
@@ -96,7 +99,7 @@ export function startHero() {
 
   /* ---------- the scroll ---------- */
   const tone = $('meta[name="theme-color"]');
-  let wasPast = null;
+  let wasPast = null, lastP = 0;
   let raf = 0;
   function frame() {
     raf = 0;
@@ -156,7 +159,8 @@ export function startHero() {
     const open = cur - 1;
     // the next one's film comes in while the one before is showing
     apps.forEach((a, i) => { if (p > OPEN[i] - 0.12) load(vids[i]); });
-    play(open);
+    play(open, p >= lastP);
+    lastP = p;
 
     // the words beside the phone
     says.forEach((s, i) => {
