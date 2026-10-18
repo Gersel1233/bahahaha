@@ -144,26 +144,19 @@ S.alt = el => {
   const find = el.querySelector('.a-find'), res = el.querySelector('.a-res'), typed = el.querySelector('.a-typed');
   const ask = el.querySelector('.a-ask'), typed2 = el.querySelector('.a-typed2'), answers = $$('.a-ans', el);
   const says = $$('.alt-say > li > div', el), end = el.querySelector('.alt-end'), label = el.querySelector('.alt-label');
-  const fin = el.querySelector('.alt-fin'), cv = el.querySelector('.fin-paper'), ctx = cv.getContext('2d');
+  const fin = el.querySelector('.alt-fin'), cv = el.querySelector('.fin-paper');
   const brand = el.querySelector('.fin-brand'), mark = el.querySelector('.fin-mark'), word = el.querySelector('.fin-word');
   const l1 = el.querySelector('.fin-l1'), l2 = el.querySelector('.fin-l2'), sh = el.querySelector('.fin-sh'), flap = el.querySelector('.fin-flap');
 
-  /* ---------- the crumple: a film (made from this very picture, by
-     Higgsfield) in which all of it crumples into a ball of paper; drawn
-     frame by frame onto a canvas, as the scroll moves ---------- */
-  // keys: [finale progress, frame] - the crumple, then the ball at rest
-  // while it moves to the middle
-  const FOLD = { n: +(cv.dataset.n || 0), src: cv.dataset.src || '', end: 0.24,
-    keys: [[0.075, 0], [0.09, 8], [0.27, 32], [0.3, 36], [0.38, 44]] };
-  // the ball as paper: its outline, measured from the film's last frame (the
-  // distance from its middle at each of 64 even turns, from the top round
-  // clockwise, as a share of the frame), and where that middle lies
-  const BALL = { cx: 0.4932, cy: 0.5052, r: [0.2173, 0.2228, 0.2233, 0.2298, 0.2273, 0.2313, 0.2503, 0.2588, 0.2568, 0.2393, 0.2303, 0.2313, 0.2263, 0.2228, 0.2083, 0.1992, 0.2018, 0.2158, 0.2228, 0.2298, 0.2318, 0.2278, 0.2333, 0.2383, 0.2303, 0.2183, 0.2248, 0.2423, 0.2098, 0.2443, 0.2553, 0.2498, 0.2478, 0.2358, 0.2358, 0.2348, 0.2338, 0.2403, 0.2508, 0.2528, 0.2373, 0.2268, 0.2048, 0.2293, 0.2233, 0.2258, 0.2223, 0.2113, 0.2063, 0.2138, 0.2188, 0.2158, 0.2163, 0.2228, 0.2273, 0.2233, 0.2363, 0.2558, 0.2548, 0.2363, 0.2258, 0.2298, 0.2203, 0.2168] };
-  const blob = el.querySelector('.fin-blob'), blPaper = el.querySelector('.bl-paper'), blTex = el.querySelector('.bl-tex');
-  const pics = []; let loading = false, shown = -1;
-  function loadFrames() {
-    if (loading || !FOLD.n) return; loading = true;
-    for (let i = 0; i < FOLD.n; i++) { const im = new Image(); im.decoding = 'async'; im.src = FOLD.src + String(i + 1).padStart(3, '0') + '.webp'; if (im.decode) im.decode().catch(() => {}); pics[i] = im; }
+  /* ---------- the paper: one sheet, printed with the picture as it stands
+     at the last beat (media/alt/sheet.webp, taken from this very page), drawn
+     live with WebGL - see paper.js. It is made only as the finale nears.
+     ---------- */
+  const FOLD = { end: 0.24 };
+  let paper = null, paperTried = false, paperKey = '';
+  function makePaper() {
+    if (paperTried) return; paperTried = true;
+    import('./paper.js?v=1').then(m => { try { paper = m.createPaper(cv, cv.dataset.src); } catch (e) { paper = null; } }).catch(() => {});
   }
   const endLines = $$('.alt-fin-h .ln > *', el), endWhat = el.querySelector('.alt-fin-what'), endP = el.querySelector('.alt-fin-p'), endCta = el.querySelector('.alt-fin-cta');
   const glow2 = el.querySelector('.alt-glow2'), glow = el.querySelector('.alt-glow');
@@ -258,7 +251,7 @@ S.alt = el => {
     const P = Ps;
     // the scenes run on p; the finale takes the last part of the scroll, q
     const p = clamp(P / 0.852), q = seg(P, 0.72, 1);
-    if (P > 0.35) loadFrames();
+    if (P > 0.35) makePaper();
     if (el._w !== W || !ow) {
       el._w = W; measure();
       const mob = W <= 760 || W / H < 1;
@@ -277,17 +270,10 @@ S.alt = el => {
       V.S2 = Math.min(V.S, W * (mob ? 1 : 1.12));
       if (cap) { const sx = Math.min(0, W - 4 - (V.cx + V.S / 2)); V.cx += sx; el._capShift = sx; }
       dpr = Math.min(2, devicePixelRatio || 1);
-      Object.assign(cv.style, { left: (V.cx - V.S / 2).toFixed(1) + 'px', top: (V.cy - V.S / 2).toFixed(1) + 'px', width: V.S.toFixed(1) + 'px', height: V.S.toFixed(1) + 'px' });
       // the open sheet: larger than the ball, not larger than half the screen
-      const B = Math.min(0.56 * V.S2, 0.46 * H);
-      V.big = B / (FOLD.end * V.S2);
-      Object.assign(blob.style, { left: (W / 2 - B / 2).toFixed(1) + 'px', top: (V.cy - B / 2).toFixed(1) + 'px', width: B.toFixed(1) + 'px', height: B.toFixed(1) + 'px' });
-      const T = 0.5 * V.S2;
-      Object.assign(blTex.style, { width: T.toFixed(1) + 'px', height: T.toFixed(1) + 'px' });
-      cv.width = cv.height = Math.round(V.S * dpr);
-      MW = parseFloat(getComputedStyle(mark).width) || 100;
-      glow2.style.setProperty('--gx', V.cx.toFixed(0) + 'px'); glow2.style.setProperty('--gy', V.cy.toFixed(0) + 'px');
-      shown = -1;
+      V.B = Math.min(0.56 * V.S2, 0.46 * H);
+      V.big = V.B / (FOLD.end * V.S2);
+      paperKey = '';
     }
     const pe = p / K;
 
@@ -369,85 +355,35 @@ S.alt = el => {
     const zoom = lerp(el._mob ? 1.5 : 1.16, 1, io(seg(pe, 0.27, 0.37)));
     setT(obj, (cap ? 'translate3d(' + (el._capShift || 0).toFixed(1) + 'px,0,0) ' : '') + 'scale(' + zoom.toFixed(4) + ')');
     setO(glow2, 0);
-    // 1. the film takes over from the very picture it starts from, and all
-    //    of it crumples where it stands into a ball of paper; the ball then
-    //    floats to the middle of the screen, where it opens out into a sheet and folds
-    //    down into the blank mark
-    const film = Q >= 0.04 && Q < 0.435 && FOLD.n && !cap;
-    const xf = seg(Q, 0.04, 0.075);
-    setO(obj, Q >= 0.075 && !(cap && cap[1] === 'start') ? 0 : 1);
-    if (cap && cap[1] === 'end') setO(obj, 0);
+    // 1. the paper takes over from the very picture printed on it
+    const gl = !!(paper && paper.ready) && !cap;
     setO(fin, Q > 0 || cap ? 1 : 0);
-    setO(cv, film ? xf * (1 - seg(Q, 0.41, 0.435)) : 0);
-    // the crumple is the film as it is, edges melted into the page; from
-    // the ball on the paper is cut free of its ground, and it glides level
-    // to the middle
-    cv.classList.toggle('free', Q >= 0.3);
-    const cm = io(seg(Q, 0.3, 0.38));
-    if (!cap) setT(cv, 'translate3d(' + (cm * (W / 2 - V.cx)).toFixed(1) + 'px,0,0) scale(' + lerp(1, V.S2 / V.S, cm).toFixed(4) + ')');
-    if (film) {
-      // the frames are not spent evenly: the crumple is given the time
-      let kf = 0;
-      for (let j = 1; j < FOLD.keys.length; j++) {
-        const [q0, f0] = FOLD.keys[j - 1], [q1, f1] = FOLD.keys[j];
-        if (Q <= q1 || j === FOLD.keys.length - 1) { kf = lerp(f0, f1, seg(Q, q0, q1)); break; }
-      }
-      kf = Math.min(FOLD.n - 1, kf);
-      const ok = j => pics[j] && pics[j].complete && pics[j].naturalWidth;
-      // the nearest frame that has arrived, and the next one laid over it
-      // by how far between them the scroll is, so a slow hand never sees
-      // the film step
-      let i = Math.floor(kf); while (i > 0 && !ok(i)) i--;
-      const nx = Math.min(FOLD.n - 1, i + 1), mix = i === Math.floor(kf) && ok(nx) ? Math.round((kf - i) * 16) / 16 : 0;
-      const key = i * 32 + mix * 16;
-      if (key !== shown && ok(i)) {
-        shown = key;
-        const c2 = cv.getContext('2d');
-        c2.globalAlpha = 1;
-        c2.clearRect(0, 0, cv.width, cv.height);
-        c2.drawImage(pics[i], 0, 0, cv.width, cv.height);
-        if (mix > 0) { c2.globalAlpha = mix; c2.drawImage(pics[nx], 0, 0, cv.width, cv.height); c2.globalAlpha = 1; }
-      }
-    }
-    // 2. the ball becomes paper: on the same ball the print fades, leaving
-    //    white crumpled paper, its own creases; it gathers itself a little,
-    //    then opens - its outline easing out into the mark's, the edge
-    //    rippling as it goes, the creases smoothing out a beat behind, the
-    //    turn settling with a little give - and lies flat as the mark
-    const showBlob = Q >= 0.38 && Q < 0.655 && !cap;
-    setO(blob, showBlob ? io(seg(Q, 0.38, 0.425)) : 0);
-    if (showBlob) {
-      const B = V.big * FOLD.end * V.S2, Sc = V.S2;
-      const t = seg(Q, 0.45, 0.63), gather = Math.sin(Math.PI * seg(Q, 0.425, 0.465));
-      // the ball's middle in the blob's own box, and the mark's
-      const bx = B / 2 + (BALL.cx - 0.5) * Sc, by = B / 2 + (BALL.cy - 0.5) * Sc;
-      const pts = [], K = BALL.r.length;
-      for (let i = 0; i < K; i++) {
-        const th = 2 * Math.PI * i / K - Math.PI / 2, c = Math.cos(th), sn = Math.sin(th);
-        // where the ray meets the mark: a square with its top right corner
-        // cut from (94,0) to (128,34), in a 128 box
-        let r = Math.min(c ? 0.5 / Math.abs(c) : 1e9, sn ? 0.5 / Math.abs(sn) : 1e9);
-        if (c > 0 && sn < 0) r = Math.min(r, (30 / 128 + 0.5) / (c - sn));
-        const ex = B / 2 + r * B * c, ey = B / 2 + r * B * sn;
-        const sx = bx + BALL.r[i] * Sc * c, sy = by + BALL.r[i] * Sc * sn;
-        // not all of the edge at once: some of it leads, some follows
-        const lag = 0.1 * (0.5 + 0.5 * Math.sin(3 * th + 1));
-        const ti = 1 - Math.pow(1 - seg(t, lag, 0.9 + lag), 3);
-        const rip = Math.sin(Math.PI * ti) * B * 0.022 * Math.sin(5 * th + 7 * t);
-        pts.push((lerp(sx, ex, ti) + rip * c).toFixed(1) + 'px ' + (lerp(sy, ey, ti) + rip * sn).toFixed(1) + 'px');
-      }
-      blPaper.style.clipPath = 'polygon(' + pts.join(',') + ')';
-      // the creases: the ball's own surface, stretched as the paper opens,
-      // and gone a beat after the edge is out
-      const g = lerp(1, 1.08 * B / (0.46 * Sc), io(t));
-      setT(blTex, 'translate(-50%,-50%) translate3d(' + lerp(bx, B / 2, io(t)).toFixed(1) + 'px,' + lerp(by, B / 2, io(t)).toFixed(1) + 'px,0) scale(' + g.toFixed(4) + ')');
-      setO(blTex, 1 - io(seg(t, 0.12, 0.8)));
-      // the whole: gathers before it opens, turns into place with a little
-      // give, and lies down flat out of a slight tilt
-      const te = 1 - Math.pow(1 - t, 3), turn = -14 * (1 - te) + 2 * Math.sin(Math.PI * seg(t, 0.45, 0.85)), tilt = 1 - te;
-      setT(blob, 'perspective(1400px) rotateX(' + (16 * tilt).toFixed(2) + 'deg) rotateY(' + (-10 * tilt).toFixed(2) + 'deg) rotate(' + turn.toFixed(2) + 'deg) scale(' + (1 - 0.06 * gather).toFixed(4) + ')');
-      const sc = B / MW;
-      blob.style.filter = 'drop-shadow(' + (6 * sc * te).toFixed(1) + 'px ' + (lerp(6, 14, te) * sc).toFixed(1) + 'px ' + (lerp(10, 26, te) * sc).toFixed(1) + 'px rgba(0,0,0,.45))';
+    // the picture gives way to the sheet it is printed on; without WebGL it
+    // simply fades, and the mark comes as it would
+    setO(obj, cap ? (cap[1] === 'end' ? 0 : 1) : gl ? (Q >= 0.075 ? 0 : 1) : 1 - seg(Q, 0.2, 0.5));
+    const showPaper = gl && Q >= 0.04 && Q < 0.655;
+    setO(cv, showPaper ? 1 : 0);
+    if (showPaper) {
+      // a. it crumples where it stands, edges first, with a little twist
+      // b. the ball turns once as it travels level to the middle, and the
+      //    print fades off it: white crumpled paper
+      // c. it opens - fast, then softly - into the mark, the corner cut as
+      //    it comes flat, the tilt settling out
+      const k1 = seg(Q, 0.075, 0.3), cm = io(seg(Q, 0.3, 0.44)), k2 = seg(Q, 0.44, 0.63);
+      const o2 = io(k2);
+      // (the ball only shows itself opening between about .55 and .2, so
+      // that is the span the opening is given)
+      const k = Q < 0.4 ? Math.sin(k1 * Math.PI / 2) : Q < 0.44 ? 1 - 0.42 * io(seg(Q, 0.4, 0.44)) : 0.58 * (1 - o2);
+      const size = Q < 0.44 ? lerp(V.S, V.S2 * 0.9, cm) : lerp(V.S2 * 0.9, V.B, o2);
+      const st = {
+        W, H, dpr, x: lerp(V.cx, W / 2, cm), y: V.cy, z: 0, size, k,
+        rx: Q < 0.44 ? 0.28 * cm : 0.28 * (1 - o2),
+        ry: Q < 0.44 ? Math.PI * 2 * cm : 0,
+        rz: (Q < 0.3 ? -0.12 * Math.sin(k1 * Math.PI / 2) : Q < 0.44 ? -0.12 : -0.12 * (1 - o2)) + 0.035 * Math.sin(Math.PI * seg(k2, 0.55, 1)),
+        blank: io(seg(Q, 0.33, 0.46)), cut: 0.2656 * io(seg(Q, 0.52, 0.63)), fade: seg(Q, 0.04, 0.075),
+      };
+      const key = [W, H, st.x, st.size, st.k, st.rx, st.ry, st.rz, st.blank, st.cut, st.fade].map(v => v.toFixed(3)).join();
+      if (key !== paperKey) { paperKey = key; paper.draw(st); }
     }
     // 2. the blank mark takes over where the film leaves it, in the middle;
     //    the L is drawn into it, down and then across, and a light runs over
@@ -457,11 +393,13 @@ S.alt = el => {
     const d1 = io(seg(Q, 0.72, 0.75)), d2 = io(seg(Q, 0.745, 0.77));
     l1.setAttribute('height', (80 * d1).toFixed(2)); l2.setAttribute('width', (56 * d2).toFixed(2));
     const s0 = FOLD.end * V.S2 / MW;
+    // its shadow comes as it lies down, so the sheet hands over without a jump
+    const shA = 0.45 * seg(Q, 0.655, 0.7);
     const shn = seg(Q, 0.775, 0.84);
     sh.setAttribute('x', lerp(-70, 175, io(shn)).toFixed(1));
     sh.style.opacity = (Math.sin(Math.PI * shn) * 1).toFixed(3);
     const bloom = Math.sin(Math.PI * shn);
-    mark.style.filter = 'drop-shadow(6px 14px 26px rgba(0,0,0,.45)) drop-shadow(0 0 ' + (24 * bloom).toFixed(1) + 'px rgba(220,226,255,' + (0.55 * bloom).toFixed(3) + '))';
+    mark.style.filter = 'drop-shadow(6px 14px 26px rgba(0,0,0,' + shA.toFixed(3) + ')) drop-shadow(0 0 ' + (24 * bloom).toFixed(1) + 'px rgba(220,226,255,' + (0.55 * bloom).toFixed(3) + '))';
     // 3. then it rises to its own place and size, and moves aside evenly
     //    as its name comes in beside it
     const mv = io(seg(Q, 0.83, 0.9));

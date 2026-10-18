@@ -239,19 +239,7 @@ html.pg-js .alt-obj > *{ opacity:0; }
 .alt-fin{ position:absolute; inset:0; z-index:3; pointer-events:none; }
 .alt-fin > *{ position:absolute; will-change:transform, opacity; }
 html.pg-js .alt-fin > *{ opacity:0; }
-.fin-paper{ left:0; top:0; width:10px; height:10px;
-  /* the film's edges melt into the page */
-  --fe:10%;
-  -webkit-mask-image:linear-gradient(to right, transparent, #000 var(--fe), #000 calc(100% - var(--fe)), transparent), linear-gradient(to bottom, transparent, #000 var(--fe), #000 calc(100% - var(--fe)), transparent);
-  -webkit-mask-composite:source-in;
-  mask-image:linear-gradient(to right, transparent, #000 var(--fe), #000 calc(100% - var(--fe)), transparent), linear-gradient(to bottom, transparent, #000 var(--fe), #000 calc(100% - var(--fe)), transparent);
-  mask-composite:intersect; }
-/* cut free of its ground, the paper needs hardly any melting */
-.fin-paper.free{ --fe:2%; }
-.fin-blob{ left:0; top:0; width:10px; height:10px; }
-.bl-paper{ position:absolute; inset:0; background:#F6F4EF; }
-/* the ball's own creases, laid over the paper */
-.bl-tex{ position:absolute; left:0; top:0; display:block; background:url(media/alt/fold/ball.webp) center/100% 100% no-repeat; mix-blend-mode:multiply; will-change:transform, opacity; }
+.fin-paper{ left:0; top:0; width:100%; height:100%; }
 .fin-brand{ left:50%; top:var(--fy, 42%); display:flex; align-items:center; gap:clamp(14px, 2vw, 26px); transform:translate(-50%, -50%); }
 .fin-mark{ width:clamp(84px, 9vw, 132px); height:auto; flex:none; overflow:visible; filter:drop-shadow(6px 14px 26px rgba(0,0,0,.45)); }
 .fin-word{ font:500 clamp(54px, 7vw, 112px)/1 var(--sans); letter-spacing:-.05em; color:var(--porcelain); }
