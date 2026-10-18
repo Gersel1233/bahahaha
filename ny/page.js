@@ -155,10 +155,12 @@ S.alt = el => {
      nears.
      ---------- */
   const FOLD = { end: 0.24 };
-  let paper = null, paperTried = false, paperKey = '';
+  let paper = null, paperTried = false, paperKey = '', printLang = '';
+  // the print in the page's own language
+  const printOf = () => (printLang = document.documentElement.lang === 'en' ? 'en' : 'da', cv.dataset.src.replace('{lang}', printLang));
   function makePaper() {
     if (paperTried) return; paperTried = true;
-    import('./paper.js?v=2').then(m => { try { paper = m.createPaper(cv, cv.dataset.src, cv.dataset.sim); } catch (e) { paper = null; } }).catch(() => {});
+    import('./paper.js?v=3').then(m => { try { paper = m.createPaper(cv, printOf(), cv.dataset.sim); } catch (e) { paper = null; } }).catch(() => {});
   }
   const endLines = $$('.alt-fin-h .ln > *', el), endWhat = el.querySelector('.alt-fin-what'), endP = el.querySelector('.alt-fin-p'), endCta = el.querySelector('.alt-fin-cta');
   const glow2 = el.querySelector('.alt-glow2'), glow = el.querySelector('.alt-glow');
@@ -271,6 +273,7 @@ S.alt = el => {
       // the screen
       V.S2 = Math.min(V.S, W * (mob ? 1 : 1.12));
       if (cap) { const sx = Math.min(0, W - 4 - (V.cx + V.S / 2)); V.cx += sx; el._capShift = sx; }
+      el._V = V;
       dpr = Math.min(2, devicePixelRatio || 1);
       // the open sheet: larger than the ball, not larger than half the screen
       V.B = Math.min(0.56 * V.S2, 0.46 * H);
@@ -360,6 +363,7 @@ S.alt = el => {
     setT(obj, (cap ? 'translate3d(' + (el._capShift || 0).toFixed(1) + 'px,0,0) ' : '') + 'scale(' + zoom.toFixed(4) + ')');
     setO(glow2, 0);
     // 1. the paper takes over from the very picture printed on it
+    if (paper && printLang !== (document.documentElement.lang === 'en' ? 'en' : 'da')) { paper.print(printOf()); paperKey = ''; }
     const gl = !!(paper && paper.ready) && !cap;
     setO(fin, Q > 0 || cap ? 1 : 0);
     // the picture gives way to the sheet it is printed on; without WebGL it

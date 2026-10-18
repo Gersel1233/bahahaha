@@ -78,7 +78,7 @@ export function createPaper(canvas, tex, crumple) {
   const U = {}; ['uView', 'uPos', 'uSize', 'uRot', 'uTex', 'uBlank', 'uCut', 'uK', 'uFade'].forEach(k => U[k] = gl.getUniformLocation(pr, k));
   const buf = (loc, size) => { const b = gl.createBuffer(); const l = gl.getAttribLocation(pr, loc); gl.bindBuffer(gl.ARRAY_BUFFER, b); gl.enableVertexAttribArray(l); gl.vertexAttribPointer(l, size, gl.FLOAT, false, 0, 0); return b; };
   const bPos = buf('aPos', 3), bNrm = buf('aNrm', 3), bUv = buf('aUv', 2), bAo = buf('aAo', 1);
-  let G = 0, FR = 0, frames = null, idx = null, pos, nrm, ao, texReady = false, simReady = false;
+  let G = 0, FR = 0, frames = null, idx = null, pos, nrm, ao, texReady = false, simReady = false, lastK = -1;
 
   fetch(crumple).then(r => r.arrayBuffer()).then(ab => {
     const hd = new Int32Array(ab, 0, 2); G = hd[0]; FR = hd[1];
@@ -95,16 +95,21 @@ export function createPaper(canvas, tex, crumple) {
   }).catch(() => {});
 
   const tx = gl.createTexture();
-  const img = new Image(); img.decoding = 'async';
-  img.onload = () => {
+  let img = null;
+  const load = src => {
+    const im = new Image(); im.decoding = 'async'; img = im;
+    im.onload = () => { if (img === im) upload(im); };
+    im.src = src;
+  };
+  const upload = img => {
     gl.bindTexture(gl.TEXTURE_2D, tx);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
     gl.generateMipmap(gl.TEXTURE_2D);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-    texReady = true; api.onready && simReady && api.onready();
+    texReady = true; api.onready && simReady && api.onready(); lastK = -1;
   };
-  img.src = tex;
+  load(tex);
   gl.enable(gl.DEPTH_TEST); gl.depthFunc(gl.LEQUAL);
   gl.enable(gl.BLEND); gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
 
@@ -143,9 +148,10 @@ export function createPaper(canvas, tex, crumple) {
     gl.bindBuffer(gl.ARRAY_BUFFER, bAo); gl.bufferData(gl.ARRAY_BUFFER, ao, gl.DYNAMIC_DRAW);
   }
 
-  let lastK = -1;
   const api = {
     get ready() { return texReady && simReady; },
+    // another print (the page changed language)
+    print(src) { load(src); },
     // s: { W, H, dpr, x, y, z, size, rx, ry, rz (radians), k, blank, cut, fade }
     draw(s) {
       const w = Math.round(s.W * s.dpr), hh = Math.round(s.H * s.dpr);
