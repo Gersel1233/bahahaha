@@ -120,98 +120,77 @@ if (tileRow && 'IntersectionObserver' in window) {
   near.observe(tileRow);
 }
 
-/* ---------- why Lesreg, as a keynote shows it: one number at a time.
-   The classic software house's number counts up and is struck through;
-   Lesreg's lands under it; the phone's Live Activity says the same. A
-   chapter runs for a few seconds while it is seen, then the next comes; the
-   pills take you to one. With motion turned off, each is shown as it ends. */
-const kn = document.querySelector('.kn');
-if (kn) {
+/* ---------- why Lesreg: work it out. The hours on LA31 Meniscus slider;
+   the market's typical 600-1,200 an hour and Lesreg's 50 make the sums. The
+   first time it is seen the slider moves up on its own and the bars grow;
+   after that it is the reader's, by finger, mouse or arrow keys. ---------- */
+const rc = document.querySelector('.rc');
+if (rc) {
+  const MIN = 10, MAX = 400, STEP = 10, LO = 600, HI = 1200, US = 50;
+  const ms = rc.querySelector('.rc-ms'), th = ms.querySelector('.rc-th'), thv = th.querySelector('b');
+  const slot = k => rc.querySelector(`[data-o="${k}"]`);
+  const sThem = slot('them'), sUs = slot('us'), sSave = slot('save');
+  const bars = $$('.rc-bar i', rc);
   const L = () => (html.lang === 'en' ? 'en' : 'da');
   const fmt = n => Math.round(n).toLocaleString(L() === 'en' ? 'en-GB' : 'da-DK');
-  const CH = [
-    { was: 1200, wasU: { da: 'kr./t<br>klassisk softwarehus', en: 'DKK/h<br>classic software house' },
-      now: 50, from: 1200, nowU: { da: 'kr./t<br>Lesreg, fast pris', en: 'DKK/h<br>Lesreg, fixed price' },
-      say: { da: 'Bureauer og freelancere tager typisk <b>600–1.200 kr. i timen</b>, og timerne løber. Vi aftaler <b>én fast pris</b>, før vi starter, regnet ud fra 50 kr. i timen.',
-        en: 'Agencies and freelancers typically charge <b>DKK 600–1,200 an hour</b>, and the hours keep running. We agree <b>one fixed price</b> before we start, worked out from DKK 50 an hour.' },
-      la: { t: { da: 'Lesreg · tilbud', en: 'Lesreg · offer' }, v: { da: '50<small>kr./t</small>', en: '50<small>DKK/h</small>' },
-        ok: { da: 'Fast pris aftalt', en: 'Fixed price agreed' }, l: { da: 'Ny hjemmeside · én pris, ingen timer, der løber', en: 'New website · one price, no hours running' } } },
-    { was: 10, wasU: { da: 'hverdage<br>klassisk softwarehus', en: 'working days<br>classic software house' },
-      nowText: { da: 'I dag', en: 'Today' }, nowU: { da: 'live<br>Lesreg, samme rettelse', en: 'live<br>Lesreg, the same change' },
-      say: { da: 'En lille rettelse hos et klassisk softwarehus går gennem autosvar, tilbud, kø, udvikling og test. Hos os skriver I, og den er <b>live samme dag</b>.',
-        en: 'A small change at a classic software house goes through an auto-reply, a quote, a queue, a build and a test. With us you write, and it is <b>live the same day</b>.' },
-      la: { t: { da: 'Lesreg · rettelse', en: 'Lesreg · change' }, v: { da: '9.52', en: '9:52' },
-        ok: { da: 'Live', en: 'Live' }, l: { da: 'Åbningstider til jul · rettet og live', en: 'Christmas opening hours · changed and live' } } },
-    { was: 500, wasU: { da: 'kr. minus kommission<br>via en platform', en: 'DKK minus commission<br>through a platform' },
-      now: 500, from: 0, nowU: { da: 'kr. til jer<br>Lesreg, 0 % kommission', en: 'DKK to you<br>Lesreg, 0 % commission' },
-      say: { da: 'Platforme tager procenter af hver bestilling. Når den kommer ind på <b>jeres egen side</b>, går <b>hele beløbet</b> til jer.',
-        en: 'Platforms take a cut of every order. When it comes in on <b>your own site</b>, <b>the whole amount</b> is yours.' },
-      la: { t: { da: 'Jeres side · ny bestilling', en: 'Your site · new order' }, v: { da: '500<small>kr.</small>', en: '500<small>DKK</small>' },
-        ok: { da: '0 % kommission', en: '0 % commission' }, l: { da: '2 × brunch · afhentning 10.30', en: '2 × brunch · pick-up 10.30' } } },
-  ];
-  const LEN = 6600;
-  const pills = $$('.kn-chap button', kn);
-  const wasN = kn.querySelector('.kn-was .kn-n b'), strike = kn.querySelector('.kn-was .kn-n s'), wasU = kn.querySelector('.kn-was .kn-u');
-  const nowN = kn.querySelector('.kn-now .kn-n'), nowU = kn.querySelector('.kn-now .kn-u span'), dot = kn.querySelector('.kn-now .kn-u i');
-  const say = kn.querySelector('.kn-say'), la = kn.querySelector('.kn-la');
-  const laT = la.querySelector('.kn-la-h b'), laV = la.querySelector('.kn-la-v'), laOk = la.querySelector('.kn-la-ok span'), laL = la.querySelector('.kn-la-l');
-  const parts = [kn.querySelector('.kn-was'), kn.querySelector('.kn-now'), say, la];
-  parts.forEach(e => e.setAttribute('data-in', ''));
-  // today's date on the lock screen
-  const day = () => { const d = kn.querySelector('.kn-d'); const s = new Date().toLocaleDateString(L() === 'en' ? 'en-GB' : 'da-DK', { weekday: 'long', day: 'numeric', month: 'long' }); d.textContent = s.charAt(0).toUpperCase() + s.slice(1); };
-  let cur = 0, el = still ? LEN : 0, last = 0, seen = false, raf = 0;
-  const words = () => {
-    const c = CH[cur], l = L();
-    wasU.innerHTML = c.wasU[l]; nowU.innerHTML = c.nowU[l]; say.innerHTML = c.say[l];
-    laT.textContent = c.la.t[l]; laV.innerHTML = c.la.v[l]; laOk.textContent = c.la.ok[l]; laL.textContent = c.la.l[l];
-    if (c.nowText) nowN.textContent = c.nowText[l];
-    day();
+  let shown = still ? 120 : MIN, goal = shown, tw = 0, demo = 0, touched = false;
+  const paint = h => {
+    ms.style.setProperty('--x', ((h - MIN) / (MAX - MIN) * 100).toFixed(3) + '%');
+    const r = Math.round(h);
+    thv.textContent = r;
+    sThem.textContent = fmt(r * LO) + '–' + fmt(r * HI);
+    sUs.textContent = fmt(r * US);
+    sSave.textContent = fmt(r * (LO - US)) + '–' + fmt(r * (HI - US));
+    th.setAttribute('aria-valuenow', r);
+    th.setAttribute('aria-valuetext', r + (L() === 'en' ? ' hours' : ' timer'));
   };
-  // a chapter's picture at a moment of it
-  const draw = () => {
-    const c = CH[cur], t = el;
-    wasN.textContent = fmt(c.was * out(seg(t, 0, 700)));
-    strike.style.setProperty('--s', out(seg(t, 750, 1100)).toFixed(3));
-    if (!c.nowText) nowN.textContent = fmt(c.from + (c.now - c.from) * io(seg(t, 1100, 2100)));
-    dot.style.setProperty('--d', (seg(t, 2050, 2250) < 1 ? Math.sin(Math.PI * seg(t, 2050, 2250)) * 0.6 + seg(t, 2050, 2250) : 1).toFixed(3));
-    const show = [0, 1100, 1300, 300];
-    parts.forEach((e, i) => e.classList.toggle('out', t < show[i]));
-    pills[cur].style.setProperty('--p', Math.min(1, t / LEN).toFixed(4));
+  // the figures roll to a new value rather than jump to it
+  const roll = () => {
+    tw = 0;
+    const d = goal - shown;
+    if (Math.abs(d) < 0.5) { shown = goal; paint(shown); return; }
+    shown += d * 0.22; paint(shown);
+    tw = requestAnimationFrame(roll);
   };
-  const choose = (i, focus) => {
-    cur = i; el = still ? LEN : 0; last = performance.now();
-    kn.dataset.ch = i;
-    pills.forEach((b, j) => { const on = j === i; b.classList.toggle('on', on); b.setAttribute('aria-selected', on); b.tabIndex = on ? 0 : -1; b.style.setProperty('--p', 0); });
-    if (focus) pills[i].focus();
-    parts.forEach(e => e.classList.add('out'));
-    words(); draw();
-    if (!still && seen && !raf) raf = requestAnimationFrame(loop);
+  const set = (h, now) => {
+    goal = Math.min(MAX, Math.max(MIN, Math.round(h / STEP) * STEP));
+    if (now || still) { cancelAnimationFrame(tw); tw = 0; shown = goal; paint(shown); }
+    else if (!tw) tw = requestAnimationFrame(roll);
   };
-  const loop = now => {
-    raf = 0;
-    if (!seen) return;
-    el += Math.min(100, now - last); last = now;
-    if (el >= LEN) { choose((cur + 1) % CH.length); return; }
-    draw();
-    raf = requestAnimationFrame(loop);
-  };
-  pills.forEach((b, i) => {
-    b.addEventListener('click', () => choose(i));
-    b.addEventListener('keydown', e => {
-      const d = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[e.key];
-      if (!d) return;
-      e.preventDefault(); choose((i + d + CH.length) % CH.length, true);
-    });
+  const stopDemo = () => { touched = true; cancelAnimationFrame(demo); demo = 0; };
+  const at = e => { const r = ms.getBoundingClientRect(); return MIN + (MAX - MIN) * Math.min(1, Math.max(0, (e.clientX - r.left) / r.width)); };
+  ms.addEventListener('pointerdown', e => {
+    stopDemo(); ms.setPointerCapture(e.pointerId); ms.classList.add('drag'); set(at(e), true); th.focus({ preventScroll: true });
+    const move = ev => set(at(ev), true);
+    const up = () => { ms.classList.remove('drag'); ms.removeEventListener('pointermove', move); ms.removeEventListener('pointerup', up); ms.removeEventListener('pointercancel', up); };
+    ms.addEventListener('pointermove', move); ms.addEventListener('pointerup', up); ms.addEventListener('pointercancel', up);
   });
-  choose(0);
-  if (still) parts.forEach(e => e.classList.remove('out'));
-  new MutationObserver(() => { words(); draw(); }).observe(html, { attributes: true, attributeFilter: ['lang'] });
-  if ('IntersectionObserver' in window && !still) {
-    new IntersectionObserver(es => es.forEach(en => {
-      const was = seen;
-      seen = en.intersectionRatio >= 0.35;
-      if (seen && !was) { last = performance.now(); if (!raf) raf = requestAnimationFrame(loop); }
-    }), { threshold: [0, 0.35] }).observe(kn.querySelector('.kn-nums'));
+  th.addEventListener('keydown', e => {
+    const d = { ArrowRight: STEP, ArrowUp: STEP, ArrowLeft: -STEP, ArrowDown: -STEP, PageUp: 50, PageDown: -50 }[e.key];
+    if (e.key === 'Home' || e.key === 'End') { e.preventDefault(); stopDemo(); set(e.key === 'Home' ? MIN : MAX); return; }
+    if (!d) return;
+    e.preventDefault(); stopDemo(); set(goal + d);
+  });
+  paint(shown);
+  bars.forEach(b => b.style.setProperty('--g', still ? 1 : 0));
+  new MutationObserver(() => paint(shown)).observe(html, { attributes: true, attributeFilter: ['lang'] });
+  // the first time it is seen: the hours go up to 120, the bars grow
+  if (!still && 'IntersectionObserver' in window) {
+    const first = new IntersectionObserver(es => {
+      if (!es.some(en => en.intersectionRatio >= 0.4)) return;
+      first.disconnect();
+      const t0 = performance.now();
+      const run = now => {
+        demo = 0;
+        if (touched) return;
+        const q = Math.min(1, (now - t0) / 1800);
+        shown = goal = MIN + (120 - MIN) * io(q); paint(shown);
+        bars.forEach((b, i) => b.style.setProperty('--g', out(seg(q, 0.15 + i * 0.12, 0.75 + i * 0.12)).toFixed(4)));
+        if (q < 1) demo = requestAnimationFrame(run); else goal = 120;
+      };
+      demo = requestAnimationFrame(run);
+    }, { threshold: [0, 0.4] });
+    first.observe(rc.querySelector('.rc-calc'));
   }
 }
 

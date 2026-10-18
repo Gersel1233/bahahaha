@@ -38,109 +38,93 @@ html.pg-js .tile-film{ opacity:0; }
 @media (hover:hover){ .tn:not(:disabled):hover{ transform:scale(1.06); } }
 
 
-/* ---------- why Lesreg, as a keynote shows it ----------
-   On the dark: the classic software house's number, struck through, and
-   Lesreg's under it, large, in Chivo Light; the chapters as Liquid Glass
-   pills (Smoke, with the chosen one solid and its time running along it as
-   a 2 px ultramarine line); beside it a phone whose lock screen carries a
-   Live Activity in glass. The phone's screen is laid out in iOS points:
-   1 pt = 100/402 of its width. Nothing here is driven by the scroll. */
+/* ---------- why Lesreg: work it out ----------
+   On the dark: the heading, then the calculator as a Rim (6 px glass) round
+   a solid porcelain core, as LA31 Product window carries software. In it,
+   LA31 Meniscus slider for the hours (1 px track, 2 px ultramarine fill, a
+   48 px thumb whose core shows the value), three figures in Chivo Light, and
+   two bars at their true proportion. Under it, three facts as dark ledger
+   rows. Only two prices go in: the market's typical rate and Lesreg's. */
 .sr{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
-.kn{ position:relative; overflow:hidden; color:var(--porcelain); background:radial-gradient(80% 90% at 70% 110%, #2B3F7C, #101A33 50%, #05080F); }
-.kn::before{ content:""; position:absolute; right:-6%; bottom:-24%; width:min(900px, 90vw); aspect-ratio:1; border-radius:50%; background:radial-gradient(closest-side, rgba(70,100,200,.35), transparent); pointer-events:none; }
-.kn-in{ position:relative; max-width:1440px; min-height:min(900px, 100svh); margin:0 auto; padding:clamp(100px, 13vh, 132px) 72px 64px; display:grid;
-  grid-template-columns:minmax(0, 1fr) auto; grid-template-rows:auto 1fr auto; grid-template-areas:"top top" "nums ph" "say ph"; column-gap:48px; }
-.kn-top{ grid-area:top; display:flex; justify-content:space-between; align-items:center; gap:16px; }
-.kn-top .label{ color:rgba(246,244,239,.6); }
+.rc{ position:relative; overflow:hidden; color:var(--porcelain); background:radial-gradient(80% 90% at 70% 110%, #2B3F7C, #101A33 50%, #05080F); }
+.rc::before{ content:""; position:absolute; right:-8%; top:20%; width:min(900px, 90vw); aspect-ratio:1; border-radius:50%; background:radial-gradient(closest-side, rgba(70,100,200,.3), transparent); pointer-events:none; }
+.rc-in{ position:relative; max-width:1440px; margin:0 auto; padding:clamp(96px, 12vh, 120px) 72px clamp(40px, 6vh, 64px); }
+.rc-head{ display:grid; grid-template-columns:minmax(0, 7fr) minmax(0, 5fr); column-gap:48px; align-items:end; }
+.rc-head .label{ grid-column:1 / -1; color:rgba(246,244,239,.6); }
+.rc-h{ margin-top:16px; font:500 clamp(40px, 4.4vw, 64px)/1 var(--sans); letter-spacing:-.035em; }
+.rc-h .acc{ display:block; margin-top:.06em; color:rgba(246,244,239,.72); }
+.rc-lead{ font:400 clamp(16px, 1.3vw, 18px)/1.55 var(--sans); color:rgba(246,244,239,.75); }
 
-/* the chapters: Smoke glass, the chosen pill solid porcelain */
-.kn-chap{ position:relative; isolation:isolate; display:flex; gap:4px; padding:4px; border-radius:26px; box-shadow:6px 12px 32px rgba(13,13,15,.2); }
-.kn-chap::before{ content:""; position:absolute; inset:0; z-index:-1; border-radius:inherit; background:rgba(14,15,16,.5); -webkit-backdrop-filter:blur(14px) saturate(1.2); backdrop-filter:blur(14px) saturate(1.2); }
-.kn-chap::after{ content:""; position:absolute; inset:0; border-radius:inherit; padding:1px; pointer-events:none;
-  background:linear-gradient(135deg, rgba(255,255,255,.85), rgba(255,255,255,.12) 45%, rgba(255,255,255,.4));
-  -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite:xor; mask-composite:exclude; }
-.kn-chap button{ position:relative; height:44px; padding:0 20px; border:0; border-radius:22px; background:none; cursor:pointer; overflow:hidden;
-  font:400 14px/16px var(--sans); color:rgba(246,244,239,.75); transition:background 180ms var(--ease), color 180ms var(--ease); -webkit-tap-highlight-color:transparent; }
-.kn-chap button.on{ background:var(--porcelain); color:var(--obsidian); font-weight:500; }
-.kn-chap button i{ position:absolute; left:16px; right:16px; bottom:6px; height:2px; border-radius:1px; background:rgba(36,54,232,.18); opacity:0; }
-.kn-chap button.on i{ opacity:1; }
-.kn-chap button i::after{ content:""; position:absolute; inset:0; border-radius:inherit; background:var(--ultra); transform-origin:0 50%; transform:scaleX(var(--p, 0)); }
-@media (hover:hover){ .kn-chap button:not(.on):hover{ color:var(--porcelain); } }
-.kn-chap button:focus-visible{ outline:none; box-shadow:0 0 0 2px #05080F, 0 0 0 4px var(--ultra); }
+/* the calculator: a Rim round a porcelain core */
+.rc-calc{ position:relative; margin-top:clamp(28px, 4.4vh, 48px); padding:clamp(24px, 3vw, 40px); border-radius:30px; background:var(--porcelain); color:var(--obsidian);
+  box-shadow:0 0 0 6px rgba(255,255,255,.06), 0 0 0 7px rgba(255,255,255,.5), 9px 18px 44px rgba(13,13,15,.24); }
+.rc-hrs{ display:flex; align-items:center; gap:20px; }
+.rc-k{ flex:none; font:400 12.5px/18px var(--sans); color:var(--graphite); }
+/* LA31 Meniscus slider */
+.rc-ms{ position:relative; flex:1; height:48px; touch-action:none; cursor:pointer; }
+.rc-tr{ position:absolute; left:0; right:0; top:50%; height:1px; background:var(--travertine); }
+.rc-fill{ position:absolute; left:0; top:calc(50% - 1px); height:2px; width:var(--x, 0%); background:var(--ultra); }
+.rc-th{ position:absolute; left:var(--x, 0%); top:0; width:48px; height:48px; margin-left:-24px; padding:0; border:0; border-radius:50%; cursor:grab; touch-action:none;
+  background:rgba(255,255,255,.35); box-shadow:inset 0 0 0 1px #fff, 3px 6px 16px rgba(13,13,15,.18); transition:transform 180ms var(--ease); }
+.rc-th b{ position:absolute; inset:6px; display:grid; place-items:center; border-radius:50%; background:var(--obsidian); color:var(--porcelain); font:400 13px/1 var(--mono); }
+.rc-ms.drag .rc-th{ cursor:grabbing; transform:scale(1.06); }
+.rc-th:focus-visible{ outline:none; box-shadow:0 0 0 2px var(--porcelain), 0 0 0 4px var(--ultra), 3px 6px 16px rgba(13,13,15,.18); }
 
-/* the numbers */
-.kn-nums{ grid-area:nums; align-self:center; padding:clamp(16px, 4vh, 48px) 0 24px; min-width:0; }
-.kn-was, .kn-now{ display:flex; align-items:flex-start; gap:18px; }
-.kn-n{ position:relative; display:block; white-space:nowrap; font-weight:300; font-variant-numeric:tabular-nums; }
-.kn-was .kn-n{ font-size:clamp(80px, min(9.6vw, 15vh), 140px); line-height:.9; letter-spacing:-.05em; color:rgba(246,244,239,.32); }
-.kn-was .kn-n s{ position:absolute; left:-6px; right:-6px; top:52%; height:3px; background:rgba(246,244,239,.6); transform:rotate(-5deg) scaleX(var(--s, 1)); transform-origin:0 50%; text-decoration:none; }
-.kn-was .kn-u{ margin-top:clamp(10px, 1.6vw, 22px); font:400 clamp(12px, 1.1vw, 16px)/1.35 var(--mono); color:rgba(246,244,239,.45); }
-.kn-now{ margin-top:4px; }
-.kn-now .kn-n{ font-size:var(--big, clamp(160px, min(22vw, 36vh), 330px)); line-height:.85; letter-spacing:-.06em; color:var(--porcelain); }
-.kn[data-ch="1"] .kn-now .kn-n{ --big:clamp(110px, min(14vw, 24vh), 220px); }
-.kn-now .kn-u{ margin-top:clamp(20px, 3.6vw, 52px); font:400 clamp(14px, 1.5vw, 22px)/1.35 var(--mono); color:rgba(246,244,239,.82); }
-.kn-now .kn-u i{ display:inline-block; width:.64em; height:.64em; margin-right:.45em; border-radius:50%; background:var(--ultra); box-shadow:0 0 0 .28em rgba(36,54,232,.28); vertical-align:-.04em; transform:scale(var(--d, 1)); }
-.kn-say{ grid-area:say; max-width:34em; font:400 20px/30px var(--sans); color:rgba(246,244,239,.82); }
-.kn-say b{ font-weight:500; color:var(--porcelain); }
+.rc-figs{ display:grid; grid-template-columns:1.3fr .9fr 1.3fr; gap:24px; margin-top:clamp(20px, 3.4vh, 36px); }
+.rc-fig .label{ color:var(--ash); }
+.rc-v{ display:flex; align-items:flex-start; margin-top:8px; white-space:nowrap; }
+.rc-v > span{ font:300 clamp(34px, 3.5vw, 52px)/1 var(--sans); letter-spacing:-.04em; font-variant-numeric:tabular-nums; }
+.rc-v small{ margin:6px 0 0 8px; font:400 11.5px/16px var(--mono); color:var(--graphite); }
+.rc-fig.them .rc-v > span{ color:var(--graphite); }
+.rc-fig.us .rc-v i{ width:8px; height:8px; margin:8px 0 0 8px; border-radius:50%; background:var(--ultra); box-shadow:0 0 0 4px var(--ultra-tint); }
+.rc-fig.save{ padding-left:24px; border-left:1px solid var(--travertine); }
+.rc-s{ margin-top:8px; font:400 12.5px/18px var(--sans); color:var(--graphite); }
 
-/* the phone, a little turned, and its lock screen */
-.kn-ph{ grid-area:ph; position:relative; align-self:start; width:clamp(300px, 26vw, 380px); margin:clamp(16px, 4vh, 48px) 24px -100vh 0; transform:rotate(-4deg); filter:drop-shadow(18px 30px 50px rgba(0,0,0,.5)); }
-.kn-ph > img{ position:relative; z-index:2; display:block; width:100%; height:auto; pointer-events:none; }
-.kn-scr{ position:absolute; z-index:1; left:5.37%; top:2.4%; width:89.17%; height:95.2%; border-radius:13% / 6.2%; overflow:hidden; container-type:inline-size; --p:calc(100cqw / 402);
-  background:radial-gradient(130% 70% at 50% 0%, #3A55A8 0%, #2B3F7C 18%, #101A33 52%, #05080F 100%); color:#fff; font-family:-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter', system-ui, sans-serif; }
-.kn-sb{ position:absolute; left:0; right:0; top:0; height:calc(var(--p) * 54); display:flex; justify-content:space-between; align-items:center; padding:calc(var(--p) * 4) calc(var(--p) * 26) 0 calc(var(--p) * 44);
-  font:600 calc(var(--p) * 17)/1 inherit; }
-.kn-sb svg{ width:calc(var(--p) * 76); height:calc(var(--p) * 14); }
-.kn-d{ position:absolute; top:calc(var(--p) * 80); left:0; right:0; text-align:center; font-size:calc(var(--p) * 18.5); font-weight:600; color:rgba(255,255,255,.88); }
-.kn-c{ position:absolute; top:calc(var(--p) * 100); left:0; right:0; text-align:center; font-size:calc(var(--p) * 96); font-weight:700; line-height:1; letter-spacing:calc(var(--p) * -3.5); }
-/* the Live Activity: glass on the wallpaper, lit from -45 deg */
-.kn-la{ position:absolute; left:calc(var(--p) * 14); right:calc(var(--p) * 14); top:calc(var(--p) * 250); isolation:isolate; display:flex; flex-direction:column; gap:calc(var(--p) * 10);
-  padding:calc(var(--p) * 16); border-radius:calc(var(--p) * 26); box-shadow:0 calc(var(--p) * 10) calc(var(--p) * 30) rgba(0,0,0,.25); }
-.kn-la::before{ content:""; position:absolute; inset:0; z-index:-1; border-radius:inherit; background:rgba(255,255,255,.16); -webkit-backdrop-filter:blur(24px) saturate(1.4); backdrop-filter:blur(24px) saturate(1.4); }
-.kn-la::after{ content:""; position:absolute; inset:0; border-radius:inherit; padding:1px; pointer-events:none;
-  background:linear-gradient(135deg, rgba(255,255,255,.7), rgba(255,255,255,.1) 45%, rgba(255,255,255,.35));
-  -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite:xor; mask-composite:exclude; }
-.kn-la-h{ display:flex; align-items:center; gap:calc(var(--p) * 10); font-size:calc(var(--p) * 12); color:rgba(255,255,255,.6); }
-.kn-la-h b{ font-size:calc(var(--p) * 15); font-weight:600; color:#fff; }
-.kn-la-h > span:last-child{ margin-left:auto; }
-.kn-la-i{ width:calc(var(--p) * 30); height:calc(var(--p) * 30); border-radius:calc(var(--p) * 8); background:var(--porcelain); display:grid; place-items:center; flex:none; }
-.kn-la-i svg{ width:calc(var(--p) * 18); height:calc(var(--p) * 18); }
-.kn-la-m{ display:flex; align-items:center; justify-content:space-between; gap:calc(var(--p) * 8); }
-.kn-la-v{ font:300 calc(var(--p) * 44)/1 var(--sans); letter-spacing:calc(var(--p) * -1.8); white-space:nowrap; }
-.kn-la-v small{ margin-left:calc(var(--p) * 6); font:400 calc(var(--p) * 13)/1 var(--mono); letter-spacing:0; opacity:.8; }
-.kn-la-ok{ display:inline-flex; align-items:center; gap:calc(var(--p) * 6); height:calc(var(--p) * 30); padding:0 calc(var(--p) * 12); border-radius:calc(var(--p) * 15); background:#fff; color:var(--obsidian);
-  font-size:calc(var(--p) * 13); font-weight:600; white-space:nowrap; }
-.kn-la-ok i{ width:calc(var(--p) * 8); height:calc(var(--p) * 8); border-radius:50%; background:var(--ultra); }
-.kn-la-l{ font-size:calc(var(--p) * 13); line-height:1.3; color:rgba(255,255,255,.75); }
-/* what changes with a chapter comes in out of a blur, the way iOS changes it */
-.kn [data-in]{ transition:opacity 420ms var(--ease), transform 420ms var(--ease), filter 420ms var(--ease); }
-.kn [data-in].out{ opacity:0; transform:translateY(10px); filter:blur(6px); transition-duration:180ms; }
+/* the bars, at their true proportion: the market's stretch from 600 to
+   1,200 an hour, and Lesreg's 50 */
+.rc-bars{ display:grid; gap:10px; margin-top:clamp(18px, 3vh, 28px); }
+.rc-bar{ position:relative; height:14px; border-radius:7px; background:var(--limestone); overflow:hidden; }
+.rc-bar i{ position:absolute; top:0; bottom:0; left:0; transform-origin:0 50%; transform:scaleX(var(--g, 1)); }
+.rc-bar.them .lo{ width:50%; background:var(--ash); border-radius:7px 0 0 7px; }
+.rc-bar.them .hi{ left:50%; width:50%; background:repeating-linear-gradient(135deg, var(--ash) 0 4px, transparent 4px 8px); }
+.rc-bar.us i{ width:4.1667%; min-width:10px; background:var(--obsidian); border-radius:7px; }
+
+/* three facts as dark ledger rows */
+.rc-facts{ list-style:none; margin:clamp(24px, 4vh, 40px) 0 0; padding:0; }
+.rc-facts li{ display:grid; grid-template-columns:minmax(120px, 2fr) 5fr 5fr; gap:16px; align-items:center; min-height:48px; padding:12px 0; border-top:1px solid rgba(246,244,239,.14); }
+.rc-facts b{ font:600 11px/14px var(--sans); letter-spacing:.06em; text-transform:uppercase; color:rgba(246,244,239,.55); }
+.rc-facts span{ font:400 14px/22px var(--sans); color:rgba(246,244,239,.5); }
+.rc-facts span.us{ color:var(--porcelain); font-weight:500; }
+.rc-src{ margin-top:16px; font:400 11.5px/16px var(--mono); color:rgba(246,244,239,.45); }
 
 @media (max-width:1023px){
-  .kn-in{ padding:clamp(96px, 12vh, 120px) 40px 56px; column-gap:24px; }
-  .kn-ph{ width:clamp(240px, 30vw, 300px); }
+  .rc-in{ padding:clamp(96px, 12vh, 120px) 40px 56px; }
+  .rc-head{ grid-template-columns:1fr; row-gap:16px; }
 }
 @media (max-width:767px){
-  /* on a phone the whole of it is about one screen: the struck number on one
-     line with its words, Lesreg's under it, and the phone only down to its
-     Live Activity, running off the bottom edge */
-  .kn-in{ min-height:0; padding:78px 20px 0; grid-template-columns:1fr; grid-template-rows:auto; grid-template-areas:"top" "nums" "say" "ph"; }
-  .kn-top{ flex-direction:column; align-items:flex-start; gap:10px; }
-  .kn-top .label{ display:none; }
-  .kn-chap button{ padding:0 14px; }
-  .kn-nums{ padding:16px 0 10px; }
-  .kn-was{ align-items:center; gap:12px; }
-  .kn-was .kn-n{ font-size:min(16vw, 64px); }
-  .kn-was .kn-u{ margin:0; font-size:11.5px; }
-  .kn-now{ flex-direction:column; gap:6px; margin-top:2px; }
-  /* the same height in every chapter, so nothing below it moves */
-  .kn-now .kn-n{ --big:min(33vw, 128px); height:calc(min(33vw, 128px) * .85); display:flex; align-items:flex-end; }
-  .kn[data-ch="1"] .kn-now .kn-n{ --big:min(26vw, 104px); }
-  .kn-now .kn-u{ margin:0; font-size:12.5px; }
-  .kn-say{ font-size:15px; line-height:23px; min-height:92px; }
-  .kn-ph{ justify-self:center; width:min(78vw, 300px); margin:8px 0 calc(min(78vw, 300px) * -1.07) 0; }
+  .rc-in{ padding:80px 20px 36px; }
+  .rc-h{ font-size:40px; line-height:44px; letter-spacing:-.025em; }
+  .rc-lead{ font-size:15px; line-height:23px; }
+  .rc-calc{ margin-top:24px; padding:20px; border-radius:26px; }
+  .rc-hrs{ gap:12px; }
+  .rc-k:not(.rc-unit){ display:none; }
+  .rc-figs{ grid-template-columns:1fr 1fr; gap:16px 12px; margin-top:16px; }
+  .rc-fig.save{ grid-column:1 / -1; padding:14px 0 0; border-left:0; border-top:1px solid var(--travertine); }
+  .rc-v > span{ font-size:26px; }
+  .rc-fig.them .rc-v > span{ font-size:19px; line-height:26px; }
+  .rc-fig.save .rc-v > span{ font-size:min(8.6vw, 34px); }
+  .rc-s{ font-size:12.5px; line-height:17px; }
+  .rc-fig.us .rc-s{ max-width:12em; }
+  .rc-h{ margin-top:12px; }
+  .rc-head{ row-gap:12px; }
+  .rc-bars{ margin-top:16px; gap:8px; }
+  .rc-bar{ height:12px; }
+  .rc-facts{ margin-top:20px; }
+  .rc-src{ margin-top:12px; }
+  .rc-facts li{ grid-template-columns:96px 1fr; gap:12px; padding:10px 0; min-height:44px; }
+  .rc-facts li > span:not(.us){ display:none; }
 }
-@media (prefers-reduced-motion: reduce){ .kn [data-in]{ transition:none; } .kn-chap button i{ display:none; } }
+@media (prefers-reduced-motion: reduce){ .rc-th{ transition:none; } }
 
 /* ---------- Callster: the owner texts, it handles it ---------- */
 .case-cs .cs-vis{ display:grid; place-items:center; padding:0; }

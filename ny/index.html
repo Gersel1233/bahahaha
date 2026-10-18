@@ -24,7 +24,7 @@
 <link rel="stylesheet" href="ny.css?v=16" />
 <link rel="stylesheet" href="page.css?v=22" />
 <link rel="stylesheet" href="hero.css?v=28" />
-<link rel="stylesheet" href="sections.css?v=61" />
+<link rel="stylesheet" href="sections.css?v=65" />
 <script>
   /* decided before first paint: with JS the phone turns as you scroll;
      without it, the first screen simply stands there */
@@ -360,40 +360,59 @@
   </div>
 </section>
 
-<!-- why Lesreg: one number at a time, on the dark, the way a keynote shows
-     it. The classic software house's number comes up and is struck through;
-     Lesreg's lands under it, large; beside it a phone shows the same as a
-     Live Activity. Three chapters, price, speed and money, each playing on
-     its own while it is seen; the chapter pills take you to one. -->
-<section class="kn" id="fordi" aria-labelledby="kn-h" data-ch="0">
-  <h2 class="sr" id="kn-h" data-da="Hvorfor Lesreg: pris, tempo og omsætning" data-en="Why Lesreg: price, speed and revenue">Hvorfor Lesreg: pris, tempo og omsætning</h2>
-  <div class="kn-in">
-    <div class="kn-top">
-      <p class="label" aria-hidden="true"><span data-da="Hvorfor Lesreg" data-en="Why Lesreg">Hvorfor Lesreg</span></p>
-      <div class="kn-chap" role="tablist" aria-label="Hvorfor Lesreg" data-aria-da="Hvorfor Lesreg" data-aria-en="Why Lesreg">
-        <button type="button" role="tab" class="on" aria-selected="true" data-i="0"><span data-da="Pris" data-en="Price">Pris</span><i></i></button>
-        <button type="button" role="tab" aria-selected="false" tabindex="-1" data-i="1"><span data-da="Tempo" data-en="Speed">Tempo</span><i></i></button>
-        <button type="button" role="tab" aria-selected="false" tabindex="-1" data-i="2"><span data-da="Omsætning" data-en="Revenue">Omsætning</span><i></i></button>
+<!-- why Lesreg: work it out. Only two prices go in: what agencies and
+     freelancers in Denmark typically charge an hour, and Lesreg's. The hours
+     are drawn on LA31 Meniscus slider; the sums follow, and the bars stand
+     at their true proportion. When it is first seen the slider moves on its
+     own; after that it is the reader's. -->
+<section class="rc" id="fordi" aria-labelledby="rc-h">
+  <div class="rc-in">
+    <header class="rc-head">
+      <p class="label"><span data-da="Hvorfor Lesreg" data-en="Why Lesreg">Hvorfor Lesreg</span></p>
+      <h2 class="rc-h" id="rc-h"><span data-da="Samme timer." data-en="The same hours.">Samme timer.</span> <em class="acc" data-da="En brøkdel af prisen." data-en="A fraction of the price.">En brøkdel af prisen.</em></h2>
+      <p class="rc-lead" data-da="Bureauer og freelancere i Danmark tager typisk 600–1.200 kr. i timen. Vi tager 50 kr. i timen og aftaler én fast pris, før vi starter. Træk i timerne, og se forskellen." data-en="Agencies and freelancers in Denmark typically charge DKK 600–1,200 an hour. We charge DKK 50 an hour and agree one fixed price before we start. Drag the hours and see the difference.">Bureauer og freelancere i Danmark tager typisk 600–1.200 kr. i timen. Vi tager 50 kr. i timen og aftaler én fast pris, før vi starter. Træk i timerne, og se forskellen.</p>
+    </header>
+
+    <div class="rc-calc">
+      <div class="rc-hrs">
+        <span class="rc-k"><span data-da="Et projekt på" data-en="A project of">Et projekt på</span></span>
+        <div class="rc-ms" data-min="10" data-max="400" data-step="10">
+          <i class="rc-tr"></i><i class="rc-fill"></i>
+          <button type="button" class="rc-th" role="slider" aria-valuemin="10" aria-valuemax="400" aria-valuenow="120" aria-label="Antal timer" data-aria-da="Antal timer" data-aria-en="Number of hours"><b>120</b></button>
+        </div>
+        <span class="rc-k rc-unit"><span data-da="timer" data-en="hours">timer</span></span>
       </div>
-    </div>
-    <div class="kn-nums" role="tabpanel" aria-live="polite">
-      <div class="kn-was"><span class="kn-n"><b></b><s></s></span><span class="kn-u"></span></div>
-      <div class="kn-now"><span class="kn-n"></span><span class="kn-u"><i></i><span></span></span></div>
-    </div>
-    <p class="kn-say"></p>
-    <div class="kn-ph" aria-hidden="true">
-      <div class="kn-scr">
-        <div class="kn-sb"><span>9:41</span><svg viewBox="0 0 76 14"><g fill="#fff"><rect x="0" y="9" width="3.2" height="4.4" rx=".9"/><rect x="5" y="6.6" width="3.2" height="6.8" rx=".9"/><rect x="10" y="4.2" width="3.2" height="9.2" rx=".9"/><rect x="15" y="1.8" width="3.2" height="11.6" rx=".9"/></g><path d="M31 4.2a9.6 9.6 0 0 1 13 0M33.4 7a6.2 6.2 0 0 1 8.2 0M35.8 9.8a2.8 2.8 0 0 1 3.4 0" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round"/><rect x="50" y="1.5" width="22" height="11" rx="3.4" fill="none" stroke="rgba(255,255,255,.45)" stroke-width="1.1"/><rect x="52" y="3.5" width="18" height="7" rx="1.8" fill="#fff"/></svg></div>
-        <p class="kn-d"></p>
-        <p class="kn-c">9:41</p>
-        <div class="kn-la">
-          <div class="kn-la-h"><span class="kn-la-i"><svg viewBox="0 0 128 128"><path d="M0 0H94l34 34v94H0Z" fill="#0E0F10"/><path d="M44 28h18v62h38v18H44Z" fill="#F6F4EF"/></svg></span><b></b><span data-da="nu" data-en="now">nu</span></div>
-          <div class="kn-la-m"><span class="kn-la-v"></span><span class="kn-la-ok"><i></i><span></span></span></div>
-          <p class="kn-la-l"></p>
+
+      <div class="rc-figs" aria-live="polite">
+        <div class="rc-fig them">
+          <p class="label"><span data-da="Klassisk softwarehus" data-en="Classic software house">Klassisk softwarehus</span></p>
+          <p class="rc-v"><span data-o="them">72.000–144.000</span><small><span data-da="kr." data-en="DKK">kr.</span></small></p>
+          <p class="rc-s"><span data-da="600–1.200 kr./t · timerne løber" data-en="DKK 600–1,200/h · the hours keep running">600–1.200 kr./t · timerne løber</span></p>
+        </div>
+        <div class="rc-fig us">
+          <p class="label">Lesreg</p>
+          <p class="rc-v"><span data-o="us">6.000</span><small><span data-da="kr." data-en="DKK">kr.</span></small><i></i></p>
+          <p class="rc-s"><span data-da="50 kr./t · én fast pris før start" data-en="DKK 50/h · one fixed price before the start">50 kr./t · én fast pris før start</span></p>
+        </div>
+        <div class="rc-fig save">
+          <p class="label"><span data-da="I sparer" data-en="You save">I sparer</span></p>
+          <p class="rc-v"><span data-o="save">66.000–138.000</span><small><span data-da="kr." data-en="DKK">kr.</span></small></p>
+          <p class="rc-s"><span data-da="12–24 gange billigere pr. time" data-en="12–24 times cheaper an hour">12–24 gange billigere pr. time</span></p>
         </div>
       </div>
-      <img src="media/dev/iphone-17-pro-2x.webp" width="1120" height="2336" alt="" loading="lazy" decoding="async" draggable="false" />
+
+      <div class="rc-bars" aria-hidden="true">
+        <div class="rc-bar them"><i class="lo"></i><i class="hi"></i></div>
+        <div class="rc-bar us"><i></i></div>
+      </div>
     </div>
+
+    <ul class="rc-facts">
+      <li><b><span data-da="Pris" data-en="Price">Pris</span></b><span><span data-da="Timer, der løber" data-en="Hours that keep running">Timer, der løber</span></span><span class="us"><span data-da="Én fast pris, aftalt før start" data-en="One fixed price, agreed before the start">Én fast pris, aftalt før start</span></span></li>
+      <li><b><span data-da="Rettelser" data-en="Changes">Rettelser</span></b><span><span data-da="Tilbud, kø og nye hænder" data-en="A quote, a queue and new hands">Tilbud, kø og nye hænder</span></span><span class="us"><span data-da="De samme hænder, der byggede det" data-en="The hands that built it">De samme hænder, der byggede det</span></span></li>
+      <li><b><span data-da="Bestillinger" data-en="Orders">Bestillinger</span></b><span><span data-da="Platforme tager procenter" data-en="Platforms take a cut">Platforme tager procenter</span></span><span class="us"><span data-da="0 % kommission på jeres egen side" data-en="0 % commission on your own site">0 % kommission på jeres egen side</span></span></li>
+    </ul>
+    <p class="rc-src" data-da="Markedspris: typisk timepris for bureauer og freelancere i Danmark, 2026. Alle priser ekskl. moms." data-en="Market price: the typical hourly rate of agencies and freelancers in Denmark, 2026. All prices excluding VAT.">Markedspris: typisk timepris for bureauer og freelancere i Danmark, 2026. Alle priser ekskl. moms.</p>
   </div>
 </section>
 
@@ -567,7 +586,7 @@
 </footer>
 
 <script type="module" src="main.js?v=24"></script>
-<script type="module" src="page.js?v=52"></script>
+<script type="module" src="page.js?v=54"></script>
 <script type="module" src="sheets.js?v=1"></script>
 </body>
 </html>
