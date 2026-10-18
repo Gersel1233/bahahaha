@@ -17,7 +17,7 @@
 <link rel="stylesheet" href="ny.css?v=16" />
 <link rel="stylesheet" href="page.css?v=20" />
 <link rel="stylesheet" href="hero.css?v=25" />
-<link rel="stylesheet" href="sections.css?v=41" />
+<link rel="stylesheet" href="sections.css?v=42" />
 <script>
   /* decided before first paint: with JS the phone turns as you scroll;
      without it, the first screen simply stands there */
@@ -239,24 +239,12 @@
       </div>
     </div>
 
-    <!-- the finale: the system crumples into a ball of paper, the ball is
-         pressed into a packet, and the packet unfolds into the house's own
-         mark: a page with its corner cut -->
+    <!-- the finale: the system crumples into a ball of paper, and the paper
+         opens out into the house's own mark: a page with its corner cut -->
     <div class="alt-fin" aria-hidden="true">
       <canvas class="fin-paper" data-n="45" data-src="media/alt/fold/f"></canvas>
-      <!-- the ball pressed into a packet of paper, folded twice; it opens
-           right half first, then the bottom, into the mark -->
-      <div class="fin-fold">
-        <i class="ff-shade"></i>
-        <div class="ff-sheet">
-          <i class="ff-q ff-tl"></i>
-          <div class="ff-bl"><i class="ff-q"></i></div>
-          <div class="ff-rh">
-            <i class="ff-q ff-tr"></i>
-            <div class="ff-br"><i class="ff-q"></i></div>
-          </div>
-        </div>
-      </div>
+      <!-- the ball as paper: it opens out of its own outline into the mark's -->
+      <div class="fin-blob"><div class="bl-paper"><i class="bl-tex"></i></div></div>
       <div class="fin-brand">
         <svg class="fin-mark" viewBox="0 0 128 128">
           <defs><clipPath id="fin-shape"><path d="M0 0H94l34 34v94H0Z"/></clipPath>
@@ -419,6 +407,6 @@
 </footer>
 
 <script type="module" src="main.js?v=23"></script>
-<script type="module" src="page.js?v=41"></script>
+<script type="module" src="page.js?v=42"></script>
 </body>
 </html>
