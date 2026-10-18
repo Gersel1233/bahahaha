@@ -216,7 +216,7 @@ S.alt = el => {
     const dy = (best - P0) * run;
     if (Math.abs(dy) < 3) return;
     // into the finale the glide is long, so the film plays as a film
-    glide(scrollY + dy, best === 1 && P0 < 0.85 ? 2600 : Math.min(900, Math.max(420, Math.abs(dy) / innerHeight * 520)));
+    glide(scrollY + dy, best === 1 && P0 < 0.85 ? 5200 : Math.min(900, Math.max(420, Math.abs(dy) / innerHeight * 520)));
   };
   // a glide of our own, so its length can be chosen; any touch or wheel ends it
   let glideRaf = 0;
@@ -226,7 +226,9 @@ S.alt = el => {
     const from = scrollY, t0 = performance.now();
     settling = true;
     const step = now => {
-      const k = Math.min(1, (now - t0) / ms), e = k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
+      const k = Math.min(1, (now - t0) / ms);
+      // a long glide is the film playing, so it keeps an even pace
+      const e = ms > 2000 ? (1 - Math.cos(Math.PI * k)) / 2 : k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
       scrollTo(0, from + (to - from) * e);
       if (k < 1) glideRaf = requestAnimationFrame(step); else { glideRaf = 0; setTimeout(() => { settling = false; }, 60); }
     };
@@ -259,7 +261,10 @@ S.alt = el => {
       wordW = word.offsetWidth + parseFloat(getComputedStyle(brand).gap || '0');
       objC = { x: obj.offsetLeft + ow / 2, y: obj.offsetTop + oh / 2 };
       // the film's square: where it plays, and how big
-      V = mob ? { cx: W / 2, cy: H * 0.5, S: Math.min(W * 1.02, H * 0.62) } : { cx: W / 2, cy: H * 0.52, S: Math.min(W * 0.6, H * 0.84) };
+      // the film's square lies exactly over the picture as it stands at the
+      // last beat: its middle on the middle of all of it, with room round it
+      V = { cx: objC.x + 0.69 * u, cy: objC.y - 0.31 * u, S: 13.6 * u };
+      if (cap) { const sx = Math.min(0, W - 4 - (V.cx + V.S / 2)); V.cx += sx; el._capShift = sx; }
       dpr = Math.min(2, devicePixelRatio || 1);
       Object.assign(cv.style, { left: (V.cx - V.S / 2).toFixed(1) + 'px', top: (V.cy - V.S / 2).toFixed(1) + 'px', width: V.S.toFixed(1) + 'px', height: V.S.toFixed(1) + 'px' });
       cv.width = cv.height = Math.round(V.S * dpr);
@@ -341,65 +346,66 @@ S.alt = el => {
 
     // ---------- the finale ----------
     let Q = q;
-    if (cap) Q = cap[1] === 'start' ? 0.13 : 0.885;
-    // 1. it gathers in the middle, the light behind it with it
-    const g = io(seg(Q, 0, 0.13));
-    // the system behind steps away; what is left is the tools it talks to
-    // and the answer it gets: that is what goes into the paper
-    const off = io(seg(Q, 0, 0.09));
-    if (off > 0) { for (const e of [pad, svg, ...phs]) setO(e, (+e._po || 0) * (1 - off)); }
-    // and the tools come back up to full light
-    if (off > 0) for (const e of logos) setO(e, lerp(+e._po || 0, 1, off));
-    // the whole of it fits well inside the film's square, its middle in the middle
-    // the camera is closer while there is one thing to see, the icon and the
-    // app, and steps back as the system stands up behind it
+    if (cap) Q = cap[1] === 'start' ? 0 : 0.81;
+    // the picture stands where it is; only the camera's closeness from the
+    // first beats is let go of
     const zoom = lerp(el._mob ? 1.5 : 1.16, 1, io(seg(pe, 0.27, 0.37)));
-    const sc = lerp(zoom, V.S / (12.6 * u), g);
-    setT(obj, 'translate3d(' + ((V.cx - objC.x - 0.45 * u * sc) * g).toFixed(1) + 'px,' + ((V.cy - objC.y + 1.55 * u * sc) * g).toFixed(1) + 'px,0) scale(' + sc.toFixed(4) + ')');
-    setO(glow2, g); setO(glow, 1 - g);
-    // 2. the film takes over from the very picture it starts from
-    const film = Q >= 0.13 && Q < 0.9 && FOLD.n;
-    // the film comes up over the page's own picture, so no step shows between them
-    const xf = seg(Q, 0.13, 0.17);
-    setO(obj, Q >= 0.17 ? 0 : 1);
-    if (cap && cap[1] === 'start') setO(obj, 1);
-    setO(fin, Q > 0 ? 1 : 0);
-    setO(cv, film && !(cap && cap[1] === 'start') ? xf : 0);
+    setT(obj, (cap ? 'translate3d(' + (el._capShift || 0).toFixed(1) + 'px,0,0) ' : '') + 'scale(' + zoom.toFixed(4) + ')');
+    setO(glow2, 0);
+    // 1. the film takes over from the very picture it starts from, and all
+    //    of it crumples into a ball of paper, which opens into the mark
+    const film = Q >= 0.04 && Q < 0.84 && FOLD.n && !cap;
+    const xf = seg(Q, 0.04, 0.075);
+    setO(obj, Q >= 0.075 && !(cap && cap[1] === 'start') ? 0 : 1);
+    if (cap && cap[1] === 'end') setO(obj, 0);
+    setO(fin, Q > 0 || cap ? 1 : 0);
+    setO(cv, film ? xf : 0);
     if (film) {
-      const k = Math.min(FOLD.n - 1, Math.round(seg(Q, 0.17, 0.86) * (FOLD.n - 1)));
-      // the nearest frame that has arrived
-      let i = k; while (i > 0 && !(pics[i] && pics[i].complete && pics[i].naturalWidth)) i--;
-      if (i !== shown && pics[i] && pics[i].complete && pics[i].naturalWidth) {
-        shown = i;
+      const kf = seg(Q, 0.075, 0.8) * (FOLD.n - 1);
+      const ok = j => pics[j] && pics[j].complete && pics[j].naturalWidth;
+      // the nearest frame that has arrived, and the next one laid over it
+      // by how far between them the scroll is, so a slow hand never sees
+      // the film step
+      let i = Math.floor(kf); while (i > 0 && !ok(i)) i--;
+      const nx = Math.min(FOLD.n - 1, i + 1), mix = i === Math.floor(kf) && ok(nx) ? Math.round((kf - i) * 16) / 16 : 0;
+      const key = i * 32 + mix * 16;
+      if (key !== shown && ok(i)) {
+        shown = key;
         const c2 = cv.getContext('2d');
-        c2.clearRect(0, 0, cv.width, cv.height);
+        c2.globalAlpha = 1;
         c2.drawImage(pics[i], 0, 0, cv.width, cv.height);
+        if (mix > 0) { c2.globalAlpha = mix; c2.drawImage(pics[nx], 0, 0, cv.width, cv.height); c2.globalAlpha = 1; }
       }
     }
-    // 3. the mark, at the size and place it has at the film's end, comes
-    //    to its own place, and its name beside it
-    const hand = Q >= 0.86;
+    // 2. the mark takes over where the film leaves it, and a light runs
+    //    over it, catching its edge as it goes
+    const hand = Q >= 0.8 || (cap && cap[1] === 'end');
     setO(brand, hand ? 1 : 0);
     flap.style.opacity = '0';
     l1.setAttribute('height', '80'); l2.setAttribute('width', '56');
-    const mv = io(seg(Q, 0.9, 0.97));
     const s0 = FOLD.end * V.S / MW;
+    const shn = seg(Q, 0.81, 0.875);
+    sh.setAttribute('x', lerp(-70, 175, io(shn)).toFixed(1));
+    sh.style.opacity = (Math.sin(Math.PI * shn) * 1).toFixed(3);
+    const bloom = Math.sin(Math.PI * shn);
+    mark.style.filter = 'drop-shadow(6px 14px 26px rgba(0,0,0,.45)) drop-shadow(0 0 ' + (24 * bloom).toFixed(1) + 'px rgba(220,226,255,' + (0.55 * bloom).toFixed(3) + '))';
+    // 3. then it goes to its own place, its name beside it
+    const mv = io(seg(Q, 0.86, 0.93));
     const bx = lerp(V.cx - W / 2, 0, mv), by = lerp(V.cy - fy, 0, mv);
-    const wd = out(seg(Q, 0.92, 0.98));
-    setT(brand, 'translate(-50%,-50%) translate3d(' + (bx + wordW / 2 * (1 - wd)).toFixed(1) + 'px,' + by.toFixed(1) + 'px,0) scale(' + lerp(s0, 1, mv).toFixed(4) + ')');
+    const wd = out(seg(Q, 0.905, 0.96));
+    const bs = lerp(s0, 1, mv);
+    setT(brand, 'translate(-50%,-50%) translate3d(' + (bx + wordW / 2 * bs * (1 - wd)).toFixed(1) + 'px,' + by.toFixed(1) + 'px,0) scale(' + bs.toFixed(4) + ')');
     setT(word, 'translate3d(' + (-18 * (1 - wd)).toFixed(1) + 'px,0,0)'); setO(word, wd);
-    sh.setAttribute('x', lerp(-60, 160, seg(Q, 0.95, 1)).toFixed(1));
-    // 4. and the sentence under it, with the way to say what you need
-    // the two lines rise out of their own edge, one after the other; then
-    // what we make, the price, and the two ways on
-    setO(end, Q > 0.9 ? 1 : 0);
-    endLines.forEach((l, i) => { const v = out(seg(Q, 0.935 + i * 0.018, 0.975 + i * 0.018)); setT(l, 'translate3d(0,' + ((1 - v) * 110).toFixed(1) + '%,0)'); });
-    const w1 = out(seg(Q, 0.965, 0.99)), w2 = out(seg(Q, 0.975, 1));
+    // 4. and the sentence under it: two lines rising out of their own edge,
+    //    then what we make, the price, and the two ways on
+    setO(end, Q > 0.88 ? 1 : 0);
+    endLines.forEach((l, i) => { const v = out(seg(Q, 0.92 + i * 0.02, 0.965 + i * 0.02)); setT(l, 'translate3d(0,' + ((1 - v) * 110).toFixed(1) + '%,0)'); });
+    const w1 = out(seg(Q, 0.955, 0.985)), w2 = out(seg(Q, 0.97, 1));
     setO(endWhat, w1); setO(endP, w1);
     setO(endCta, w2); setT(endCta, 'translate3d(0,' + ((1 - w2) * 16).toFixed(1) + 'px,0)');
     end.classList.toggle('on', w2 > 0.5);
     setT(end, 'translate(-50%,0)');
-    if (cap && cap[1] === 'end') { setO(end, 0); setO(word, 0); setT(brand, 'translate(-50%,-50%) translate3d(' + (V.cx - W / 2 + wordW / 2).toFixed(1) + 'px,' + (V.cy - fy).toFixed(1) + 'px,0) scale(' + s0.toFixed(4) + ')'); setO(brand, 1); }
+    if (cap && cap[1] === 'end') { setO(end, 0); setO(word, 0); sh.style.opacity = '0'; mark.style.filter = ''; setT(brand, 'translate(-50%,-50%) translate3d(' + (V.cx - W / 2 + wordW / 2 * s0).toFixed(1) + 'px,' + (V.cy - fy).toFixed(1) + 'px,0) scale(' + s0.toFixed(4) + ')'); }
   };
 };
 
