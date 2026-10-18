@@ -145,10 +145,14 @@ html.pg-js .alt-say > li > div{ opacity:0; }
 .alt-end.on{ pointer-events:auto; }
 
 .alt-obj{ position:absolute; z-index:2; left:40vw; right:var(--gut); top:15%; bottom:5%; --u:40px; }
-.alt-obj > *{ position:absolute; left:50%; top:50%; will-change:transform, opacity; }
+/* no will-change here: Safari keeps a will-change layer at the sharpness it
+   was first drawn at, so anything that grows would go soft */
+.alt-obj > *{ position:absolute; left:50%; top:50%; }
 html.pg-js .alt-obj > *{ opacity:0; }
-.a-icon{ width:calc(var(--u) * 2.2); height:calc(var(--u) * 2.2); margin:calc(var(--u) * -1.1) 0 0 calc(var(--u) * -1.1); border-radius:22.5%;
-  box-shadow:0 18px 40px rgba(0,0,0,.45), 0 0 0 1px rgba(255,255,255,.08); }
+/* the icon is laid out at the largest it is ever shown (2.4 times its size)
+   and only ever scaled down, so it stays sharp */
+.a-icon{ width:calc(var(--u) * 5.28); height:calc(var(--u) * 5.28); margin:calc(var(--u) * -2.64) 0 0 calc(var(--u) * -2.64); border-radius:22.5%;
+  box-shadow:0 43px 96px rgba(0,0,0,.45), 0 0 0 2.4px rgba(255,255,255,.08); }
 .a-ph{ width:calc(var(--u) * 2.9); aspect-ratio:1120 / 2336; margin:calc(var(--u) * -3.024) 0 0 calc(var(--u) * -1.45); filter:drop-shadow(0 24px 40px rgba(0,0,0,.5)); }
 .a-ph .a-frame{ position:absolute; inset:0; width:100%; height:100%; }
 .a-scr{ position:absolute; left:5.37%; top:2.4%; width:89.17%; height:95.2%; border-radius:13% / 6.2%; overflow:hidden; background:#000; }

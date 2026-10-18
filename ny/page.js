@@ -295,7 +295,7 @@ S.alt = el => {
     // 1. the icon, and the app it opens into
     const ii = out(seg(pe, -0.02, 0.05));
     const L = io(seg(pe, 0.1, 0.17));
-    put(icon, 0, 0, lerp(0.72, 1, ii) * lerp(1, 1.6, L), 0, ii * (1 - seg(L, 0.15, 0.5)));
+    put(icon, 0, 0, lerp(0.72, 1, ii) * lerp(1, 1.6, L) / 2.4, 0, ii * (1 - seg(L, 0.15, 0.5)));
     const F = io(seg(pe, 0.17, 0.232));
     // 2. the system stands up behind it, and the apps step aside
     const Y = io(seg(pe, 0.28, 0.38));
