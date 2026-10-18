@@ -30,6 +30,15 @@ html.hs-on .hs-track{ height:600vh; height:600svh; }
 .hs{ position:sticky; top:0; z-index:0; height:100vh; height:100lvh; overflow:hidden; color:var(--porcelain);
   background-color:var(--navy-950); background-image:radial-gradient(70% 60% at 66% 46%, var(--navy-800), var(--navy-950) 72%); }
 .pg, .foot{ position:relative; z-index:1; }
+/* the closing sentence stands in the middle of a whole screen; the page
+   after it comes up over the empty lower part of that screen, so there is
+   no blank stretch between the two */
+@media (prefers-reduced-motion: no-preference){
+  html.hs-on .pg{ margin-top:-18vh; }
+}
+@media (prefers-reduced-motion: no-preference) and (max-aspect-ratio:1/1), (prefers-reduced-motion: no-preference) and (max-width:760px){
+  html.hs-on .pg{ margin-top:-24svh; }
+}
 .hs-glow{ position:absolute; left:66%; top:calc(50% + 30px); width:min(70vh, 720px); height:min(70vh, 720px); margin:calc(min(70vh, 720px) / -2) 0 0 calc(min(70vh, 720px) / -2);
   border-radius:50%; background:radial-gradient(closest-side, rgba(58,85,168,.42), rgba(43,63,124,.14) 55%, transparent); pointer-events:none; }
 
