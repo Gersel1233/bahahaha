@@ -24,7 +24,7 @@
 <link rel="stylesheet" href="ny.css?v=16" />
 <link rel="stylesheet" href="page.css?v=22" />
 <link rel="stylesheet" href="hero.css?v=28" />
-<link rel="stylesheet" href="sections.css?v=72" />
+<link rel="stylesheet" href="sections.css?v=73" />
 <script>
   /* decided before first paint: with JS the phone turns as you scroll;
      without it, the first screen simply stands there */
@@ -405,40 +405,47 @@
   </div>
 </section>
 
-<!-- the team: the one who builds it, and the two behind him. Mikkel as
-     LA31 Card / Layered plate (a basalt card with his initials in Chivo
-     Light and its reeds of glass; over it a plate, a Rim round a porcelain
-     core, with the lens button that writes to him); the other two by role. -->
+<!-- the team: who you deal with. Mikkel in front as a porcelain card, the
+     two who keep the rest in order behind him in Smoke glass, on a stage the
+     navy of the tiles above. More about us on its own page. -->
 <section class="tm" id="team" data-paper aria-labelledby="tm-h">
-  <div class="tm-in">
-    <div class="tm-l">
-      <p class="label" data-r><span data-da="Teamet" data-en="The team">Teamet</span></p>
-      <h2 class="tm-h" id="tm-h" data-r><span data-da="Én, der bygger." data-en="One who builds.">Én, der bygger.</span> <em class="acc" data-da="Et hold bag ham." data-en="A team behind him.">Et hold bag ham.</em></h2>
-      <p class="tm-lead" data-r data-da="Det er Mikkel, der koder, og ham I taler med fra den første besked, til det kører. Bag ham holder en sekretær og en revisor og bogholder styr på resten, så han kan bygge." data-en="It is Mikkel who writes the code, and him you talk to from the first message until it runs. Behind him a secretary and an accountant and bookkeeper look after the rest, so he can build.">Det er Mikkel, der koder, og ham I taler med fra den første besked, til det kører. Bag ham holder en sekretær og en revisor og bogholder styr på resten, så han kan bygge.</p>
-      <ul class="tm-rows" data-r>
-        <li class="lr sel"><i class="lr-lens"></i><span class="lr-name">Mikkel Gersel</span><span class="lr-note" data-da="Koder og er jeres kontakt" data-en="Writes the code, your contact">Koder og er jeres kontakt</span></li>
-        <li class="lr"><i class="lr-lens"></i><span class="lr-name" data-da="Sekretær" data-en="Secretary">Sekretær</span><span class="lr-note" data-da="Det praktiske" data-en="The practical side">Det praktiske</span></li>
-        <li class="lr"><i class="lr-lens"></i><span class="lr-name" data-da="Revisor og bogholder" data-en="Accountant and bookkeeper">Revisor og bogholder</span><span class="lr-note" data-da="Regnskabet" data-en="The accounts">Regnskabet</span></li>
-      </ul>
-    </div>
-    <div class="tm-lp" data-r>
-      <div class="tm-card" aria-hidden="true">
-        <span class="tm-big">MG</span>
-        <i class="tm-reeds"></i>
-        <span class="tm-cap" data-da="Stifter og udvikler" data-en="Founder and developer">Stifter og udvikler</span>
+  <header class="sec-head">
+    <p class="label" data-r><span data-da="Teamet" data-en="The team">Teamet</span></p>
+    <h2 class="h2" id="tm-h" data-r><span data-da="Én kontakt." data-en="One contact.">Én kontakt.</span> <em class="acc" data-da="Hele vejen." data-en="All the way.">Hele vejen.</em></h2>
+    <p class="sec-lead" data-r data-da="Det er Mikkel Gersel, der koder jeres løsning, og det er ham, I skriver med fra første besked, til den kører. En sekretær og en revisor og bogholder tager sig af resten." data-en="Mikkel Gersel writes the code for your solution, and he is the one you write to from the first message until it runs. A secretary and an accountant and bookkeeper take care of the rest.">Det er Mikkel Gersel, der koder jeres løsning, og det er ham, I skriver med fra første besked, til den kører. En sekretær og en revisor og bogholder tager sig af resten.</p>
+  </header>
+
+  <div class="tm-stage" data-r>
+    <div class="tm-fan">
+      <div class="tm-back tm-b1">
+        <p class="label" data-da="Bag Mikkel" data-en="Behind Mikkel">Bag Mikkel</p>
+        <h3 data-da="Sekretær" data-en="Secretary">Sekretær</h3>
+        <p data-da="Aftaler, papirer og det praktiske." data-en="Agreements, paperwork and the practical side.">Aftaler, papirer og det praktiske.</p>
       </div>
-      <a class="tm-plate" href="mailto:mgersel@lesreg.com">
-        <span class="tm-core">
-          <span class="tm-t">
-            <span class="tm-e" data-da="Jeres kontakt" data-en="Your contact">Jeres kontakt</span>
-            <span class="tm-n">Mikkel Gersel</span>
-            <span class="tm-m" data-da="Koder det hele selv" data-en="Writes all the code himself">Koder det hele selv</span>
-          </span>
-          <span class="tm-btn" aria-hidden="true"><span class="tm-lens"><svg viewBox="0 0 16 16"><path d="M2.5 8h10.4M9 4.1l3.9 3.9L9 11.9"/></svg></span></span>
-        </span>
-        <span class="sr" data-da="Skriv til Mikkel" data-en="Write to Mikkel">Skriv til Mikkel</span>
-      </a>
+      <div class="tm-back tm-b2">
+        <p class="label" data-da="Bag Mikkel" data-en="Behind Mikkel">Bag Mikkel</p>
+        <h3 data-da="Revisor og bogholder" data-en="Accountant and bookkeeper">Revisor og bogholder</h3>
+        <p data-da="Regnskab og bogføring." data-en="Accounts and bookkeeping.">Regnskab og bogføring.</p>
+      </div>
+      <article class="tm-front">
+        <div class="tm-top">
+          <span class="tm-av" aria-hidden="true">MG</span>
+          <span class="tm-tag"><i></i><span data-da="Jeres kontakt" data-en="Your contact">Jeres kontakt</span></span>
+        </div>
+        <h3 class="tm-n">Mikkel Gersel</h3>
+        <p class="tm-r" data-da="Stifter af Lesreg. Koder jeres løsning selv og passer den bagefter." data-en="Founder of Lesreg. Writes your solution himself and looks after it afterwards.">Stifter af Lesreg. Koder jeres løsning selv og passer den bagefter.</p>
+        <ul class="tm-ldg">
+          <li><span data-da="Mail" data-en="Email">Mail</span><a href="mailto:mgersel@lesreg.com">mgersel@lesreg.com</a></li>
+          <li><span data-da="Har bygget" data-en="Has built">Har bygget</span><a href="#arbejde">Spiis, Mosede Havnecafé</a></li>
+        </ul>
+        <a class="btn" href="mailto:mgersel@lesreg.com"><span data-da="Skriv til Mikkel" data-en="Write to Mikkel">Skriv til Mikkel</span><span class="lens"><svg><use href="#i-arrow"/></svg></span></a>
+      </article>
     </div>
+  </div>
+
+  <div class="tm-more" data-r>
+    <p data-da="Hvem er vi, og hvordan arbejder vi?" data-en="Who are we, and how do we work?">Hvem er vi, og hvordan arbejder vi?</p>
+    <a class="btn" href="om/"><span data-da="Læs mere om os" data-en="Read more about us">Læs mere om os</span><span class="lens"><svg><use href="#i-arrow"/></svg></span></a>
   </div>
 </section>
 
