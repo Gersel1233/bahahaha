@@ -140,6 +140,71 @@ html.pg-js .tile-film{ opacity:0; }
 }
 @media (prefers-reduced-motion: reduce){ .rc-bloom{ animation:none; } .rc-chip::before{ transition:none; } }
 
+/* ---------- the team ----------
+   Mikkel as LA31 Card / Layered plate, at its own measures (640 x 316): a
+   basalt card 430 x 280, r 28, his initials in Chivo Light 240/220 in
+   graphite, twelve reeds of glass 15 px apart from x 250; over it a plate
+   372 x 128 at (254, 172): a Rim (white 6 %, 1 px edge at 85 %, r 24) round
+   a porcelain core (inset 5, r 18) with eyebrow, H3 name and a mono line, and
+   the 48 px lens button. On hover the plate lifts 4 px and the lens fills
+   ultramarine. The other two of the team by role, as Ledger rows. */
+.tm{ background:var(--porcelain); color:var(--obsidian); padding:clamp(96px, 14vh, 160px) 0; }
+.tm-in{ max-width:1440px; margin:0 auto; padding:0 72px; display:grid; grid-template-columns:minmax(0, 5fr) 640px; column-gap:clamp(32px, 6vw, 112px); align-items:center; }
+.tm-l .label{ color:var(--ash); }
+.tm-h{ margin-top:16px; font:500 64px/64px var(--sans); letter-spacing:-.035em; }
+.tm-h .acc{ display:block; color:var(--graphite); }
+.tm-lead{ margin-top:24px; max-width:30em; font:400 20px/30px var(--sans); letter-spacing:-.005em; color:var(--graphite); }
+.tm-rows{ list-style:none; margin:32px 0 0; padding:0; max-width:520px; }
+.tm .lr{ display:flex; align-items:center; gap:12px; height:48px; padding:0 16px; border-bottom:1px solid var(--travertine); }
+.tm .lr.sel{ border-bottom:0; border-radius:12px; background:var(--limestone); }
+.tm .lr-name{ flex:none; width:180px; font:400 14px/22px var(--sans); color:var(--obsidian); }
+.tm .lr.sel .lr-name{ font-weight:500; }
+.tm .lr-note{ flex:1; min-width:0; font:400 12.5px/18px var(--sans); letter-spacing:.005em; color:var(--graphite); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+
+.tm-lp{ position:relative; width:640px; height:316px; }
+.tm-card{ position:absolute; left:0; top:0; width:430px; height:280px; border-radius:28px; background:var(--basalt); overflow:hidden; }
+.tm-big{ position:absolute; left:20px; top:10px; font:300 240px/220px var(--sans); letter-spacing:-14.4px; color:var(--graphite); white-space:nowrap; }
+.tm-reeds{ position:absolute; left:250px; top:0; width:181px; height:100%;
+  background:repeating-linear-gradient(90deg, var(--obsidian) 0 1px, transparent 1px 15px); }
+.tm-cap{ position:absolute; left:24px; top:24px; font:400 11.5px/16px var(--mono); color:var(--ash); }
+.tm-plate{ position:absolute; left:254px; top:172px; width:372px; height:128px; border-radius:24px; border:1px solid rgba(255,255,255,.85); background:rgba(255,255,255,.06);
+  box-shadow:14px 28px 64px rgba(13,13,15,.3); color:inherit; text-decoration:none; transition:transform 180ms var(--ease), box-shadow 180ms var(--ease);
+  -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px); }
+.tm-core{ position:absolute; left:5px; top:5px; width:360px; height:116px; display:flex; align-items:center; gap:16px; padding:0 8px 0 20px; border-radius:18px; background:var(--porcelain); }
+.tm-t{ flex:1; min-width:0; display:flex; flex-direction:column; gap:4px; }
+.tm-e{ font:600 11px/14px var(--sans); letter-spacing:.06em; text-transform:uppercase; color:var(--ash); }
+.tm-n{ font:500 24px/30px var(--sans); letter-spacing:-.015em; white-space:nowrap; }
+.tm-m{ font:400 11.5px/16px var(--mono); color:var(--graphite); }
+/* the lens button: an obsidian body, a glass lens; on hover it fills ultramarine */
+.tm-btn{ flex:none; width:48px; height:48px; border-radius:24px; background:var(--obsidian); display:grid; place-items:center; }
+.tm-lens{ position:relative; width:40px; height:40px; border-radius:50%; display:grid; place-items:center; overflow:hidden;
+  background:linear-gradient(135deg, rgba(255,255,255,.22), rgba(255,255,255,.04) 55%, rgba(255,255,255,.12)); box-shadow:inset 0 0 0 1px rgba(255,255,255,.35); transition:background 180ms var(--ease); }
+.tm-lens svg{ width:16px; height:16px; fill:none; stroke:#fff; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; }
+@media (hover:hover){
+  .tm-plate:hover{ transform:translateY(-4px); box-shadow:6px 12px 32px rgba(13,13,15,.16), 14px 28px 64px rgba(13,13,15,.3); }
+  .tm-plate:hover .tm-lens{ background:var(--ultra); }
+}
+.tm-plate:focus-visible{ outline:none; box-shadow:0 0 0 2px var(--porcelain), 0 0 0 4px var(--ultra), 14px 28px 64px rgba(13,13,15,.3); }
+
+@media (max-width:1199px){
+  .tm-in{ grid-template-columns:minmax(0, 1fr); row-gap:48px; padding:0 40px; }
+}
+@media (max-width:767px){
+  .tm-in{ padding:0 20px; row-gap:36px; }
+  .tm-h{ font-size:40px; line-height:44px; letter-spacing:-.025em; }
+  .tm-lead{ margin-top:16px; font-size:16px; line-height:26px; }
+  .tm .lr-name{ width:auto; flex:1; }
+  .tm .lr-note{ flex:none; }
+  /* the same plate on a phone: the card the width of the column, the plate
+     over its lower edge, inset from the left */
+  .tm-lp{ width:100%; height:300px; }
+  .tm-card{ width:100%; height:240px; }
+  .tm-big{ font-size:200px; line-height:190px; letter-spacing:-12px; }
+  .tm-reeds{ left:auto; right:0; width:46%; }
+  .tm-plate{ left:16px; right:0; width:auto; top:172px; }
+  .tm-core{ left:5px; right:5px; width:auto; }
+}
+
 /* ---------- Callster: the owner texts, it handles it ---------- */
 .case-cs .cs-vis{ display:grid; place-items:center; padding:0; }
 .case-cs .cs-phone{ width:min(70%, 330px); }
