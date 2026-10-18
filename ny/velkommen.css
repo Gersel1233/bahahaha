@@ -1,0 +1,117 @@
+/* Before the phone: who we are, in five lines the scroll runs through, on
+   the navy of the opening. Each line rises into the middle, holds, and goes
+   up as the next comes; the last hands over to the phone. Display 96/92 with
+   the accent in Newsreader Light Italic; the kinds of work as LA31 Chips on
+   Smoke glass; the price as two Ledger pills, Lesreg's with the ultramarine
+   dot of "now". */
+.vk-track{ position:relative; }
+html.vk-on .vk-track{ height:420vh; height:420svh; }
+.vk{ position:relative; overflow:hidden; color:var(--porcelain);
+  background-color:var(--navy-950); background-image:radial-gradient(70% 60% at 50% 46%, var(--navy-800), var(--navy-950) 72%); }
+html.vk-on .vk{ position:sticky; top:0; height:100vh; height:100lvh; }
+.vk-glow{ position:absolute; left:50%; top:50%; width:min(80vh, 820px); height:min(80vh, 820px); margin:calc(min(80vh, 820px) / -2) 0 0 calc(min(80vh, 820px) / -2);
+  border-radius:50%; pointer-events:none; will-change:transform;
+  background:radial-gradient(closest-side, rgba(58,85,168,.42), rgba(43,63,124,.14) 55%, transparent); }
+
+/* the five lines, all in the middle of the screen, one at a time */
+html.vk-on .vk-b{ position:absolute; left:var(--gut); right:var(--gut); top:50%; transform:translate3d(0,-50%,0); text-align:center; will-change:transform, opacity; }
+html.vk-on .vk-b:not([data-b="0"]){ opacity:0; visibility:hidden; }
+.vk-kick{ font:600 11px/14px var(--sans); letter-spacing:.08em; text-transform:uppercase; color:var(--travertine); margin-bottom:clamp(16px, 2.6vh, 24px); }
+.vk-h{ max-width:13em; margin:0 auto; font:500 clamp(48px, min(7.2vw, 12.5vh), 112px)/.94 var(--sans); letter-spacing:-.045em; text-wrap:balance; }
+.vk-h .acc{ font-family:var(--accent); font-style:italic; font-weight:300; letter-spacing:-.025em; color:rgba(246,244,239,.78); }
+.vk-h .l{ display:inline-block; overflow:hidden; padding-bottom:.14em; margin-bottom:-.14em; vertical-align:top; }
+.vk-h .l > *{ display:inline-block; }
+.vk-sub{ max-width:32em; margin:clamp(18px, 3vh, 28px) auto 0; font:400 clamp(16px, 1.4vw, 20px)/1.5 var(--sans); color:var(--travertine); }
+
+/* the first line rises from its own edge as the page opens */
+@keyframes vk-up{ from{ transform:translate3d(0,112%,0); } to{ transform:none; } }
+@keyframes vk-fade{ from{ opacity:0; transform:translate3d(0,14px,0); } to{ opacity:1; transform:none; } }
+html.vk-on [data-b="0"] .l > *{ animation:vk-up 1.1s cubic-bezier(.16,1,.3,1) .05s both; }
+html.vk-on [data-b="0"] .l + .l > *{ animation-delay:.15s; }
+html.vk-on [data-b="0"] .vk-kick{ animation:vk-fade .8s var(--ease) both; }
+html.vk-on [data-b="0"] .vk-sub{ animation:vk-fade .9s var(--ease) .35s both; }
+
+/* LA31 Chip on Smoke glass, each drifting at its own pace (set by velkommen.js) */
+.vk-chips{ list-style:none; margin:clamp(24px, 4vh, 40px) auto 0; padding:0; display:flex; flex-wrap:wrap; justify-content:center; gap:10px; }
+.vk-chips li{ position:relative; isolation:isolate; height:44px; padding:0 20px; border-radius:22px; display:grid; place-items:center; white-space:nowrap;
+  font:500 15px/16px var(--sans); color:var(--porcelain); box-shadow:6px 12px 32px rgba(13,13,15,.2); will-change:transform; }
+.vk-chips li::before{ content:""; position:absolute; inset:0; z-index:-1; border-radius:inherit; background:rgba(14,15,16,.5);
+  -webkit-backdrop-filter:blur(14px) saturate(1.3); backdrop-filter:blur(14px) saturate(1.3); }
+.vk-chips li::after, .vk-cmp > span::after{ content:""; position:absolute; inset:0; border-radius:inherit; padding:1px; pointer-events:none;
+  background:linear-gradient(135deg, rgba(255,255,255,.85), rgba(255,255,255,.12) 45%, rgba(255,255,255,.4));
+  -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite:xor; mask-composite:exclude; }
+
+/* the price: what an agency typically takes, struck through, and ours */
+.vk-cmp{ display:flex; flex-wrap:wrap; justify-content:center; gap:10px; margin-top:clamp(24px, 4vh, 40px); }
+.vk-cmp > span{ position:relative; isolation:isolate; display:inline-flex; align-items:center; gap:12px; height:48px; padding:0 20px; border-radius:24px; font:400 14px/22px var(--sans); white-space:nowrap; }
+.vk-cmp b{ font-weight:500; font-variant-numeric:tabular-nums; }
+.vk-them{ color:rgba(246,244,239,.6); }
+.vk-them::before{ content:""; position:absolute; inset:0; z-index:-1; border-radius:inherit; background:rgba(14,15,16,.5); -webkit-backdrop-filter:blur(14px); backdrop-filter:blur(14px); }
+.vk-them b{ text-decoration:line-through; text-decoration-color:rgba(246,244,239,.55); }
+.vk-us{ background:var(--porcelain); color:var(--obsidian); box-shadow:6px 12px 32px rgba(13,13,15,.3); }
+.vk-us::after{ display:none; }
+.vk-us i{ width:8px; height:8px; border-radius:50%; background:var(--ultra); box-shadow:0 0 0 4px rgba(36,54,232,.18); }
+
+/* the way on: a word and a line running down */
+.vk-cue{ position:absolute; left:50%; bottom:calc(28px + env(safe-area-inset-bottom)); transform:translateX(-50%); display:flex; flex-direction:column; align-items:center; gap:10px;
+  font:500 12.5px/18px var(--sans); color:var(--travertine); will-change:opacity; }
+.vk-cue i{ position:relative; width:1px; height:40px; overflow:hidden; background:rgba(246,244,239,.18); }
+.vk-cue i::after{ content:""; position:absolute; left:0; top:0; width:1px; height:16px; background:var(--porcelain); animation:vk-run 1.8s cubic-bezier(.6,0,.4,1) infinite; }
+@keyframes vk-run{ from{ transform:translateY(-16px); } to{ transform:translateY(40px); } }
+html:not(.vk-on) .vk-cue{ display:none; }
+
+/* without the scroll scene (nothing may move): the lines one under another */
+html:not(.vk-on) .vk{ padding:clamp(120px, 18vh, 180px) var(--gut) clamp(72px, 10vh, 120px); display:grid; gap:clamp(56px, 10vh, 96px); text-align:center; }
+
+/* the phone after it waits for its turn: it comes up, and its notifications
+   arrive, when it is reached, not while the welcome is being read */
+html.hs-on:not(.hs-go) .hs-h1 .l > span, html.hs-on:not(.hs-go) .hs-kick, html.hs-on:not(.hs-go) .hs-lead,
+html.hs-on:not(.hs-go) .hs-cta, html.hs-on:not(.hs-go) .hs-dev{ animation-play-state:paused; }
+
+@media (max-width:760px){
+  html.vk-on .vk-track{ height:380vh; height:380svh; }
+  .vk-h{ font-size:clamp(44px, 12.4vw, 60px); line-height:1; letter-spacing:-.04em; }
+  .vk-sub{ font-size:16px; line-height:26px; }
+  .vk-chips{ gap:8px; }
+  .vk-chips li{ height:40px; padding:0 16px; font-size:14px; }
+  .vk-cmp{ flex-direction:column; align-items:center; }
+}
+@media (prefers-reduced-motion: reduce){ .vk-cue i::after{ animation:none; } }
+
+/* ---------- the foot of the page ----------
+   The navy of the opening again, so the page ends where it began: the mark
+   and a line, the LA32 button, four columns of every way on (the kinds of
+   work open their sheets), the language as the Segmented control, and the
+   year. Label 11/14 over Body S 14/22 links. */
+.ft{ position:relative; z-index:1; color:var(--porcelain);
+  background-color:var(--navy-950); background-image:radial-gradient(60% 80% at 80% 0%, rgba(43,63,124,.45), transparent 70%); }
+.ft-in{ max-width:1440px; margin:0 auto; padding:clamp(64px, 10vh, 104px) var(--gut) calc(28px + env(safe-area-inset-bottom)); }
+.ft-top{ display:grid; grid-template-columns:auto minmax(0, 1fr) auto; align-items:center; gap:24px 48px; padding-bottom:clamp(40px, 7vh, 64px); border-bottom:1px solid rgba(246,244,239,.14); }
+.ft-brand{ display:inline-flex; align-items:center; gap:14px; color:var(--porcelain); }
+.ft-brand svg{ width:40px; height:40px; }
+.ft-brand b{ font:500 40px/44px var(--sans); letter-spacing:-.025em; }
+.ft-say{ font:400 20px/30px var(--sans); color:rgba(246,244,239,.78); }
+.ft-say .acc{ font-family:var(--accent); font-style:italic; font-weight:300; color:var(--porcelain); }
+.ft-cols{ display:grid; grid-template-columns:repeat(4, minmax(0, 1fr)); gap:32px; padding:clamp(40px, 7vh, 64px) 0; }
+.ft-col{ display:flex; flex-direction:column; align-items:flex-start; gap:12px; font:400 14px/22px var(--sans); color:rgba(246,244,239,.6); }
+.ft-col .label{ margin-bottom:4px; color:rgba(246,244,239,.5); }
+.ft-col a, .ft-col button{ color:rgba(246,244,239,.86); font:inherit; text-align:left; transition:color .2s var(--ease); }
+@media (hover:hover){ .ft-col a:hover, .ft-col button:hover{ color:var(--porcelain); text-decoration:underline; text-underline-offset:4px; text-decoration-color:rgba(246,244,239,.4); } }
+.ft-seg{ padding:4px; border-radius:24px; background:rgba(255,255,255,.08); box-shadow:inset 0 0 0 1px rgba(255,255,255,.12); }
+.ft-seg button{ height:36px; padding:0 14px; border-radius:18px; text-decoration:none !important; }
+.ft-bot{ display:flex; align-items:center; justify-content:space-between; gap:16px; padding-top:24px; border-top:1px solid rgba(246,244,239,.14); font:400 12.5px/18px var(--sans); color:rgba(246,244,239,.5); }
+.ft-up{ display:inline-flex; align-items:center; gap:8px; color:rgba(246,244,239,.75); }
+.ft-up svg{ width:14px; height:14px; transition:transform .25s var(--ease); }
+@media (hover:hover){ .ft-up:hover{ color:var(--porcelain); } .ft-up:hover svg{ transform:translateY(-2px); } }
+.ft a:focus-visible, .ft button:focus-visible{ outline:2px solid var(--ultra); outline-offset:3px; border-radius:6px; }
+
+@media (max-width:1023px){
+  .ft-top{ grid-template-columns:minmax(0, 1fr); justify-items:start; }
+  .ft-cols{ grid-template-columns:repeat(2, minmax(0, 1fr)); row-gap:40px; }
+}
+@media (max-width:767px){
+  .ft-brand b{ font-size:32px; line-height:36px; }
+  .ft-brand svg{ width:32px; height:32px; }
+  .ft-say{ font-size:16px; line-height:26px; }
+  .ft-top .btn{ width:100%; justify-content:space-between; }
+}

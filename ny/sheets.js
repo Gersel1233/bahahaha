@@ -38,6 +38,8 @@ function close(d) {
 }
 
 $$('.tile-more').forEach(b => b.addEventListener('click', e => { e.stopPropagation(); open(document.getElementById(b.dataset.sheet), b); }));
+// the same sheets, from the links at the foot of the page
+$$('[data-open-sheet]').forEach(b => b.addEventListener('click', () => open(document.getElementById(b.dataset.openSheet), b)));
 $$('.sheet').forEach(d => {
   d.addEventListener('click', e => {
     // a tap on the dim around the sheet closes it
