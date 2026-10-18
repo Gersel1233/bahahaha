@@ -24,13 +24,11 @@
 <link rel="stylesheet" href="ny/page.css?v=22" />
 <link rel="stylesheet" href="ny/hero.css?v=30" />
 <link rel="stylesheet" href="ny/sections.css?v=78" />
-<link rel="stylesheet" href="ny/velkommen.css?v=1" />
+<link rel="stylesheet" href="ny/fod.css?v=1" />
 <script>
   /* decided before first paint: with JS the phone turns as you scroll;
      without it, the first screen simply stands there */
   document.documentElement.classList.add('hs-on');
-  // and before it, the welcome runs with the scroll, unless nothing may move
-  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('vk-on');
 </script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "ProfessionalService", "name": "Lesreg", "alternateName": "Lesreg Softwarehus", "url": "https://lesreg.com/", "logo": "https://lesreg.com/icon-512.png", "email": "mgersel@lesreg.com", "areaServed": "DK", "description": "Lesreg er et softwarehus, der tegner, bygger og driver apps, systemer, integrationer og hjemmesider til en fast pris, aftalt før vi går i gang.", "knowsAbout": ["Apps", "Bestillingssystemer", "Integrationer", "Hjemmesider", "Søgemaskineoptimering", "AI-søgning"]}</script>
 </head>
@@ -98,48 +96,13 @@
 <!-- The first screen: the phone is the stage. It is there at once, and the
      scroll turns it through what we have built until its screen opens into
      the page -->
-<!-- before the phone: who we are, in five lines the scroll runs through;
-     the last one hands over to the phone and what we have built -->
-<div class="vk-track" id="top">
-<section class="vk" aria-label="Lesreg">
-  <i class="vk-glow" aria-hidden="true"></i>
-  <div class="vk-b" data-b="0">
-    <p class="vk-kick"><span data-da="Softwarehus" data-en="Software house">Softwarehus</span></p>
-    <h1 class="vk-h"><span class="l"><span data-da="Velkommen til" data-en="Welcome to">Velkommen til</span></span> <span class="l"><em class="acc">Lesreg.</em></span></h1>
-    <p class="vk-sub" data-da="Softwarehuset for virksomheder, der vil have deres eget." data-en="The software house for businesses that want their own.">Softwarehuset for virksomheder, der vil have deres eget.</p>
-  </div>
-  <div class="vk-b" data-b="1" aria-hidden="true">
-    <h2 class="vk-h"><span data-da="Her bliver alt bygget" data-en="Here everything is built">Her bliver alt bygget</span> <em class="acc" data-da="til jer." data-en="for you.">til jer.</em></h2>
-    <p class="vk-sub" data-da="Fra bunden, efter det, I har brug for. Ingen skabeloner." data-en="From scratch, around what you need. No templates.">Fra bunden, efter det, I har brug for. Ingen skabeloner.</p>
-  </div>
-  <div class="vk-b" data-b="2" aria-hidden="true">
-    <h2 class="vk-h"><span data-da="Alt det digitale," data-en="All things digital,">Alt det digitale,</span> <em class="acc" data-da="bygget til i dag." data-en="built for today.">bygget til i dag.</em></h2>
-    <ul class="vk-chips">
-      <li data-da="Apps" data-en="Apps">Apps</li><li data-da="Systemer" data-en="Systems">Systemer</li><li data-da="Integrationer" data-en="Integrations">Integrationer</li><li data-da="Hjemmesider" data-en="Websites">Hjemmesider</li>
-    </ul>
-  </div>
-  <div class="vk-b" data-b="3" aria-hidden="true">
-    <h2 class="vk-h"><span data-da="Gode priser." data-en="Good prices.">Gode priser.</span> <em class="acc" data-da="Fra 50 kr. i timen." data-en="From DKK 50 an hour.">Fra 50 kr. i timen.</em></h2>
-    <div class="vk-cmp">
-      <span class="vk-them"><span data-da="Typisk bureau" data-en="Typical agency">Typisk bureau</span><b data-da="600–1.200 kr./t" data-en="DKK 600–1,200/h">600–1.200 kr./t</b></span>
-      <span class="vk-us"><i></i><span>Lesreg</span><b data-da="50 kr./t" data-en="DKK 50/h">50 kr./t</b></span>
-    </div>
-  </div>
-  <div class="vk-b" data-b="4" aria-hidden="true">
-    <h2 class="vk-h"><span data-da="Se, hvad vi" data-en="See what we">Se, hvad vi</span> <em class="acc" data-da="har bygget." data-en="have built.">har bygget.</em></h2>
-    <p class="vk-sub" data-da="Det kører i dag, hos rigtige kunder." data-en="It runs today, for real customers.">Det kører i dag, hos rigtige kunder.</p>
-  </div>
-  <p class="vk-cue" aria-hidden="true"><span data-da="Rul ned" data-en="Scroll">Rul ned</span><i></i></p>
-</section>
-</div>
-
-<div class="hs-track">
+<div class="hs-track" id="top">
 <section class="hs" aria-label="Lesreg">
   <i class="hs-glow" aria-hidden="true"></i>
 
   <div class="hs-copy"><div class="hs-copy-in">
     <p class="hs-kick"><span data-da="Lesreg · Softwarehus" data-en="Lesreg · Software house">Lesreg · Softwarehus</span></p>
-    <h2 class="hs-h1"><span class="l"><span data-da="Nutidens" data-en="Today's">Nutidens</span></span> <span class="l acc"><span data-da="softwarehus." data-en="software house.">softwarehus.</span></span></h2>
+    <h1 class="hs-h1"><span class="l"><span data-da="Nutidens" data-en="Today's">Nutidens</span></span> <span class="l acc"><span data-da="softwarehus." data-en="software house.">softwarehus.</span></span></h1>
     <p class="hs-lead" data-da="Apps, systemer og integrationer — tegnet, bygget og drevet af ét hus. Hurtigere, billigere og bygget til i dag." data-en="Apps, systems and integrations — designed, built and run by one house. Faster, cheaper and built for today.">Apps, systemer og integrationer — tegnet, bygget og drevet af ét hus. Hurtigere, billigere og bygget til i dag.</p>
     <div class="hs-cta">
       <a class="btn light" href="#bygger"><span data-da="Se hvad vi bygger" data-en="See what we build">Se hvad vi bygger</span><span class="lens"><svg><use href="#i-arrow"/></svg></span></a>
@@ -526,9 +489,8 @@
   </div>
 </footer>
 
-<script type="module" src="ny/main.js?v=27"></script>
+<script type="module" src="ny/main.js?v=28"></script>
 <script type="module" src="ny/page.js?v=62"></script>
 <script type="module" src="ny/sheets.js?v=2"></script>
-<script type="module" src="ny/velkommen.js?v=1"></script>
 </body>
 </html>
