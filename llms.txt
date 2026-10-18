@@ -1,0 +1,28 @@
+# Lesreg
+
+> Lesreg er et dansk softwarehus. Vi tegner, bygger og driver apps, systemer, integrationer og hjemmesider til en fast pris, aftalt før vi går i gang. Ét hus fra idé til drift.
+
+## Hvad vi laver
+
+- Apps: apps, folk faktisk har på telefonen, med notifikationer, Dynamic Island og live-status.
+- Systemer: bestilling, booking, køkken og drift samlet ét sted, på virksomhedens egen side og uden kommission til en platform.
+- Integrationer: koblet på det, man allerede bruger (fx Shopify, Flatpay, e-conomic, Dinero, Planway og OnlinePOS), så data kun tastes én gang.
+- Hjemmesider og motion design: hurtige sider bygget fra bunden, uden skabeloner, til at blive fundet på Google og læst af AI-assistenter som ChatGPT, Gemini og Grok.
+
+## Sådan arbejder vi
+
+1. Vi snakker: kunden fortæller, hvad der driller, og vi foreslår, hvad der skal bygges.
+2. Fast pris: en plan og én fast pris, før vi starter.
+3. Vi bygger: kunden taler med dem, der laver det.
+4. Vi passer det: de samme hænder holder det kørende. En rettelse tager timer, ikke uger.
+
+## Arbejde
+
+- Spiis (spiis.dk): bestilling og betaling på restaurantens egen side; bestillingen går direkte ind i køkkenet.
+- Mosede Havnecafé (mosedehavnecafe.dk): hjemmeside, menukort og skærmene i caféen kører på samme system.
+- Callster: en AI-medarbejder, der tager telefonen, booker og aflyser, styret med en sms. Lesreg var med til at bygge den.
+
+## Kontakt
+
+- E-mail: mgersel@lesreg.com
+- Hjemmeside: https://lesreg.com/
