@@ -25,7 +25,7 @@
 <link rel="stylesheet" href="ny/hero.css?v=31" />
 <link rel="stylesheet" href="ny/sections.css?v=80" />
 <link rel="stylesheet" href="ny/fod.css?v=1" />
-<link rel="stylesheet" href="ny/ark.css?v=9" />
+<link rel="stylesheet" href="ny/ark.css?v=11" />
 <script>
   /* decided before first paint: with JS the phone turns as you scroll;
      without it, the first screen simply stands there */
@@ -270,7 +270,7 @@
       <h3 id="sheet-sys-h"><span data-da="Systemer, der driver forretningen." data-en="Systems that run the business.">Systemer, der driver forretningen.</span></h3>
       <p class="sx-lead"><span data-da="Systemet bag det, kunderne ser: bestillinger, køkken og drift samlet ét sted. Bestillingen går fra jeres side direkte ind i køkkenet, og gæsten får besked. Uden kommission." data-en="The system behind what customers see: orders, kitchen and operations in one place. The order goes from your site straight into the kitchen, and the guest is told. No commission.">Systemet bag det, kunderne ser: bestillinger, køkken og drift samlet ét sted. Bestillingen går fra jeres side direkte ind i køkkenet, og gæsten får besked. Uden kommission.</span></p>
     </header>
-    <div class="sx-live" aria-hidden="true"><div class="lv lv-sys"><div class="kds">
+    <div class="sx-live" aria-hidden="true"><div class="lv lv-sys"><div class="kds" data-kds>
   <aside class="kds-side">
     <p class="kds-brand"><img src="ny/media/ic/spiis-app.webp?v=3" alt="" />Spiis</p>
     <span class="on"><span data-da="Køkken" data-en="Kitchen">Køkken</span></span><span><span data-da="Bestillinger" data-en="Orders">Bestillinger</span><em>23</em></span><span>Menu</span><span><span data-da="Drift" data-en="Operations">Drift</span></span>
@@ -278,19 +278,11 @@
   </aside>
   <div class="kds-main">
     <div class="kds-top"><b><span data-da="Køkken" data-en="Kitchen">Køkken</span></b><span class="kds-live"><i></i><span data-da="Live · aftenens bestillinger" data-en="Live · tonight’s orders">Live · aftenens bestillinger</span></span></div>
-    <div class="kds-toast"><i></i><span data-da="Ny bestilling" data-en="New order">Ny bestilling</span><span>spiis.dk</span></div>
+    <div class="kds-toast"><i></i><span class="kds-toast-t"></span></div>
     <div class="kds-cols">
-      <div class="kds-col"><p class="kds-h dk"><span data-da="Nye" data-en="New">Nye</span><em><span class="c1">1</span><span class="c2">2</span></em></p>
-        <div class="kds-tk"><p class="r"><span>#0213</span><b>17.15</b></p><b class="d"><span data-da="Mørbradgryde × 2" data-en="Pork stew × 2">Mørbradgryde × 2</span></b><span class="x"><span data-da="Rødgrød × 2" data-en="Berry pudding × 2">Rødgrød × 2</span></span><span class="kds-go"><span data-da="Start tilberedning" data-en="Start cooking">Start tilberedning</span><i></i></span></div></div>
-      <div class="kds-col"><p class="kds-h"><span data-da="I gang" data-en="Cooking">I gang</span><em>1</em></p>
-        <div class="kds-tk"><p class="r"><span>#0212</span><b>17.10</b></p><b class="d"><span data-da="Dagens suppe × 1" data-en="Soup of the day × 1">Dagens suppe × 1</span></b><span class="x"><span data-da="Brød × 2" data-en="Bread × 2">Brød × 2</span></span><span class="kds-pr"><i style="--p:.3"></i><small>8 min</small><span class="kds-ok"><span data-da="Klar" data-en="Ready">Klar</span></span></span></div></div>
-      <div class="kds-col"><p class="kds-h"><span data-da="Klar" data-en="Ready">Klar</span><em>1</em></p>
-        <div class="kds-tk"><p class="r"><span>#0210</span><b>16.50</b></p><b class="d"><span data-da="Mørbradgryde × 1" data-en="Pork stew × 1">Mørbradgryde × 1</span></b><span class="x"><span data-da="Hentes ved disken" data-en="Collect at the counter">Hentes ved disken</span></span><span class="kds-sent"><span data-da="Gæsten har fået besked" data-en="The guest has been told">Gæsten har fået besked</span></span></div></div>
-      <div class="kds-tk kds-mv"><p class="r"><span>#0214</span><b>17.30</b></p><b class="d"><span data-da="Mørbradgryde × 3" data-en="Pork stew × 3">Mørbradgryde × 3</span></b><span class="x"><span data-da="Kartoffelsalat × 1" data-en="Potato salad × 1">Kartoffelsalat × 1</span></span>
-        <span class="kds-f f1"><span class="kds-go"><span data-da="Start tilberedning" data-en="Start cooking">Start tilberedning</span><i></i></span></span>
-        <span class="kds-f f2"><span class="kds-pr"><i class="mv"></i><small>12 min</small><span class="kds-ok"><span data-da="Klar" data-en="Ready">Klar</span></span></span></span>
-        <span class="kds-f f3"><span class="kds-sent"><span data-da="Gæsten har fået besked" data-en="The guest has been told">Gæsten har fået besked</span></span></span>
-      </div>
+      <div class="kds-col" data-col="new"><p class="kds-h dk"><span data-da="Nye" data-en="New">Nye</span><em>1</em></p><div class="kds-list"><div class="kds-tk st-new" data-no="0213"><p class="r"><span>#0213</span><b>17.15</b></p><b class="d"><span data-da="Mørbradgryde × 2" data-en="Pork stew × 2">Mørbradgryde × 2</span></b><span class="x"><span data-da="Rødgrød × 2" data-en="Berry pudding × 2">Rødgrød × 2</span></span><div class="kds-a"><span class="kds-go"><span data-da="Start tilberedning" data-en="Start cooking">Start tilberedning</span><i></i></span><span class="kds-pr"><i style="--p:0"></i><small><b>12</b> min</small><span class="kds-ok"><span data-da="Klar" data-en="Ready">Klar</span></span></span><span class="kds-sent"><span data-da="Gæsten har fået besked" data-en="The guest has been told">Gæsten har fået besked</span></span></div></div></div></div>
+      <div class="kds-col" data-col="cook"><p class="kds-h"><span data-da="I gang" data-en="Cooking">I gang</span><em>1</em></p><div class="kds-list"><div class="kds-tk st-cook" data-no="0212"><p class="r"><span>#0212</span><b>17.10</b></p><b class="d"><span data-da="Dagens suppe × 1" data-en="Soup of the day × 1">Dagens suppe × 1</span></b><span class="x"><span data-da="Brød × 2" data-en="Bread × 2">Brød × 2</span></span><div class="kds-a"><span class="kds-go"><span data-da="Start tilberedning" data-en="Start cooking">Start tilberedning</span><i></i></span><span class="kds-pr"><i style="--p:.35"></i><small><b>8</b> min</small><span class="kds-ok"><span data-da="Klar" data-en="Ready">Klar</span></span></span><span class="kds-sent"><span data-da="Gæsten har fået besked" data-en="The guest has been told">Gæsten har fået besked</span></span></div></div></div></div>
+      <div class="kds-col" data-col="ready"><p class="kds-h"><span data-da="Klar" data-en="Ready">Klar</span><em>1</em></p><div class="kds-list"><div class="kds-tk st-ready" data-no="0210"><p class="r"><span>#0210</span><b>16.50</b></p><b class="d"><span data-da="Mørbradgryde × 1" data-en="Pork stew × 1">Mørbradgryde × 1</span></b><span class="x"><span data-da="Hentes ved disken" data-en="Collect at the counter">Hentes ved disken</span></span><div class="kds-a"><span class="kds-go"><span data-da="Start tilberedning" data-en="Start cooking">Start tilberedning</span><i></i></span><span class="kds-pr"><i style="--p:0"></i><small><b>12</b> min</small><span class="kds-ok"><span data-da="Klar" data-en="Ready">Klar</span></span></span><span class="kds-sent"><span data-da="Gæsten har fået besked" data-en="The guest has been told">Gæsten har fået besked</span></span></div></div></div></div>
     </div>
   </div>
 </div></div></div>
@@ -655,6 +647,6 @@
 
 <script type="module" src="ny/main.js?v=29"></script>
 <script type="module" src="ny/page.js?v=65"></script>
-<script type="module" src="ny/sheets.js?v=3"></script>
+<script type="module" src="ny/sheets.js?v=5"></script>
 </body>
 </html>
