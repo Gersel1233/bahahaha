@@ -141,7 +141,7 @@ if (rc) {
     thv.textContent = r; sHrs.textContent = r;
     sSave.textContent = fmt(r * (MID - US));
     sThem.textContent = fmt(r * MID); sUs.textContent = fmt(r * US);
-    sDelta.textContent = L() === 'en' ? `At ${r} hours, against an agency at DKK 900 an hour` : `Ved ${r} timer, mod et bureau til 900 kr. i timen`;
+    sDelta.textContent = L() === 'en' ? `At ${r} hours, compared with an agency at DKK 900 an hour` : `Ved ${r} timer, sammenlignet med et bureau til 900 kr. i timen`;
     th.setAttribute('aria-valuenow', r);
     th.setAttribute('aria-valuetext', r + (L() === 'en' ? ' hours' : ' timer'));
   };
