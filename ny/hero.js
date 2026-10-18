@@ -43,20 +43,13 @@ export function startHero() {
   addEventListener('lesreg:lang', setDate);
 
   if (still) {
-    html.classList.add('hs-n1', 'hs-n2', 'hs-go');
+    html.classList.add('hs-n1', 'hs-n2');
     // the page's colour behind Safari's bars still follows the dark
     const past = () => html.classList.toggle('hs-past', hs.getBoundingClientRect().bottom < 60);
     addEventListener('scroll', past, { passive: true }); past();
     return;
   }
-  // it comes up, and its notifications arrive, when it is reached: the
-  // welcome before it is read first
-  let went = false;
-  const go = () => {
-    if (went || track.getBoundingClientRect().top > innerHeight * 0.55) return;
-    went = true; html.classList.add('hs-go');
-    for (const [c, at] of Object.entries(NOTE)) setTimeout(() => html.classList.add(c), at * 1000);
-  };
+  for (const [c, at] of Object.entries(NOTE)) setTimeout(() => html.classList.add(c), at * 1000);
 
   /* ---------- where things are, untransformed ---------- */
   let W = 0, H = 0, port = false, P = { x: 0, y: 0 }, S = { x: 0, y: 0, w: 1, h: 1 }, rise = 0;
@@ -110,7 +103,6 @@ export function startHero() {
   let raf = 0;
   function frame() {
     raf = 0;
-    go();
     const r = track.getBoundingClientRect();
     const p = clamp(-r.top / Math.max(1, r.height - H));
 
