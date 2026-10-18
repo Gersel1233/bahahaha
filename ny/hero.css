@@ -160,14 +160,24 @@ html.nav-light .tb, html.hx-paper .tb{ background:linear-gradient(165deg, rgba(4
   .tb{ padding:0 6px 0 18px; }
   .tb-brand{ gap:10px; }
   .tb-brand b{ font:600 17px/1 var(--sans); letter-spacing:-.02em; }
-  .tb-menu{ width:44px; height:44px; border-radius:22px; display:block;
-    background:linear-gradient(160deg, rgba(255,255,255,.2), rgba(255,255,255,.07));
-    box-shadow:inset 0 1px 0 rgba(255,255,255,.5), inset 0 0 0 .5px rgba(255,255,255,.22), 0 4px 12px rgba(0,0,0,.25); }
-  .tb-menu i{ position:absolute; left:13px; right:13px; height:1.75px; border-radius:1px; background:var(--porcelain); transition:transform .38s cubic-bezier(.2,.9,.25,1), top .38s cubic-bezier(.2,.9,.25,1); }
-  .tb-menu i:first-child{ top:18px; }
-  .tb-menu i:last-child{ top:24.25px; }
-  html.mm-open .tb-menu i:first-child{ top:21.1px; transform:rotate(45deg); }
-  html.mm-open .tb-menu i:last-child{ top:21.1px; transform:rotate(-45deg); }
+  /* the menu as the site's LA32 button, Compact: a porcelain capsule, its
+     word, and a lens holding LA2.1 Icon / Menu (the lower line short, to the
+     right); open, the word reads Luk, the lines fold into a cross and the
+     lens fills ultramarine */
+  .tb-menu{ display:inline-flex; align-items:center; gap:10px; height:44px; padding:0 4px 0 16px; border-radius:22px;
+    background:var(--porcelain); color:var(--obsidian); font:500 14px/16px var(--sans); box-shadow:0 4px 12px rgba(0,0,0,.22); }
+  .tb-mt{ display:grid; }
+  .tb-mt > span{ grid-area:1 / 1; transition:opacity .25s var(--ease), transform .35s var(--ease); }
+  .tb-mt .c{ opacity:0; transform:translateY(6px); }
+  html.mm-open .tb-mt .o{ opacity:0; transform:translateY(-6px); }
+  html.mm-open .tb-mt .c{ opacity:1; transform:none; }
+  .tb-menu .lens{ position:relative; width:36px; height:36px; --lb:var(--travertine); --lc:var(--obsidian); }
+  .tb-menu .lens i{ position:absolute; height:1.5px; border-radius:1px; background:var(--lc); transition:transform .38s cubic-bezier(.2,.9,.25,1), top .38s cubic-bezier(.2,.9,.25,1), left .38s cubic-bezier(.2,.9,.25,1), right .38s cubic-bezier(.2,.9,.25,1); }
+  .tb-menu .lens i:first-child{ left:11px; right:11px; top:14.5px; }
+  .tb-menu .lens i:last-child{ left:17px; right:11px; top:20.5px; }
+  html.mm-open .tb-menu .lens{ --lb:var(--ultra); --lc:var(--white, #fff); }
+  html.mm-open .tb-menu .lens i:first-child{ top:17.25px; transform:rotate(45deg); }
+  html.mm-open .tb-menu .lens i:last-child{ left:11px; top:17.25px; transform:rotate(-45deg); }
 }
 
 /* ---------- the bar: links to the sections ---------- */
@@ -177,8 +187,29 @@ html.nav-light .tb, html.hx-paper .tb{ background:linear-gradient(165deg, rgba(4
   .tb-links a{ height:40px; padding:0 14px; display:flex; align-items:center; border-radius:20px; font:400 14px/16px var(--sans); color:var(--porcelain); opacity:.86; transition:background-color .25s var(--ease), opacity .25s; }
   .tb-links a:hover{ background:rgba(246,244,239,.12); opacity:1; }
 }
+/* LA31 Nav / Mobile menu: the page dims, and a sheet of Smoke glass (dense,
+   r 28, 1 px specular edge) drops from under the bar */
+.mm{ position:fixed; inset:0; z-index:55; padding:80px 20px 0; background:rgba(5,8,15,.4);
+  -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px);
+  opacity:0; visibility:hidden; transition:opacity .3s var(--ease), visibility .3s; }
+html.mm-open .mm{ opacity:1; visibility:visible; }
+.mm-card{ position:relative; isolation:isolate; padding:8px 20px 20px; border-radius:28px; color:var(--porcelain);
+  background:linear-gradient(165deg, rgba(36,42,58,.86), rgba(12,14,20,.82));
+  -webkit-backdrop-filter:blur(24px) saturate(1.6); backdrop-filter:blur(24px) saturate(1.6); box-shadow:0 24px 56px rgba(0,0,0,.4);
+  transform:translateY(-12px) scale(.98); transform-origin:50% 0; transition:transform .45s cubic-bezier(.2,.9,.25,1); }
+html.mm-open .mm-card{ transform:none; }
+.mm-card::after{ content:""; position:absolute; inset:0; border-radius:inherit; padding:1px; pointer-events:none;
+  background:linear-gradient(135deg, rgba(255,255,255,.85), rgba(255,255,255,.12) 45%, rgba(255,255,255,.4));
+  -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite:xor; mask-composite:exclude; }
 .mm-links{ display:flex; flex-direction:column; }
-.mm-links a{ font:500 34px/1.1 var(--sans); letter-spacing:-.03em; padding:12px 0; border-bottom:1px solid var(--travertine); }
+.mm-links a{ display:flex; align-items:center; justify-content:space-between; height:64px; font:500 28px/32px var(--sans); letter-spacing:-.025em; border-bottom:1px solid rgba(246,244,239,.14); }
+.mm-links a svg{ width:20px; height:20px; color:rgba(246,244,239,.5); }
+.mm-card .btn{ width:100%; justify-content:space-between; margin-top:20px; }
+.mm-ft{ display:flex; align-items:center; justify-content:space-between; margin-top:16px; }
+.mm-ft .anno{ color:rgba(246,244,239,.6); }
+.mm .seg button{ height:36px; padding:0 14px; border-radius:18px; color:var(--porcelain); }
+.mm .seg button[aria-pressed="true"]{ background:var(--porcelain); color:var(--obsidian); }
+@media (min-width:761px){ .mm{ display:none; } }
 
 @media (prefers-reduced-motion: reduce){
   html.hs-on .hs-track{ height:auto; }

@@ -40,6 +40,8 @@ menuBtn.addEventListener('click', () => {
 addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
 // a link in the menu takes you there and puts the menu away
 $$('.mm a[href^="#"]').forEach(a => a.addEventListener('click', closeMenu));
+// and a tap beside the sheet puts it away too
+$('.mm').addEventListener('click', e => { if (e.target === e.currentTarget) closeMenu(); });
 
 /* ---------- the bar: Smoke over dark, Smoke dense over paper ---------- */
 const light = $$('[data-paper]');

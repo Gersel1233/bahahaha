@@ -82,20 +82,7 @@ html.nav-light .tb{ background:var(--smoke-dense); }
   .tb{ top:12px; width:calc(100vw - 40px); height:56px; border-radius:28px; padding:0 4px 0 22px; }
   .tb-brand b{ font-size:14px; line-height:16px; letter-spacing:0; }
   .tb-brand span, .tb-r .seg, .tb-r .btn{ display:none; }
-  .tb-menu{ display:flex; width:48px; height:48px; border-radius:24px; background:var(--obsidian);
-    align-items:center; justify-content:center; }
 }
-/* LA31 Nav / Mobile menu */
-.mm{ position:fixed; inset:0; z-index:55; background:var(--porcelain); color:var(--obsidian);
-  padding:104px 20px 32px; display:flex; flex-direction:column; gap:28px;
-  opacity:0; visibility:hidden; transition:opacity .3s var(--ease), visibility .3s; }
-html.mm-open .mm{ opacity:1; visibility:visible; }
-html.mm-open .tb-menu .lens{ --lb:var(--ultra); --lc:var(--white); }
-.mm a.big{ font:500 40px/44px var(--sans); letter-spacing:-.025em; border-top:1px solid var(--graphite); padding-top:18px; }
-.mm .anno{ color:var(--graphite); }
-.mm .seg button{ color:var(--obsidian); }
-.mm .seg button[aria-pressed="true"]{ background:var(--obsidian); color:var(--porcelain); }
-
 /* ---------- the opening ---------- */
 .ix-track{ position:relative; }
 .ix-stage{ position:relative; overflow:hidden; background:var(--porcelain); }

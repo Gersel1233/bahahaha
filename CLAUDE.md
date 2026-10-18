@@ -23,7 +23,9 @@ verificere.
 ## Sådan er den bygget
 
 - Almindelig HTML/CSS/JavaScript. Intet byggetrin. GitHub Pages.
-- Hele mappen **er** siden — `index.html` ligger i roden.
+- Hele mappen **er** siden — `index.html` ligger i roden. Forsidens egne
+  filer (CSS, JS, medier) ligger i `ny/`; `ny/index.html` sender bare videre
+  til forsiden. Den gamle forside ligger i `archive/index-gammel.html`.
 - Designet er sidens produkt. `liquid-glass.css`, `fyon.css`, `lesreg.css` og
   `loader.js` bærer udtrykket. Lav ikke om på dem uden grund.
 - `.claude/skills/motion-framer/` er en skill til bevægelse og animation.
