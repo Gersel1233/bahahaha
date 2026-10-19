@@ -122,7 +122,10 @@ html.hs-n1 .hs-lock .n1, html.hs-n2 .hs-lock .n2{ opacity:1; transform:none; }
   display:grid; place-items:center; color:#fff; font:700 4.6cqw/1 -apple-system, system-ui, sans-serif; }
 
 /* the screen turns to paper, then a sheet of it covers the window */
-.hs-white{ position:absolute; inset:0; z-index:3; background:var(--porcelain); opacity:0; pointer-events:none; }
+.hs-white{ position:absolute; inset:0; z-index:3; background:var(--porcelain); opacity:0; pointer-events:none; border-radius:13% / 6.2%; }
+/* Safari lets a composited layer inside a rounded, scaled box show its
+   square corners unless the box has a mask of its own */
+.hs-dev .scr{ -webkit-mask-image:-webkit-radial-gradient(white, black); }
 .hs-paper{ position:absolute; inset:0; background:var(--porcelain); opacity:0; pointer-events:none; }
 html.hx-paper .tb{ background:var(--smoke-dense); }
 
@@ -213,6 +216,18 @@ html.mm-open .mm-card{ transform:none; }
 .mm-row b{ font:500 20px/24px var(--sans); letter-spacing:-.015em; }
 .mm-arw{ flex:none; width:18px; height:18px; color:rgba(246,244,239,.5); }
 .mm-card .btn{ width:100%; justify-content:space-between; margin-top:16px; }
+/* about: Mikkel's film, small, leading to the page where it plays */
+.mm-vd{ display:grid; grid-template-columns:132px minmax(0, 1fr) auto; align-items:center; gap:14px; margin-top:10px; padding:8px 10px 8px 8px; border-radius:18px;
+  background:rgba(255,255,255,.07); box-shadow:inset 0 0 0 1px rgba(255,255,255,.1); }
+.mm-vd:active{ background:rgba(255,255,255,.12); }
+.mm-vd-f{ position:relative; aspect-ratio:16 / 9; border-radius:12px; overflow:hidden; display:grid; place-items:center;
+  background:radial-gradient(60% 90% at 30% 30%, rgba(36,54,232,.55), transparent 70%), radial-gradient(50% 80% at 80% 80%, rgba(242,138,62,.3), transparent 70%), #0A1020; box-shadow:inset 0 0 0 1px rgba(255,255,255,.12); }
+.mm-vd-f i{ width:30px; height:30px; border-radius:50%; display:grid; place-items:center; background:rgba(255,255,255,.18); box-shadow:inset 0 0 0 1px rgba(255,255,255,.4); }
+.mm-vd-f i svg{ width:11px; height:11px; margin-left:2px; fill:var(--porcelain); }
+.mm-vd-f em{ position:absolute; right:6px; bottom:5px; padding:2px 6px; border-radius:6px; background:rgba(14,15,16,.7); font:500 10px/1.2 var(--sans); font-style:normal; }
+.mm-vd > span:not(.mm-vd-f){ display:flex; flex-direction:column; gap:2px; }
+.mm-vd b{ font:500 17px/22px var(--sans); }
+.mm-vd small{ font:400 12.5px/17px var(--sans); color:rgba(246,244,239,.6); }
 .mm-ft{ display:flex; align-items:center; justify-content:space-between; margin-top:12px; padding:0 4px; }
 .mm-ft .anno{ color:rgba(246,244,239,.6); }
 .mm .seg button{ height:36px; padding:0 14px; border-radius:18px; color:var(--porcelain); }
