@@ -431,7 +431,10 @@ S.alt = el => {
       // the sheet's square lies exactly over the picture as it stands at the
       // last beat: its middle on the middle of all of it, with room round it
       // (media/alt/sheet.webp is this square, taken with ?cap=start)
-      V = { cx: objC.x + 0.69 * u, cy: objC.y - 0.31 * u, S: 13.6 * u };
+      // on a phone the whole picture is moved left by the system's offset,
+      // so the tools at its right edge stay on the screen
+      el._sh = mob && !cap ? -0.7 * u : 0;
+      V = { cx: objC.x + 0.69 * u + el._sh, cy: objC.y - 0.31 * u, S: 13.6 * u };
       // in the middle it is a little smaller, so the open sheet keeps inside
       // the screen
       V.S2 = Math.min(V.S, W * (mob ? 1 : 1.12));
@@ -523,7 +526,8 @@ S.alt = el => {
     // the picture stands where it is; only the camera's closeness from the
     // first beats is let go of
     const zoom = lerp(el._mob ? 1.5 : 1.16, 1, io(seg(pe, 0.27, 0.37)));
-    setT(obj, (cap ? 'translate3d(' + (el._capShift || 0).toFixed(1) + 'px,0,0) ' : '') + 'scale(' + zoom.toFixed(4) + ')');
+    const shift = cap ? (el._capShift || 0) : (el._sh || 0) * Y;
+    setT(obj, (shift ? 'translate3d(' + shift.toFixed(1) + 'px,0,0) ' : '') + 'scale(' + zoom.toFixed(4) + ')');
     setO(glow2, 0);
     // 1. the paper takes over from the very picture printed on it
     if (paper && printLang !== (document.documentElement.lang === 'en' ? 'en' : 'da')) { paper.print(printOf()); paperKey = ''; }
