@@ -800,7 +800,7 @@ if (edgeT && edgeB && getComputedStyle(edgeT).display !== 'none') {
     const t = hero ? NAVY : (under(8) || lastT || NAVY);
     const b = hero ? NAVY : (under(innerHeight - 8) || lastB || t);
     if (t !== lastT) { lastT = t; edgeT.style.background = t; if (tone) tone.content = t; }
-    if (b !== lastB) { lastB = b; edgeB.style.background = b; html.style.background = b; document.body.style.background = b; }
+    if (b !== lastB) { lastB = b; edgeB.style.background = b; html.style.background = b; }
   };
   const ask = () => { if (!raf) raf = requestAnimationFrame(paint); };
   addEventListener('scroll', ask, { passive: true });
