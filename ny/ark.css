@@ -658,3 +658,9 @@ body.svc{ color:var(--porcelain); background:radial-gradient(60% 1400px at 85% 0
   .svc-qs details p{ padding-right:0; font-size:15px; line-height:24px; }
 }
 @media (max-width:767px){ .ig-wide-v{ display:none; } .ig-wide{ gap:0; } }
+
+/* the hard part, under the head: a label and the chips */
+.ig-hard{ margin-top:28px; }
+.ig-hard ul{ list-style:none; margin:12px 0 0; padding:0; display:flex; flex-wrap:wrap; gap:8px; }
+.ig-hard li{ height:38px; padding:0 16px; border-radius:19px; display:grid; place-items:center; background:#fff; box-shadow:0 0 0 1px rgba(14,15,16,.08), 0 6px 14px -10px rgba(14,15,16,.4); font:400 14px/1 var(--sans); white-space:nowrap; }
+@media (max-width:767px){ .ig-hard{ margin-top:20px; } .ig-hard ul{ gap:6px; } .ig-hard li{ height:32px; padding:0 12px; font-size:12.5px; } }
