@@ -42,6 +42,13 @@ function close(d) {
 $$('.tile-more').forEach(b => b.addEventListener('click', e => { e.stopPropagation(); open(document.getElementById(b.dataset.sheet), b); }));
 // the same sheets, from the links at the foot of the page
 $$('[data-open-sheet]').forEach(b => b.addEventListener('click', () => open(document.getElementById(b.dataset.openSheet), b)));
+// the next card, from the foot of each sheet
+$$('[data-next]').forEach(b => b.addEventListener('click', () => {
+  const from = b.closest('dialog'), to = document.getElementById(b.dataset.next);
+  if (!to) return;
+  from.close(); document.documentElement.classList.remove('sheet-open');
+  open(to, opener);
+}));
 $$('.sheet').forEach(d => {
   d.addEventListener('click', e => {
     // a tap on the dim around the sheet closes it
