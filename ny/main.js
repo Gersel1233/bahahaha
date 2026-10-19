@@ -54,6 +54,17 @@ function barTone() {
 }
 addEventListener('scroll', () => { if (!lraf) lraf = requestAnimationFrame(barTone); }, { passive: true });
 
+/* ---------- zoomed in with two fingers: the page holds still ----------
+   Blurred glass and endless animations have to be drawn again at every
+   step of a pinch, which is what makes a zoomed page stutter. While it is
+   zoomed in, they are set aside (html.zoomed in ny.css). */
+const vv = window.visualViewport;
+if (vv) {
+  let zr = 0;
+  const zoomed = () => { zr = 0; html.classList.toggle('zoomed', vv.scale > 1.02); };
+  vv.addEventListener('resize', () => { if (!zr) zr = requestAnimationFrame(zoomed); });
+}
+
 applyLang(lang);
 barTone();
 startHero();

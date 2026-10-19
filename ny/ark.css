@@ -558,6 +558,25 @@ html.pg-js .ig-meta:not(.in) .ig-in, html.pg-js .ig-meta:not(.in) .ig-box{ opaci
   .ig-meta{ grid-column:1 / -1; grid-row:auto; }
 }
 @media (max-width:767px){
+  /* on a phone the smaller kinds become short rows: logos, name, one line */
+  .ig-c:not(.ig-meta):not(.ig-wide):not(.ig-dark){ display:grid; grid-template-columns:auto minmax(0, 1fr); column-gap:14px; align-items:start; padding:16px; }
+  .ig-c:not(.ig-meta):not(.ig-wide):not(.ig-dark) .ig-top{ grid-row:span 2; }
+  .ig-c:not(.ig-meta):not(.ig-wide):not(.ig-dark) .ig-top .label{ display:none; }
+  .ig-c:not(.ig-meta):not(.ig-wide):not(.ig-dark) h3{ margin-top:0; font-size:17px; line-height:22px; }
+  .ig-c:not(.ig-meta):not(.ig-wide):not(.ig-dark) .ig-d{ margin-top:4px; font-size:13.5px; line-height:20px; }
+  .ig-c:not(.ig-meta):not(.ig-wide):not(.ig-dark) .ig-logos img{ width:34px; height:34px; }
+  .ig-c:not(.ig-meta):not(.ig-wide):not(.ig-dark) .ig-logos{ flex-direction:column; }
+  .ig-c:not(.ig-meta):not(.ig-wide):not(.ig-dark) .ig-logos img + img{ margin:-8px 0 0; }
+  /* the little scenes are for the larger screens; here the cards say it */
+  .ig-msg, .ig-wide-v{ display:none; }
+  .ig-meta h3{ font-size:24px; line-height:30px; }
+  .ig-c h3{ margin-top:16px; }
+  .ig-wide h3{ font-size:20px; line-height:26px; }
+  .ig-wide .ig-d{ font-size:14px; line-height:22px; }
+  .ig-wide .ig-wl{ display:none; }
+  .ig-dark h3{ font-size:19px; line-height:25px; margin-top:10px; }
+  .ig-dark ul{ margin-top:14px; }
+  .ig-dark ul{ gap:5px; } .ig-dark li{ height:28px; font-size:12px; padding:0 10px; }
   .ig{ padding:72px 0 16px; }
   .ig-h{ font-size:40px; line-height:44px; letter-spacing:-.025em; }
   .ig-lead{ margin-top:16px; font-size:16px; line-height:26px; }
@@ -638,3 +657,4 @@ body.svc{ color:var(--porcelain); background:radial-gradient(60% 1400px at 85% 0
   .svc-qs summary{ font-size:16px; line-height:23px; }
   .svc-qs details p{ padding-right:0; font-size:15px; line-height:24px; }
 }
+@media (max-width:767px){ .ig-wide-v{ display:none; } .ig-wide{ gap:0; } }

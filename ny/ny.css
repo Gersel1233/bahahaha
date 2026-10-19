@@ -242,3 +242,8 @@ html:not(.ix-on) .tb{ background:var(--smoke-dense); }
    (measured: 49 fps with it, 58 without). It comes back the moment the
    bar stands on the page. */
 html.ix-on:not(.nav-light) .tb, .ix-rail .rail-in, .apptag{ -webkit-backdrop-filter:none; backdrop-filter:none; }
+
+/* zoomed in with two fingers (main.js): no blur to redraw, nothing moving
+   by itself, no layers kept ready */
+html.zoomed *, html.zoomed *::before, html.zoomed *::after{ -webkit-backdrop-filter:none !important; backdrop-filter:none !important; animation-play-state:paused !important; will-change:auto !important; }
+html.zoomed .tb{ background:rgba(20,22,28,.94) !important; }
