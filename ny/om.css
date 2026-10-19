@@ -4,7 +4,7 @@
 
 /* ---------- the video frame ---------- */
 .vd{ position:relative; display:block; aspect-ratio:16 / 9; border-radius:28px; overflow:hidden; isolation:isolate; color:var(--porcelain); text-decoration:none;
-  background:radial-gradient(70% 90% at 50% 115%, #2B3F7C, #101A33 55%, #05080F);
+  background:radial-gradient(70% 90% at 50% 115%, #2B3F7C, #101A33 55%, #05080F); background-color:#05080F;
   box-shadow:0 1px 0 rgba(255,255,255,.6) inset, 0 40px 80px -40px rgba(14,15,16,.6); }
 .vd-glow{ position:absolute; inset:0; z-index:-1; pointer-events:none;
   background:radial-gradient(30% 45% at 30% 30%, rgba(36,54,232,.45), transparent 70%), radial-gradient(26% 40% at 78% 70%, rgba(242,138,62,.25), transparent 70%); }
@@ -42,7 +42,7 @@ a.vd:focus-visible{ outline:none; box-shadow:0 0 0 2px var(--porcelain), 0 0 0 4
 /* ---------- the page about Lesreg ---------- */
 body.om{ background:var(--porcelain); }
 .om-top{ position:relative; color:var(--porcelain); padding:clamp(120px, 18vh, 170px) var(--gut) clamp(56px, 9vh, 96px);
-  background:radial-gradient(70% 60% at 50% 0%, #18264A, #05080F 70%); }
+  background:radial-gradient(70% 60% at 50% 0%, #18264A, #05080F 70%); background-color:#05080F; }
 .om-top-in{ max-width:1100px; margin:0 auto; text-align:center; }
 .om-top .label{ color:rgba(246,244,239,.6); }
 .om-h1{ margin-top:16px; font:500 clamp(48px, 7vw, 96px)/.96 var(--sans); letter-spacing:-.045em; text-wrap:balance; }

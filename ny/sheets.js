@@ -65,8 +65,9 @@ new MutationObserver(words).observe(document.documentElement, { attributes: true
    The live stage and the iceberg get .play while they are on screen in the
    open sheet; every endless animation in ark.css hangs on that. */
 if ('IntersectionObserver' in window) {
-  $$('.sheet.sx').forEach(d => {
-    const io = new IntersectionObserver(es => es.forEach(en => en.target.classList.toggle('play', en.isIntersecting)), { root: d });
+  // in a sheet, seen within the sheet; on a service page, within the window
+  $$('.sheet.sx, .svc-main').forEach(d => {
+    const io = new IntersectionObserver(es => es.forEach(en => en.target.classList.toggle('play', en.isIntersecting)), { root: d.tagName === 'DIALOG' ? d : null });
     $$('.sx-live, .ic', d).forEach(e => io.observe(e));
   });
 }
@@ -168,7 +169,7 @@ if (kds) {
   const stop = () => { running = false; timers.forEach(clearTimeout); timers = []; };
   // it runs while it can be seen in the open sheet
   if (!still && 'IntersectionObserver' in window) {
-    new IntersectionObserver(es => es.forEach(e => (e.isIntersecting && sheet.open ? start() : stop())), { root: sheet }).observe(kds);
-    sheet.addEventListener('close', stop);
+    new IntersectionObserver(es => es.forEach(e => (e.isIntersecting && (!sheet || sheet.open) ? start() : stop())), { root: sheet || null }).observe(kds);
+    if (sheet) sheet.addEventListener('close', stop);
   }
 }

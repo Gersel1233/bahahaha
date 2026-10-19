@@ -46,7 +46,7 @@ html.pg-js .tile-film{ opacity:0; }
    Figure for what you keep and two LA31 Data / Ledger rows. Under it all,
    Lesreg's typical hours per kind of job on one scale of 0-300 hours. */
 .sr{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
-.rc{ position:relative; overflow:hidden; color:var(--porcelain); background:radial-gradient(80% 70% at 70% 100%, #2B3F7C, #101A33 50%, #05080F); }
+.rc{ position:relative; overflow:hidden; color:var(--porcelain); background:radial-gradient(80% 70% at 70% 100%, #2B3F7C, #101A33 50%, #05080F); background-color:#05080F; }
 .rc-in{ position:relative; max-width:1440px; margin:0 auto; padding:clamp(96px, 12vh, 128px) 72px clamp(56px, 8vh, 88px);
   display:grid; grid-template-columns:minmax(0, 5fr) minmax(0, 7fr); grid-template-areas:"l glass" "more more" "src src"; column-gap:clamp(32px, 5vw, 96px); align-items:center; }
 .rc-l{ grid-area:l; }
@@ -162,7 +162,7 @@ html.pg-js .rc:not(.rc-seen) .rc-bt > i{ transform:scaleX(0); }
 .kt{ background:var(--porcelain); padding:clamp(72px, 12vh, 140px) 0; }
 .kt-stage{ position:relative; max-width:1296px; margin:0 auto; border-radius:32px; overflow:hidden; isolation:isolate;
   display:grid; grid-template-columns:minmax(0, 1fr) minmax(0, 500px); column-gap:48px; color:var(--porcelain);
-  background:radial-gradient(70% 90% at 75% 115%, #2B3F7C, #101A33 55%, #05080F);
+  background:radial-gradient(70% 90% at 75% 115%, #2B3F7C, #101A33 55%, #05080F); background-color:#05080F;
   box-shadow:0 1px 0 rgba(255,255,255,.6) inset, 0 30px 60px -36px rgba(14,15,16,.4); }
 @media (max-width:1440px){ .kt-stage{ margin:0 var(--gut); } }
 /* the light behind the phone, drifting slowly */

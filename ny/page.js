@@ -754,7 +754,8 @@ if (edgeT && edgeB && getComputedStyle(edgeT).display !== 'none') {
   const solid = c => { const m = c.match(/rgba?\(([^)]+)\)/); if (!m) return null; const p = m[1].split(',').map(Number); return p.length < 4 || p[3] > 0.9 ? c : null; };
   // the colour of the page at a height, under anything fixed on top of it
   const under = y => {
-    for (const el of document.elementsFromPoint(3, y)) {
+    // read in the middle of the screen, where the page is, not in a margin beside it
+    for (const el of document.elementsFromPoint(innerWidth / 2, y)) {
       if (el.closest('.edge, .tb, .mm')) continue;
       for (let e = el; e && e !== document.documentElement; e = e.parentElement) {
         const cs = getComputedStyle(e);

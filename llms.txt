@@ -1,31 +1,34 @@
 # Lesreg
 
-> Lesreg er et dansk softwarehus. Vi tegner, bygger og driver apps, systemer, integrationer og hjemmesider til en fast pris, aftalt før vi går i gang. Ét hus fra idé til drift.
+> Lesreg er et dansk softwarehus. Vi laver apps, systemer, integrationer og hjemmesider fra 50 kr. i timen, ekskl. moms, til én fast pris, aftalt før vi går i gang. Den, der koder, er den, kunden taler med.
 
 ## Hvad vi laver
 
-- Apps: apps, folk faktisk har på telefonen, med notifikationer, Dynamic Island og live-status.
-- Systemer: bestilling, booking, køkken og drift samlet ét sted, på virksomhedens egen side og uden kommission til en platform.
-- Integrationer: koblet på det, man allerede bruger (fx Shopify, Flatpay, Stripe, e-conomic, Dinero, Planway og OnlinePOS), så data kun tastes én gang.
-- Hjemmesider og motion design: hurtige sider bygget fra bunden, uden skabeloner, til at blive fundet på Google og læst af AI-assistenter som ChatGPT, Gemini og Grok.
-
-## Sådan arbejder vi
-
-1. Vi snakker: kunden fortæller, hvad der driller, og vi foreslår, hvad der skal bygges.
-2. Fast pris: en plan og én fast pris, før vi starter.
-3. Vi bygger: kunden taler med dem, der laver det.
-4. Vi passer det: de samme hænder holder det kørende. En rettelse tager timer, ikke uger.
+- [Apps](https://lesreg.com/apps/): apps til iPhone og Android med notifikationer, Live Activities og Dynamic Island. Vi står for godkendelsen i App Store og Google Play. En typisk app tager 60–120 timer.
+- [Systemer](https://lesreg.com/systemer/): bestilling, booking, køkken og drift samlet ét sted, på virksomhedens egen side og uden kommission til en platform. Et helt system tager typisk 150–300 timer, en admin-app 80–150 timer.
+- [Integrationer](https://lesreg.com/integrationer/): vi kobler systemer sammen, så data kun tastes én gang. Blandt andet e-conomic, Dinero, Planway, Calendly, Flatpay, Stripe, Shopify, OnlinePOS, Meta (Facebook, Messenger og Instagram, som kræver en app godkendt af Meta), Google Kalender, Gmail, Sheets, Docs, Outlook og Excel, og de fleste andre systemer med et API. En typisk integration tager 20–30 timer.
+- [Hjemmesider](https://lesreg.com/hjemmesider/): hjemmesider bygget fra bunden med film og motion design, hurtige på telefonen og bygget til at blive fundet på Google. En typisk hjemmeside tager 10–30 timer.
 
 ## Pris
 
 - Fra 50 kr. i timen, ekskl. moms. Til sammenligning tager bureauer og freelancere i Danmark typisk 600–1.200 kr. i timen.
-- Kunden betaler ikke for timer, der løber: før start får de en plan og én fast pris, regnet ud fra timeprisen.
+- Kunden betaler ikke for timer, der løber: før start får de et estimat og én fast pris, regnet ud fra timeprisen.
+
+## Hvorfor ikke bare AI?
+
+Lesreg bruger selv AI, hvor det gør arbejdet hurtigere, og det er en del af grunden til den lave pris. Men en prompt giver et udkast, ikke et system, der kører hos rigtige kunder: login, betaling, integrationer, sikkerhed, godkendelser og drift er det arbejde, Lesreg gør.
+
+## Teamet
+
+- Mikkel Gersel, stifter og udvikler: koder løsningerne selv og er kundens kontakt hele vejen.
+- En sekretær og en revisor og bogholder tager sig af det praktiske og regnskabet.
+- Mere om Lesreg: https://lesreg.com/om/
 
 ## Arbejde
 
 - Spiis (spiis.dk): bestilling og betaling på restaurantens egen side; bestillingen går direkte ind i køkkenet.
 - Mosede Havnecafé (mosedehavnecafe.dk): hjemmeside, menukort og skærmene i caféen kører på samme system.
-- Callster: en AI-medarbejder, der tager telefonen, booker og aflyser, styret med en sms. Lesreg var med til at bygge den.
+- Callster (callster.dk): en AI-medarbejder, der tager telefonen, booker og aflyser, styret med en sms. Lesreg var med til at bygge den.
 
 ## Kontakt
 
