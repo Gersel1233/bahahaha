@@ -186,25 +186,34 @@ html.nav-light .tb, html.hx-paper .tb{ background:linear-gradient(165deg, rgba(4
   .tb-links a{ height:40px; padding:0 14px; display:flex; align-items:center; border-radius:20px; font:400 14px/16px var(--sans); color:var(--porcelain); opacity:.86; transition:background-color .25s var(--ease), opacity .25s; }
   .tb-links a:hover{ background:rgba(246,244,239,.12); opacity:1; }
 }
-/* LA31 Nav / Mobile menu: the page dims, and a sheet of Smoke glass (dense,
-   r 28, 1 px specular edge) drops from under the bar */
-.mm{ position:fixed; inset:0; z-index:55; padding:80px 20px 0; background:rgba(5,8,15,.4);
-  -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px);
+/* LA31 Nav / Mobile menu: the navy of the page over all of it (opaque, so
+   Safari's bars and the strips at the edges are one colour with it), and a
+   card of Smoke glass that drops from under the bar: the four solutions as
+   tiles, the sections as rows, the booking button, mail and language */
+.mm{ position:fixed; inset:0; z-index:55; padding:80px 16px calc(16px + env(safe-area-inset-bottom)); overflow-y:auto; overscroll-behavior:contain;
+  background:radial-gradient(70% 40% at 50% 0%, #18264A, #05080F 70%); background-color:#05080F;
   opacity:0; visibility:hidden; transition:opacity .3s var(--ease), visibility .3s; }
 html.mm-open .mm{ opacity:1; visibility:visible; }
-.mm-card{ position:relative; isolation:isolate; padding:8px 20px 20px; border-radius:28px; color:var(--porcelain);
-  background:linear-gradient(165deg, rgba(36,42,58,.86), rgba(12,14,20,.82));
-  -webkit-backdrop-filter:blur(24px) saturate(1.6); backdrop-filter:blur(24px) saturate(1.6); box-shadow:0 24px 56px rgba(0,0,0,.4);
+html.mm-open .edge{ background:#05080F !important; }
+html.mm-open, html.mm-open body{ overflow:hidden; }
+.mm-card{ position:relative; padding:18px 16px 16px; border-radius:28px; color:var(--porcelain); background:rgba(255,255,255,.05); box-shadow:inset 0 0 0 1px rgba(255,255,255,.1);
   transform:translateY(-12px) scale(.98); transform-origin:50% 0; transition:transform .45s cubic-bezier(.2,.9,.25,1); }
 html.mm-open .mm-card{ transform:none; }
-.mm-card::after{ content:""; position:absolute; inset:0; border-radius:inherit; padding:1px; pointer-events:none;
-  background:linear-gradient(135deg, rgba(255,255,255,.85), rgba(255,255,255,.12) 45%, rgba(255,255,255,.4));
-  -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite:xor; mask-composite:exclude; }
-.mm-links{ display:flex; flex-direction:column; }
-.mm-links a{ display:flex; align-items:center; justify-content:space-between; height:64px; font:500 28px/32px var(--sans); letter-spacing:-.025em; border-bottom:1px solid rgba(246,244,239,.14); }
-.mm-links a svg{ width:20px; height:20px; color:rgba(246,244,239,.5); }
-.mm-card .btn{ width:100%; justify-content:space-between; margin-top:20px; }
-.mm-ft{ display:flex; align-items:center; justify-content:space-between; margin-top:16px; }
+.mm-lab{ margin:0 4px 10px; color:rgba(246,244,239,.55); }
+.mm-tiles{ display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.mm-tile{ display:flex; flex-direction:column; gap:2px; padding:14px; border-radius:18px; background:rgba(255,255,255,.07); box-shadow:inset 0 0 0 1px rgba(255,255,255,.1); }
+.mm-tile:active, .mm-row:active{ background:rgba(255,255,255,.12); }
+.mm-ic{ width:34px; height:34px; margin-bottom:10px; border-radius:11px; display:grid; place-items:center; background:var(--porcelain); }
+.mm-ic svg{ width:18px; height:18px; fill:none; stroke:var(--obsidian); stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; }
+.mm-tile b{ font:500 17px/22px var(--sans); letter-spacing:-.01em; }
+.mm-tile small, .mm-row small{ font:400 12.5px/17px var(--sans); color:rgba(246,244,239,.6); }
+.mm-rows{ display:flex; flex-direction:column; margin-top:10px; }
+.mm-row{ display:flex; align-items:center; justify-content:space-between; gap:12px; min-height:60px; padding:8px 6px 8px 4px; border-radius:12px; border-bottom:1px solid rgba(246,244,239,.1); }
+.mm-row span{ display:flex; flex-direction:column; gap:2px; }
+.mm-row b{ font:500 20px/24px var(--sans); letter-spacing:-.015em; }
+.mm-arw{ flex:none; width:18px; height:18px; color:rgba(246,244,239,.5); }
+.mm-card .btn{ width:100%; justify-content:space-between; margin-top:16px; }
+.mm-ft{ display:flex; align-items:center; justify-content:space-between; margin-top:12px; padding:0 4px; }
 .mm-ft .anno{ color:rgba(246,244,239,.6); }
 .mm .seg button{ height:36px; padding:0 14px; border-radius:18px; color:var(--porcelain); }
 .mm .seg button[aria-pressed="true"]{ background:var(--porcelain); color:var(--obsidian); }

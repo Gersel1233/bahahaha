@@ -35,11 +35,14 @@ function closeMenu() { html.classList.remove('mm-open'); menuBtn.setAttribute('a
 menuBtn.addEventListener('click', () => {
   const open = !html.classList.contains('mm-open');
   html.classList.toggle('mm-open', open);
+  // Safari's bars take the menu's navy while it is open
+  const tc = $('meta[name="theme-color"]');
+  if (tc) { if (open) { tc._was = tc.content; tc.content = '#05080F'; } else if (tc._was) tc.content = tc._was; }
   menuBtn.setAttribute('aria-expanded', String(open));
 });
 addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
 // a link in the menu takes you there and puts the menu away
-$$('.mm a[href^="#"]').forEach(a => a.addEventListener('click', closeMenu));
+$$('.mm a').forEach(a => a.addEventListener('click', closeMenu));
 // and a tap beside the sheet puts it away too
 $('.mm').addEventListener('click', e => { if (e.target === e.currentTarget) closeMenu(); });
 
