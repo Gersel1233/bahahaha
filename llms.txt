@@ -6,7 +6,7 @@
 
 - Apps: apps, folk faktisk har på telefonen, med notifikationer, Dynamic Island og live-status.
 - Systemer: bestilling, booking, køkken og drift samlet ét sted, på virksomhedens egen side og uden kommission til en platform.
-- Integrationer: koblet på det, man allerede bruger (fx Shopify, Flatpay, e-conomic, Dinero, Planway og OnlinePOS), så data kun tastes én gang.
+- Integrationer: koblet på det, man allerede bruger (fx Shopify, Flatpay, Stripe, e-conomic, Dinero, Planway og OnlinePOS), så data kun tastes én gang.
 - Hjemmesider og motion design: hurtige sider bygget fra bunden, uden skabeloner, til at blive fundet på Google og læst af AI-assistenter som ChatGPT, Gemini og Grok.
 
 ## Sådan arbejder vi
