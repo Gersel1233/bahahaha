@@ -1,0 +1,106 @@
+/* The team on the front page, and the page about Lesreg it leads to.
+   The video frame (.vd) is the same on both: the navy of the stages, the
+   mark, a glass play button, its title and length. */
+
+/* ---------- the video frame ---------- */
+.vd{ position:relative; display:block; aspect-ratio:16 / 9; border-radius:28px; overflow:hidden; isolation:isolate; color:var(--porcelain); text-decoration:none;
+  background:radial-gradient(70% 90% at 50% 115%, #2B3F7C, #101A33 55%, #05080F);
+  box-shadow:0 1px 0 rgba(255,255,255,.6) inset, 0 40px 80px -40px rgba(14,15,16,.6); }
+.vd-glow{ position:absolute; inset:0; z-index:-1; pointer-events:none;
+  background:radial-gradient(30% 45% at 30% 30%, rgba(36,54,232,.45), transparent 70%), radial-gradient(26% 40% at 78% 70%, rgba(242,138,62,.25), transparent 70%); }
+.vd-mark{ position:absolute; left:28px; top:28px; width:40px; height:40px; }
+.vd-mark svg{ width:100%; height:100%; }
+.vd-play{ position:absolute; left:50%; top:50%; width:88px; height:88px; margin:-44px 0 0 -44px; border-radius:50%; display:grid; place-items:center; isolation:isolate;
+  color:var(--porcelain); background:rgba(255,255,255,.14); box-shadow:inset 0 0 0 1px rgba(255,255,255,.35), 0 20px 40px rgba(0,0,0,.35);
+  transition:transform .35s var(--ease), background .25s var(--ease); }
+.vd-play::after{ content:""; position:absolute; inset:-1px; border-radius:inherit; padding:1px; pointer-events:none;
+  background:linear-gradient(135deg, rgba(255,255,255,.85), rgba(255,255,255,.12) 45%, rgba(255,255,255,.4));
+  -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite:xor; mask-composite:exclude; }
+.vd-play svg{ width:30px; height:30px; margin-left:4px; }
+@media (hover:hover){ a.vd:hover .vd-play{ transform:scale(1.08); background:var(--ultra); } }
+a.vd:focus-visible{ outline:none; box-shadow:0 0 0 2px var(--porcelain), 0 0 0 4px var(--ultra); }
+.vd-cap{ position:absolute; left:28px; bottom:26px; display:flex; flex-direction:column; align-items:flex-start; gap:4px; text-align:left; }
+.vd-cap b{ font:500 20px/26px var(--sans); letter-spacing:-.01em; }
+.vd-cap span{ font:400 14px/20px var(--sans); color:rgba(246,244,239,.7); }
+.vd-len{ position:absolute; right:24px; bottom:26px; height:28px; padding:0 12px; border-radius:14px; display:grid; place-items:center;
+  background:rgba(14,15,16,.6); box-shadow:inset 0 0 0 1px rgba(255,255,255,.16); font:500 12.5px/1 var(--sans); }
+
+/* ---------- the team on the front page ---------- */
+.tmv{ background:var(--porcelain); color:var(--obsidian); padding:clamp(72px, 12vh, 140px) 0 clamp(24px, 4vh, 48px); }
+.tmv-in{ max-width:1296px; margin:0 auto; display:grid; grid-template-columns:minmax(0, 5fr) minmax(0, 7fr); gap:clamp(32px, 5vw, 80px); align-items:center; }
+@media (max-width:1440px){ .tmv-in{ margin:0 var(--gut); } }
+.tmv .label{ color:var(--ash); }
+.tmv-h{ margin-top:16px; font:500 64px/64px var(--sans); letter-spacing:-.035em; }
+.tmv-h .acc{ display:block; color:var(--graphite); }
+.tmv-lead{ margin-top:24px; max-width:30em; font:400 20px/30px var(--sans); letter-spacing:-.005em; color:var(--graphite); }
+.tmv-rows{ list-style:none; margin:28px 0 32px; padding:0; max-width:480px; }
+.tmv-rows li{ display:flex; align-items:center; justify-content:space-between; gap:16px; height:48px; padding:0 16px; border-bottom:1px solid var(--travertine); font:400 14px/22px var(--sans); color:var(--graphite); }
+.tmv-rows b{ font-weight:400; color:var(--obsidian); }
+.tmv-rows li.sel{ border-bottom:0; border-radius:12px; background:var(--limestone); }
+.tmv-rows li.sel b{ font-weight:500; }
+
+/* ---------- the page about Lesreg ---------- */
+body.om{ background:var(--porcelain); }
+.om-top{ position:relative; color:var(--porcelain); padding:clamp(120px, 18vh, 170px) var(--gut) clamp(56px, 9vh, 96px);
+  background:radial-gradient(70% 60% at 50% 0%, #18264A, #05080F 70%); }
+.om-top-in{ max-width:1100px; margin:0 auto; text-align:center; }
+.om-top .label{ color:rgba(246,244,239,.6); }
+.om-h1{ margin-top:16px; font:500 clamp(48px, 7vw, 96px)/.96 var(--sans); letter-spacing:-.045em; text-wrap:balance; }
+.om-h1 .acc{ font-family:var(--accent); font-style:italic; font-weight:300; letter-spacing:-.025em; color:rgba(246,244,239,.78); }
+.om-lead{ max-width:34em; margin:24px auto 0; font:400 20px/30px var(--sans); color:rgba(246,244,239,.78); }
+.om-vd{ margin:48px auto 0; max-width:1100px; }
+/* until the film is in: the frame says so */
+.vd-soon{ position:absolute; left:50%; top:calc(50% + 64px); transform:translateX(-50%); white-space:nowrap; font:400 14px/20px var(--sans); color:rgba(246,244,239,.7); }
+.om-vd video{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; background:#000; }
+
+/* the text under it: one column to read, the label and an H2 for each part */
+.om-art{ max-width:720px; margin:0 auto; padding:clamp(64px, 10vh, 112px) var(--gut) 0; color:var(--obsidian); box-sizing:content-box; }
+.om-art section + section{ margin-top:clamp(48px, 8vh, 80px); }
+.om-art .label{ color:var(--ash); }
+.om-art h2{ margin-top:14px; font:500 40px/44px var(--sans); letter-spacing:-.025em; text-wrap:balance; }
+.om-art h2 .acc{ font-family:var(--accent); font-style:italic; font-weight:300; color:var(--graphite); }
+.om-art p:not(.label){ margin-top:18px; font:400 19px/31px var(--sans); color:var(--graphite); }
+.om-art p strong{ font-weight:500; color:var(--obsidian); }
+.om-art .tmv-rows{ margin:24px 0 0; max-width:none; }
+/* the work, as three cards with their links */
+.om-work{ list-style:none; margin:24px 0 0; padding:0; display:grid; gap:10px; }
+.om-work a{ display:grid; grid-template-columns:48px minmax(0, 1fr) auto; gap:16px; align-items:center; padding:16px 20px 16px 16px; border-radius:20px; background:#fff;
+  box-shadow:0 0 0 1px rgba(14,15,16,.06), 0 16px 32px -24px rgba(14,15,16,.4); color:inherit; text-decoration:none; transition:transform .2s var(--ease); }
+.om-work img{ width:48px; height:48px; border-radius:12px; }
+.om-work b{ display:block; font:500 17px/22px var(--sans); }
+.om-work span{ font:400 14px/20px var(--sans); color:var(--graphite); }
+.om-work svg{ width:16px; height:16px; color:var(--ash); }
+@media (hover:hover){ .om-work a:hover{ transform:translateY(-2px); } }
+.om-cta{ max-width:720px; margin:clamp(56px, 9vh, 96px) auto 0; padding:0 var(--gut) clamp(72px, 12vh, 120px); box-sizing:content-box; }
+.om-cta-in{ padding:32px; border-radius:28px; color:var(--porcelain); background:radial-gradient(70% 90% at 75% 115%, #2B3F7C, #101A33 55%, #05080F); }
+.om-cta h2{ font:500 40px/44px var(--sans); letter-spacing:-.025em; }
+.om-cta h2 .acc{ font-family:var(--accent); font-style:italic; font-weight:300; color:rgba(246,244,239,.78); }
+.om-cta p{ margin-top:12px; font:400 17px/27px var(--sans); color:rgba(246,244,239,.75); }
+.om-cta .btn{ margin-top:24px; }
+
+@media (max-width:1023px){
+  .tmv-in{ grid-template-columns:minmax(0, 1fr); }
+}
+@media (max-width:767px){
+  .tmv{ padding:56px 0 16px; }
+  .tmv-h{ font-size:40px; line-height:44px; letter-spacing:-.025em; }
+  .tmv-lead{ margin-top:16px; font-size:16px; line-height:26px; }
+  .tmv-rows li{ padding:0 12px; font-size:13px; }
+  .tmv .btn{ width:100%; justify-content:space-between; }
+  .vd{ border-radius:22px; }
+  .vd-mark{ left:16px; top:16px; width:28px; height:28px; }
+  .vd-play{ width:64px; height:64px; margin:-32px 0 0 -32px; }
+  .vd-play svg{ width:22px; height:22px; }
+  .vd-cap{ left:16px; bottom:14px; }
+  .vd-cap b{ font-size:15px; line-height:20px; } .vd-cap span{ font-size:12px; line-height:16px; }
+  .vd-len{ right:14px; bottom:14px; height:24px; font-size:11px; }
+  /* on a phone the note sits as a chip in the top corner, clear of the title */
+  .vd-soon{ left:auto; right:14px; top:16px; transform:none; height:26px; padding:0 10px; border-radius:13px; display:grid; place-items:center; background:rgba(14,15,16,.6); box-shadow:inset 0 0 0 1px rgba(255,255,255,.16); font-size:11.5px; }
+  .om-lead{ font-size:16px; line-height:26px; }
+  .om-vd{ margin-top:32px; }
+  .om-art h2{ font-size:30px; line-height:34px; }
+  .om-art p:not(.label){ font-size:17px; line-height:28px; }
+  .om-cta-in{ padding:24px; }
+  .om-cta h2{ font-size:30px; line-height:34px; }
+  .om-cta .btn{ width:100%; justify-content:space-between; }
+}

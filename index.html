@@ -25,7 +25,8 @@
 <link rel="stylesheet" href="ny/hero.css?v=31" />
 <link rel="stylesheet" href="ny/sections.css?v=80" />
 <link rel="stylesheet" href="ny/fod.css?v=1" />
-<link rel="stylesheet" href="ny/ark.css?v=16" />
+<link rel="stylesheet" href="ny/ark.css?v=17" />
+<link rel="stylesheet" href="ny/om.css?v=3" />
 <script>
   /* decided before first paint: with JS the phone turns as you scroll;
      without it, the first screen simply stands there */
@@ -65,6 +66,7 @@
     <a href="#bygger" data-da="Løsninger" data-en="Solutions">Løsninger</a>
     <a href="#fordi" data-da="Pris" data-en="Price">Pris</a>
     <a href="#integrationer" data-da="Integrationer" data-en="Integrations">Integrationer</a>
+    <a href="om/" data-da="Om os" data-en="About">Om os</a>
     <a href="#kontakt" data-da="Kontakt" data-en="Contact">Kontakt</a>
   </div>
   <div class="tb-r">
@@ -83,6 +85,7 @@
       <a href="#bygger"><span data-da="Løsninger" data-en="Solutions">Løsninger</span><svg><use href="#i-arrow"/></svg></a>
       <a href="#fordi"><span data-da="Pris" data-en="Price">Pris</span><svg><use href="#i-arrow"/></svg></a>
       <a href="#integrationer"><span data-da="Integrationer" data-en="Integrations">Integrationer</span><svg><use href="#i-arrow"/></svg></a>
+      <a href="om/"><span data-da="Om os" data-en="About">Om os</span><svg><use href="#i-arrow"/></svg></a>
       <a href="#kontakt"><span data-da="Kontakt" data-en="Contact">Kontakt</span><svg><use href="#i-arrow"/></svg></a>
     </nav>
     <a class="btn light" href="mailto:mgersel@lesreg.com"><span data-da="Skriv til os" data-en="Talk to us">Skriv til os</span><span class="lens"><svg><use href="#i-arrow"/></svg></span></a>
@@ -610,8 +613,46 @@
       <li><span data-da="Godkendelse hos Meta" data-en="Approval at Meta">Godkendelse hos Meta</span></li><li><span data-da="Login og adgangsnøgler" data-en="Login and access keys">Login og adgangsnøgler</span></li><li>Webhooks</li><li><span data-da="Nye versioner af API'erne" data-en="New versions of the APIs">Nye versioner af API'erne</span></li><li><span data-da="Grænser for antal kald" data-en="Rate limits">Grænser for antal kald</span></li><li><span data-da="Persondata og GDPR" data-en="Personal data and GDPR">Persondata og GDPR</span></li>
     </ul>
       </article>
+      <article class="ig-c ig-wide" data-r>
+        <div class="ig-wide-t">
+          <div class="ig-top"><span class="ig-logos"><img src="ny/media/logo/googlecalendar.webp" alt="Google Kalender" width="44" height="44" loading="lazy" decoding="async" /><img src="ny/media/logo/gmail.webp" alt="Gmail" width="44" height="44" loading="lazy" decoding="async" /><img src="ny/media/logo/googlesheets.webp" alt="Google Sheets" width="44" height="44" loading="lazy" decoding="async" /><img src="ny/media/logo/googledocs.webp" alt="Google Docs" width="44" height="44" loading="lazy" decoding="async" /><img src="ny/media/logo/microsoftoutlook.webp" alt="Outlook" width="44" height="44" loading="lazy" decoding="async" /><img src="ny/media/logo/microsoftexcel.webp" alt="Excel" width="44" height="44" loading="lazy" decoding="async" /></span></div>
+          <p class="label ig-wl" data-da="Kontoret" data-en="The office">Kontoret</p>
+          <h3><span data-da="Google Kalender, Gmail, Sheets, Docs, Outlook og Excel" data-en="Google Calendar, Gmail, Sheets, Docs, Outlook and Excel">Google Kalender, Gmail, Sheets, Docs, Outlook og Excel</span></h3>
+          <p class="ig-d" data-da="Det, der sker i jeres system, lander dér, hvor I allerede arbejder: en booking i kalenderen, en ordre i regnearket, en kvittering i indbakken. Og de fleste andre systemer med et API kan vi også tale med." data-en="What happens in your system lands where you already work: a booking in the calendar, an order in the spreadsheet, a receipt in the inbox. And most other systems with an API, we can talk to as well.">Det, der sker i jeres system, lander dér, hvor I allerede arbejder: en booking i kalenderen, en ordre i regnearket, en kvittering i indbakken. Og de fleste andre systemer med et API kan vi også tale med.</p>
+        </div>
+        <div class="ig-wide-v" aria-hidden="true">
+          <div class="ig-cal"><img src="ny/media/logo/googlecalendar.webp" alt="" width="24" height="24" loading="lazy" /><div><b><span data-da="Bord til 4" data-en="Table for 4">Bord til 4</span></b><span data-da="Fredag 18.30 · fra jeres side" data-en="Friday 18.30 · from your site">Fredag 18.30 · fra jeres side</span></div></div>
+          <div class="ig-sheet"><img src="ny/media/logo/microsoftexcel.webp" alt="" width="24" height="24" loading="lazy" />
+            <table><tr><th><span data-da="Ordre" data-en="Order">Ordre</span></th><th><span data-da="Beløb" data-en="Amount">Beløb</span></th><th>Status</th></tr><tr><td>#1041</td><td>245 kr.</td><td><span data-da="Betalt" data-en="Paid">Betalt</span></td></tr><tr class="nw"><td>#1042</td><td>389 kr.</td><td><span data-da="Betalt" data-en="Paid">Betalt</span></td></tr></table></div>
+          <div class="ig-mail"><img src="ny/media/logo/gmail.webp" alt="" width="24" height="24" loading="lazy" /><div><b><span data-da="Kvittering #1042" data-en="Receipt #1042">Kvittering #1042</span></b><span data-da="Sendt til kunden" data-en="Sent to the customer">Sendt til kunden</span></div></div>
+        </div>
+      </article>
   </div>
   <div class="ig-foot" data-r><p class="ig-more"><span data-da="Bruger I noget, der ikke står her? Skriv, så ser vi på det." data-en="Using something that is not here? Write, and we will take a look.">Bruger I noget, der ikke står her? Skriv, så ser vi på det.</span> <a href="#kontakt"><span data-da="Skriv til os" data-en="Talk to us">Skriv til os</span></a></p></div>
+</section>
+
+<!-- the team: who builds it, and the way to the page where Mikkel tells it himself -->
+<section class="tmv" id="team" data-paper aria-labelledby="tmv-h">
+  <div class="tmv-in">
+    <div class="tmv-l">
+      <p class="label" data-r><span data-da="Teamet" data-en="The team">Teamet</span></p>
+      <h2 class="tmv-h" id="tmv-h" data-r><span data-da="Mød ham," data-en="Meet the one">Mød ham,</span> <em class="acc" data-da="der bygger det." data-en="who builds it.">der bygger det.</em></h2>
+      <p class="tmv-lead" data-r data-da="Lesreg er Mikkel Gersel, der koder jeres løsning og er jeres kontakt hele vejen. Bag ham holder en sekretær og en revisor og bogholder styr på resten." data-en="Lesreg is Mikkel Gersel, who writes the code for your solution and is your contact all the way. Behind him a secretary and an accountant and bookkeeper keep the rest in order.">Lesreg er Mikkel Gersel, der koder jeres løsning og er jeres kontakt hele vejen. Bag ham holder en sekretær og en revisor og bogholder styr på resten.</p>
+      <ul class="tmv-rows" data-r>
+        <li class="sel"><b>Mikkel Gersel</b><span data-da="Koder og er jeres kontakt" data-en="Writes the code, your contact">Koder og er jeres kontakt</span></li>
+        <li><b data-da="Sekretær" data-en="Secretary">Sekretær</b><span data-da="Aftaler og det praktiske" data-en="Agreements and the practical side">Aftaler og det praktiske</span></li>
+        <li><b data-da="Revisor og bogholder" data-en="Accountant and bookkeeper">Revisor og bogholder</b><span data-da="Regnskab og bogføring" data-en="Accounts and bookkeeping">Regnskab og bogføring</span></li>
+      </ul>
+      <a class="btn" href="om/" data-r><span data-da="Se videoen og læs mere" data-en="Watch the video and read more">Se videoen og læs mere</span><span class="lens"><svg><use href="#i-arrow"/></svg></span></a>
+    </div>
+    <a class="vd tmv-vd" href="om/" data-r aria-label="Se Mikkel fortælle om Lesreg">
+      <span class="vd-glow"></span>
+      <span class="vd-mark"><svg viewBox="0 0 128 128" aria-hidden="true"><path d="M0 0H94l34 34v94H0Z" fill="#F6F4EF"/><path d="M44 28h18v62h38v18H44Z" fill="#05080F"/></svg></span>
+      <span class="vd-play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z" fill="currentColor"/></svg></span>
+      <span class="vd-cap"><b><span data-da="Mikkel om Lesreg" data-en="Mikkel on Lesreg">Mikkel om Lesreg</span></b><span data-da="Hvorfor det er bygget, som det er" data-en="Why it is built the way it is">Hvorfor det er bygget, som det er</span></span>
+      <span class="vd-len">3 min</span>
+    </a>
+  </div>
 </section>
 
 <!-- talk to us: a stage the navy of the tiles. Choose what you need made,
@@ -674,6 +715,7 @@
         <a href="#hus" data-da="Hvad vi laver" data-en="What we do">Hvad vi laver</a>
         <a href="#fordi" data-da="Pris" data-en="Price">Pris</a>
         <a href="#integrationer" data-da="Integrationer" data-en="Integrations">Integrationer</a>
+        <a href="om/" data-da="Om os" data-en="About">Om os</a>
         <a href="#kontakt" data-da="Kontakt" data-en="Contact">Kontakt</a>
       </nav>
       <div class="ft-col">
