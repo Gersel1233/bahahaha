@@ -129,7 +129,7 @@ if (tileRow && 'IntersectionObserver' in window) {
    is touched, it moves on to the next kind of job by itself. ---------- */
 const rc = document.querySelector('.rc');
 if (rc) {
-  const JOBS = [[20, 30], [10, 30], [60, 120], [80, 150], [150, 300]];
+  const JOBS = [[10, 30], [20, 30], [60, 120], [80, 150], [150, 300]];
   const MID = 900, US = 50, NEXT = 3800;
   const chips = $$('.rc-chip', rc);
   const slot = k => rc.querySelector(`[data-o="${k}"]`);
@@ -137,7 +137,7 @@ if (rc) {
   const L = () => (html.lang === 'en' ? 'en' : 'da');
   const fmt = n => Math.round(n).toLocaleString(L() === 'en' ? 'en-GB' : 'da-DK');
   const kr = n => (L() === 'en' ? 'DKK ' + fmt(n) : fmt(n) + ' kr.');
-  let cur = 0, h = 25, goal = 25, tw = 0, seen = false, touched = still, timer = 0;
+  let cur = 0, h = 20, goal = 20, tw = 0, seen = false, touched = still, timer = 0;
   const paint = () => {
     sPrice.textContent = fmt(h * US); sSave.textContent = kr(h * (MID - US));
     sThem.textContent = kr(h * MID); sUs.textContent = kr(h * US);

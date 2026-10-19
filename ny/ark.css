@@ -404,7 +404,7 @@ html.pg-js .sheet:not([open]) .dp li{ opacity:0; }
   font:500 14px/1 var(--sans); color:var(--porcelain); text-decoration:none; transition:background .2s var(--ease); }
 .cs-link svg{ width:14px; height:14px; }
 @media (hover:hover){ .cs-link:hover{ background:rgba(255,255,255,.16); } }
-.cs-logos{ list-style:none; margin:28px 0 0; padding:0; display:grid; grid-template-columns:repeat(7, minmax(0, 1fr)); gap:12px; }
+.cs-logos{ list-style:none; margin:28px 0 0; padding:0; display:grid; grid-template-columns:repeat(6, minmax(0, 1fr)); gap:12px; }
 .cs-logos li{ display:flex; flex-direction:column; align-items:center; gap:10px; padding:20px 8px; border-radius:20px; background:rgba(255,255,255,.04); box-shadow:inset 0 0 0 1px rgba(255,255,255,.08); text-align:center; font:400 13px/18px var(--sans); color:rgba(246,244,239,.8); }
 .cs-logos img{ width:52px; height:52px; border-radius:14px; box-shadow:0 10px 22px rgba(0,0,0,.4); }
 .cs-logos .more b{ width:52px; height:52px; border-radius:14px; display:grid; place-items:center; font:300 28px/1 var(--sans); box-shadow:inset 0 0 0 1px rgba(255,255,255,.3); }
@@ -509,4 +509,62 @@ html.pg-js .sheet:not([open]) .dp li{ opacity:0; }
   .sheet[open] .sx *{ animation:none !important; }
   .lv-isl{ width:min(340px, 82%); } .lv-isl-t, .lv-isl-r, .lv-note{ opacity:1; } .lv-prog-fill{ transform:scaleX(.5); }
   .lv-log, .lv-runs path{ opacity:1; }
+}
+
+/* ---------- the hard integrations ----------
+   On paper after the navy of the price: the head as in the sections
+   around it, then the systems by kind as white cards (Meta the large one,
+   with its messages landing in one inbox), and the hard parts as chips. */
+.ig{ background:var(--porcelain); color:var(--obsidian); padding:clamp(96px, 14vh, 160px) 0 clamp(24px, 4vh, 40px); }
+.ig-head{ max-width:1296px; margin:0 auto; }
+@media (max-width:1440px){ .ig-head, .ig-grid, .ig-foot{ margin-left:var(--gut) !important; margin-right:var(--gut) !important; } }
+.ig .label{ color:var(--ash); }
+.ig-h{ margin-top:16px; font:500 64px/64px var(--sans); letter-spacing:-.035em; }
+.ig-h .acc{ color:var(--graphite); }
+.ig-lead{ margin-top:24px; max-width:34em; font:400 20px/30px var(--sans); letter-spacing:-.005em; color:var(--graphite); }
+.ig-grid{ max-width:1296px; margin:48px auto 0; display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:16px; }
+.ig-c{ position:relative; display:flex; flex-direction:column; padding:28px; border-radius:28px; background:#fff; box-shadow:0 1px 0 rgba(255,255,255,.6) inset, 0 0 0 1px rgba(14,15,16,.05), 0 24px 48px -32px rgba(14,15,16,.35); }
+.ig-meta{ grid-column:span 2; grid-row:span 2; }
+.ig-top{ display:flex; align-items:center; justify-content:space-between; gap:12px; }
+.ig-logos{ display:flex; }
+.ig-logos img{ width:44px; height:44px; border-radius:50%; box-shadow:0 0 0 3px #fff, 0 6px 14px rgba(14,15,16,.16); }
+.ig-logos img + img{ margin-left:-10px; }
+.ig-c h3{ margin-top:28px; font:500 24px/30px var(--sans); letter-spacing:-.015em; }
+.ig-d{ margin-top:8px; font:400 16px/26px var(--sans); color:var(--graphite); max-width:32em; }
+.ig-meta h3{ font-size:40px; line-height:44px; letter-spacing:-.025em; }
+.ig-meta .ig-d{ font-size:18px; line-height:28px; }
+/* Meta: two messages from two apps land in one inbox */
+.ig-msg{ position:relative; margin-top:auto; padding-top:32px; display:grid; grid-template-columns:1fr 1fr; gap:12px; align-items:end; }
+.ig-in{ display:flex; gap:10px; align-items:flex-start; padding:14px; border-radius:18px; background:var(--porcelain); font:400 14px/20px var(--sans); color:var(--graphite); }
+.ig-in img{ flex:none; border-radius:50%; }
+.ig-in div{ display:flex; flex-direction:column; }
+.ig-in b{ font-weight:500; font-size:12.5px; color:var(--obsidian); }
+.ig-box{ grid-column:1 / -1; display:flex; align-items:center; gap:10px; height:48px; padding:0 18px; border-radius:24px; background:var(--obsidian); color:var(--porcelain); font:500 14px/1 var(--sans); }
+.ig-box i{ width:8px; height:8px; border-radius:50%; background:var(--ultra); box-shadow:0 0 0 4px rgba(36,54,232,.3); }
+html.pg-js .ig-meta:not(.in) .ig-in, html.pg-js .ig-meta:not(.in) .ig-box{ opacity:0; transform:translateY(16px); }
+.ig-in, .ig-box{ transition:opacity .7s var(--ease), transform .9s var(--ease); }
+.ig-meta.in .ig-in:nth-child(1){ transition-delay:.35s; } .ig-meta.in .ig-in:nth-child(2){ transition-delay:.55s; } .ig-meta.in .ig-box{ transition-delay:.8s; }
+/* the hard parts, in the dark card that closes the grid */
+.ig-dark{ background:var(--obsidian); color:var(--porcelain); box-shadow:0 24px 48px -28px rgba(14,15,16,.6); }
+.ig-dark .label{ color:rgba(246,244,239,.55); }
+.ig-dark h3{ margin-top:16px; }
+.ig-dark ul{ list-style:none; margin:20px 0 0; padding:0; display:flex; flex-wrap:wrap; gap:6px; }
+.ig-dark li{ height:32px; padding:0 12px; border-radius:16px; display:grid; place-items:center; background:rgba(255,255,255,.08); box-shadow:inset 0 0 0 1px rgba(255,255,255,.14); font:400 13px/1 var(--sans); white-space:nowrap; }
+.ig-foot{ max-width:1296px; margin:32px auto 0; }
+.ig-more{ font:400 16px/26px var(--sans); color:var(--graphite); }
+.ig-more a{ color:var(--obsidian); font-weight:500; text-decoration:underline; text-underline-offset:4px; text-decoration-color:rgba(14,15,16,.3); }
+@media (max-width:1023px){
+  .ig-grid{ grid-template-columns:repeat(2, minmax(0, 1fr)); }
+  .ig-meta{ grid-column:1 / -1; grid-row:auto; }
+}
+@media (max-width:767px){
+  .ig{ padding:72px 0 16px; }
+  .ig-h{ font-size:40px; line-height:44px; letter-spacing:-.025em; }
+  .ig-lead{ margin-top:16px; font-size:16px; line-height:26px; }
+  .ig-grid{ grid-template-columns:1fr; gap:12px; margin-top:32px; }
+  .ig-c{ padding:20px; border-radius:24px; }
+  .ig-c h3{ margin-top:20px; font-size:20px; line-height:26px; }
+  .ig-meta h3{ font-size:28px; line-height:32px; }
+  .ig-meta .ig-d, .ig-d{ font-size:15px; line-height:24px; }
+  .ig-msg{ grid-template-columns:1fr; padding-top:20px; }
 }
