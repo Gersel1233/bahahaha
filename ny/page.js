@@ -115,10 +115,12 @@ const to = 'IntersectionObserver' in window && new IntersectionObserver(es => es
   }
 }), { threshold: [0, 0.55], rootMargin: '0px 200px 0px 200px' });
 if (to) $$('video.tile-film').forEach(v => { under(v); to.observe(v); });
-// all four are fetched, in order, while the tiles are still a screen or so away
 const tileRow = document.getElementById('tiles');
 if (tileRow && 'IntersectionObserver' in window) {
-  const near = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) { $$('video.tile-film').forEach(v => want(v)); near.disconnect(); } }, { rootMargin: '900px 0px' });
+  // only the first two, as the row comes near; each of the others is fetched
+  // when its own tile is about to come into view, so a first visit is not
+  // spent downloading films no one has reached yet
+  const near = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) { $$('video.tile-film').slice(0, 2).forEach(v => want(v)); near.disconnect(); } }, { rootMargin: '600px 0px' });
   near.observe(tileRow);
 }
 
@@ -752,21 +754,38 @@ if (edgeT && edgeB && getComputedStyle(edgeT).display !== 'none') {
   const tone = document.querySelector('meta[name="theme-color"]');
   const html = document.documentElement;
   const solid = c => { const m = c.match(/rgba?\(([^)]+)\)/); if (!m) return null; const p = m[1].split(',').map(Number); return p.length < 4 || p[3] > 0.9 ? c : null; };
-  // the colour of the page at a height, under anything fixed on top of it
-  const under = y => {
-    // read in the middle of the screen, where the page is, not in a margin beside it
-    for (const el of document.elementsFromPoint(innerWidth / 2, y)) {
-      if (el.closest('.edge, .tb, .mm')) continue;
-      for (let e = el; e && e !== document.documentElement; e = e.parentElement) {
-        const cs = getComputedStyle(e);
-        if (cs.position === 'fixed') break;
-        // only what runs the width of the screen: a card or a stage inset from
-        // the edges is not what shows beside the bars
-        const c = solid(cs.backgroundColor); if (c && e.getBoundingClientRect().width >= innerWidth * 0.95) return c;
-      }
+  // the page as bands of colour, measured once and again only when it
+  // changes size: every element that runs the width of the screen and has a
+  // solid background, with where it starts and ends. While scrolling, the
+  // colour under a height is then looked up, not asked of the browser.
+  let bands = [];
+  // the page's own colour where no band covers it, read before anything here sets it
+  const base = solid(getComputedStyle(document.body).backgroundColor) || solid(getComputedStyle(html).backgroundColor) || 'rgb(246, 244, 239)';
+  const measure = () => {
+    const W = innerWidth * 0.95, out = [];
+    for (const e of document.querySelectorAll('body *')) {
+      if (e.closest('.edge, .tb, .mm, dialog, svg')) continue;
+      const cs = getComputedStyle(e);
+      if (cs.position === 'fixed' || cs.position === 'sticky' || cs.display === 'none') continue;
+      // what rides on a sticky stage moves with it; the stage's own section stands for it
+      if (e.parentElement && e.parentElement.closest('.hs, .alt-pin')) continue;
+      const c = solid(cs.backgroundColor); if (!c || e.offsetWidth < W) continue;
+      const r = e.getBoundingClientRect();
+      out.push({ top: r.top + scrollY, bottom: r.bottom + scrollY, c, depth: depthOf(e) });
     }
-    return null;
+    bands = out;
   };
+  const depthOf = e => { let d = 0; while ((e = e.parentElement)) d++; return d; };
+  const under = y => {
+    // the deepest band that covers this height wins, as it is drawn on top
+    const at = scrollY + y; let best = null;
+    for (const b of bands) if (at >= b.top && at < b.bottom && (!best || b.depth > best.depth)) best = b;
+    return best ? best.c : base;
+  };
+  let mraf = 0;
+  const remeasure = () => { if (!mraf) mraf = requestAnimationFrame(() => { mraf = 0; measure(); lastT = lastB = ''; ask(); }); };
+  if (window.ResizeObserver) new ResizeObserver(remeasure).observe(document.body);
+  addEventListener('load', remeasure);
   // the top strip and Safari's top bar take the colour under the top of the
   // screen, the bottom strip, the page and its body the colour under the
   // bottom; on the first screen, until it has turned to paper, both are its
@@ -785,10 +804,10 @@ if (edgeT && edgeB && getComputedStyle(edgeT).display !== 'none') {
   };
   const ask = () => { if (!raf) raf = requestAnimationFrame(paint); };
   addEventListener('scroll', ask, { passive: true });
-  addEventListener('resize', ask);
+  addEventListener('resize', remeasure);
   // back from another page (Safari keeps this one in memory), and whenever
   // the first screen turns to paper or the menu closes
   addEventListener('pageshow', () => { lastT = lastB = ''; ask(); });
   new MutationObserver(() => { lastT = lastB = ''; ask(); }).observe(html, { attributes: true, attributeFilter: ['class'] });
-  ask();
+  measure(); ask();
 }
