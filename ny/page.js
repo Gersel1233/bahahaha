@@ -760,24 +760,35 @@ if (edgeT && edgeB && getComputedStyle(edgeT).display !== 'none') {
       for (let e = el; e && e !== document.documentElement; e = e.parentElement) {
         const cs = getComputedStyle(e);
         if (cs.position === 'fixed') break;
-        const c = solid(cs.backgroundColor); if (c) return c;
+        // only what runs the width of the screen: a card or a stage inset from
+        // the edges is not what shows beside the bars
+        const c = solid(cs.backgroundColor); if (c && e.getBoundingClientRect().width >= innerWidth * 0.95) return c;
       }
     }
     return null;
   };
+  // the top strip and Safari's top bar take the colour under the top of the
+  // screen, the bottom strip, the page and its body the colour under the
+  // bottom; on the first screen, until it has turned to paper, both are its
+  // navy. Every colour is set outright each time, so nothing set for one
+  // part of the page is left behind in another.
+  const NAVY = 'rgb(5, 8, 15)';
   let raf = 0, lastT = '', lastB = '';
   const paint = () => {
     raf = 0;
-    if (html.classList.contains('hs-on') && !html.classList.contains('hs-past')) {
-      if (lastT) { edgeT.style.background = edgeB.style.background = html.style.background = ''; lastT = lastB = ''; }
-      return;
-    }
-    const t = under(8) || '', b = under(innerHeight - 8) || '';
-    if (t !== lastT) { lastT = t; edgeT.style.background = t; if (tone && t) tone.content = t; }
-    if (b !== lastB) { lastB = b; edgeB.style.background = b; html.style.background = b; }
+    if (html.classList.contains('mm-open')) return;
+    const hero = html.classList.contains('hs-on') && !html.classList.contains('hs-past');
+    const t = hero ? NAVY : (under(8) || lastT || NAVY);
+    const b = hero ? NAVY : (under(innerHeight - 8) || lastB || t);
+    if (t !== lastT) { lastT = t; edgeT.style.background = t; if (tone) tone.content = t; }
+    if (b !== lastB) { lastB = b; edgeB.style.background = b; html.style.background = b; document.body.style.background = b; }
   };
   const ask = () => { if (!raf) raf = requestAnimationFrame(paint); };
   addEventListener('scroll', ask, { passive: true });
   addEventListener('resize', ask);
+  // back from another page (Safari keeps this one in memory), and whenever
+  // the first screen turns to paper or the menu closes
+  addEventListener('pageshow', () => { lastT = lastB = ''; ask(); });
+  new MutationObserver(() => { lastT = lastB = ''; ask(); }).observe(html, { attributes: true, attributeFilter: ['class'] });
   ask();
 }

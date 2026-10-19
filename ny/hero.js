@@ -202,7 +202,7 @@ export function startHero() {
     html.classList.toggle('hx-paper', e > 0.8);
     // and Safari's bars with it
     const past = p >= PAPER[1] - 0.005;
-    if (past !== wasPast) { wasPast = past; html.classList.toggle('hs-past', past); if (tone) tone.content = past ? '#F6F4EF' : '#05080F'; }
+    if (past !== wasPast) { wasPast = past; html.classList.toggle('hs-past', past); }
   }
   addEventListener('scroll', () => { if (!raf) raf = requestAnimationFrame(frame); }, { passive: true });
 
