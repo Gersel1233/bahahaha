@@ -671,3 +671,7 @@ body.svc{ color:var(--porcelain); background:radial-gradient(60% 1400px at 85% 0
 .tp-real .dev-iph .scr{ display:block; background:#000; }
 .tp-real .full{ object-position:50% 0; }
 @media (max-width:767px){ .tp-real{ width:118px; } }
+/* the service pages are navy from the first paint, the strips at Safari's
+   edges too, so no white bar shows while the page loads */
+html:has(> body.svc){ background:#05080F; }
+body.svc .edge{ background:#05080F; }

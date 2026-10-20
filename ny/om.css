@@ -299,3 +299,16 @@ body.om .om-cta .btn{ margin-top:32px; }
   body.om .om-cta-in{ border-radius:24px; padding:28px 22px; }
   body.om .om-cta p{ font-size:16px; line-height:26px; }
 }
+
+/* no slanted serif on this page: the second line of a heading is the same
+   sans, in a quieter tone */
+body.om .acc{ font-family:var(--sans) !important; font-style:normal !important; font-weight:500 !important; letter-spacing:inherit !important; color:rgba(246,244,239,.5) !important; }
+body.om .ab-ai-us .acc{ color:var(--ash) !important; }
+.ab-ph-mg{ font:300 112px/1 var(--sans); font-style:normal; letter-spacing:-.05em; }
+.ab-sign .acc{ font-size:28px !important; line-height:32px !important; letter-spacing:-.02em !important; color:var(--porcelain) !important; }
+
+/* navy from the first paint: the page and the strips at Safari's edges are
+   navy before the script that keeps them in step has run, so no white bar
+   shows at the top or the bottom while the page loads */
+html:has(> body.om), html:has(> body.svc){ background:#05080F; }
+body.om .edge, body.svc .edge{ background:#05080F; }
