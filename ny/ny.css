@@ -247,3 +247,10 @@ html.ix-on:not(.nav-light) .tb, .ix-rail .rail-in, .apptag{ -webkit-backdrop-fil
    by itself, no layers kept ready */
 html.zoomed *, html.zoomed *::before, html.zoomed *::after{ -webkit-backdrop-filter:none !important; backdrop-filter:none !important; animation-play-state:paused !important; will-change:auto !important; }
 html.zoomed .tb{ background:rgba(20,22,28,.94) !important; }
+
+/* one typeface for the words: the second line of a heading is the same sans
+   at the same weight, in a quieter tone of its own colour. (The made-up
+   screens of the clients keep their own type.) */
+.acc, .hs-ct em, .hs-say2 em, .alt-h em, .alt-fin-h em, .steps-note{
+  font-family:var(--sans) !important; font-style:normal !important; font-weight:inherit !important; font-size:inherit !important;
+  letter-spacing:inherit !important; color:color-mix(in srgb, currentColor 52%, transparent) !important; }

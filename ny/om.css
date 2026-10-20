@@ -302,8 +302,6 @@ body.om .om-cta .btn{ margin-top:32px; }
 
 /* no slanted serif on this page: the second line of a heading is the same
    sans, in a quieter tone */
-body.om .acc{ font-family:var(--sans) !important; font-style:normal !important; font-weight:500 !important; letter-spacing:inherit !important; color:rgba(246,244,239,.5) !important; }
-body.om .ab-ai-us .acc{ color:var(--ash) !important; }
 .ab-ph-mg{ font:300 112px/1 var(--sans); font-style:normal; letter-spacing:-.05em; }
 .ab-sign .acc{ font-size:28px !important; line-height:32px !important; letter-spacing:-.02em !important; color:var(--porcelain) !important; }
 
@@ -312,3 +310,9 @@ body.om .ab-ai-us .acc{ color:var(--ash) !important; }
    shows at the top or the bottom while the page loads */
 html:has(> body.om), html:has(> body.svc){ background:#05080F; }
 body.om .edge, body.svc .edge{ background:#05080F; }
+
+/* on a computer the film, its heading and the buttons fit on one screen:
+   the frame is as wide as the height of the window allows */
+@media (min-width:768px){
+  .tmv-vd, .om-vd{ width:min(100%, max(560px, calc((100vh - 380px) * 16 / 9))); margin-left:auto; margin-right:auto; }
+}

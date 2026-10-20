@@ -675,3 +675,28 @@ body.svc{ color:var(--porcelain); background:radial-gradient(60% 1400px at 85% 0
    edges too, so no white bar shows while the page loads */
 html:has(> body.svc){ background:#05080F; }
 body.svc .edge{ background:#05080F; }
+/* on a computer the cards fill their rows: payment and sales takes two
+   columns, so Callster sits in the third and no hole is left */
+@media (min-width:1024px){ .ig-grid > .ig-c:nth-child(4){ grid-column:span 2; } }
+/* the service pages on a wide screen: the opening in two columns, the
+   words on the left and the live screen beside them; the rest of the page
+   on the full width, the questions kept to a reading measure */
+@media (min-width:1200px){
+  .svc-main{ max-width:1296px; }
+  .svc-main .sh-in{ display:grid; grid-template-columns:minmax(0, 1fr) minmax(0, 1fr); column-gap:64px; align-items:center; }
+  .svc-main .sh-in > *{ grid-column:1 / -1; }
+  .svc-main .sh-in > .sx-head{ grid-column:1; }
+  .svc-main .sh-in > .sx-live{ grid-column:2; margin-top:0; height:460px; }
+  .svc-main .sh-in > .sx-live:has(.lv-sys){ height:500px; }
+  .svc-main .svc-faq{ max-width:860px; }
+}
+/* the kitchen screen needs the room: on the systems page the opening stays
+   one column, the board across the full width under the words */
+@media (min-width:1200px){
+  .svc-main .sh-in:has(.lv-sys) > .sx-head{ grid-column:1 / -1; }
+  .svc-main .sh-in:has(.lv-sys) > .sx-live{ grid-column:1 / -1; margin-top:40px; height:520px; }
+}
+/* seven systems round the hub: the two log lines sit in the free top
+   corners, clear of the names at the bottom */
+.lv-int .lv-log1{ left:20px; top:20px; bottom:auto; } .lv-int .lv-log2{ right:20px; top:20px; bottom:auto; }
+@media (max-width:767px){ .lv-int .lv-log1{ left:12px; top:12px; } .lv-int .lv-log2{ right:12px; top:12px; } }

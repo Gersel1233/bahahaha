@@ -558,3 +558,9 @@ html.sheet-open{ overflow:hidden; }
 @keyframes sh-up{ from{ transform:translateY(100%); } }
 @keyframes sh-down{ to{ transform:translateY(100%); } }
 @media (prefers-reduced-motion:reduce){ .sheet[open], .sheet.going, .sheet[open]::backdrop{ animation:none; } }
+/* on screens wider than the page: the words and the object line up with
+   the bar and the rest of the page instead of the edges of the window */
+@media (min-width:1441px){
+  .alt-words{ left:calc((100vw - 1296px) / 2); }
+  .alt-obj{ right:calc((100vw - 1296px) / 2); }
+}
