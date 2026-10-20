@@ -159,7 +159,12 @@ html.nav-light .tb, html.hx-paper .tb{ background:linear-gradient(165deg, rgba(4
 .tb-brand{ align-items:center; }
 .tb-mark{ width:22px; height:22px; flex:none; color:var(--porcelain); }
 .tb-menu{ position:relative; }
-@media (max-width:760px){
+/* the menu button and its sheet up to where the links fit in the bar */
+@media (min-width:761px) and (max-width:1099px){
+  .tb-r .tb-menu{ display:inline-flex; }
+  .mm-card{ max-width:560px; margin:0 auto; }
+}
+@media (max-width:1099px){
   .tb{ padding:0 6px 0 18px; }
   .tb-brand{ gap:10px; }
   .tb-brand b{ font:600 17px/1 var(--sans); letter-spacing:-.02em; }
@@ -188,6 +193,22 @@ html.nav-light .tb, html.hx-paper .tb{ background:linear-gradient(165deg, rgba(4
   .tb-links{ display:flex; gap:2px; margin:0 auto 0 28px; }
   .tb-links a{ height:40px; padding:0 14px; display:flex; align-items:center; border-radius:20px; font:400 14px/16px var(--sans); color:var(--porcelain); opacity:.86; transition:background-color .25s var(--ease), opacity .25s; }
   .tb-links a:hover{ background:rgba(246,244,239,.12); opacity:1; }
+}
+/* ---------- the bar on a computer: the same slim glass as on the phone ---
+   the mark and the name alone, the links quiet, the language as a small
+   capsule and the button slim, its lens shrunk to match */
+@media (min-width:761px){
+  .tb{ height:60px; border-radius:30px; padding:0 8px 0 22px; }
+  .tb-brand{ gap:10px; }
+  .tb-brand b{ font:600 18px/1 var(--sans); letter-spacing:-.02em; }
+  .tb-brand .anno{ display:none; }
+  .tb-r{ gap:10px; }
+  .tb-r .seg{ padding:3px; border-radius:20px; background:rgba(255,255,255,.08); box-shadow:inset 0 0 0 1px rgba(255,255,255,.12); }
+  .tb-r .seg button{ height:34px; padding:0 12px; border-radius:17px; font:500 12.5px/1 var(--sans); letter-spacing:.02em; color:rgba(246,244,239,.7); }
+  .tb-r .seg button[aria-pressed="true"]{ background:rgba(255,255,255,.16); color:var(--porcelain); }
+  .tb-r .btn{ height:44px; gap:12px; padding:0 4px 0 18px; border-radius:22px; font-size:14px; }
+  .tb-r .btn .lens{ width:36px; height:36px; border-radius:18px; }
+  .tb-r .btn .lens svg{ width:14px; height:14px; }
 }
 /* LA31 Nav / Mobile menu: the navy of the page over all of it (opaque, so
    Safari's bars and the strips at the edges are one colour with it), and a
@@ -232,7 +253,7 @@ html.mm-open .mm-card{ transform:none; }
 .mm-ft .anno{ color:rgba(246,244,239,.6); }
 .mm .seg button{ height:36px; padding:0 14px; border-radius:18px; color:var(--porcelain); }
 .mm .seg button[aria-pressed="true"]{ background:var(--porcelain); color:var(--obsidian); }
-@media (min-width:761px){ .mm{ display:none; } }
+@media (min-width:1100px){ .mm{ display:none; } }
 
 @media (prefers-reduced-motion: reduce){
   html.hs-on .hs-track{ height:auto; }
