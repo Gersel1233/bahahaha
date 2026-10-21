@@ -316,3 +316,76 @@ body.om .edge, body.svc .edge{ background:#05080F; }
 @media (min-width:768px){
   .tmv-vd, .om-vd{ width:min(100%, max(560px, calc((100vh - 380px) * 16 / 9))); margin-left:auto; margin-right:auto; }
 }
+
+/* ---------- running today: one client at a time ----------
+   Tabs of glass over a pane of glass; each client with what we built and
+   the real screens in real devices. The cases take turns on their own
+   (the line under a tab fills while it shows); a click takes over. */
+.ab-cases-w{ display:flex; flex-direction:column; gap:14px; }
+.ab-tabs{ position:relative; z-index:1; display:flex; gap:8px; }
+.ab-tab{ position:relative; overflow:hidden; display:inline-flex; align-items:center; gap:10px; height:52px; padding:0 20px 0 10px; border:0; border-radius:26px; cursor:pointer;
+  font:500 15px/1 var(--sans); color:rgba(246,244,239,.7); background:rgba(255,255,255,.06); box-shadow:inset 0 1px 0 rgba(255,255,255,.14), inset 0 0 0 1px rgba(255,255,255,.1);
+  -webkit-backdrop-filter:blur(16px); backdrop-filter:blur(16px); transition:background .3s ease, color .3s ease; -webkit-tap-highlight-color:transparent; }
+.ab-tab img{ width:32px; height:32px; border-radius:9px; }
+.ab-tab[aria-selected="true"]{ color:var(--obsidian); background:linear-gradient(180deg, #fff, #EFECE5); box-shadow:inset 0 1px 0 #fff, 0 10px 24px -12px rgba(0,0,0,.6); }
+.ab-tab-p{ position:absolute; left:20px; right:20px; bottom:7px; height:2px; border-radius:1px; background:rgba(14,15,16,.1); opacity:0; }
+.ab-tab-p::after{ content:""; position:absolute; inset:0; border-radius:inherit; background:var(--ultra); transform-origin:0 50%; transform:scaleX(0); }
+.ab-cases.auto ~ .ab-tabs .ab-tab-p, .ab-cases-w.auto .ab-tab[aria-selected="true"] .ab-tab-p{ opacity:1; }
+.ab-cases-w.auto .ab-tab[aria-selected="true"] .ab-tab-p::after{ animation:ab-tab 7s linear forwards; }
+@keyframes ab-tab{ to{ transform:scaleX(1); } }
+@media (hover:hover){ .ab-tab[aria-selected="false"]:hover{ background:rgba(255,255,255,.12); color:var(--porcelain); } }
+.ab-tab:focus-visible{ outline:none; box-shadow:0 0 0 2px #05080F, 0 0 0 4px var(--ultra); }
+
+.ab-cases{ display:grid; padding:0; overflow:hidden; }
+.ab-case{ display:grid; grid-template-columns:minmax(0, 5fr) minmax(0, 8fr); align-items:center; gap:24px; min-height:560px; padding:0 0 0 48px; }
+.ab-cases.js .ab-case{ grid-area:1 / 1; opacity:0; visibility:hidden; transition:opacity .55s ease, visibility .55s; }
+.ab-cases.js .ab-case.on{ opacity:1; visibility:visible; }
+.ab-cases:not(.js) .ab-case + .ab-case{ border-top:1px solid rgba(246,244,239,.1); }
+.ab-case-t{ padding:48px 0; }
+.ab-case-ic{ border-radius:14px; box-shadow:0 10px 24px rgba(0,0,0,.4); }
+.ab-case h3{ margin-top:20px; font:500 36px/40px var(--sans); letter-spacing:-.025em; }
+.ab-case p{ margin-top:12px; font:400 17px/27px var(--sans); color:rgba(246,244,239,.74); }
+.ab-case ul{ list-style:none; margin:22px 0 0; padding:0; display:grid; gap:10px; }
+.ab-case li{ display:flex; align-items:center; gap:12px; font:400 15.5px/22px var(--sans); color:var(--porcelain); }
+.ab-case li svg{ flex:none; width:20px; height:20px; padding:3px; border-radius:50%; background:var(--ultra); fill:none; stroke:#fff; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+.ab-case-u{ display:inline-flex; align-items:center; gap:8px; margin-top:28px; height:40px; padding:0 16px; border-radius:20px; font:500 14px/1 var(--sans); color:var(--porcelain); text-decoration:none;
+  background:rgba(255,255,255,.08); box-shadow:inset 0 1px 0 rgba(255,255,255,.2), inset 0 0 0 1px rgba(255,255,255,.12); transition:background .2s ease; }
+.ab-case-u svg{ width:14px; height:14px; }
+@media (hover:hover){ .ab-case-u:hover{ background:rgba(255,255,255,.16); } }
+
+/* the devices: a stage of their own, rising a little as the case comes in */
+.ab-case-v{ position:relative; align-self:stretch; min-height:520px; }
+.ab-case-v > *{ position:absolute; transition:transform 1s cubic-bezier(.2,.8,.2,1), opacity .8s ease; }
+.ab-cases.js .ab-case:not(.on) .ab-case-v > *{ transform:translate3d(0,24px,0); opacity:0; }
+.cv-ipad{ left:2%; top:50%; width:86%; height:auto; margin-top:-30%; filter:drop-shadow(0 40px 60px rgba(0,0,0,.55)); }
+.cv-mac{ left:0; top:50%; width:92%; margin-top:-27%; filter:drop-shadow(0 40px 60px rgba(0,0,0,.55)); }
+.cv-mac .full{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:50% 0; }
+.cv-ph{ right:6%; bottom:-4%; width:25%; filter:drop-shadow(0 30px 50px rgba(0,0,0,.6)); transition-delay:.12s; }
+.cv-solo{ right:auto; left:50%; bottom:auto; top:7%; width:33%; margin-left:-16.5%; }
+.cv-chip{ display:inline-flex; align-items:center; gap:8px; height:40px; padding:0 16px 0 12px; border-radius:20px; font:500 14px/1 var(--sans); color:#fff; white-space:nowrap;
+  background:rgba(20,28,52,.5); -webkit-backdrop-filter:blur(16px) saturate(1.6); backdrop-filter:blur(16px) saturate(1.6);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.35), inset 0 0 0 1px rgba(255,255,255,.16), 0 16px 32px rgba(0,0,0,.45); transition-delay:.3s; }
+.cv-chip i{ width:8px; height:8px; border-radius:50%; background:#34C759; box-shadow:0 0 0 4px rgba(52,199,89,.22); }
+.cv-c1{ left:4%; top:30%; } .cv-c2{ right:4%; top:56%; transition-delay:.45s; }
+.ab-case.on .cv-chip{ animation:cv-float 6s ease-in-out infinite alternate; }
+@keyframes cv-float{ to{ transform:translate3d(0,-8px,0); } }
+
+@media (max-width:1023px){
+  .ab-case{ grid-template-columns:minmax(0, 1fr); padding:0; gap:0; min-height:0; }
+  .ab-case-v{ order:-1; min-height:0; height:clamp(300px, 62vw, 460px); }
+  .ab-case-t{ padding:8px 24px 28px; }
+}
+@media (max-width:767px){
+  .ab-tabs{ gap:6px; overflow-x:auto; scrollbar-width:none; margin:0 calc(-1 * var(--gut)); padding:0 var(--gut); }
+  .ab-tabs::-webkit-scrollbar{ display:none; }
+  .ab-tab{ flex:none; height:46px; padding:0 16px 0 8px; font-size:14px; }
+  .ab-tab img{ width:30px; height:30px; }
+  .ab-case-v{ height:clamp(260px, 78vw, 360px); }
+  .ab-case-t{ padding:4px 18px 22px; }
+  .ab-case h3{ margin-top:14px; font-size:28px; line-height:32px; }
+  .ab-case-ic{ width:44px; height:44px; border-radius:12px; }
+  .ab-case p{ font-size:15.5px; line-height:24px; }
+  .ab-case li{ font-size:14.5px; }
+  .cv-chip{ height:32px; padding:0 12px 0 10px; font-size:12px; }
+  .cv-c1{ left:3%; top:22%; } .cv-c2{ right:3%; top:60%; }
+}

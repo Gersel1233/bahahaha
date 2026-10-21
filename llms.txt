@@ -28,7 +28,7 @@ Lesreg bruger selv AI, hvor det gør arbejdet hurtigere, og det er en del af gru
 
 - Spiis (spiis.dk): bestilling og betaling på restaurantens egen side; bestillingen går direkte ind i køkkenet.
 - Mosede Havnecafé (mosedehavnecafe.dk): hjemmeside, menukort og skærmene i caféen kører på samme system.
-- Callster (callster.dk): en AI-medarbejder, der tager telefonen, booker og aflyser, styret med en sms. Lesreg var med til at bygge den.
+- Callster (callster.dk): en AI-medarbejder, der tager telefonen, booker og aflyser, styret med en sms. Mikkel Gersel er medejer, og Lesreg har været med til at bygge den.
 
 ## Kontakt
 
