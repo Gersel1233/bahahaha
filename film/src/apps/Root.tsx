@@ -12,7 +12,7 @@ import { WhyPris, PRIS_S, WHY_W, WHY_H } from './WhyPris';
 import { WhyTempo, TEMPO_S } from './WhyTempo';
 import { WhyPenge, PENGE_S } from './WhyPenge';
 
-const FPS = 60;
+const FPS = Number(process.env.REMOTION_FPS || 60);
 export const AppsRoot: React.FC = () => (
   <>
     <Composition id="Spiis" component={Spiis} durationInFrames={Math.round(SPIIS_S * FPS)} fps={FPS} width={W} height={H} />
