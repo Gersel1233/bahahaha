@@ -819,3 +819,78 @@ body.svc .edge{ background:#05080F; }
   .lf-rt::before{ top:17px; height:10px; }
   .lf-rt::after{ top:35px; height:8px; }
 }
+
+/* ---------- the sheets, with what matters in them ----------
+   What you get as six panes of glass; today against with Lesreg; every step
+   says what you do yourselves; the price from the hours a job takes; and the
+   questions people ask. Everything on the navy of the sheet. */
+.sx-sec > .label + *{ margin-top:20px; }
+.sx-get{ list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:12px; }
+.sx-get li{ position:relative; isolation:isolate; display:flex; flex-direction:column; gap:6px; padding:22px 22px 24px; border-radius:22px;
+  background:linear-gradient(160deg, rgba(255,255,255,.08), rgba(255,255,255,.025)); box-shadow:inset 0 1px 0 rgba(255,255,255,.14), 0 14px 30px -18px rgba(0,0,0,.6); }
+.sx-get li::after{ content:""; position:absolute; inset:0; border-radius:inherit; padding:1px; pointer-events:none;
+  background:linear-gradient(135deg, rgba(255,255,255,.4), rgba(255,255,255,.05) 45%, rgba(255,255,255,.16));
+  -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite:xor; mask-composite:exclude; }
+.sg-ic{ width:40px; height:40px; margin-bottom:10px; border-radius:12px; display:grid; place-items:center;
+  background:radial-gradient(90% 90% at 30% 20%, rgba(120,140,255,.55), rgba(36,54,232,.9)); box-shadow:inset 0 1px 0 rgba(255,255,255,.4), 0 8px 18px -6px rgba(36,54,232,.7); }
+.sg-ic svg{ width:20px; height:20px; fill:none; stroke:#fff; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; }
+.sx-get b{ font:500 17px/22px var(--sans); letter-spacing:-.01em; }
+.sx-get span:not(.sg-ic){ font:400 14.5px/22px var(--sans); color:rgba(246,244,239,.68); }
+
+.sx-ba{ border-radius:24px; overflow:hidden; background:rgba(255,255,255,.03); box-shadow:inset 0 0 0 1px rgba(255,255,255,.1); }
+.ba-h{ display:grid; grid-template-columns:1fr 40px 1fr; padding:16px 24px; font:600 11px/14px var(--sans); letter-spacing:.06em; text-transform:uppercase; color:rgba(246,244,239,.5);
+  border-bottom:1px solid rgba(255,255,255,.08); }
+.ba-h span:last-child{ grid-column:3; color:#9DB2FF; }
+.sx-ba ul{ list-style:none; margin:0; padding:0; }
+.sx-ba li{ display:grid; grid-template-columns:1fr 40px 1fr; align-items:center; padding:16px 24px; }
+.sx-ba li + li{ border-top:1px solid rgba(255,255,255,.06); }
+.ba-b{ font:400 15.5px/22px var(--sans); color:rgba(246,244,239,.5); text-decoration:line-through; text-decoration-color:rgba(246,244,239,.25); }
+.ba-arw svg{ display:block; width:16px; height:16px; fill:none; stroke:rgba(157,178,255,.7); stroke-width:1.5; stroke-linecap:round; stroke-linejoin:round; }
+.ba-a{ display:flex; align-items:center; gap:10px; font:500 15.5px/22px var(--sans); color:var(--porcelain); }
+.ba-a svg{ flex:none; width:20px; height:20px; padding:3px; border-radius:50%; background:#34C759; fill:none; stroke:#fff; stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round; }
+.sx-ba li:hover .ba-a{ color:#fff; }
+
+.bt-you{ display:flex !important; gap:6px; margin-top:6px; padding-top:10px; border-top:1px dashed rgba(246,244,239,.16); font:400 13px/19px var(--sans) !important; color:rgba(246,244,239,.82) !important; }
+.bt-you em{ font-style:normal; font-weight:600; color:#9DB2FF; }
+.rt .bt-you{ border-top-color:rgba(14,15,16,.14); color:var(--graphite) !important; }
+.rt .bt-you em{ color:var(--ultra); }
+
+.sx-price{ position:relative; isolation:isolate; display:grid; grid-template-columns:minmax(0, 1fr) minmax(0, 1.1fr); gap:32px; align-items:center; padding:32px; border-radius:28px; overflow:hidden;
+  background:radial-gradient(60% 120% at 0% 0%, rgba(36,54,232,.45), transparent 70%), radial-gradient(50% 120% at 100% 100%, rgba(242,138,62,.28), transparent 70%), rgba(255,255,255,.04);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.22), inset 0 0 0 1px rgba(255,255,255,.12), 0 24px 48px -28px rgba(0,0,0,.7); }
+.sp-k{ font:400 15px/22px var(--sans); color:rgba(246,244,239,.7); }
+.sp-h{ margin-top:6px; display:flex; align-items:baseline; gap:12px; font:300 72px/1 var(--sans); letter-spacing:-.05em; font-variant-numeric:tabular-nums; }
+.sp-h small{ font:500 18px/1 var(--sans); letter-spacing:0; color:rgba(246,244,239,.75); }
+.sp-n{ margin-top:14px; max-width:26em; font:400 14px/21px var(--sans); color:rgba(246,244,239,.66); }
+.sp-r{ display:flex; flex-direction:column; gap:10px; }
+.sp-row{ display:flex; align-items:center; justify-content:space-between; gap:12px; height:54px; padding:0 20px; border-radius:27px; font:400 15px/1 var(--sans);
+  color:rgba(246,244,239,.7); background:rgba(255,255,255,.06); box-shadow:inset 0 0 0 1px rgba(255,255,255,.08); }
+.sp-row b{ font-weight:500; font-variant-numeric:tabular-nums; text-decoration:line-through; text-decoration-color:rgba(246,244,239,.4); }
+.sp-row.us{ background:linear-gradient(180deg, #fff, #EFECE5); color:var(--obsidian); font-weight:500; box-shadow:inset 0 1px 0 #fff, 0 10px 24px -12px rgba(0,0,0,.6); }
+.sp-row.us b{ text-decoration:none; font-size:17px; }
+.sp-row span{ display:inline-flex; align-items:center; gap:10px; }
+.sp-row.us i{ width:8px; height:8px; border-radius:50%; background:var(--ultra); box-shadow:0 0 0 4px rgba(36,54,232,.2); }
+.sp-go{ align-self:flex-start; display:inline-flex; align-items:center; gap:8px; margin-top:6px; padding-left:20px; font:500 14px/1 var(--sans); color:var(--porcelain); text-decoration:none; }
+.sp-go svg{ width:16px; height:16px; transition:transform .25s var(--ease); }
+@media (hover:hover){ .sp-go:hover svg{ transform:translateX(3px); } }
+.sx .svc-qs{ margin-top:16px; }
+
+@media (max-width:1023px){
+  .sx-get{ grid-template-columns:repeat(2, minmax(0, 1fr)); }
+  .sx-price{ grid-template-columns:minmax(0, 1fr); gap:24px; }
+}
+@media (max-width:767px){
+  .sx-get{ grid-template-columns:minmax(0, 1fr); gap:8px; }
+  .sx-get li{ display:grid; grid-template-columns:40px minmax(0, 1fr); column-gap:14px; row-gap:2px; padding:16px; border-radius:18px; }
+  .sg-ic{ grid-row:span 2; margin:0; }
+  .sx-get b{ font-size:16px; line-height:21px; }
+  .sx-get span:not(.sg-ic){ font-size:13.5px; line-height:20px; }
+  .ba-h{ display:none; }
+  .sx-ba li{ grid-template-columns:minmax(0, 1fr); gap:6px; padding:14px 16px; }
+  .ba-arw{ display:none; }
+  .ba-b{ font-size:13.5px; line-height:19px; }
+  .ba-a{ font-size:15px; }
+  .sx-price{ padding:22px 18px; border-radius:22px; }
+  .sp-h{ font-size:56px; }
+  .sp-row{ height:48px; padding:0 16px; font-size:14px; }
+}

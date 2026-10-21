@@ -260,3 +260,11 @@ function flow(f) {
   document.addEventListener('visibilitychange', () => (document.hidden ? stop() : seen && start()));
 }
 if (!still) $$('.lv-flow').forEach(flow);
+
+// a link out of a sheet to a part of the page: close the sheet, then go there
+document.addEventListener('click', e => {
+  const a = e.target.closest('.sheet a[data-close-to]'); if (!a) return;
+  const d = a.closest('dialog'), to = document.querySelector(a.dataset.closeTo);
+  e.preventDefault(); close(d);
+  setTimeout(() => to && to.scrollIntoView({ behavior: still ? 'auto' : 'smooth' }), 420);
+});
