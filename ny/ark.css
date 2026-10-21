@@ -27,8 +27,8 @@
 .lv{ position:absolute; inset:0; }
 .lv img{ display:block; }
 /* a glass panel, by the recipe */
-.lv-act, .lv-note, .lv-log{ isolation:isolate; }
-.lv-act::after, .lv-note::after, .lv-log::after{
+.lv-act, .lv-note{ isolation:isolate; }
+.lv-act::after, .lv-note::after{
   content:""; position:absolute; inset:0; border-radius:inherit; padding:1px; pointer-events:none;
   background:linear-gradient(135deg, rgba(255,255,255,.6), rgba(255,255,255,.08) 45%, rgba(255,255,255,.28));
   -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite:xor; mask-composite:exclude; }
@@ -136,28 +136,7 @@
 .press .kds-ok{ transform:scale(.92); background:#0E0F10; color:#F6F4EF; }
 
 /* integrations: Lesreg in the middle, the systems round it, data running along the lines */
-.lv-lines, .lv-runs{ position:absolute; inset:0; width:100%; height:100%; overflow:visible; }
-.lv-lines path{ fill:none; stroke:rgba(246,244,239,.16); stroke-width:1; vector-effect:non-scaling-stroke; }
-.lv-runs path{ fill:none; stroke:var(--porcelain); stroke-width:2; stroke-linecap:round; vector-effect:non-scaling-stroke; stroke-dasharray:.08 .92; stroke-dashoffset:1; opacity:0; }
-.play .lv-runs path{ animation:lv-run 3.6s cubic-bezier(.5,0,.5,1) infinite; animation-delay:calc(var(--i) * .6s); }
-.play .lv-runs path:nth-child(even){ animation-name:lv-run-in; }
-@keyframes lv-run{ 0%{ stroke-dashoffset:1; opacity:0; } 10%{ opacity:1; } 45%{ stroke-dashoffset:.08; opacity:1; } 55%, 100%{ stroke-dashoffset:.08; opacity:0; } }
-@keyframes lv-run-in{ 0%{ stroke-dashoffset:.08; opacity:0; } 10%{ opacity:1; } 45%{ stroke-dashoffset:1; opacity:1; } 55%, 100%{ stroke-dashoffset:1; opacity:0; } }
-.lv-node{ position:absolute; display:flex; flex-direction:column; align-items:center; gap:6px; transform:translate(-50%, -50%); }
-.lv-node img{ width:52px; height:52px; border-radius:14px; box-shadow:0 10px 24px rgba(0,0,0,.4); }
-.lv-node small{ font:400 12px/16px var(--sans); color:rgba(246,244,239,.7); white-space:nowrap; }
-.lv-hub{ position:absolute; left:50%; top:50%; width:76px; height:76px; margin:-38px 0 0 -38px; border-radius:50%; display:grid; place-items:center; background:#05080F;
   box-shadow:0 0 0 1px rgba(255,255,255,.2), 0 0 0 10px rgba(36,54,232,.12), 0 0 40px rgba(36,54,232,.5); }
-.lv-hub svg{ width:34px; height:34px; }
-.lv-hub::after{ content:""; position:absolute; inset:-14px; border-radius:50%; box-shadow:0 0 0 1px rgba(157,178,255,.5); opacity:0; }
-.play .lv-hub::after{ animation:lv-hub 3.6s ease-out infinite; }
-@keyframes lv-hub{ 0%{ opacity:.8; transform:scale(.8); } 100%{ opacity:0; transform:scale(1.4); } }
-.lv-log{ position:absolute; display:inline-flex; align-items:center; gap:8px; height:32px; padding:0 12px; border-radius:16px; background:rgba(14,15,16,.78); font:400 12.5px/1 var(--sans); white-space:nowrap; opacity:0; }
-.lv-log i{ width:6px; height:6px; border-radius:50%; background:#34C759; }
-.lv-log1{ left:20px; bottom:20px; } .lv-log2{ right:20px; bottom:20px; }
-.play .lv-log1{ animation:lv-log 7.2s ease infinite; }
-.play .lv-log2{ animation:lv-log 7.2s ease 3.6s infinite; }
-@keyframes lv-log{ 0%, 8%{ opacity:0; transform:translateY(8px); } 14%, 44%{ opacity:1; transform:none; } 52%, 100%{ opacity:0; } }
 
 /* websites: a page in Safari builds itself and moves, beside the code that moves it */
 .lv-web{ display:grid; grid-template-columns:1.25fr 1fr; gap:16px; align-items:center; padding:24px; }
@@ -494,21 +473,11 @@ html.pg-js .sheet:not([open]) .dp li{ opacity:0; }
   .kds-ok{ height:22px; padding:0 8px; font-size:10px; }
   .kds-sent{ height:auto; min-height:24px; padding:4px 8px; white-space:normal; font-size:10px; line-height:12px; }
   .kds-toast{ font-size:11px; height:28px; padding:0 12px; }
-  .lv-node img{ width:40px; height:40px; border-radius:11px; }
-  .lv-node small{ font-size:11px; }
-  .lv-hub{ width:60px; height:60px; margin:-30px 0 0 -30px; }
-  .lv-hub svg{ width:26px; height:26px; }
-  .lv-log{ font-size:11.5px; height:28px; padding:0 10px; }
-  .lv-log1{ left:12px; bottom:12px; } .lv-log2{ right:12px; bottom:12px; }
   .lv-web{ padding:16px; }
-  /* the systems keep clear of the edges, and the log lines give way to them */
-  .lv-int{ inset:6% 0 12% 0; }
-  .lv-log{ display:none; }
 }
 @media (prefers-reduced-motion: reduce){
   .sheet[open] .sx *{ animation:none !important; }
   .lv-isl{ width:min(340px, 82%); } .lv-isl-t, .lv-isl-r, .lv-note{ opacity:1; } .lv-prog-fill{ transform:scaleX(.5); }
-  .lv-log, .lv-runs path{ opacity:1; }
 }
 
 /* ---------- the hard integrations ----------
@@ -696,7 +665,127 @@ body.svc .edge{ background:#05080F; }
   .svc-main .sh-in:has(.lv-sys) > .sx-head{ grid-column:1 / -1; }
   .svc-main .sh-in:has(.lv-sys) > .sx-live{ grid-column:1 / -1; margin-top:40px; height:520px; }
 }
-/* seven systems round the hub: the two log lines sit in the free top
-   corners, clear of the names at the bottom */
-.lv-int .lv-log1{ left:20px; top:20px; bottom:auto; } .lv-int .lv-log2{ right:20px; top:20px; bottom:auto; }
-@media (max-width:767px){ .lv-int .lv-log1{ left:12px; top:12px; } .lv-int .lv-log2{ right:12px; top:12px; } }
+
+/* ---------- live: integrations, as one order typed in once ----------
+   The order comes in from the web shop on a card of porcelain, runs into
+   Lesreg, and from there out to four systems; each lights up with its own
+   receipt, one after the other. At rest (and with reduced motion) all four
+   stand done. Wide, the three parts sit side by side; narrow, they stack. */
+.sx-live:has(.lv-flow){ height:auto !important; container-type:inline-size; }
+.lv-flow{ position:relative; inset:auto; display:grid; grid-template-columns:minmax(0, .95fr) minmax(80px, .5fr) minmax(0, 1.2fr); align-items:center; padding:clamp(24px, 4cqw, 44px); }
+.lf-l{ display:flex; flex-direction:column; gap:12px; }
+.lf-src{ padding:18px 18px 16px; border-radius:20px; background:var(--porcelain); color:var(--obsidian); box-shadow:0 30px 60px rgba(0,0,0,.45), 0 0 0 1px rgba(255,255,255,.4); }
+.lf-src-h{ display:flex; align-items:center; gap:10px; }
+.lf-src-h img{ border-radius:8px; }
+.lf-src-h > span{ display:flex; flex-direction:column; font:400 12px/16px var(--sans); color:var(--ash); }
+.lf-src-h b{ font:500 14px/18px var(--sans); color:var(--obsidian); }
+.lf-new{ margin-left:auto; height:22px; padding:0 9px; border-radius:11px; font:500 11px/22px var(--sans); font-style:normal; color:#fff; background:var(--ultra); }
+.lf-no{ margin-top:14px; font:500 30px/34px var(--sans); letter-spacing:-.03em; }
+.lf-items{ list-style:none; margin:10px 0 0; padding:0; display:grid; gap:4px; font:400 13px/18px var(--sans); color:var(--graphite); }
+.lf-items li{ display:flex; justify-content:space-between; gap:12px; }
+.lf-items li > span:last-child{ font-variant-numeric:tabular-nums; }
+.lf-tot{ margin-top:12px; padding-top:10px; border-top:1px solid rgba(14,15,16,.1); display:flex; align-items:baseline; justify-content:space-between; font:400 13px/18px var(--sans); color:var(--graphite); }
+.lf-tot b{ font:500 17px/20px var(--sans); color:var(--obsidian); font-variant-numeric:tabular-nums; }
+.lf-zero{ display:flex; align-items:center; justify-content:space-between; gap:10px; height:44px; padding:0 16px; border-radius:22px; background:rgba(255,255,255,.06); box-shadow:inset 0 0 0 1px rgba(255,255,255,.12); font:400 13px/1 var(--sans); color:rgba(246,244,239,.7); }
+.lf-zero b{ font:500 15px/1 var(--sans); color:var(--porcelain); }
+.lf-mid{ position:relative; height:286px; }
+.lf-lines, .lf-runs{ position:absolute; inset:0; width:100%; height:100%; overflow:visible; }
+.lf-lines path{ fill:none; stroke:rgba(246,244,239,.2); stroke-width:1; vector-effect:non-scaling-stroke; }
+.lf-runs path{ fill:none; stroke:var(--porcelain); stroke-width:2.2; stroke-linecap:round; vector-effect:non-scaling-stroke; stroke-dasharray:.12 1; stroke-dashoffset:.12; opacity:0; filter:drop-shadow(0 0 4px rgba(157,178,255,.9)); }
+.lf-hub{ position:absolute; left:34%; top:50%; width:56px; height:56px; margin:-28px 0 0 -28px; border-radius:50%; display:grid; place-items:center; background:#05080F;
+  box-shadow:0 0 0 1px rgba(157,178,255,.4), 0 0 32px rgba(36,54,232,.55); }
+.lf-hub svg{ width:24px; height:24px; }
+.lf-dst{ list-style:none; margin:0; padding:0; display:grid; grid-auto-rows:64px; gap:10px; }
+.lf-r{ display:grid; grid-template-columns:34px minmax(0, 1fr) 24px; gap:12px; align-items:center; padding:0 14px; border-radius:18px;
+  background:linear-gradient(160deg, rgba(255,255,255,.1), rgba(255,255,255,.04)); box-shadow:inset 0 1px 0 rgba(255,255,255,.14), inset 0 0 0 1px rgba(255,255,255,.08); }
+.lf-r img{ border-radius:10px; }
+.lf-rt{ display:flex; flex-direction:column; min-width:0; }
+.lf-rt small{ font:400 11px/14px var(--sans); color:rgba(246,244,239,.55); }
+.lf-rt b, .lf-rd{ white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.lf-rt b{ font:500 14px/19px var(--sans); }
+.lf-rd{ font:400 12px/16px var(--sans); color:rgba(246,244,239,.62); font-variant-numeric:tabular-nums; }
+.lf-st{ width:24px; height:24px; border-radius:50%; display:grid; place-items:center; background:#34C759; box-shadow:0 0 0 4px rgba(52,199,89,.18); }
+.lf-st svg{ width:14px; height:14px; fill:none; stroke:#fff; stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round; }
+
+/* the run: in from the shop, a pulse in Lesreg, out to each system in turn */
+.play .lf-src{ animation:lf-src 9s var(--ease) infinite; }
+.play .lf-new{ animation:lf-new 9s ease infinite; }
+.play .lf-runs .lf-i{ animation:lf-i 9s cubic-bezier(.5,0,.5,1) infinite; }
+.play .lf-hub{ animation:lf-hub 9s ease infinite; }
+.play .lf-zero{ animation:lf-zero 9s var(--ease) infinite; }
+.play .lf-r1{ animation:lf-r1 9s linear infinite; } .play .lf-r1 .lf-st{ animation:lf-s1 9s linear infinite; } .play .lf-r1 .lf-st svg{ animation:lf-c1 9s var(--ease) infinite; } .play .lf-runs .lf-o1{ animation:lf-o1 9s cubic-bezier(.5,0,.5,1) infinite; }
+.play .lf-r2{ animation:lf-r2 9s linear infinite; } .play .lf-r2 .lf-st{ animation:lf-s2 9s linear infinite; } .play .lf-r2 .lf-st svg{ animation:lf-c2 9s var(--ease) infinite; } .play .lf-runs .lf-o2{ animation:lf-o2 9s cubic-bezier(.5,0,.5,1) infinite; }
+.play .lf-r3{ animation:lf-r3 9s linear infinite; } .play .lf-r3 .lf-st{ animation:lf-s3 9s linear infinite; } .play .lf-r3 .lf-st svg{ animation:lf-c3 9s var(--ease) infinite; } .play .lf-runs .lf-o3{ animation:lf-o3 9s cubic-bezier(.5,0,.5,1) infinite; }
+.play .lf-r4{ animation:lf-r4 9s linear infinite; } .play .lf-r4 .lf-st{ animation:lf-s4 9s linear infinite; } .play .lf-r4 .lf-st svg{ animation:lf-c4 9s var(--ease) infinite; } .play .lf-runs .lf-o4{ animation:lf-o4 9s cubic-bezier(.5,0,.5,1) infinite; }
+@keyframes lf-src{ 0%{ opacity:0; transform:translate3d(-14px,0,0); } 6%, 94%{ opacity:1; transform:none; } 100%{ opacity:0; } }
+@keyframes lf-new{ 0%, 4%{ transform:scale(.6); opacity:0; } 8%{ transform:scale(1.12); opacity:1; } 11%, 94%{ transform:none; opacity:1; } 100%{ opacity:0; } }
+@keyframes lf-i{ 0%, 9%{ stroke-dashoffset:.12; opacity:0; } 10%{ opacity:1; } 19%{ stroke-dashoffset:-1; opacity:1; } 20%, 100%{ stroke-dashoffset:-1; opacity:0; } }
+@keyframes lf-hub{ 0%, 18%{ box-shadow:0 0 0 1px rgba(157,178,255,.4), 0 0 32px rgba(36,54,232,.55); } 21%{ box-shadow:0 0 0 8px rgba(157,178,255,.18), 0 0 56px rgba(80,100,255,.95); } 28%, 100%{ box-shadow:0 0 0 1px rgba(157,178,255,.4), 0 0 32px rgba(36,54,232,.55); } }
+@keyframes lf-zero{ 0%, 56%{ opacity:0; transform:translate3d(0,8px,0); } 60%, 94%{ opacity:1; transform:none; } 100%{ opacity:0; } }
+@keyframes lf-r1{ 0%, 29%{ opacity:.38; } 31%, 93%{ opacity:1; } 99%, 100%{ opacity:.38; } }
+@keyframes lf-s1{ 0%, 29%{ background:transparent; box-shadow:inset 0 0 0 1.5px rgba(246,244,239,.25); } 31%, 93%{ background:#34C759; box-shadow:0 0 0 4px rgba(52,199,89,.18); } 99%, 100%{ background:transparent; box-shadow:inset 0 0 0 1.5px rgba(246,244,239,.25); } }
+@keyframes lf-c1{ 0%, 29%{ opacity:0; transform:scale(.4); } 32%, 93%{ opacity:1; transform:none; } 99%, 100%{ opacity:0; } }
+@keyframes lf-o1{ 0%, 22%{ stroke-dashoffset:.12; opacity:0; } 23%{ opacity:1; } 30%{ stroke-dashoffset:-1; opacity:1; } 31%, 100%{ stroke-dashoffset:-1; opacity:0; } }
+@keyframes lf-r2{ 0%, 37%{ opacity:.38; } 39%, 93%{ opacity:1; } 99%, 100%{ opacity:.38; } }
+@keyframes lf-s2{ 0%, 37%{ background:transparent; box-shadow:inset 0 0 0 1.5px rgba(246,244,239,.25); } 39%, 93%{ background:#34C759; box-shadow:0 0 0 4px rgba(52,199,89,.18); } 99%, 100%{ background:transparent; box-shadow:inset 0 0 0 1.5px rgba(246,244,239,.25); } }
+@keyframes lf-c2{ 0%, 37%{ opacity:0; transform:scale(.4); } 40%, 93%{ opacity:1; transform:none; } 99%, 100%{ opacity:0; } }
+@keyframes lf-o2{ 0%, 30%{ stroke-dashoffset:.12; opacity:0; } 31%{ opacity:1; } 38%{ stroke-dashoffset:-1; opacity:1; } 39%, 100%{ stroke-dashoffset:-1; opacity:0; } }
+@keyframes lf-r3{ 0%, 45%{ opacity:.38; } 47%, 93%{ opacity:1; } 99%, 100%{ opacity:.38; } }
+@keyframes lf-s3{ 0%, 45%{ background:transparent; box-shadow:inset 0 0 0 1.5px rgba(246,244,239,.25); } 47%, 93%{ background:#34C759; box-shadow:0 0 0 4px rgba(52,199,89,.18); } 99%, 100%{ background:transparent; box-shadow:inset 0 0 0 1.5px rgba(246,244,239,.25); } }
+@keyframes lf-c3{ 0%, 45%{ opacity:0; transform:scale(.4); } 48%, 93%{ opacity:1; transform:none; } 99%, 100%{ opacity:0; } }
+@keyframes lf-o3{ 0%, 38%{ stroke-dashoffset:.12; opacity:0; } 39%{ opacity:1; } 46%{ stroke-dashoffset:-1; opacity:1; } 47%, 100%{ stroke-dashoffset:-1; opacity:0; } }
+@keyframes lf-r4{ 0%, 53%{ opacity:.38; } 55%, 93%{ opacity:1; } 99%, 100%{ opacity:.38; } }
+@keyframes lf-s4{ 0%, 53%{ background:transparent; box-shadow:inset 0 0 0 1.5px rgba(246,244,239,.25); } 55%, 93%{ background:#34C759; box-shadow:0 0 0 4px rgba(52,199,89,.18); } 99%, 100%{ background:transparent; box-shadow:inset 0 0 0 1.5px rgba(246,244,239,.25); } }
+@keyframes lf-c4{ 0%, 53%{ opacity:0; transform:scale(.4); } 56%, 93%{ opacity:1; transform:none; } 99%, 100%{ opacity:0; } }
+@keyframes lf-o4{ 0%, 46%{ stroke-dashoffset:.12; opacity:0; } 47%{ opacity:1; } 54%{ stroke-dashoffset:-1; opacity:1; } 55%, 100%{ stroke-dashoffset:-1; opacity:0; } }
+
+/* narrow (the opening of the service page, a phone): one column, the order
+   on top, Lesreg on a short line, the four systems under it */
+@container (max-width:640px){
+  .lv-flow{ grid-template-columns:minmax(0, 1fr); padding:18px; }
+  .lf-zero{ display:none; }
+  .lf-src{ padding:14px 14px 12px; border-radius:16px; }
+  .lf-no{ margin-top:10px; font-size:24px; line-height:28px; }
+  .lf-items{ margin-top:6px; font-size:12px; line-height:16px; }
+  .lf-tot{ margin-top:8px; padding-top:8px; }
+  .lf-mid{ height:52px; }
+  .lf-mid::before{ content:""; position:absolute; left:50%; top:0; bottom:0; width:1px; background:rgba(246,244,239,.25); }
+  .lf-lines, .lf-runs{ display:none; }
+  .lf-hub{ left:50%; width:38px; height:38px; margin:-19px 0 0 -19px; }
+  .lf-hub svg{ width:16px; height:16px; }
+  .lf-dst{ grid-auto-rows:54px; gap:8px; }
+  .lf-r{ grid-template-columns:30px minmax(0, 1fr) 22px; gap:10px; padding:0 12px; border-radius:15px; }
+  .lf-r img{ width:30px; height:30px; border-radius:9px; }
+  .lf-rt b{ font-size:13px; line-height:17px; }
+  .lf-rd{ font-size:11.5px; line-height:15px; }
+  .lf-st{ width:22px; height:22px; }
+}
+@media (prefers-reduced-motion: reduce){ .lv-flow, .lv-flow *{ animation:none !important; } }
+
+/* ---------- partners: every card says it is connected ----------
+   A green "Koblet på" where the category was; the category moves down over
+   the title. The logos stand side by side as tiles, not stacked coins. */
+.ig-on{ display:inline-flex; align-items:center; gap:7px; height:30px; padding:0 12px 0 10px; border-radius:15px; font:500 12.5px/1 var(--sans); color:#1E7A3C;
+  background:rgba(52,199,89,.12); box-shadow:inset 0 0 0 1px rgba(52,199,89,.28); white-space:nowrap; }
+.ig-on i{ width:7px; height:7px; border-radius:50%; background:#34C759; box-shadow:0 0 0 3px rgba(52,199,89,.22); }
+.ig-cat{ margin-top:24px; }
+.ig-cat + h3{ margin-top:6px !important; }
+.ig-logos{ gap:8px; }
+.ig-logos img{ width:48px; height:48px; box-shadow:0 0 0 1px rgba(14,15,16,.06), 0 8px 18px -8px rgba(14,15,16,.35); }
+.ig-logos img + img{ margin-left:0; }
+.ig-wide .ig-top{ justify-content:flex-start; flex-wrap:wrap; gap:12px 16px; }
+.ig-wide .ig-logos img + img{ margin-left:0; }
+@media (max-width:767px){
+  .ig-logos{ gap:6px; }
+  .ig-logos img{ width:38px; height:38px; }
+  /* every card the same way down: logos and status, category, title, text */
+  .ig-c:not(.ig-meta):not(.ig-wide):not(.ig-dark){ display:flex; flex-direction:column; padding:20px; }
+  .ig-c:not(.ig-meta):not(.ig-wide):not(.ig-dark) .ig-top{ grid-row:auto; }
+  .ig-c:not(.ig-meta):not(.ig-wide):not(.ig-dark) .ig-logos{ flex-direction:row; }
+  .ig-c:not(.ig-meta):not(.ig-wide):not(.ig-dark) .ig-logos img{ width:38px; height:38px; }
+  .ig-c:not(.ig-meta):not(.ig-wide):not(.ig-dark) .ig-logos img + img{ margin:0; }
+  .ig-c:not(.ig-meta):not(.ig-wide):not(.ig-dark) h3{ font-size:20px; line-height:26px; }
+  .ig-c:not(.ig-meta):not(.ig-wide):not(.ig-dark) .ig-d{ margin-top:6px; font-size:14.5px; line-height:22px; }
+  .ig-cat{ margin-top:16px; }
+  .ig-on{ height:26px; font-size:11.5px; padding:0 10px 0 8px; }
+}
