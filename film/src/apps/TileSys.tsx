@@ -227,7 +227,7 @@ export const TileSys: React.FC<{ flat?: boolean }> = ({ flat }) => {
         ...glass('light') }}>
         <Catch a={0.6} /><i style={edge(EDGE_ON_LIGHT)} />
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '0 8px 16px' }}>
-          <Img src={staticFile('ny/media/ic/spiis-app.svg')} style={{ width: 34, height: 34, borderRadius: 9 }} />
+          <Img src={staticFile('ny/media/ic/spiis-app.webp')} style={{ width: 34, height: 34, borderRadius: 9 }} />
           <span style={{ font: `500 20px/1 ${SANS}`, color: OBS }}>Spiis</span>
           <span style={{ marginLeft: 'auto' }}><Ico d={I.side} s={20} c={GRAPH} /></span>
         </div>
@@ -357,9 +357,9 @@ export const TileSys: React.FC<{ flat?: boolean }> = ({ flat }) => {
               color: '#fff', fontFamily: IOS, zIndex: 10 + k, opacity: clamp(a * 1.4) * (1 - seg(d, 2.2, 3.2)),
               transformOrigin: '50% 100%', transform: `translateY(${-70 * (1 - a) + 15 * Math.min(d, 2.5)}px) scale(${mix(0.9, 1, clamp(a)) * (1 - 0.05 * Math.min(d, 2.5))})`,
               filter: a < 0.98 ? `blur(${(1 - clamp(a)) * 6}px)` : undefined }}>
-              <Img src={staticFile('ny/media/ic/spiis-app.svg')} style={{ width: 64, height: 64, borderRadius: 15, flex: 'none', opacity: 1 - clamp(d * 1.6) }} />
+              <Img src={staticFile('ny/media/ic/spiis-app.webp')} style={{ width: 64, height: 64, borderRadius: 15, flex: 'none', opacity: 1 - clamp(d * 1.6) }} />
               <span style={{ display: 'flex', flexDirection: 'column', gap: 6, flex: 1, opacity: 1 - clamp(d * 1.6) }}>
-                <span style={{ font: `500 18px/1 ${IOS}`, color: 'rgba(255,255,255,.65)' }}>SPIIS</span>
+                <span style={{ font: `500 18px/1 ${IOS}`, color: 'rgba(255,255,255,.65)' }}>Spiis</span>
                 <b style={{ font: `600 25px/1.15 ${IOS}` }}>{title}</b>
                 <span style={{ font: `400 22px/1.2 ${IOS}`, color: 'rgba(255,255,255,.82)' }}>{body}</span>
               </span>
