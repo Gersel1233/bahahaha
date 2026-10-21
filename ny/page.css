@@ -73,7 +73,7 @@ html.pg-js [data-r].in{ opacity:1; transform:none; }
 .dev-iph .sb{ position:absolute; z-index:2; left:0; right:0; top:0; height:14.43cqw; padding:1.49cqw 7.46cqw 0 10.95cqw;
   display:flex; align-items:center; justify-content:space-between; background:var(--sb, #fff); color:var(--sbc, #000);
   font:600 4.23cqw/1 -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif; letter-spacing:-.07cqw; -webkit-font-smoothing:antialiased; }
-.dev-iph .sb .ic{ display:flex; align-items:center; gap:1.49cqw; }
+.dev-iph .sb .sb-ic{ display:flex; align-items:center; gap:1.49cqw; }
 .dev-iph .sb svg{ display:block; height:4.23cqw; width:4.23cqw; }
 .dev-iph .sb .bat{ width:6.22cqw; height:4.23cqw; }
 

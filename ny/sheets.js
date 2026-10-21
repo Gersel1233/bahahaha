@@ -173,3 +173,80 @@ if (kds) {
     if (sheet) sheet.addEventListener('close', stop);
   }
 }
+
+/* The order in the integrations demo, one run every nine seconds: the card
+   comes in, a light with a tail runs along the wire into Lesreg and from
+   there out to each system in turn; the system it reaches flashes, ticks and
+   its wire stays lit. The wires are measured in pixels, so they meet the
+   card, the hub and the rows exactly, side by side or stacked. Runs only
+   while the demo is on screen; with reduced motion it stands done. */
+function flow(f) {
+  const svg = f.querySelector('.lf-wire'), src = f.querySelector('.lf-src'), hub = f.querySelector('.lf-hub'), rows = $$('.lf-r', f);
+  const NS = 'http://www.w3.org/2000/svg', T = 9000, TRAIL = 70;
+  let wires = [], t0 = 0, raf = 0, on = false, stacked = false;
+  const el = (n, c) => { const e = document.createElementNS(NS, n); e.setAttribute('class', c); return e; };
+  const ease = p => (p < .5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2);
+
+  function draw() {
+    const b = f.getBoundingClientRect(); if (!b.width) return;
+    const r = e => { const q = e.getBoundingClientRect(); return { l: q.left - b.left, t: q.top - b.top, r: q.right - b.left, b: q.bottom - b.top, w: q.width, h: q.height }; };
+    const s = r(src), h = r(hub), cx = h.l + h.w / 2, cy = h.t + h.h / 2, rad = h.w / 2;
+    stacked = s.b <= h.t + 1;
+    const d = [];
+    if (!stacked) {
+      const sx = s.r, sy = s.t + s.h / 2, m = (sx + cx - rad) / 2;
+      d.push(`M${sx} ${sy}C${m} ${sy} ${m} ${cy} ${cx - rad} ${cy}`);
+      rows.forEach(e => { const q = r(e), y = q.t + q.h / 2, x0 = cx + rad, mx = x0 + (q.l - x0) * .55; d.push(`M${x0} ${cy}C${mx} ${cy} ${x0 + (q.l - x0) * .45} ${y} ${q.l} ${y}`); });
+    } else {
+      const q = r(rows[0]);
+      d.push(`M${cx} ${s.b}L${cx} ${h.t}`);
+      d.push(`M${cx} ${h.b}L${cx} ${q.t}`);
+    }
+    svg.setAttribute('viewBox', `0 0 ${b.width} ${b.height}`);
+    svg.textContent = '';
+    wires = d.map(p => {
+      const w = el('path', 'lf-w'), g = el('path', 'lf-g'), dot = el('circle', 'lf-dot');
+      w.setAttribute('d', p); g.setAttribute('d', p); dot.setAttribute('r', '4');
+      svg.append(w, g, dot);
+      return { w, g, dot, len: w.getTotalLength() };
+    });
+  }
+
+  function comet(k, t, start, dur) {
+    const c = wires[k]; if (!c) return;
+    const p = (t - start) / dur;
+    if (p < 0 || p > 1) { c.g.style.opacity = 0; c.dot.style.opacity = 0; return; }
+    const pos = c.len * ease(p), pt = c.w.getPointAtLength(pos);
+    c.dot.setAttribute('cx', pt.x); c.dot.setAttribute('cy', pt.y);
+    c.g.style.strokeDasharray = `${TRAIL} ${c.len + TRAIL}`;
+    c.g.style.strokeDashoffset = TRAIL - pos;
+    c.g.style.opacity = 1; c.dot.style.opacity = 1;
+  }
+
+  function frame(now) {
+    raf = requestAnimationFrame(frame);
+    const t = (now - t0) % T, live = t < 8400;
+    f.classList.toggle('s-in', t > 150 && live);
+    f.classList.toggle('s-new', t > 500 && live);
+    comet(0, t, 900, 850);
+    hub.classList.toggle('hit', t > 1750 && t < 2150);
+    rows.forEach((e, i) => {
+      const start = 1950 + i * 650, at = start + 800;
+      comet(stacked ? (i ? -1 : 1) : i + 1, t, start, 800);
+      const done = t > at && live;
+      e.classList.toggle('done', done);
+      e.classList.toggle('hit', t > at && t < at + 650);
+      const w = wires[stacked ? 1 : i + 1]; if (w && (!stacked || !i)) w.w.classList.toggle('lit', done);
+    });
+    if (wires[0]) wires[0].w.classList.toggle('lit', t > 1750 && live);
+    f.classList.toggle('s-zero', t > 5300 && live);
+  }
+
+  function start() { if (on) return; on = true; f.classList.add('lf-js', 'lf-on'); draw(); t0 = performance.now(); raf = requestAnimationFrame(frame); }
+  function stop() { if (!on) return; on = false; f.classList.remove('lf-on'); cancelAnimationFrame(raf); }
+  let seen = false;
+  new IntersectionObserver(es => es.forEach(e => { seen = e.isIntersecting; seen && !document.hidden ? start() : stop(); })).observe(f);
+  new ResizeObserver(() => { if (on) draw(); }).observe(f);
+  document.addEventListener('visibilitychange', () => (document.hidden ? stop() : seen && start()));
+}
+if (!still) $$('.lv-flow').forEach(flow);

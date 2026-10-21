@@ -689,9 +689,6 @@ body.svc .edge{ background:#05080F; }
 .lf-zero{ display:flex; align-items:center; justify-content:space-between; gap:10px; height:44px; padding:0 16px; border-radius:22px; background:rgba(255,255,255,.06); box-shadow:inset 0 0 0 1px rgba(255,255,255,.12); font:400 13px/1 var(--sans); color:rgba(246,244,239,.7); }
 .lf-zero b{ font:500 15px/1 var(--sans); color:var(--porcelain); }
 .lf-mid{ position:relative; height:286px; }
-.lf-lines, .lf-runs{ position:absolute; inset:0; width:100%; height:100%; overflow:visible; }
-.lf-lines path{ fill:none; stroke:rgba(246,244,239,.2); stroke-width:1; vector-effect:non-scaling-stroke; }
-.lf-runs path{ fill:none; stroke:var(--porcelain); stroke-width:2.2; stroke-linecap:round; vector-effect:non-scaling-stroke; stroke-dasharray:.12 1; stroke-dashoffset:.12; opacity:0; filter:drop-shadow(0 0 4px rgba(157,178,255,.9)); }
 .lf-hub{ position:absolute; left:34%; top:50%; width:56px; height:56px; margin:-28px 0 0 -28px; border-radius:50%; display:grid; place-items:center; background:#05080F;
   box-shadow:0 0 0 1px rgba(157,178,255,.4), 0 0 32px rgba(36,54,232,.55); }
 .lf-hub svg{ width:24px; height:24px; }
@@ -707,37 +704,39 @@ body.svc .edge{ background:#05080F; }
 .lf-st{ width:24px; height:24px; border-radius:50%; display:grid; place-items:center; background:#34C759; box-shadow:0 0 0 4px rgba(52,199,89,.18); }
 .lf-st svg{ width:14px; height:14px; fill:none; stroke:#fff; stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round; }
 
-/* the run: in from the shop, a pulse in Lesreg, out to each system in turn */
-.play .lf-src{ animation:lf-src 9s var(--ease) infinite; }
-.play .lf-new{ animation:lf-new 9s ease infinite; }
-.play .lf-runs .lf-i{ animation:lf-i 9s cubic-bezier(.5,0,.5,1) infinite; }
-.play .lf-hub{ animation:lf-hub 9s ease infinite; }
-.play .lf-zero{ animation:lf-zero 9s var(--ease) infinite; }
-.play .lf-r1{ animation:lf-r1 9s linear infinite; } .play .lf-r1 .lf-st{ animation:lf-s1 9s linear infinite; } .play .lf-r1 .lf-st svg{ animation:lf-c1 9s var(--ease) infinite; } .play .lf-runs .lf-o1{ animation:lf-o1 9s cubic-bezier(.5,0,.5,1) infinite; }
-.play .lf-r2{ animation:lf-r2 9s linear infinite; } .play .lf-r2 .lf-st{ animation:lf-s2 9s linear infinite; } .play .lf-r2 .lf-st svg{ animation:lf-c2 9s var(--ease) infinite; } .play .lf-runs .lf-o2{ animation:lf-o2 9s cubic-bezier(.5,0,.5,1) infinite; }
-.play .lf-r3{ animation:lf-r3 9s linear infinite; } .play .lf-r3 .lf-st{ animation:lf-s3 9s linear infinite; } .play .lf-r3 .lf-st svg{ animation:lf-c3 9s var(--ease) infinite; } .play .lf-runs .lf-o3{ animation:lf-o3 9s cubic-bezier(.5,0,.5,1) infinite; }
-.play .lf-r4{ animation:lf-r4 9s linear infinite; } .play .lf-r4 .lf-st{ animation:lf-s4 9s linear infinite; } .play .lf-r4 .lf-st svg{ animation:lf-c4 9s var(--ease) infinite; } .play .lf-runs .lf-o4{ animation:lf-o4 9s cubic-bezier(.5,0,.5,1) infinite; }
-@keyframes lf-src{ 0%{ opacity:0; transform:translate3d(-14px,0,0); } 6%, 94%{ opacity:1; transform:none; } 100%{ opacity:0; } }
-@keyframes lf-new{ 0%, 4%{ transform:scale(.6); opacity:0; } 8%{ transform:scale(1.12); opacity:1; } 11%, 94%{ transform:none; opacity:1; } 100%{ opacity:0; } }
-@keyframes lf-i{ 0%, 9%{ stroke-dashoffset:.12; opacity:0; } 10%{ opacity:1; } 19%{ stroke-dashoffset:-1; opacity:1; } 20%, 100%{ stroke-dashoffset:-1; opacity:0; } }
-@keyframes lf-hub{ 0%, 18%{ box-shadow:0 0 0 1px rgba(157,178,255,.4), 0 0 32px rgba(36,54,232,.55); } 21%{ box-shadow:0 0 0 8px rgba(157,178,255,.18), 0 0 56px rgba(80,100,255,.95); } 28%, 100%{ box-shadow:0 0 0 1px rgba(157,178,255,.4), 0 0 32px rgba(36,54,232,.55); } }
-@keyframes lf-zero{ 0%, 56%{ opacity:0; transform:translate3d(0,8px,0); } 60%, 94%{ opacity:1; transform:none; } 100%{ opacity:0; } }
-@keyframes lf-r1{ 0%, 29%{ opacity:.38; } 31%, 93%{ opacity:1; } 99%, 100%{ opacity:.38; } }
-@keyframes lf-s1{ 0%, 29%{ background:transparent; box-shadow:inset 0 0 0 1.5px rgba(246,244,239,.25); } 31%, 93%{ background:#34C759; box-shadow:0 0 0 4px rgba(52,199,89,.18); } 99%, 100%{ background:transparent; box-shadow:inset 0 0 0 1.5px rgba(246,244,239,.25); } }
-@keyframes lf-c1{ 0%, 29%{ opacity:0; transform:scale(.4); } 32%, 93%{ opacity:1; transform:none; } 99%, 100%{ opacity:0; } }
-@keyframes lf-o1{ 0%, 22%{ stroke-dashoffset:.12; opacity:0; } 23%{ opacity:1; } 30%{ stroke-dashoffset:-1; opacity:1; } 31%, 100%{ stroke-dashoffset:-1; opacity:0; } }
-@keyframes lf-r2{ 0%, 37%{ opacity:.38; } 39%, 93%{ opacity:1; } 99%, 100%{ opacity:.38; } }
-@keyframes lf-s2{ 0%, 37%{ background:transparent; box-shadow:inset 0 0 0 1.5px rgba(246,244,239,.25); } 39%, 93%{ background:#34C759; box-shadow:0 0 0 4px rgba(52,199,89,.18); } 99%, 100%{ background:transparent; box-shadow:inset 0 0 0 1.5px rgba(246,244,239,.25); } }
-@keyframes lf-c2{ 0%, 37%{ opacity:0; transform:scale(.4); } 40%, 93%{ opacity:1; transform:none; } 99%, 100%{ opacity:0; } }
-@keyframes lf-o2{ 0%, 30%{ stroke-dashoffset:.12; opacity:0; } 31%{ opacity:1; } 38%{ stroke-dashoffset:-1; opacity:1; } 39%, 100%{ stroke-dashoffset:-1; opacity:0; } }
-@keyframes lf-r3{ 0%, 45%{ opacity:.38; } 47%, 93%{ opacity:1; } 99%, 100%{ opacity:.38; } }
-@keyframes lf-s3{ 0%, 45%{ background:transparent; box-shadow:inset 0 0 0 1.5px rgba(246,244,239,.25); } 47%, 93%{ background:#34C759; box-shadow:0 0 0 4px rgba(52,199,89,.18); } 99%, 100%{ background:transparent; box-shadow:inset 0 0 0 1.5px rgba(246,244,239,.25); } }
-@keyframes lf-c3{ 0%, 45%{ opacity:0; transform:scale(.4); } 48%, 93%{ opacity:1; transform:none; } 99%, 100%{ opacity:0; } }
-@keyframes lf-o3{ 0%, 38%{ stroke-dashoffset:.12; opacity:0; } 39%{ opacity:1; } 46%{ stroke-dashoffset:-1; opacity:1; } 47%, 100%{ stroke-dashoffset:-1; opacity:0; } }
-@keyframes lf-r4{ 0%, 53%{ opacity:.38; } 55%, 93%{ opacity:1; } 99%, 100%{ opacity:.38; } }
-@keyframes lf-s4{ 0%, 53%{ background:transparent; box-shadow:inset 0 0 0 1.5px rgba(246,244,239,.25); } 55%, 93%{ background:#34C759; box-shadow:0 0 0 4px rgba(52,199,89,.18); } 99%, 100%{ background:transparent; box-shadow:inset 0 0 0 1.5px rgba(246,244,239,.25); } }
-@keyframes lf-c4{ 0%, 53%{ opacity:0; transform:scale(.4); } 56%, 93%{ opacity:1; transform:none; } 99%, 100%{ opacity:0; } }
-@keyframes lf-o4{ 0%, 46%{ stroke-dashoffset:.12; opacity:0; } 47%{ opacity:1; } 54%{ stroke-dashoffset:-1; opacity:1; } 55%, 100%{ stroke-dashoffset:-1; opacity:0; } }
+/* the run, driven by sheets.js: the wires are drawn in pixels from the card
+   to Lesreg and on to each system, a light with a tail runs along each in
+   turn, and the system it reaches lights up, ticks and stays connected.
+   Without the script (or with reduced motion) everything stands done. */
+.lv-flow > :not(.lf-wire){ position:relative; z-index:1; }
+.lf-wire{ position:absolute; inset:0; width:100%; height:100%; z-index:0; overflow:visible; pointer-events:none; }
+.lf-w{ fill:none; stroke:rgba(246,244,239,.16); stroke-width:1.5; transition:stroke .6s ease; }
+.lf-w.lit{ stroke:rgba(157,178,255,.6); }
+.lf-g{ fill:none; stroke:#fff; stroke-width:3; stroke-linecap:round; opacity:0; filter:drop-shadow(0 0 4px rgba(157,178,255,1)) drop-shadow(0 0 10px rgba(80,100,255,.9)); }
+.lf-dot{ fill:#fff; opacity:0; filter:drop-shadow(0 0 5px #fff) drop-shadow(0 0 12px rgba(120,140,255,1)); }
+.lf-hub::before{ content:""; position:absolute; inset:-7px; border-radius:50%; opacity:0;
+  background:conic-gradient(from 0deg, transparent 0 62%, rgba(157,178,255,.95) 92%, transparent 100%);
+  -webkit-mask:radial-gradient(farthest-side, transparent calc(100% - 2px), #000 calc(100% - 1.5px)); mask:radial-gradient(farthest-side, transparent calc(100% - 2px), #000 calc(100% - 1.5px)); }
+.lf-on .lf-hub::before{ opacity:1; animation:lf-spin 2.4s linear infinite; }
+@keyframes lf-spin{ to{ transform:rotate(360deg); } }
+.lf-hub{ transition:transform .5s cubic-bezier(.2,1.6,.3,1), box-shadow .5s ease; }
+.lf-hub.hit{ transform:scale(1.12); box-shadow:0 0 0 8px rgba(157,178,255,.18), 0 0 60px rgba(110,130,255,1); }
+
+.lf-js .lf-src{ opacity:0; transform:translate3d(-16px,0,0) scale(.98); transition:opacity .6s var(--ease), transform .8s var(--ease); }
+.lf-js.s-in .lf-src{ opacity:1; transform:none; }
+.lf-js .lf-new{ opacity:0; transform:scale(.5); transition:opacity .3s ease, transform .5s cubic-bezier(.2,1.8,.3,1); }
+.lf-js.s-new .lf-new{ opacity:1; transform:none; }
+.lf-js .lf-zero{ opacity:0; transform:translate3d(0,8px,0); transition:opacity .6s var(--ease), transform .8s var(--ease); }
+.lf-js.s-zero .lf-zero{ opacity:1; transform:none; }
+.lf-js .lf-r{ opacity:.42; transition:opacity .5s ease, box-shadow .9s ease, background .9s ease; }
+.lf-js .lf-r.done{ opacity:1; }
+.lf-js .lf-r.hit{ background:linear-gradient(160deg, rgba(157,178,255,.26), rgba(255,255,255,.06)); box-shadow:inset 0 1px 0 rgba(255,255,255,.2), inset 0 0 0 1px rgba(157,178,255,.75), 0 0 28px rgba(80,100,255,.45); transition:none; }
+.lf-st{ position:relative; }
+.lf-js .lf-r:not(.done) .lf-st{ background:transparent; box-shadow:inset 0 0 0 1.5px rgba(246,244,239,.2); }
+.lf-js .lf-r:not(.done) .lf-st::before{ content:""; position:absolute; inset:0; border-radius:50%; border:1.5px solid transparent; border-top-color:rgba(246,244,239,.85); animation:lf-spin .9s linear infinite; }
+.lf-js .lf-st svg{ opacity:0; transform:scale(.3); transition:opacity .2s ease, transform .45s cubic-bezier(.2,1.8,.3,1); }
+.lf-js .lf-r.done .lf-st svg{ opacity:1; transform:none; }
+.lf-js .lf-r .lf-st{ transition:background .3s ease, box-shadow .3s ease; }
 
 /* narrow (the opening of the service page, a phone): one column, the order
    on top, Lesreg on a short line, the four systems under it */
@@ -749,8 +748,6 @@ body.svc .edge{ background:#05080F; }
   .lf-items{ margin-top:6px; font-size:12px; line-height:16px; }
   .lf-tot{ margin-top:8px; padding-top:8px; }
   .lf-mid{ height:52px; }
-  .lf-mid::before{ content:""; position:absolute; left:50%; top:0; bottom:0; width:1px; background:rgba(246,244,239,.25); }
-  .lf-lines, .lf-runs{ display:none; }
   .lf-hub{ left:50%; width:38px; height:38px; margin:-19px 0 0 -19px; }
   .lf-hub svg{ width:16px; height:16px; }
   .lf-dst{ grid-auto-rows:54px; gap:8px; }
