@@ -184,6 +184,9 @@ function flow(f) {
   const svg = f.querySelector('.lf-wire'), src = f.querySelector('.lf-src'), hub = f.querySelector('.lf-hub'), rows = $$('.lf-r', f);
   const NS = 'http://www.w3.org/2000/svg', T = 9000, TRAIL = 70;
   let wires = [], t0 = 0, raf = 0, on = false, stacked = false;
+  // what rides each wire: the order number in, the amount out, and so on
+  const labels = () => (document.documentElement.lang === 'en'
+    ? ['#1042', 'DKK 389.00', 'DKK 389.00', '#1042', 'Receipt'] : ['#1042', '389,00 kr.', '389,00 kr.', '#1042', 'Kvittering']);
   const el = (n, c) => { const e = document.createElementNS(NS, n); e.setAttribute('class', c); return e; };
   const ease = p => (p < .5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2);
 
@@ -204,20 +207,25 @@ function flow(f) {
     }
     svg.setAttribute('viewBox', `0 0 ${b.width} ${b.height}`);
     svg.textContent = '';
-    wires = d.map(p => {
+    $$('.lf-chip', f).forEach(c => c.remove());
+    const lab = labels();
+    wires = d.map((p, k) => {
       const w = el('path', 'lf-w'), g = el('path', 'lf-g'), dot = el('circle', 'lf-dot');
       w.setAttribute('d', p); g.setAttribute('d', p); dot.setAttribute('r', '4');
       svg.append(w, g, dot);
-      return { w, g, dot, len: w.getTotalLength() };
+      const chip = document.createElement('span'); chip.className = 'lf-chip'; chip.textContent = lab[k] || ''; f.append(chip);
+      return { w, g, dot, chip, cw: chip.offsetWidth, len: w.getTotalLength() };
     });
   }
 
   function comet(k, t, start, dur) {
     const c = wires[k]; if (!c) return;
     const p = (t - start) / dur;
-    if (p < 0 || p > 1) { c.g.style.opacity = 0; c.dot.style.opacity = 0; return; }
+    if (p < 0 || p > 1) { c.g.style.opacity = 0; c.dot.style.opacity = 0; c.chip.style.opacity = 0; return; }
     const pos = c.len * ease(p), pt = c.w.getPointAtLength(pos);
     c.dot.setAttribute('cx', pt.x); c.dot.setAttribute('cy', pt.y);
+    c.chip.style.transform = `translate3d(${(pt.x - c.cw / 2).toFixed(1)}px, ${(pt.y - 32).toFixed(1)}px, 0)`;
+    c.chip.style.opacity = Math.min(1, p * 6, (1 - p) * 6).toFixed(2);
     c.g.style.strokeDasharray = `${TRAIL} ${c.len + TRAIL}`;
     c.g.style.strokeDashoffset = TRAIL - pos;
     c.g.style.opacity = 1; c.dot.style.opacity = 1;
@@ -228,6 +236,7 @@ function flow(f) {
     const t = (now - t0) % T, live = t < 8400;
     f.classList.toggle('s-in', t > 150 && live);
     f.classList.toggle('s-new', t > 500 && live);
+    src.classList.toggle('send', t > 650 && t < 1900);
     comet(0, t, 900, 850);
     hub.classList.toggle('hit', t > 1750 && t < 2150);
     rows.forEach((e, i) => {
@@ -247,6 +256,7 @@ function flow(f) {
   let seen = false;
   new IntersectionObserver(es => es.forEach(e => { seen = e.isIntersecting; seen && !document.hidden ? start() : stop(); })).observe(f);
   new ResizeObserver(() => { if (on) draw(); }).observe(f);
+  new MutationObserver(() => { if (on) draw(); }).observe(document.documentElement, { attributes: true, attributeFilter: ['lang'] });
   document.addEventListener('visibilitychange', () => (document.hidden ? stop() : seen && start()));
 }
 if (!still) $$('.lv-flow').forEach(flow);

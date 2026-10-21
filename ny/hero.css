@@ -299,52 +299,70 @@ html.mm-open .mm-card{ transform:none; }
 .hs-end.on .pa-ring .fg{ animation:pa-ring 5s var(--ease) infinite; }
 @keyframes pa-ring{ 0%{ stroke-dashoffset:.92; } 70%, 88%{ stroke-dashoffset:0; } 100%{ stroke-dashoffset:.92; } }
 
+/* liquid glass, for the dashboard and the sync: a slow light of colour under
+   the pill, and over it a pane that blurs it, lit along its top edge with a
+   bright sheen across it. The light only drifts while the sentence shows. */
+.pg-light{ position:absolute; inset:-30%; border-radius:inherit; pointer-events:none; }
+.pill-sys .pg-light{ background:radial-gradient(40% 55% at 22% 40%, rgba(36,54,232,.55), transparent 70%), radial-gradient(40% 60% at 80% 70%, rgba(242,138,62,.55), transparent 70%), radial-gradient(35% 50% at 60% 10%, rgba(110,170,255,.5), transparent 70%), #EDE9E1; }
+.pill-int .pg-light{ background:radial-gradient(40% 60% at 20% 70%, rgba(36,54,232,.95), transparent 70%), radial-gradient(36% 60% at 85% 30%, rgba(242,138,62,.6), transparent 70%), radial-gradient(30% 50% at 55% 100%, rgba(110,170,255,.6), transparent 70%), #0A1020; }
+.hs-end.on .pg-light{ animation:pg-drift 9s ease-in-out infinite alternate; }
+@keyframes pg-drift{ to{ transform:translate3d(8%, -6%, 0) rotate(8deg); } }
+.pill-sys .pu, .pill-int .pu{ border-radius:inherit; -webkit-backdrop-filter:blur(.9em) saturate(1.6); backdrop-filter:blur(.9em) saturate(1.6); }
+.pill-sys .pu::after, .pill-int .pu::after{ content:""; position:absolute; inset:0; border-radius:inherit; pointer-events:none;
+  background:linear-gradient(115deg, rgba(255,255,255,0) 30%, rgba(255,255,255,.28) 46%, rgba(255,255,255,0) 60%); }
+
 /* systems: the dashboard of the business, today's orders ticking from 23 to
-   24 with a green +1, and the day's bars growing */
-.pill-sys{ background:#fff; box-shadow:inset 0 0 0 1px rgba(14,15,16,.1), 0 .06em .22em rgba(14,15,16,.14); }
-.pill-sys .pu{ padding:0 1.7em 0 2em; justify-content:space-between; gap:1.2em; }
-.pd-l{ display:flex; flex-direction:column; gap:.35em; }
-.pd-lab{ font:500 1.2em/1 var(--sans); color:var(--ash); white-space:nowrap; }
+   24 with a green +1, and the day's bars growing; on frosted white glass */
+.pill-sys{ background:#EDE9E1; box-shadow:0 .06em .22em rgba(14,15,16,.16); }
+.pill-sys .pu{ padding:0 1.7em 0 2em; justify-content:space-between; gap:1.2em; background:rgba(255,255,255,.58);
+  box-shadow:inset 0 .12em 0 rgba(255,255,255,.95), inset 0 -.1em 0 rgba(255,255,255,.4), inset 0 0 0 .1em rgba(255,255,255,.6); }
+.pd-l{ position:relative; z-index:1; display:flex; flex-direction:column; gap:.35em; }
+.pd-lab{ font:500 1.2em/1 var(--sans); color:var(--graphite); white-space:nowrap; }
 .pd-n{ position:relative; display:flex; align-items:center; gap:.5em; }
-.pd-roll{ display:block; height:4.6em; overflow:hidden; font:600 4.6em/1 var(--sans); font-size:4.6em; letter-spacing:-.04em; color:var(--obsidian); font-variant-numeric:tabular-nums; }
-.pd-roll{ height:1em; }
+.pd-roll{ display:block; height:1em; overflow:hidden; font:600 4.6em/1 var(--sans); letter-spacing:-.04em; color:var(--obsidian); font-variant-numeric:tabular-nums; }
 .pd-roll span{ display:block; height:1em; }
-.pd-up{ font:600 1.25em/1 var(--sans); font-style:normal; color:#1E7A3C; background:rgba(52,199,89,.16); padding:.3em .45em; border-radius:.6em; opacity:0; }
-.pd-bars{ display:flex; align-items:flex-end; gap:.4em; height:6em; }
-.pd-bars i{ display:block; width:.85em; height:100%; border-radius:.3em; background:rgba(14,15,16,.13); transform-origin:50% 100%; transform:scaleY(var(--h)); }
+.pd-up{ font:600 1.25em/1 var(--sans); font-style:normal; color:#1E7A3C; background:rgba(255,255,255,.7); box-shadow:inset 0 0 0 .08em rgba(52,199,89,.5); padding:.3em .45em; border-radius:.6em; opacity:0; }
+.pd-bars{ position:relative; z-index:1; display:flex; align-items:flex-end; gap:.4em; height:6em; }
+.pd-bars i{ display:block; width:.85em; height:100%; border-radius:.3em; background:rgba(14,15,16,.16); transform-origin:50% 100%; transform:scaleY(var(--h)); }
 .pd-bars .pd-now{ background:var(--ultra); transform:scaleY(.92); }
 .hs-end.on .pd-roll span{ animation:pd-roll 4.2s var(--ease) infinite; }
 .hs-end.on .pd-up{ animation:pd-up 4.2s var(--ease) infinite; }
 .hs-end.on .pd-now{ animation:pd-now 4.2s var(--ease) infinite; }
 @keyframes pd-roll{ 0%{ opacity:0; transform:none; } 5%, 44%{ opacity:1; transform:none; } 54%, 92%{ opacity:1; transform:translateY(-100%); } 100%{ opacity:0; transform:translateY(-100%); } }
 @keyframes pd-up{ 0%, 48%{ opacity:0; transform:translateY(.4em) scale(.7); } 56%, 90%{ opacity:1; transform:none; } 100%{ opacity:0; } }
-@keyframes pd-now{ 0%{ transform:scaleY(.5); background:rgba(14,15,16,.13); } 44%{ transform:scaleY(.5); background:rgba(14,15,16,.13); } 56%, 92%{ transform:scaleY(.92); background:var(--ultra); } 100%{ transform:scaleY(.5); background:rgba(14,15,16,.13); } }
+@keyframes pd-now{ 0%{ transform:scaleY(.5); background:rgba(14,15,16,.16); } 44%{ transform:scaleY(.5); background:rgba(14,15,16,.16); } 56%, 92%{ transform:scaleY(.92); background:var(--ultra); } 100%{ transform:scaleY(.5); background:rgba(14,15,16,.16); } }
 
-/* integrations: a new order in the shop, a light along the line into
-   Lesreg, on along the next one, and e-conomic rings green: booked */
-.pill-int{ width:2.15em; background:radial-gradient(80% 120% at 50% 120%, var(--deep), var(--navy-900) 70%); }
-.pill-int .pu{ padding:0 1.4em; }
-.pi-node{ position:relative; flex:none; width:4.4em; height:4.4em; border-radius:50%; box-shadow:0 0 0 .3em rgba(255,255,255,.12), 0 .3em .8em rgba(0,0,0,.35); }
-.pi-node img{ width:100%; height:100%; border-radius:50%; }
-.pi-node::after{ content:""; position:absolute; inset:0; border-radius:50%; pointer-events:none; opacity:0; }
-.pi-a::after{ box-shadow:0 0 0 .3em rgba(255,255,255,.7); }
-.pi-b::after{ box-shadow:0 0 0 .38em #34C759, 0 0 1.6em rgba(52,199,89,.8); }
-.pi-ln{ position:relative; flex:1; height:.32em; margin:0 .6em; border-radius:.15em; overflow:hidden; background:rgba(255,255,255,.2); }
-.pi-ln::after{ content:""; position:absolute; top:0; bottom:0; left:0; width:60%; border-radius:inherit;
-  background:linear-gradient(90deg, transparent, #fff 70%, #C9D3FF); box-shadow:0 0 .6em #fff; transform:translateX(-110%); }
-.pi-hub{ position:relative; flex:none; width:4.8em; height:4.8em; border-radius:50%; display:grid; place-items:center; background:var(--porcelain);
-  box-shadow:0 0 0 .4em rgba(157,178,255,.16), 0 0 1.6em rgba(80,100,255,.5); }
-.pi-hub svg{ width:2.4em; height:2.4em; }
-.hs-end.on .pi-a::after{ animation:pi-a 3.6s ease-out infinite; }
-.hs-end.on .pi-l1::after{ animation:pi-l1 3.6s cubic-bezier(.5,0,.5,1) infinite; }
-.hs-end.on .pi-hub{ animation:pi-hub 3.6s ease infinite; }
-.hs-end.on .pi-l2::after{ animation:pi-l2 3.6s cubic-bezier(.5,0,.5,1) infinite; }
-.hs-end.on .pi-b::after{ animation:pi-b 3.6s var(--ease) infinite; }
-@keyframes pi-a{ 0%{ opacity:1; transform:scale(1); } 14%{ opacity:0; transform:scale(1.5); } 100%{ opacity:0; transform:scale(1.5); } }
-@keyframes pi-l1{ 0%, 8%{ transform:translateX(-110%); } 30%, 100%{ transform:translateX(180%); } }
-@keyframes pi-hub{ 0%, 28%{ box-shadow:0 0 0 .4em rgba(157,178,255,.16), 0 0 1.6em rgba(80,100,255,.5); } 34%{ box-shadow:0 0 0 .9em rgba(157,178,255,.3), 0 0 2.8em rgba(120,140,255,1); } 46%, 100%{ box-shadow:0 0 0 .4em rgba(157,178,255,.16), 0 0 1.6em rgba(80,100,255,.5); } }
-@keyframes pi-l2{ 0%, 34%{ transform:translateX(-110%); } 56%, 100%{ transform:translateX(180%); } }
-@keyframes pi-b{ 0%, 54%{ opacity:0; transform:scale(.85); } 62%{ opacity:1; transform:scale(1.08); } 68%, 90%{ opacity:1; transform:none; } 100%{ opacity:0; } }
+/* integrations: a sync notice on dark glass, the shop and the books on top
+   of each other; "Syncing" with the arrows turning, then "Booked" and a tick */
+.pill-int{ width:2.15em; background:#0A1020; box-shadow:0 .06em .22em rgba(14,15,16,.22); }
+.pill-int .pu{ padding:0 1.8em 0 1.7em; gap:1.3em; background:rgba(10,16,32,.42);
+  box-shadow:inset 0 .12em 0 rgba(255,255,255,.32), inset 0 0 0 .1em rgba(255,255,255,.14); }
+.pn-ic{ position:relative; flex:none; width:8em; height:5.4em; }
+.pn-ic img{ position:absolute; top:.4em; width:4.6em; height:4.6em; border-radius:50%; box-shadow:0 0 0 .3em rgba(10,16,32,.85), 0 .3em .8em rgba(0,0,0,.4); }
+.pn-a{ left:0; z-index:1; } .pn-b{ left:3.2em; }
+.pn-t{ position:relative; display:flex; flex-direction:column; gap:.25em; min-width:0; }
+.pn-l1{ display:grid; justify-items:start; font:500 1.75em/1.1 var(--sans); color:#fff; letter-spacing:-.01em; }
+.pn-l1 b{ grid-area:1 / 1; font-weight:500; white-space:nowrap; }
+.pn-d{ opacity:0; }
+.pn-l2{ font:400 1.35em/1 var(--sans); color:rgba(246,244,239,.62); }
+.pn-st{ position:relative; flex:none; margin-left:auto; width:4.4em; height:4.4em; border-radius:50%; display:grid; place-items:center;
+  background:rgba(255,255,255,.1); box-shadow:inset 0 .1em 0 rgba(255,255,255,.3), inset 0 0 0 .1em rgba(255,255,255,.12); }
+.pn-st svg{ grid-area:1 / 1; fill:none; stroke-linecap:round; stroke-linejoin:round; }
+.pn-sync{ width:2.6em; height:2.6em; stroke:#fff; stroke-width:2; opacity:0; }
+.pn-ok{ width:2.4em; height:2.4em; stroke:#fff; stroke-width:2.4; }
+.pill-int .pn-st{ background:#34C759; box-shadow:0 0 0 .4em rgba(52,199,89,.2); }
+.hs-end.on .pn-st{ animation:pn-st 3.8s ease infinite; }
+.hs-end.on .pn-sync{ animation:pn-sync 3.8s linear infinite; }
+.hs-end.on .pn-ok{ animation:pn-ok 3.8s var(--ease) infinite; }
+.hs-end.on .pn-w{ animation:pn-w 3.8s ease infinite; }
+.hs-end.on .pn-d{ animation:pn-d 3.8s ease infinite; }
+.hs-end.on .pn-b{ animation:pn-b 3.8s var(--ease) infinite; }
+@keyframes pn-st{ 0%, 52%{ background:rgba(255,255,255,.1); box-shadow:inset 0 .1em 0 rgba(255,255,255,.3), inset 0 0 0 .1em rgba(255,255,255,.12); } 58%, 92%{ background:#34C759; box-shadow:0 0 0 .4em rgba(52,199,89,.22), 0 0 1.6em rgba(52,199,89,.6); } 100%{ background:rgba(255,255,255,.1); } }
+@keyframes pn-sync{ 0%{ opacity:1; transform:rotate(0); } 50%{ opacity:1; transform:rotate(540deg); } 55%, 100%{ opacity:0; transform:rotate(600deg); } }
+@keyframes pn-ok{ 0%, 53%{ opacity:0; transform:scale(.3); } 60%{ opacity:1; transform:scale(1.15); } 66%, 92%{ opacity:1; transform:none; } 100%{ opacity:0; } }
+@keyframes pn-w{ 0%, 50%{ opacity:1; transform:none; } 56%, 96%{ opacity:0; transform:translateY(-.3em); } 100%{ opacity:1; transform:none; } }
+@keyframes pn-d{ 0%, 52%{ opacity:0; transform:translateY(.3em); } 58%, 94%{ opacity:1; transform:none; } 100%{ opacity:0; } }
+@keyframes pn-b{ 0%, 50%{ transform:none; } 56%{ transform:translateX(-.5em) scale(1.06); } 64%, 100%{ transform:none; } }
 @media (prefers-reduced-motion: reduce){ .pill *, .pill *::after{ animation:none !important; } }
 
 @media (max-aspect-ratio:1/1), (max-width:760px){
