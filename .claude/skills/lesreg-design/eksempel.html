@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="da">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Lesreg signatur — eksempel</title>
+<meta name="theme-color" content="#05080F" />
+<link rel="preload" href="fonts/chivo-500.woff2" as="font" type="font/woff2" crossorigin />
+<link rel="stylesheet" href="signatur.css" />
+<style>
+  /* only for this page: spacing between the specimens */
+  .spec{ padding-top:72px; padding-bottom:72px; } .spec + .spec{ border-top:1px solid rgba(127,127,127,.15); }
+  .row{ display:flex; flex-wrap:wrap; gap:12px; align-items:center; margin-top:24px; }
+  .grid2{ display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:16px; margin-top:24px; }
+</style>
+</head>
+<body class="dark">
+
+<nav class="tb" aria-label="Eksempel">
+  <a class="tb-brand" href="#"><img src="lesreg-mark.svg" alt="" />Lesreg</a>
+  <div class="tb-links"><a href="#knapper" aria-current="page">Knapper</a><a href="#glas">Glas</a><a href="#indhold">Indhold</a><a href="#admin">Admin</a></div>
+  <div class="tb-r">
+    <div class="seg" role="group"><button aria-pressed="true">DA</button><button aria-pressed="false">EN</button></div>
+    <a class="btn light sm" href="#">Skriv til os<span class="lens"><svg viewBox="0 0 16 16"><path d="M3 8h9.4M9.1 4.4 12.6 8 9.1 11.6"/></svg></span></a>
+  </div>
+</nav>
+
+<main>
+  <section class="wrap spec" style="padding-top:160px">
+    <p class="label">Lesreg signatur</p>
+    <h1 class="h1">Ét udtryk.<span class="tone">Alle steder.</span></h1>
+    <p class="lead">Navy med glas over farvet lys, stenfarver på papir, én blå accent og én grøn for det, der er færdigt. Chivo hele vejen, i to toner.</p>
+  </section>
+
+  <section class="wrap spec" id="knapper">
+    <p class="label">Knapper</p>
+    <div class="row">
+      <a class="btn light" href="#">Se hvad vi bygger<span class="lens"><svg viewBox="0 0 16 16"><path d="M3 8h9.4M9.1 4.4 12.6 8 9.1 11.6"/></svg></span></a>
+      <a class="btn glass" href="#">Skriv til os</a>
+      <a class="btn" href="#">Mørk knap<span class="lens"><svg viewBox="0 0 16 16"><path d="M3 8h9.4M9.1 4.4 12.6 8 9.1 11.6"/></svg></span></a>
+      <a class="go" href="#">Regn jeres opgave ud<svg viewBox="0 0 16 16"><path d="M3 8h9.4M9.1 4.4 12.6 8 9.1 11.6"/></svg></a>
+    </div>
+    <div class="row chips" role="radiogroup">
+      <button class="chip" role="radio" aria-checked="false">Hjemmeside</button><button class="chip" role="radio" aria-checked="true">App</button><button class="chip" role="radio" aria-checked="false">Helt system</button>
+    </div>
+    <div class="row"><span class="badge ok"><i></i>Koblet på</span><span class="badge busy"><i></i>I gang</span><span class="badge now"><i></i>Ny</span><span class="badge idle"><i></i>Venter</span></div>
+  </section>
+
+  <section class="wrap spec" id="glas">
+    <p class="label">Liquid glass</p>
+    <h2 class="h2">En rude af glas.<span class="tone">Over lys.</span></h2>
+    <div class="stage" style="margin-top:40px; max-width:560px">
+      <span class="bloom" aria-hidden="true"></span>
+      <div class="glass" style="padding:32px; max-width:560px">
+        <p class="label">Prisen hos Lesreg</p>
+        <p class="big" style="margin-top:12px">1.000<span style="font-size:20px; font-weight:500; margin-left:10px">kr.</span></p>
+        <p class="p" style="margin-top:10px">Typisk 10–30 timer. Regnet med 20 timer til 50 kr. i timen.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap spec" id="indhold">
+    <p class="label">Det får I</p>
+    <ul class="gets" style="margin-top:20px">
+      <li><span class="ic"><svg viewBox="0 0 24 24"><rect x="7" y="2.5" width="10" height="19" rx="2.6"/><path d="M10.5 18.5h3"/></svg></span><b>iPhone og Android</b><span>Én app til begge telefoner.</span></li>
+      <li><span class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="5.5" width="18" height="13" rx="2.4"/><path d="M3 10h18M7 15h3"/></svg></span><b>Bestilling og betaling</b><span>Kunden betaler i appen på få tryk.</span></li>
+      <li><span class="ic"><svg viewBox="0 0 24 24"><path d="M6 16.5V11a6 6 0 0 1 12 0v5.5l1.5 1.5h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/></svg></span><b>Live Activities</b><span>Klar om 12 min på låseskærmen.</span></li>
+    </ul>
+    <p class="label" style="margin-top:56px">Før og efter</p>
+    <ul class="ba" style="margin-top:20px">
+      <li><s>Hver ordre tastet ind tre gange</s><b><svg class="check" viewBox="0 0 16 16"><path d="M4 8.4 6.8 11 12 5.4"/></svg>Tastet ind én gang</b></li>
+      <li><s>Fredag aften er kaos</s><b><svg class="check" viewBox="0 0 16 16"><path d="M4 8.4 6.8 11 12 5.4"/></svg>Fredag aften er bare travl</b></li>
+    </ul>
+    <div class="row"><button class="btn light" data-open="ark">Åbn et ark<span class="lens"><svg viewBox="0 0 16 16"><path d="M3 8h9.4M9.1 4.4 12.6 8 9.1 11.6"/></svg></span></button></div>
+  </section>
+</main>
+
+<!-- admin and systems are light -->
+<section id="admin" class="paper">
+  <div class="app">
+    <aside class="side">
+      <div class="side-brand"><img src="lesreg-mark.svg" alt="" />Kunden</div>
+      <a href="#" aria-current="page"><svg viewBox="0 0 24 24"><rect x="3" y="4.5" width="18" height="12" rx="2"/></svg>Køkken</a>
+      <a href="#"><svg viewBox="0 0 24 24"><path d="M5 6h14M5 12h14M5 18h9"/></svg>Bestillinger<small>23</small></a>
+      <a href="#"><svg viewBox="0 0 24 24"><path d="M5 6h9M18 6h1M5 12h3M12 12h7"/></svg>Menu</a>
+      <div class="side-foot">Kommission 0 kr</div>
+    </aside>
+    <div class="main">
+      <div class="main-head"><div><h1>Køkken</h1><span class="live">Live · aftenens bestillinger</span></div><button class="btn sm">Ny ordre<span class="lens"><svg viewBox="0 0 16 16"><path d="M3 8h9.4M9.1 4.4 12.6 8 9.1 11.6"/></svg></span></button></div>
+      <div class="stats"><div class="stat"><span class="label">Ordrer i dag</span><b>24</b><span class="delta">+1</span></div><div class="stat"><span class="label">Omsætning</span><b>9.336</b></div></div>
+      <div class="board" style="margin-top:16px">
+        <div class="col new"><span class="col-h">Nye <small>1</small></span><div class="ticket"><div class="ticket-top"><span>#0213</span><b>17.15</b></div><h4>Mørbradgryde × 2</h4><p>Rødgrød × 2</p></div></div>
+        <div class="col"><span class="col-h">I gang <small>1</small></span><div class="ticket now"><div class="ticket-top"><span>#0214</span><b>17.30</b></div><h4>Mørbradgryde × 3</h4><p>Kartoffelsalat × 1</p></div></div>
+        <div class="col"><span class="col-h">Klar <small>1</small></span><div class="ticket"><div class="ticket-top"><span>#0210</span><b>16.50</b></div><h4>Mørbradgryde × 1</h4><p><span class="badge ok"><i></i>Gæsten har fået besked</span></p></div></div>
+      </div>
+      <table class="table" style="margin-top:16px"><tr><th>Ordre</th><th>Beløb</th><th>Status</th></tr><tr><td class="mono">#1041</td><td class="num">245 kr.</td><td><span class="badge ok"><i></i>Betalt</span></td></tr><tr><td class="mono">#1042</td><td class="num">389 kr.</td><td><span class="badge busy"><i></i>I gang</span></td></tr></table>
+      <div class="grid2"><label class="field"><span>Navn på retten</span><input class="input" value="Mørbradgryde" /></label>
+        <div class="field"><span>Udsolgt</span><div style="display:flex; align-items:center; gap:12px; height:46px"><span class="toggle" aria-checked="true"></span>Synlig på menuen</div></div></div>
+    </div>
+  </div>
+</section>
+
+<dialog class="sheet" id="ark" aria-label="Eksempel på et ark">
+  <div class="sheet-in">
+    <button class="sheet-x" aria-label="Luk"></button>
+    <p class="label">Integrationer</p>
+    <h2 class="h2" style="margin-top:16px">Slut med at taste<span class="tone">det samme to gange.</span></h2>
+    <p class="lead">Et ark: navy, med samme glas og samme skrift som siden bag.</p>
+    <div class="faq" style="margin-top:40px"><details><summary>Hvad koster en integration?</summary><p>Fra 50 kr. i timen, ekskl. moms. I får én fast pris, før vi starter.</p></details></div>
+  </div>
+</dialog>
+
+<script src="signatur.js"></script>
+</body>
+</html>

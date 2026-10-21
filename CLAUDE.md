@@ -29,6 +29,9 @@ verificere.
 - Designet er sidens produkt. `liquid-glass.css`, `fyon.css`, `lesreg.css` og
   `loader.js` bærer udtrykket. Lav ikke om på dem uden grund.
 - `.claude/skills/motion-framer/` er en skill til bevægelse og animation.
+- `.claude/skills/lesreg-design/` er Lesregs signaturdesign: regler, `signatur.css`,
+  skrifter og en eksempelside. Brug den til alt UI — og kopiér mappen til
+  Mikkels andre projekter, så de får præcis samme udtryk.
 
 ## Det der er værd at passe på
 
